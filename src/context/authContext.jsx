@@ -1,0 +1,100 @@
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import CryptoJS from "crypto-js";
+import { useRouter } from "next/navigation";
+
+export const useAuthentication = () => {
+    const router = useRouter();
+    const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY;
+    const domainName = process.env.NEXT_PUBLIC_DOMAIN_NAME;
+
+    const [isAuth, setIsAuth] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Ensure this code runs only on the client side
+        if (typeof window === "undefined") return;
+
+        const params = new URLSearchParams(window.location.search);
+        const encryptedToken = params.get("token");
+
+        if (!encryptionKey) {
+            window.location.href = `${domainName}/?error=Invalid encryption key`;
+            return; // Prevent further execution
+        }
+
+        // Decrypt the token
+        if (encryptedToken) {
+            const decryptedToken = decryptToken(encryptedToken, encryptionKey);
+            if (!decryptedToken) {
+                console.error("Failed to decrypt token");
+                setLoading(false);
+                return;
+            }
+            // Store in localStorage
+            localStorage.setItem("access", decryptedToken);
+
+            // Clear query parameters from the URL
+            const newUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+
+        // Retrieve token from localStorage
+        const token = localStorage.getItem("access");
+
+        if (token) {
+            const tokenExpired = isTokenExpired(token);
+            if (tokenExpired) {
+                setIsAuth(false);
+            } else {
+                setIsAuth(true);
+            }
+        }
+        setLoading(false);
+    }, []); // Empty dependency array ensures this runs only once
+
+    const logout = () => {
+        if (typeof window !== "undefined") {
+            localStorage.clear();
+            window.location.href = "https://www.cohesiveapps.com/";
+        }
+    };
+
+    return { isAuth, loading, logout };
+};
+
+function isTokenExpired(token) {
+    try {
+        if (!token) return true;
+        const decodeToken = jwtDecode(token);
+        const expirationTime = decodeToken.exp * 1000;
+        return expirationTime < Date.now();
+    } catch (error) {
+        console.error("Invalid token:", error);
+        return true;
+    }
+}
+
+function decryptToken(encryptedToken, key) {
+    if (!encryptedToken) return null;
+    try {
+        const iv = CryptoJS.enc.Hex.parse(encryptedToken.slice(0, 32));
+        const encryptedData = CryptoJS.enc.Hex.parse(encryptedToken.slice(32));
+
+        const decrypted = CryptoJS.AES.decrypt(
+            { ciphertext: encryptedData },
+            CryptoJS.enc.Utf8.parse(key.padEnd(32, "0")),
+            {
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7,
+            }
+        );
+
+        const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+        return decryptedText || null;
+    } catch (error) {
+        console.error("Decryption failed:", error);
+        return null;
+    }
+}
