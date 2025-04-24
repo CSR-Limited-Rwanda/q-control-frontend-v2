@@ -11,9 +11,10 @@ import {
     ChevronDown,
     X,
     Users,
+    ShoppingCart,
 } from 'lucide-react';
 import { splitName } from '@/utils/text';
-import LoginPopup from '@/componets/auth/Login';
+import LoginPopup from '@/components/auth/Login';
 import { useAuthentication } from '@/context/authContext';
 import Image from 'next/image';
 

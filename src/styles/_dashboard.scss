@@ -8,7 +8,7 @@
 /* Sidebar Styles */
 .dashboard__sidebar {
     width: var(--sidebar-width);
-    background-color: var(--primary);
+    background-color: var(--secondary);
     color: white;
     border-right: 1px solid var(--border);
     transition: width var(--transition-speed) ease;
@@ -122,6 +122,9 @@
     padding: 2rem;
     background-color: var(--background);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 /* Menu Items */

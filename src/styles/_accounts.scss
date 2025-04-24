@@ -1,0 +1,81 @@
+.accounts-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+
+    .search-input {
+        max-width: 600px;
+        width: 100%;
+    }
+
+    .filters-popup {
+        position: relative;
+    }
+}
+
+
+.users-table,
+.permission-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+}
+
+
+.custom-table {
+    .details {
+        display: none;
+        flex-direction: column;
+        gap: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+        padding: 1rem;
+
+
+        hr {
+            border: 1px solid var(--border);
+        }
+
+        .features-list {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+
+            .permission {
+                flex: 1;
+                padding: 0.5rem 1rem;
+                background-color: var(--border);
+                border-radius: 4px;
+                text-wrap: nowrap;
+            }
+        }
+
+        &.show {
+            max-height: 300px;
+            display: flex;
+        }
+    }
+
+
+}
+
+@media screen and (max-width: 768px) {
+    .filters {
+        flex-direction: column-reverse;
+        gap: 1rem;
+
+        .actions {
+            justify-content: space-between;
+            width: 100%;
+        }
+    }
+}

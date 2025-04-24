@@ -1,6 +1,6 @@
+import api from '@/utils/api';
 import { ChevronDown, LoaderCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import api from '../../../../../api';
 
 const FacilityInfo = ({ formData, setFormData }) => {
     const handleChange = (e) => {

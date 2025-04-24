@@ -19,3 +19,16 @@ api.interceptors.request.use(
 );
 
 export default api;
+
+
+export const createUrlParams = (params) => {
+    const filteredParams = Object.entries(params)
+        .filter(([_, value]) => value !== null && value !== undefined && value !== "")
+        .reduce((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+        }, {});
+
+    const searchParams = new URLSearchParams(filteredParams);
+    return searchParams.toString();
+};

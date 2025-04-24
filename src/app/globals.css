@@ -4,10 +4,10 @@
   --background: #ffffff;
   --foreground: #505050;
   --bold: #1d1d1d;
-  --primary: #1565C0;
-  --primary-light: #4a8ad3;
-  --secondary: #FF7043;
-  --secondary-light: #fe997b;
+  --secondary: #1565C0;
+  --secondary-light: #4a8ad3;
+  --primary: #FF7043;
+  --primary-light: #fe997b;
   --card: #ffffff;
   --border: #e5e5e5;
   --divider: #f0f0f0;
@@ -35,7 +35,7 @@ body {
   font-family: "Lato", serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 * {
@@ -59,110 +59,6 @@ h6 {
   font-family: "Poppins", serif;
 }
 
-
-button {
-  cursor: pointer;
-  outline: none;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1rem;
-  position: relative;
-  flex: 1;
-  border-radius: 0.3rem;
-  transition: 0.3s linear;
-  max-height: 42px;
-  height: 100%;
-  text-wrap: nowrap;
-}
-
-button.primary {
-  background: var(--secondary);
-  color: white;
-}
-
-button.primary:hover {
-  background-color: var(--secondary-light);
-}
-
-button.primary :disabled {
-  background-color: var(--secondary-light);
-}
-
-button.secondary {
-  background-color: var(--primary);
-  color: white;
-}
-
-button.secondary:hover {
-  background-color: var(--primary-light);
-}
-
-button.secondary:disabled {
-  background-color: var(--primary-light);
-}
-
-button .loading-icon {
-  position: absolute;
-  right: 1rem;
-}
-
-.message {
-  padding: 0.5rem;
-  border-radius: 0.2rem;
-  background-color: var(--card);
-}
-
-.message.success {
-  background-color: var(--success);
-}
-
-.message.error {
-  background-color: var(--error);
-}
-
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-input {
-  padding: 1rem;
-  border-radius: 0.3rem;
-  border: 1px solid var(--border);
-  flex: 1;
-  background-color: transparent;
-}
-
-.icon-input {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.icon-input .icon {
-  position: absolute;
-  right: 0.8rem;
-}
-
-.icon-input input {
-  padding-right: 2rem;
-}
-
-.loading-icon {
-  animation: spin 0.8s linear infinite;
-}
 
 .copy {
   position: absolute;

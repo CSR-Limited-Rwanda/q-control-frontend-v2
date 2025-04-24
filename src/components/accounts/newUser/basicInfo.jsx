@@ -1,10 +1,4 @@
 import React from 'react'
-import CustomDatePicker from '../../inputs/datePicker';
-import 'react-day-picker/dist/style.css';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
 
 const BasicInfo = ({ formData, setFormData }) => {
     const handleChange = (e) => {

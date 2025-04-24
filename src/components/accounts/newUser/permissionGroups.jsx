@@ -1,31 +1,10 @@
+'use client'
 import React, { useEffect, useCallback } from 'react'
-import api from '../../../../../api'
 import { useState } from 'react'
 import { LoaderCircle, Search, Square, SquareCheck, X } from 'lucide-react'
+import api from '@/utils/api';
+import { SearchInput } from '@/components/forms/Search';
 
-const SearchInput = ({ value, setValue, isSearching }) => {
-    return (
-        <div className="search-input">
-            <input
-                type="text"
-                name="searchRole"
-                id="searchRole"
-                placeholder="Search role"
-                onChange={(e) => setValue(e.target.value)}
-                value={value}
-            />
-            <div className="icon">
-                {isSearching ? (
-                    <LoaderCircle className="loading-icon" />
-                ) : value ? (
-                    <X onClick={() => setValue("")} />
-                ) : (
-                    <Search />
-                )}
-            </div>
-        </div>
-    );
-};
 
 const PermissionGroups = ({ formData, setFormData }) => {
     const handleChange = (e) => {
@@ -53,10 +32,11 @@ const PermissionGroups = ({ formData, setFormData }) => {
     const fetchGroups = async () => {
         setIsLoading(true)
         try {
-            const response = await api.get(`permissions/?search=${searchQuery}`)
+            const response = await api.get(`/permissions/?search=${searchQuery}`)
             setGroups(response.data)
         } catch (error) {
             setErrorMessage("Failed to fetch groups")
+            console.log(error)
         } finally {
             setIsLoading(false)
             setIsSearching(false)
@@ -174,7 +154,7 @@ const PermissionGroups = ({ formData, setFormData }) => {
                                         {groups.map((group) => (
                                             <div onClick={() => handleCheckPermissionGroup(group)} className='group check-box' key={group.id}>
                                                 {formData.permissionGroups.some((item) => item.id === group.id) ? <SquareCheck /> : <Square />}
-                                                <h4>{group.name}</h4>
+                                                <p>{group.name}</p>
                                             </div>
                                         ))}
                                     </div>

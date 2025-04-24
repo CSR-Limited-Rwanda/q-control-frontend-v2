@@ -1,15 +1,14 @@
+'use client'
 import React, { useState } from 'react';
-import '../../../../../assets/css/forms/_newUser.scss'
-import FacilityInfo from './facilityInfo';
+import { ArrowLeft, ArrowRight, UserPlusIcon, X } from 'lucide-react';
 import BasicInfo from './basicInfo';
-import { set } from 'date-fns';
+import FacilityInfo from './facilityInfo';
 import PermissionGroups from './permissionGroups';
-import { UserPlusIcon, X } from 'lucide-react';
-import PrimaryButton from '../../../../general/PrimaryButton';
-import ErrorMessage from '../../../../general/errorMessage';
-import api from '../../../../../api';
+import PrimaryButton from '@/components/PrimaryButton';
+import SecondaryButton from '@/components/SecondaryButton';
+import api from '@/utils/api';
 
-const NewUserForm = () => {
+const NewUserForm = ({ handleClose }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -127,7 +126,7 @@ const NewUserForm = () => {
   return (
     <div className="popup">
       <div className="popup-content">
-        <div className="close">
+        <div className="close" onClick={handleClose}>
           <X size={32} />
         </div>
         <div className="form">
@@ -162,15 +161,19 @@ const NewUserForm = () => {
             <div className="buttons">
               {
                 currentStep > 1 &&
-                <button type="button" className="secondary-button" onClick={handlePreviousStep}>
-                  Back
-                </button>
+                <SecondaryButton
+                  span={'Back'}
+                  onClick={handlePreviousStep}
+                  prefixIcon={<ArrowLeft />}
+                />
               }
               {
                 currentStep < maxStep &&
-                <button type="button" className="primary-button" onClick={handleNextStep}>
-                  Save and continue
-                </button>
+                <SecondaryButton
+                  text={'Save and continue'}
+                  onClick={handleNextStep}
+                  suffixIcon={<ArrowRight />}
+                />
               }
               {
                 currentStep === maxStep &&
@@ -179,7 +182,7 @@ const NewUserForm = () => {
                   onClick={handleSubmit}
                   isLoading={isLoading}
                   prefixIcon={<UserPlusIcon />}
-                  suffixIcon={<UserPlusIcon />} />
+                />
               }
             </div>
           </form>
