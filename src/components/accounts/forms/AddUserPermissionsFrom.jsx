@@ -57,10 +57,12 @@ const AddUserPermissionsFrom = ({ existingUsers, setExistingUsers, groupId }) =>
     }
   };
 
+
+
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const response = await api.get(`/users/`);
+        const response = await api.get(`/users/?page_size=5`);
         if (response.status === 200) {
           setUsers(response.data);
           setFilteredUsers(response.data);
@@ -75,65 +77,61 @@ const AddUserPermissionsFrom = ({ existingUsers, setExistingUsers, groupId }) =>
   }, []);
 
   return (
-    <div className="popup">
-      <div className="popup-content">
-        <div className="form">
-          {successMessage && (
-            <div className="message success">{successMessage}</div>
-          )}
-          {errorMessage && (
-            <div className="message error">{errorMessage}</div>
-          )}
+    <div className="form">
+      {successMessage && (
+        <div className="message success">{successMessage}</div>
+      )}
+      {errorMessage && (
+        <div className="message error">{errorMessage}</div>
+      )}
 
-          <div className="search-input">
-            {isLoading ? (
-              <LoaderCircle className="icon loading-icon" />
-            ) : (
-              <Search className="icon" />
-            )}
-            <input
-              onChange={(e) => handleFilter(e.target.value)}
-              type="text"
-              name="search"
-              id="search"
-              placeholder="Search user by name or email"
-            />
-          </div>
+      <div className="search-input">
+        {isLoading ? (
+          <LoaderCircle className="icon loading-icon" />
+        ) : (
+          <Search className="icon" />
+        )}
+        <input
+          onChange={(e) => handleFilter(e.target.value)}
+          type="text"
+          name="search"
+          id="search"
+          placeholder="Search user by name or email"
+        />
+      </div>
 
-          <div className="search-results">
-            {errorMessage && <p className="error">{errorMessage}</p>}
-            {filteredUsers.map((user) => (
-              <div key={user.id} className="search-result">
-                <div className="content">
-                  <p>
-                    {user.user.first_name} {user.user.last_name}
-                  </p>
-                  <small>{user.user.email}</small>
-                </div>
-                <div className="action">
-                  {existingUsers &&
-                    existingUsers.some(
-                      (existingUser) => existingUser.id === user.id
-                    ) ? (
-                    <>
-                      <Check />
-                      Added
-                    </>
+      <div className="search-results">
+        {errorMessage && <p className="error">{errorMessage}</p>}
+        {filteredUsers.map((user) => (
+          <div key={user.id} className="search-result">
+            <div className="content">
+              <p>
+                {user.user.first_name} {user.user.last_name}
+              </p>
+              <small>{user.user.email}</small>
+            </div>
+            <div className="action">
+              {existingUsers &&
+                existingUsers.some(
+                  (existingUser) => existingUser.id === user.id
+                ) ? (
+                <>
+                  <Check />
+                  Added
+                </>
+              ) : (
+                <div onClick={() => handleAddUser(user)} className="action">
+                  {loadingState[user.id] ? (
+                    <LoaderCircle className="loading-icon" />
                   ) : (
-                    <div onClick={() => handleAddUser(user)} className="action">
-                      {loadingState[user.id] ? (
-                        <LoaderCircle className="loading-icon" />
-                      ) : (
-                        <PlusIcon />
-                      )}
-                      Add
-                    </div>
+                    <PlusIcon />
                   )}
+                  Add
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );

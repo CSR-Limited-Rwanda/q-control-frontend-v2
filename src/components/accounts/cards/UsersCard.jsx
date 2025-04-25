@@ -2,7 +2,7 @@ import { SearchInput } from '@/components/forms/Search'
 import PrimaryButton from '@/components/PrimaryButton'
 import UserCard from '@/components/UserCard'
 import api from '@/utils/api'
-import { Plus, Square, SquareCheck } from 'lucide-react'
+import { Minus, Plus, Square, SquareCheck, X } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import AddUserPermissionsFrom from '../forms/addUserPermissionsFrom'
@@ -57,6 +57,50 @@ const UsersCard = ({ setUsersNumber }) => {
     }
 
 
+    const handleRemoveUsers = async () => {
+        const confirmed = window.confirm(
+            `Are you sure you want to remove ${selectedUsers.length} users from this group? This action is not reversible`
+        );
+
+        if (!confirmed) return;
+
+        const removedUserIds = [];
+        const errors = [];
+
+        for (const user of selectedUsers) {
+            const payload =
+            {
+                id: parseInt(permissionGroupID),
+            }
+
+            try {
+                const response = await api.delete(`/users/${user.id}/permissions/`, {
+                    data: payload
+                });
+
+                if (response.status === 200) {
+                    console.log(`Permissions removed for user ${user.id}`);
+                    removedUserIds.push(user.id);
+                }
+            } catch (error) {
+                console.log(`Failed to remove permissions for user ${user}:`, error);
+                alert(`Failed to remove permissions for user ${user.first_name}:`);
+                errors.push({ userId: user.id, error });
+            } finally {
+                setSelectedUsers([])
+            }
+        }
+
+        if (removedUserIds.length > 0) {
+            setUsers(prevUsers =>
+                prevUsers.filter(user => !removedUserIds.includes(user.id))
+            );
+        }
+
+        if (errors.length > 0) {
+            setErrorMessage(`Failed to remove permissions for ${errors.length} users`);
+        }
+    };
 
     useEffect(() => {
         if (permissionGroupID) {
@@ -68,11 +112,23 @@ const UsersCard = ({ setUsersNumber }) => {
             <div className="filters">
                 <h3 className='title'>Users assigned ({users.length})</h3>
                 <SearchInput label={'Search users in this group'} />
-                <PrimaryButton
-                    span={'Add users'}
-                    prefixIcon={<Plus />}
-                    onClick={() => setShowAddUserForm(true)}
-                />
+                {
+                    selectedUsers && selectedUsers.length > 0
+                        ?
+                        <button className="button" onClick={handleRemoveUsers} style={{
+                            backgroundColor: 'tomato',
+                            color: 'white',
+                        }}>
+                            <Minus />
+                            Remove {selectedUsers.length}
+                        </button>
+                        :
+                        <PrimaryButton
+                            span={'Add users'}
+                            prefixIcon={<Plus />}
+                            onClick={() => setShowAddUserForm(true)}
+                        />
+                }
 
             </div>
             <div className="users-table">
@@ -113,7 +169,15 @@ const UsersCard = ({ setUsersNumber }) => {
             </div>
 
             {
-                showAddUserForm && <AddUserPermissionsFrom existingUsers={users} setExistingUsers={setUsers} groupId={permissionGroupID} />
+                showAddUserForm &&
+                <div className="popup">
+                    <div className="popup-content">
+                        <div className="close">
+                            <X size={32} onClick={() => setShowAddUserForm(false)} />
+                        </div>
+                        <AddUserPermissionsFrom existingUsers={users} setExistingUsers={setUsers} groupId={permissionGroupID} />
+                    </div>
+                </div>
             }
         </div>
 
