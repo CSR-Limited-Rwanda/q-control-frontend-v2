@@ -1,3 +1,4 @@
+import '@/styles/_components.scss'
 import { SearchInput } from '@/components/forms/Search'
 import OutlineButton from '@/components/OutlineButton'
 import PrimaryButton from '@/components/PrimaryButton'
@@ -44,12 +45,10 @@ const Titles = () => {
         setIsFetchingTitles(true)
         try {
             const response = await api.get(`/titles/?${params}`);
+            console.log(response)
             if (response.status === 200) {
-                const formattedTitles = response.data.map((title) => ({
-                    value: title.id,
-                    label: title.name,
-                }))
-                setTitles(formattedTitles)
+
+                setTitles(response.data)
             }
         } catch (error) {
             console.error('Error fetching titles:', error)
@@ -137,12 +136,28 @@ const Titles = () => {
             {isFetchingTitles ? (
                 <p>Loading titles...</p>
             ) : (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Date created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {titles.map((title, index) => (
+                            <tr key={index}>
+                                <td>{title.id}</td>
+                                <td>{title.name || '-'}</td>
+                                <td>{title.description || '-'}</td>
+                                <td>{title.date_created || '-'}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
 
-                titles.map((title) => (
-                    <div key={title.value} className='title-item'>
-                        <span>{title.label}</span>
-                    </div>
-                ))
+
             )}
         </div>
     )
