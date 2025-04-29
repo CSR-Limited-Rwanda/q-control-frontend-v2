@@ -5,7 +5,7 @@ import api from '@/utils/api'
 import { Minus, Plus, Square, SquareCheck, X } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import AddUserPermissionsFrom from '../forms/addUserPermissionsFrom'
+import AddUserPermissionsFrom from '../forms/AddUserPermissionsFrom'
 
 const UsersCard = ({ setUsersNumber }) => {
     const router = useRouter()
