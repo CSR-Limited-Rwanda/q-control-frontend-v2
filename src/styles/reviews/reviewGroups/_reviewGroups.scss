@@ -1,0 +1,93 @@
+@import "../../variables";
+
+.table-container {
+    background-color: #FFFFFF;
+    padding: 24px;
+    margin-top: 24px;
+
+    .review-groups-table {
+        width: 100%;
+        border-collapse: collapse;
+    
+        th, td {
+            text-align: start;
+            padding: 12px 16px;
+            color: #A5A3A9;
+        }
+    
+        th {
+            background-color: #F9F9F9;
+            font-size: 13px;
+        }
+    
+        td {
+            font-size: 16px;
+            font-weight: 400;
+        }
+    
+        tr:nth-child(even) td {
+            background-color: #FCFCFC;
+        }
+    }
+}
+
+
+
+.group-details-top-content {
+    .group-details-title {
+        display: flex;
+        gap: 16px;
+    }
+}
+
+.review-group-details-container {
+    background-color: $body-background-color;
+    padding: 24px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .review-group-details-contents {
+        display: flex;
+        justify-content: space-between;
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 48px;
+
+            .col {
+                display: flex;
+                gap: 12px;
+
+                .review-title {
+                    font-size: 18px;
+                    font-weight: 700;
+                }
+
+                .review-date {
+                    color: #8d8d8d;
+                    font-weight: 400;
+                }
+
+                .review-created,
+                .review-update {
+                    color: #8d8d8d;
+                    font-weight: 400;
+                }
+
+                .review-created-by-name {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+
+    .review-group-description {
+        p {
+            color: #777777;
+            font-size: 16px;
+        }
+    }
+}

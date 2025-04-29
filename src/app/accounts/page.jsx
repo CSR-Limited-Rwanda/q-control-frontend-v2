@@ -5,6 +5,8 @@ import DashboardLayout from '../dashboard/layout'
 import Accounts from '@/components/accounts/tabs/Accounts';
 import PermissionGroups from '@/components/accounts/tabs/PermissionGroups';
 import Titles from '@/components/accounts/tabs/Titles';
+import ReviewGroups from '@/components/accounts/tabs/ReviewGroups';
+
 
 const AccountsPage = () => {
   const tabs = [
@@ -51,7 +53,7 @@ const AccountsPage = () => {
         activeTab === 'permissionGroups' && <div><PermissionGroups /></div>
       }
       {
-        activeTab === 'reviewGroups' && <div>Review groups</div>
+        activeTab === 'reviewGroups' && <div><ReviewGroups /></div>
       }
       {
         activeTab === 'reviewTemplates' && <div>Review templates</div>
