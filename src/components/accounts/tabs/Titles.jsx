@@ -1,10 +1,12 @@
-import '@/styles/_components.scss'
+import '@/styles/accounts/_titles.scss'
 import { SearchInput } from '@/components/forms/Search'
 import OutlineButton from '@/components/OutlineButton'
 import PrimaryButton from '@/components/PrimaryButton'
 import api, { createUrlParams } from '@/utils/api'
 import { Plus, X } from 'lucide-react'
 import React, { useCallback, useEffect, useState } from 'react'
+import TitlesForm from '../forms/TitlesForm'
+import TitleDetails from './TitleDetails'
 
 const Titles = () => {
     const [titles, setTitles] = useState([])
@@ -13,6 +15,8 @@ const Titles = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+    const [selectedTitle, setSelectedTitle] = useState(null);
+    const [showTitleDetails, setShowTitleDetails] = useState(false);
     const [showNewTitleForm, setShowNewTitleForm] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
@@ -34,7 +38,7 @@ const Titles = () => {
 
         }
         else if (searchQuery.length === 0 && isFocused) {
-            setIsSearching(true);
+            setIsSearching(false);
             fetchTitles();
         } else {
             setIsSearching(false);
@@ -71,6 +75,14 @@ const Titles = () => {
         setShowFilters(!showFilters);
     }
 
+    const handleShowNewTitleForm = () => {
+        setShowNewTitleForm(!showNewTitleForm);
+    }
+
+    const handleShowTitleDetails = (title) => {
+        setSelectedTitle(title);
+        setShowTitleDetails(!showTitleDetails);
+    }
 
     useEffect(() => {
         const debounceTimeout = setTimeout(() => {
@@ -86,7 +98,7 @@ const Titles = () => {
     }
         , [])
     return (
-        <div className='titles'>
+        <div className='titles-tab'>
             <div className="filters">
                 <SearchInput value={searchQuery} setValue={setSearchQuery} isSearching={isSearching} label={'Search users by email, names or phone number'} />
 
@@ -126,7 +138,7 @@ const Titles = () => {
                     </div>
 
                     <PrimaryButton
-                        onClick={() => setShowNewUserForm(true)}
+                        onClick={handleShowNewTitleForm}
                         span="Add title"
                         prefixIcon={<Plus />}
                         customClass={'sticky-button'}
@@ -147,7 +159,7 @@ const Titles = () => {
                     </thead>
                     <tbody>
                         {titles.map((title, index) => (
-                            <tr key={index}>
+                            <tr onClick={() => handleShowTitleDetails(title)} key={index}>
                                 <td>{title.id}</td>
                                 <td>{title.name || '-'}</td>
                                 <td>{title.description || '-'}</td>
@@ -156,9 +168,14 @@ const Titles = () => {
                         ))}
                     </tbody>
                 </table>
-
-
             )}
+
+            {
+                showNewTitleForm && <TitlesForm handleClose={handleShowNewTitleForm} />
+            }
+            {
+                showTitleDetails && <TitleDetails title={selectedTitle} handleClose={() => handleShowTitleDetails({})} />
+            }
         </div>
     )
 }

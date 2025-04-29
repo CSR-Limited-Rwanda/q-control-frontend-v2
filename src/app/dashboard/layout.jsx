@@ -173,8 +173,8 @@ const DashboardLayout = ({ children }) => {
                             </div>
 
                             <div className="dashboard__header-actions">
-                                <ProfileMessages />
-                                <ProfileNotification />
+                                {/* <ProfileMessages /> */}
+                                {/* <ProfileNotification /> */}
                                 <ProfileContainer />
                             </div>
                         </div>
