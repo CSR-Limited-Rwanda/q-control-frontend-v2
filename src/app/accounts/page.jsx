@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '@/styles/accounts/_accounts.scss';
 import DashboardLayout from '../dashboard/layout'
 import Accounts from '@/components/accounts/tabs/Accounts';
@@ -14,29 +14,38 @@ const AccountsPage = () => {
       name: "Accounts management",
       id: "accountsManagement"
     },
-    {
-      name: "Permission groups",
-      id: "permissionGroups"
-    },
+    // {
+    //   name: "Permission groups",
+    //   id: "permissionGroups"
+    // },
     {
       name: "Titles",
       id: "titles"
     },
-    {
-      name: "Review groups",
-      id: "reviewGroups"
-    },
-    {
-      name: "Review templates",
-      id: "reviewTemplates"
-    }
+    // {
+    //   name: "Review groups",
+    //   id: "reviewGroups"
+    // },
+    // {
+    //   name: "Review templates",
+    //   id: "reviewTemplates"
+    // }
   ]
-  const [activeTab, setActiveTab] = useState(tabs[2].id);
+
+  const [activeTab, setActiveTab] = useState(null);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
+    localStorage.setItem('activeAccountsTab', tab.id);
   };
-
+  useEffect(() => {
+    const storedTab = localStorage.getItem('activeAccountsTab');
+    if (storedTab) {
+      setActiveTab(storedTab);
+    } else {
+      setActiveTab(tabs[0].id);
+    }
+  }, [])
   return (
     <DashboardLayout>
       <div className="tabs">

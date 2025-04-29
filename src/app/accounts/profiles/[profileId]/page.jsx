@@ -102,8 +102,8 @@ const ProfileDetailsPage = () => {
             <div className="profile-page">
                 <div className="page-header card">
                     <div className="id">
-                        <h1>ID</h1>
-                        <h1>{profile?.id}</h1>
+                        <h4>ID</h4>
+                        <h4>{profile?.id}</h4>
                     </div>
                     <div className="actions">
                         <OutlineButton
@@ -148,7 +148,7 @@ const ProfileDetailsPage = () => {
                             <UserCard
                                 firstName={profile?.user?.first_name}
                                 lastName={profile?.user?.last_name}
-                                label={profile?.user?.email}
+                                label={profile?.title?.name}
                             />
                         </div>
                         <div className="card">
@@ -161,14 +161,6 @@ const ProfileDetailsPage = () => {
                                 <div className="detail">
                                     <small>Department</small>
                                     <p>{profile?.department?.label}</p>
-                                </div>
-                                <div className="detail">
-                                    <small>Title</small>
-                                    <p>{profile?.title}</p>
-                                </div>
-                                <div className="detail">
-                                    <small>Role</small>
-                                    <p>{profile?.role}</p>
                                 </div>
                             </div>
                         </div>

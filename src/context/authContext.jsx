@@ -7,7 +7,7 @@ export const useAuthentication = () => {
     const router = useRouter();
     const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY;
     const domainName = process.env.NEXT_PUBLIC_DOMAIN_NAME;
-
+    const [user, setUser] = useState(null);
     const [isAuth, setIsAuth] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -48,6 +48,11 @@ export const useAuthentication = () => {
                 setIsAuth(false);
             } else {
                 setIsAuth(true);
+
+                const userInfo = getUserInfoFromToken(token);
+                if (userInfo) {
+                    setUser(userInfo);
+                }
             }
         }
         setLoading(false);
@@ -60,7 +65,7 @@ export const useAuthentication = () => {
         }
     };
 
-    return { isAuth, loading, logout };
+    return { isAuth, loading, logout, user };
 };
 
 function isTokenExpired(token) {
@@ -95,6 +100,30 @@ function decryptToken(encryptedToken, key) {
         return decryptedText || null;
     } catch (error) {
         console.error("Decryption failed:", error);
+        return null;
+    }
+}
+
+
+function getUserInfoFromToken(token) {
+    try {
+        if (!token) {
+            console.error("Token is not provided");
+            return null;
+        }
+
+        // Decode the token
+        const decodedToken = jwtDecode(token);
+
+        // Extract user information
+        const userInfo = {
+            firstName: decodedToken.first_name,
+            lastName: decodedToken.last_name,
+            email: decodedToken.email,
+        };
+        return userInfo;
+    } catch (error) {
+        console.error("Error decoding token:", error);
         return null;
     }
 }

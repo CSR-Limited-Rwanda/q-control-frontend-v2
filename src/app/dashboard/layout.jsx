@@ -12,11 +12,16 @@ import {
     X,
     Users,
     ShoppingCart,
+    User,
+    Lock,
+    Settings,
+    LogOut,
 } from 'lucide-react';
 import { splitName } from '@/utils/text';
 import LoginPopup from '@/components/auth/Login';
 import { useAuthentication } from '@/context/authContext';
 import Image from 'next/image';
+import UserCard from '@/components/UserCard';
 
 const DashboardLayout = ({ children }) => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -168,8 +173,8 @@ const DashboardLayout = ({ children }) => {
                             </div>
 
                             <div className="dashboard__header-actions">
-                                <ProfileMessages />
-                                <ProfileNotification />
+                                {/* <ProfileMessages /> */}
+                                {/* <ProfileNotification /> */}
                                 <ProfileContainer />
                             </div>
                         </div>
@@ -192,7 +197,7 @@ export default DashboardLayout;
 
 export const ProfileContainer = () => {
     const [showProfile, setShowProfile] = useState(false)
-    const { isAuth, logout, currentUser } = useAuthentication()
+    const { isAuth, logout, user } = useAuthentication()
     const handleShowProfile = () => {
         setShowProfile(!showProfile)
     }
@@ -201,16 +206,36 @@ export const ProfileContainer = () => {
         <div className="header-popup">
             <div onClick={handleShowProfile} className="header-trigger">
                 <div className="name-initials avatar">
-                    <span>{splitName(`${currentUser?.first_name} ${currentUser?.last_name}`)}</span>
+                    <span>{splitName(`${user?.firstName} ${user?.lastName}`)}</span>
                 </div>
             </div>
             {
                 showProfile &&
                 <div className="header-content">
-                    <div className="dropdown__label">My Account</div>
-                    <button className="dropdown__item">Profile</button>
-                    <button className="dropdown__item">Settings</button>
-                    <button onClick={logout} className="dropdown__item">Logout</button>
+                    <div className="dropdown__item">
+                        <div className="card">
+                            <UserCard firstName={user.firstName} lastName={user.lastName} label={user.email} />
+                        </div>
+                    </div>
+                    <div className="dropdown__item">
+                        <User size={18} />
+                        <span>My Account</span>
+                    </div>
+                    <hr />
+                    <div className="dropdown__item">
+                        <Lock size={18} />
+                        <span>Admin</span>
+                    </div>
+                    <hr />
+                    <div className="dropdown__item">
+                        <Settings size={18} />
+                        <span>Settings</span>
+                    </div>
+                    <hr />
+                    <div onClick={logout} className="dropdown__item">
+                        <LogOut size={18} />
+                        <span>Logout</span>
+                    </div>
                 </div>
             }
         </div>

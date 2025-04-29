@@ -198,12 +198,23 @@
 
 .header-content {
     position: absolute;
-    top: 100%;
-    width: 240px;
+    top: calc(100% + 0.6rem);
+    max-width: 500px;
     right: 0;
     background-color: var(--background);
     border: 1px solid var(--border);
     border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+
+    .dropdown__item {
+        padding: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+
 }
 
 .mobile-menu {
