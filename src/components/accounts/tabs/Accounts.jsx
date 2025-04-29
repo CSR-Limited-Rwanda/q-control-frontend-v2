@@ -1,9 +1,8 @@
 'use client'
 import api, { createUrlParams } from '@/utils/api';
-import { Filter, LoaderCircle, Plus, X } from 'lucide-react';
+import { LoaderCircle, Plus, X } from 'lucide-react';
 import React, { useEffect, useState, useCallback } from 'react'
 import PrimaryButton from '@/components/PrimaryButton';
-import SecondaryButton from '@/components/SecondaryButton';
 import OutlineButton from '@/components/OutlineButton';
 import UserCard from '@/components/UserCard';
 import { SearchInput } from '@/components/forms/Search';
