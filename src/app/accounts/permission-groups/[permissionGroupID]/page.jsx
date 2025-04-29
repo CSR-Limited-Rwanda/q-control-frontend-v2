@@ -1,5 +1,5 @@
 'use client'
-import '@/styles/_accounts.scss'
+import '@/styles/accounts/_accounts.scss'
 import DashboardLayout from '@/app/dashboard/layout'
 import { useGroupContext } from '@/context/providers/Group'
 import api from '@/utils/api'

@@ -15,7 +15,8 @@ const UsersCard = ({ setUsersNumber }) => {
 
     const [isLoading, setIsLoading] = useState(true)
     const [showAddUserForm, setShowAddUserForm] = useState(false)
-
+    const [errorMessage, setErrorMessage] = useState(null)
+    const [successMessage, setSuccessMessage] = useState(null)
     // handle select user
     const handleSelectUser = (user) => {
         // if user is not in selected users list add them, else remove them
@@ -36,8 +37,8 @@ const UsersCard = ({ setUsersNumber }) => {
     }
 
     const handleNavigate = (user) => {
-
-        router.push(`/dashboard/accounts/${user?.id}`)
+        console.log("User: ", user)
+        router.push(`/accounts/profiles/${user?.id}`)
     }
 
     const fetchUsers = async () => {
@@ -79,13 +80,13 @@ const UsersCard = ({ setUsersNumber }) => {
                 });
 
                 if (response.status === 200) {
-                    console.log(`Permissions removed for user ${user.id}`);
+                    console.log("Response: ", response)
                     removedUserIds.push(user.id);
                 }
             } catch (error) {
                 console.log(`Failed to remove permissions for user ${user}:`, error);
                 alert(`Failed to remove permissions for user ${user.first_name}:`);
-                errors.push({ userId: user.id, error });
+                console.log("Payload: ", payload);
             } finally {
                 setSelectedUsers([])
             }
@@ -149,7 +150,7 @@ const UsersCard = ({ setUsersNumber }) => {
                     <tbody>
                         {
                             users.map((user, index) => (
-                                <tr key={index}>
+                                <tr key={index} onClick={() => handleNavigate(user)}>
                                     <td onClick={(e) => { e.stopPropagation(); handleSelectUser(user) }}>{selectedUsers.includes(user) ? <SquareCheck /> : <Square />}</td>
                                     <td>
                                         <UserCard

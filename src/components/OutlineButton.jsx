@@ -10,7 +10,10 @@ const OutlineButton = ({ text, span, onClick, isLoading, prefixIcon, suffixIcon 
                 !isLoading && prefixIcon && { ...prefixIcon }
             }
             {!span && text}
-            {!text && span}
+            {
+                !text &&
+                <span> {span}</span>
+            }
             {
                 !isLoading && suffixIcon && { ...suffixIcon }
             }

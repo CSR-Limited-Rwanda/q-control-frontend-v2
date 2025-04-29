@@ -2,14 +2,16 @@
 import api, { createUrlParams } from '@/utils/api';
 import { Filter, LoaderCircle, Plus, X } from 'lucide-react';
 import React, { useEffect, useState, useCallback } from 'react'
-import NewUserForm from '../newUser/newUserForm';
 import PrimaryButton from '@/components/PrimaryButton';
 import SecondaryButton from '@/components/SecondaryButton';
 import OutlineButton from '@/components/OutlineButton';
 import UserCard from '@/components/UserCard';
 import { SearchInput } from '@/components/forms/Search';
+import NewUserForm from '../forms/newUser/newUserForm';
+import { useRouter } from 'next/navigation';
 
 const Accounts = () => {
+    const router = useRouter();
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
@@ -57,6 +59,10 @@ const Accounts = () => {
         setShowFilters(!showFilters);
     }
 
+    const handleNavigate = (user) => {
+        console.log("User: ", user)
+        router.push(`/accounts/profiles/${user?.id}`)
+    }
 
     useEffect(() => {
         const debounceTimeout = setTimeout(() => {
@@ -159,7 +165,7 @@ const Accounts = () => {
                                             <tbody className={`${isSearching && 'is-searching'}`}>
                                                 {
                                                     users.map((user) => (
-                                                        <tr key={user.id}>
+                                                        <tr key={user.id} onClick={() => handleNavigate(user)}>
                                                             <td><UserCard firstName={user.user.first_name} lastName={user.user.last_name} label={user.user.email} /></td>
                                                             <td>{user.phone_number || '-'}</td>
                                                             <td>{user?.facility?.name || '-'}</td>

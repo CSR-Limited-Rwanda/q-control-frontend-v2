@@ -8,27 +8,27 @@ import PrimaryButton from '@/components/PrimaryButton';
 import SecondaryButton from '@/components/SecondaryButton';
 import api from '@/utils/api';
 
-const NewUserForm = ({ handleClose }) => {
+const NewUserForm = ({ handleClose, isEditMode = false, existingUserData = {} }) => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    sex: '',
-    dateOfBirth: '',
-    address: '',
-    birthCountry: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    facility: '',
-    department: '',
-    role: '',
-    permissionLevel: '',
-    hasReviewPermissions: false,
+    firstName: existingUserData?.user?.first_name || '',
+    lastName: existingUserData?.user?.last_name || '',
+    email: existingUserData?.user?.email || '',
+    phoneNumber: existingUserData?.phone_number || '',
+    sex: existingUserData?.gender || '',
+    dateOfBirth: existingUserData?.date_of_birth || '',
+    address: existingUserData?.address || '',
+    birthCountry: existingUserData?.birth_country || '',
+    city: existingUserData?.city || '',
+    state: existingUserData?.state || '',
+    zipCode: existingUserData?.zip_code || '',
+    facility: existingUserData?.facility || '',
+    department: existingUserData?.department || '',
+    title: existingUserData?.title || '',
+    permissionLevel: existingUserData?.permission_level || '',
+    hasReviewPermissions: existingUserData?.has_review_permissions || false,
     addToPermissionGroup: false,
-    permissions: [],
-    permissionGroups: [],
+    permissions: existingUserData?.permissions || [],
+    permissionGroups: existingUserData?.permissionGroups || [],
   });
 
 
@@ -37,7 +37,7 @@ const NewUserForm = ({ handleClose }) => {
   const [successMessage, setSuccessMessage] = useState();
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [maxStep, setMaxStep] = useState(3);
+  const [maxStep, setMaxStep] = useState(isEditMode ? 2 : 3);
 
   const handleNextStep = () => {
     if (currentStep < 3) {
@@ -56,12 +56,24 @@ const NewUserForm = ({ handleClose }) => {
 
     try {
       setIsLoading(true);
-      const response = await api.post('/users/', data);
-      if (response.status === 201) {
-        setSuccessMessage('User created successfully');
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+      if (isEditMode) {
+        console.log("Data to be sent:", data);
+        const response = await api.put(`/users/${existingUserData.id}/`, data);
+        if (response.status === 200) {
+          setSuccessMessage('User updated successfully');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
+      }
+      else {
+        const response = await api.post('/users/', data);
+        if (response.status === 201) {
+          setSuccessMessage('User created successfully');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
       }
     } catch (error) {
       let message
@@ -99,9 +111,9 @@ const NewUserForm = ({ handleClose }) => {
       zip_code: formData.zipCode,
       facility_id: formData.facility.value,
       department_id: formData.department.value,
-      role: formData.role,
+      title_id: formData.title.value,
       permission_level: formData.permissionLevel,
-      has_review_permissions: formData.hasReviewPermissions,
+      review_permissions: formData.hasReviewPermissions,
       permission_groups: formData.permissionGroups.map((group) => (group.id)),
       // permissions: formData.permissions,
     };
@@ -130,9 +142,9 @@ const NewUserForm = ({ handleClose }) => {
           <X size={32} />
         </div>
         <div className="form">
-          <h2>New User {currentStep} of {maxStep}</h2>
+          <h2>{isEditMode ? 'Update user' : 'New User'} {currentStep} of {maxStep}</h2>
           <p>
-            This form is for adding a new user. Fill in the necessary <br /> information and continue
+            This form is for {isEditMode ? 'updating a' : 'adding a new'} user. Fill in the necessary <br /> information and continue
           </p>
 
           <form>
@@ -178,7 +190,7 @@ const NewUserForm = ({ handleClose }) => {
               {
                 currentStep === maxStep &&
                 <PrimaryButton
-                  text={"Create a user"}
+                  text={isEditMode ? "Update user" : "Create a user"}
                   onClick={handleSubmit}
                   isLoading={isLoading}
                   prefixIcon={<UserPlusIcon />}

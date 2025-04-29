@@ -1,9 +1,10 @@
 'use client'
 import React, { useState } from 'react'
-import '@/styles/_accounts.scss';
+import '@/styles/accounts/_accounts.scss';
 import DashboardLayout from '../dashboard/layout'
 import Accounts from '@/components/accounts/tabs/Accounts';
 import PermissionGroups from '@/components/accounts/tabs/PermissionGroups';
+import Titles from '@/components/accounts/tabs/Titles';
 
 const AccountsPage = () => {
   const tabs = [
@@ -16,6 +17,10 @@ const AccountsPage = () => {
       id: "permissionGroups"
     },
     {
+      name: "Titles",
+      id: "titles"
+    },
+    {
       name: "Review groups",
       id: "reviewGroups"
     },
@@ -24,12 +29,11 @@ const AccountsPage = () => {
       id: "reviewTemplates"
     }
   ]
-  const [activeTab, setActiveTab] = useState(tabs[1].id);
+  const [activeTab, setActiveTab] = useState(tabs[2].id);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
   };
-
 
   return (
     <DashboardLayout>
@@ -51,6 +55,9 @@ const AccountsPage = () => {
       }
       {
         activeTab === 'reviewTemplates' && <div>Review templates</div>
+      }
+      {
+        activeTab === 'titles' && <Titles />
       }
     </DashboardLayout>
   )

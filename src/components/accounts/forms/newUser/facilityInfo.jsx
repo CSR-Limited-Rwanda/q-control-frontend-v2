@@ -13,8 +13,10 @@ const FacilityInfo = ({ formData, setFormData }) => {
 
     const [facilities, setFacilities] = useState([]);
     const [departments, setDepartments] = useState([]);
+    const [titles, setTitles] = useState([]);
     const [isFetchingFacilities, setIsFetchingFacilities] = useState(false);
     const [isFetchingDepartments, setIsFetchingDepartments] = useState(false);
+    const [isFetchingTitles, setIsFetchingTitles] = useState(false);
 
     const fetchFacilities = async () => {
         setIsFetchingFacilities(true);
@@ -52,6 +54,24 @@ const FacilityInfo = ({ formData, setFormData }) => {
         }
     };
 
+    const fetchTitles = async () => {
+        setIsFetchingTitles(true);
+        try {
+            const response = await api.get(`/titles/`);
+            if (response.status === 200) {
+                const formattedTitles = response.data.map((title) => ({
+                    value: title.id,
+                    label: title.name,
+                }));
+                setTitles(formattedTitles);
+            }
+        } catch (error) {
+            console.error('Error fetching titles:', error);
+        } finally {
+            setIsFetchingTitles(false);
+        }
+    }
+
     const handleSelectFacility = (facility) => {
         setFormData((prevData) => ({
             ...prevData,
@@ -73,6 +93,7 @@ const FacilityInfo = ({ formData, setFormData }) => {
 
     useEffect(() => {
         fetchFacilities();
+        fetchTitles();
     }, []);
 
     return (
@@ -99,13 +120,12 @@ const FacilityInfo = ({ formData, setFormData }) => {
             </div>
             <div className="half">
                 <div className="form-group">
-                    <label htmlFor="role">Role</label>
-                    <input
-                        type="text"
-                        id="role"
-                        value={formData.role || ''}
-                        onChange={handleChange}
-                        placeholder="Role"
+                    <label htmlFor="title">Title</label>
+                    <Dropdown
+                        items={titles}
+                        label={formData.title.label || 'Select title'}
+                        onSelect={(title) => setFormData((prevData) => ({ ...prevData, title }))}
+                        isLoading={isFetchingTitles}
                     />
                 </div>
             </div>

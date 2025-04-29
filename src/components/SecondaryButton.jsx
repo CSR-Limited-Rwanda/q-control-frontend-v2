@@ -10,7 +10,10 @@ const SecondaryButton = ({ text, span, onClick, isLoading, prefixIcon, suffixIco
                 !isLoading && prefixIcon && { ...prefixIcon }
             }
             {!span && text}
-            <span>{!text && span}</span>
+            {
+                !text &&
+                <span> {span}</span>
+            }
             {
                 !isLoading && suffixIcon && { ...suffixIcon }
             }

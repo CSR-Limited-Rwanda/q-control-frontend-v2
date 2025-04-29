@@ -1,5 +1,5 @@
 'use client'
-import '@/styles/_accounts.scss'
+import '@/styles/accounts/_accounts.scss'
 import api from '@/utils/api'
 import { ChevronUp, SquareCheck, SquarePen, Trash2 } from 'lucide-react'
 import { useParams } from 'next/navigation'

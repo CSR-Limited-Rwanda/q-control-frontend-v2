@@ -10,7 +10,10 @@ const PrimaryButton = ({ text, span, onClick, isLoading, prefixIcon, suffixIcon,
                 !isLoading && prefixIcon && { ...prefixIcon }
             }
             {!span && text}
-            <span>{!text && span}</span>
+            {
+                !text &&
+                <span> {span}</span>
+            }
             {
                 !isLoading && suffixIcon && { ...suffixIcon }
             }
