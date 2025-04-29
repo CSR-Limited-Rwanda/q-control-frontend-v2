@@ -61,14 +61,14 @@ const BasicInfo = ({ formData, setFormData }) => {
             </div>
             <div className="half">
                 <div className="form-group">
-                    <label htmlFor="sex">Sex</label>
+                    <label htmlFor="gender">Gender</label>
                     <select
-                        id="sex"
-                        value={formData.sex}
+                        id="gender"
+                        value={formData.gender}
                         onChange={handleChange}
                         required
                     >
-                        <option value="">Select sex</option>
+                        <option value="">Select gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                     </select>

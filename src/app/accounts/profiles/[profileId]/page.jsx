@@ -148,7 +148,7 @@ const ProfileDetailsPage = () => {
                             <UserCard
                                 firstName={profile?.user?.first_name}
                                 lastName={profile?.user?.last_name}
-                                label={profile?.user?.email}
+                                label={profile?.title?.name}
                             />
                         </div>
                         <div className="card">
@@ -161,14 +161,6 @@ const ProfileDetailsPage = () => {
                                 <div className="detail">
                                     <small>Department</small>
                                     <p>{profile?.department?.label}</p>
-                                </div>
-                                <div className="detail">
-                                    <small>Title</small>
-                                    <p>{profile?.title}</p>
-                                </div>
-                                <div className="detail">
-                                    <small>Role</small>
-                                    <p>{profile?.role}</p>
                                 </div>
                             </div>
                         </div>
