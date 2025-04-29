@@ -425,64 +425,65 @@ form,
 	border-collapse: collapse;
 	font-family: Arial, sans-serif;
 
-	table {
-		width: 100%;
-		border-collapse: collapse;
+}
 
-		thead {
-			background-color: #f4f4f4;
+table {
+	width: 100%;
+	border-collapse: collapse;
 
-			tr {
-				th {
-					padding: 12px;
-					text-align: left;
-					font-weight: bold;
-					border-bottom: 2px solid #ddd;
-				}
-			}
-		}
+	thead {
+		background-color: #f4f4f4;
 
-		tbody {
-			tr {
-				cursor: pointer;
-
-				&:nth-child(even) {
-					background-color: #f9f9f9;
-				}
-
-				&:hover {
-					background-color: #f1f1f1;
-				}
-
-				td {
-					padding: 12px;
-					border-bottom: 1px solid #ddd;
-					word-wrap: break-word;
-				}
-
-			}
-
-			&.is-searching {
-				tr {
-					animation: fadeInFadeOut 1s ease-in-out infinite;
-				}
+		tr {
+			th {
+				padding: 12px;
+				text-align: left;
+				font-weight: bold;
+				border-bottom: 2px solid #ddd;
 			}
 		}
 	}
 
-	.no-content {
-		text-align: center;
-		padding: 20px;
-		color: #666;
+	tbody {
+		tr {
+			cursor: pointer;
 
-		h3 {
-			font-size: 1.5rem;
-			margin-bottom: 10px;
+			&:nth-child(even) {
+				background-color: #f9f9f9;
+			}
+
+			&:hover {
+				background-color: #f1f1f1;
+			}
+
+			td {
+				padding: 12px;
+				border-bottom: 1px solid #ddd;
+				word-wrap: break-word;
+			}
+
 		}
 
-		p {
-			font-size: 1rem;
+		&.is-searching {
+			tr {
+				animation: fadeInFadeOut 1s ease-in-out infinite;
+			}
 		}
+	}
+}
+
+.no-content {
+	text-align: center;
+	padding: 20px;
+	color: #666;
+
+	h3 {
+		font-size: 1.5rem;
+		margin-bottom: 10px;
+	}
+
+	p {
+		font-size: 1rem;
 	}
 }
 
@@ -667,33 +668,31 @@ form,
 
 // Responsive styles
 @media (max-width: 768px) {
-	.users-table {
-		table {
-			thead {
-				display: none; // Hide table headers on small screens
-			}
+	table {
+		thead {
+			display: none; // Hide table headers on small screens
+		}
 
-			tbody {
-				tr {
+		tbody {
+			tr {
+				display: flex;
+				flex-direction: column;
+				margin-bottom: 10px;
+				border: 1px solid #ddd;
+				border-radius: 5px;
+
+				td {
 					display: flex;
-					flex-direction: column;
-					margin-bottom: 10px;
-					border: 1px solid #ddd;
-					border-radius: 5px;
+					justify-content: space-between;
+					padding: 10px;
 
-					td {
-						display: flex;
-						justify-content: space-between;
-						padding: 10px;
-
-						// &:before {
-						// 	content: attr(data-label);
-						// 	font-weight: bold;
-						// 	flex: 1;
-						// 	text-align: left;
-						// 	margin-right: 10px;
-						// }
-					}
+					// &:before {
+					// 	content: attr(data-label);
+					// 	font-weight: bold;
+					// 	flex: 1;
+					// 	text-align: left;
+					// 	margin-right: 10px;
+					// }
 				}
 			}
 		}

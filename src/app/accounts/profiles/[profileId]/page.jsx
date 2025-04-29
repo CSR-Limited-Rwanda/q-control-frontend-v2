@@ -102,8 +102,8 @@ const ProfileDetailsPage = () => {
             <div className="profile-page">
                 <div className="page-header card">
                     <div className="id">
-                        <h1>ID</h1>
-                        <h1>{profile?.id}</h1>
+                        <h4>ID</h4>
+                        <h4>{profile?.id}</h4>
                     </div>
                     <div className="actions">
                         <OutlineButton
