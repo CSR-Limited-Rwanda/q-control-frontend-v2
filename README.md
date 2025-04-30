@@ -34,3 +34,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+ROLES
+
+1. User can have a primary facility
+2. User can have primary role
+3. User can have access different facilities
+4. User can have other roles in other facilities
+
+Uncustomizable roles:
+
+1. Super user
+2. Admin
+3. Profile editor
+
+Customizable roles:
+
+1. Department Admin
+2. User
+
+We should have a note that encourages account owners to stick to the defaults roles.

@@ -9,7 +9,7 @@ import Titles from '@/components/accounts/tabs/Titles';
 const AccountsPage = () => {
   const tabs = [
     {
-      name: "Accounts management",
+      name: "Account management",
       id: "accountsManagement"
     },
     // {
