@@ -50,7 +50,7 @@ const DashboardLayout = ({ children }) => {
         // },
         {
             icon: <Users size={20} />,
-            label: 'Accounts Management',
+            label: 'Account Management',
             href: '/accounts'
         },
         // {

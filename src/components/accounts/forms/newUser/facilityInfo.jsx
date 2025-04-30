@@ -100,7 +100,7 @@ const FacilityInfo = ({ formData, setFormData }) => {
         <div className="card">
             <div className="half">
                 <div className="form-group">
-                    <label htmlFor="facility">Facility</label>
+                    <label htmlFor="facility">Primary facility</label>
                     <Dropdown
                         items={facilities}
                         label={formData.facility.label || 'Select facility'}

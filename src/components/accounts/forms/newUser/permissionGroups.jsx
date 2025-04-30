@@ -116,6 +116,7 @@ const PermissionGroups = ({ formData, setFormData }) => {
                         onChange={handleChange}
                     >
                         <option value="">Select permission level</option>
+                        <option value="Individual">User</option>
                         <option value="Department">Department</option>
                         <option value="Facility">Facility</option>
                         <option value="Corporate">Corporate</option>
