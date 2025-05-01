@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import api from "@/utils/api";
 import NamesInitials from "../NamesInitials";
-import { useNavigate } from "react-router-dom";
-import { CheckCheck, Search } from 'lucide-react';
+import { useRouter } from "next/navigation";
+import { Check, Search } from 'lucide-react';
+import '../../styles/reviews/reviewGroups/_forms.scss'
 
 const NewReviewGroupForm = () => {
-  const navigate = useNavigate()
+  const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1);
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
@@ -154,10 +155,6 @@ const NewReviewGroupForm = () => {
     setSearchTerm(e.target.value);
   };
 
-  const handleReviewGroupDetails = (reviewId) => {
-    navigate(`/permissions/review-groups/${reviewId}/members/`)
-  }
-
   return (
     <div className="review-groups-form">
       {/* Step 1: Form */}
@@ -165,7 +162,6 @@ const NewReviewGroupForm = () => {
         <div className="step-one">
           <form>
             <h2>Create Review Group</h2>
-
             <div className="field">
               <label htmlFor="title">Title</label>
               <input
@@ -282,7 +278,7 @@ const NewReviewGroupForm = () => {
           <div className="final-step-container">
             <div className="smessage">
               <div className="check-mark">
-                <CheckCheck size={46} />
+                <Check size={46} />
               </div>
 
               <h3>Review Group Added Successfully</h3>
@@ -292,7 +288,7 @@ const NewReviewGroupForm = () => {
               </p>
             </div>
             <div className="success-btn">
-              <Link to={`/permissions/review-groups/${groupId}/members/`}
+              <Link href={`/permissions/review-groups/${groupId}/members/`}
                 className="visit-btn"
               >
                 Visit Group Details
@@ -330,7 +326,7 @@ const NewReviewGroupForm = () => {
         )}
       </div>
     </div>
-  );
+  )
 };
 
 export default NewReviewGroupForm;

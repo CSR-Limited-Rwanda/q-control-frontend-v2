@@ -1,37 +1,22 @@
 @import "../../variables";
 
-.table-container {
-    background-color: #FFFFFF;
-    padding: 24px;
-    margin-top: 24px;
 
-    .review-groups-table {
-        width: 100%;
-        border-collapse: collapse;
-    
-        th, td {
-            text-align: start;
-            padding: 12px 16px;
-            color: #A5A3A9;
-        }
-    
-        th {
-            background-color: #F9F9F9;
-            font-size: 13px;
-        }
-    
-        td {
-            font-size: 16px;
-            font-weight: 400;
-        }
-    
-        tr:nth-child(even) td {
-            background-color: #FCFCFC;
-        }
+
+.mobile-users {
+    display: none;
+    max-height: 80vh;
+    overflow: auto;
+    gap: 1rem;
+
+    .user-card {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background-color: whitesmoke;
+        display: grid;
+        height: fit-content;
+        gap: 0.5rem;
     }
 }
-
-
 
 .group-details-top-content {
     .group-details-title {

@@ -16,7 +16,7 @@ const ReviewGroups = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
-    
+
     const [isEmpty, setIsEmpty] = useState(localStorage.getItem("isEmpty"));
 
     const groupsWithFullname = reviewGroups.map((user, index) => ({
@@ -31,18 +31,8 @@ const ReviewGroups = () => {
             return (
                 (item.id &&
                     item.id.toString().toLowerCase().includes(string.toLowerCase())) ||
-                (item?.first_name &&
-                    item?.first_name.toLowerCase().includes(string.toLowerCase())) ||
-                (item?.last_name &&
-                    item?.last_name.toLowerCase().includes(string.toLowerCase())) ||
-                (item?.full_name &&
-                    item?.full_name.toLowerCase().includes(string.toLowerCase())) ||
-                (Array.isArray(item.department) &&
-                    item?.department.some((dep) =>
-                        dep.name.toLowerCase().includes(string.toLowerCase())
-                    )) ||
-                (item?.email &&
-                    item?.email.toLowerCase().includes(string.toLowerCase()))
+                (item?.title &&
+                    item?.title.toLowerCase().includes(string.toLowerCase()))
             );
         });
         if (results.length < 1) {
@@ -101,13 +91,21 @@ const ReviewGroups = () => {
         <div className="dashboard-page-content">
             {showNewUserForm && (
                 <div className="new-user-form-popup">
-                    <div className="popup-content">
-                        <SquareX
+                    <div className="popup">
+                     <div className="popup-content">
+                        <div className="close">
+                          <SquareX
                             onClick={handleShowNewUserForm}
                             className="close-icon"
-                        />
-                        <NewReviewGroupForm />
+                        />  
+                        </div>
+                        <div className="form">
+                          <NewReviewGroupForm />  
+                        </div>
+                        
+                    </div>   
                     </div>
+                    
                 </div>
             )}
             <div className="actions">
@@ -153,57 +151,12 @@ const ReviewGroups = () => {
                             <th>ID</th>
                             <th>Group Name</th>
                             <th>Description</th>
-
                             <th>Date Added</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {isSearching ? (
-                            isSearchingTheDatabase ? (
-                                <div className="searching_database">
-                                    <p>Searching database</p>
-                                </div>
-                            ) : searchResults && searchResults.length > 0 ? (
-                                searchResults.map((reviewGroup, index) => (
-                                    <tr key={index} onClick={() => handleRowClick(reviewGroup.id)}>
-                                        <td>{reviewGroup.id}</td>
-                                        <td>{reviewGroup.title}</td>
-                                        <td>{reviewGroup.description}</td>
-
-                                        <td>
-                                            <DateFormatter dateString={reviewGroup.created_at} />
-                                        </td>
-                                        <td>
-                                            <AddCircleIcon />
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <div className="no-data-found">
-                                    <p>No data found with your search</p>
-                                </div>
-                            )
-                        ) : reviewGroups.length > 0 ? (
-                            reviewGroups.map((reviewGroup, index) => (
-                                <tr key={index} onClick={() => handleRowClick(reviewGroup.id)}>
-                                    <td>{reviewGroup.id}</td>
-                                    <td>{reviewGroup.title}</td>
-                                    <td>{reviewGroup.description}</td>
-
-                                    <td>
-                                        <DateFormatter dateString={reviewGroup.created_at} />
-                                    </td>
-                                    <td>
-                                        <EllipsisVertical />
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            "No review group available"
-                        )}
-
-                        <tr></tr>
+                        {renderTableBody()}
                     </tbody>
                 </table>
             </div>
@@ -221,6 +174,60 @@ const ReviewGroups = () => {
             </div>
         </div>
     );
+
+    function renderTableBody() {
+        if (isSearching) {
+            if (isSearchingTheDatabase) {
+                return (
+                    <tr>
+                        <td colSpan="5" className="searching_database">
+                            <p>Searching database...</p>
+                        </td>
+                    </tr>
+                )
+            }
+            if (searchResults && searchResults.length > 0) {
+                return searchResults.map((reviewGroup, index) => (
+                    <tr
+                        key={index}
+                        onClick={() => handleRowClick(reviewGroup.id)}
+                    >
+                        <td>{reviewGroup.id}</td>
+                        <td>{reviewGroup.title}</td>
+                        <td>{reviewGroup.description}</td>
+                        <td><DateFormatter dateString={reviewGroup.created_at} /></td>
+                        <td><EllipsisVertical /></td>
+                    </tr>
+                ))
+            }
+            return (
+                <tr>
+                    <td colSpan="5" className="no-data-found">
+                        <p>No data matching your search query</p>
+                    </td>
+                </tr>
+            )
+        }
+        if (reviewGroups.length > 0) {
+            return reviewGroups.map((reviewGroup, index) => (
+                <tr
+                    key={index}
+                    onClick={() => handleRowClick(reviewGroup.id)}
+                >
+                    <td>{reviewGroup.id}</td>
+                    <td>{reviewGroup.title}</td>
+                    <td>{reviewGroup.description}</td>
+                    <td><DateFormatter dateString={reviewGroup.created_at} /></td>
+                    <td><EllipsisVertical /></td>
+                </tr>
+            ))
+        }
+        return (
+            <tr>
+                <td colSpan="5">No review group available</td>
+            </tr>
+        )
+    }
 };
 
 export default ReviewGroups

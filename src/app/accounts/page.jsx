@@ -22,10 +22,10 @@ const AccountsPage = () => {
       name: "Titles",
       id: "titles"
     },
-    // {
-    //   name: "Review groups",
-    //   id: "reviewGroups"
-    // },
+    {
+      name: "Review groups",
+      id: "reviewGroups"
+    },
     // {
     //   name: "Review templates",
     //   id: "reviewTemplates"

@@ -6,63 +6,7 @@
     align-items: center;
     gap: 1rem;
   }
-  
-  .new-user-form-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.308);
-  
-    button {
-      width: fit-content;
-    }
-  
-    .form {
-      display: flex;
-      flex-direction: column;
-      height: 90%;
-      gap: 1rem;
-      // justify-content: space-between;
-      overflow: auto;
-    }
-  
-    form {
-      padding: 0;
-    }
-  
-    .popup-content {
-      max-width: 700px;
-      width: 100%;
-      background-color: white;
-      padding: 2rem;
-      // padding-top: 2rem;
-      padding-top: 3rem;
-      border-radius: 0.5rem;
-      position: relative;
-      height: 680px;
-      overflow: auto;
-  
-      .close-icon {
-        position: absolute;
-        // right: 1rem;
-        // top: 1rem;
-      }
-  
-      position: relative;
-  
-      .buttons {
-        position: absolute;
-        bottom: 2rem;
-        right: 2rem;
-      }
-    }
-  }
+
   
   .mobile-users {
     display: none;
@@ -160,28 +104,6 @@
       .new-user-button {
         position: absolute;
         right: 0;
-      }
-    }
-  
-    .new-user-form-popup {
-      padding: 1rem;
-  
-      .popup-content {
-        padding: 1rem;
-  
-        button {
-          width: 100%;
-        }
-      }
-  
-      .form {
-        padding-top: 2rem;
-  
-        .form-tabs {
-          span {
-            display: none;
-          }
-        }
       }
     }
   
