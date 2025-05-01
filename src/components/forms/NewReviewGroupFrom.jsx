@@ -276,7 +276,7 @@ const NewReviewGroupForm = () => {
         <div className="final-step">
           <h2>Add Members</h2>
           <div className="final-step-container">
-            <div className="smessage">
+            <div className="message">
               <div className="check-mark">
                 <Check size={46} />
               </div>
