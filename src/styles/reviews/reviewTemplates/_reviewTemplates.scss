@@ -1,0 +1,285 @@
+@import "../../variables.scss";
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.new-user-form-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.308);
+
+  button {
+    width: fit-content;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+    gap: 1rem;
+    // justify-content: space-between;
+    overflow: auto;
+  }
+
+  form {
+    padding: 0;
+  }
+
+  .popup-content {
+    max-width: 700px;
+    width: 100%;
+    background-color: white;
+    padding: 2rem;
+    // padding-top: 2rem;
+    padding-top: 3rem;
+    border-radius: 0.5rem;
+    position: relative;
+    height: 680px;
+    overflow: auto;
+
+    .close {
+      position: absolute;
+      // right: 1rem;
+      // top: 1rem;
+    }
+
+    position: relative;
+
+    .buttons {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+    }
+  }
+}
+
+.mobile-users {
+  display: none;
+  max-height: 80vh;
+  overflow: auto;
+  gap: 1rem;
+
+  .user-card {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: whitesmoke;
+    display: grid;
+    height: fit-content;
+    gap: 0.5rem;
+  }
+}
+
+.form-tabs {
+  display: flex;
+  align-items: center;
+  border-radius: 0.5rem;
+  justify-content: space-between;
+
+  & > :first-child {
+    border-radius: 0.5rem 0 0 0.5rem;
+  }
+
+  & > :last-child {
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: whitesmoke;
+    cursor: pointer;
+    justify-content: center;
+  }
+
+  .active {
+    background-color: $secondary-color;
+    color: white;
+  }
+}
+
+.form-choices {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .choice {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    background-color: whitesmoke;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    color: rgb(74, 74, 74);
+
+    &:hover {
+      background-color: lighten($color: $secondary-color, $amount: 30);
+    }
+  }
+
+  .selected {
+    background-color: $secondary-color;
+    color: white;
+  }
+}
+
+.template-actions {
+  background-color: $body-background-color;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.templates-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+
+  .template-card {
+    flex: 1 0 0%;
+    max-width: 500px;
+
+    > span,
+    p {
+      color: $gray-color;
+    }
+
+    .template-action-btns {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+
+      .delete-btn,
+      .edit-btn {
+        flex: 0;
+        cursor: pointer;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+      }
+
+      .delete-btn {
+        border: 2px solid $secondary-color;
+        color: $secondary-color;
+      }
+
+      .edit-btn {
+        border: 2px solid $gray-color;
+      }
+
+      .details-btn {
+        flex: 1;
+        background-color: $secondary-color-shade;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: $secondary-color;
+        gap: 10px;
+        padding: 10px 24px;
+        border: 1.5px solid #fcefea;
+        border-radius: 8px;
+        cursor: pointer;
+
+        .eye-icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+  }
+}
+
+.dashboard-page-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 30px;
+}
+.create-task-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  border-radius: 5px;
+  background-color: $body-background-color;
+
+  h2 {
+    font-size: 22px;
+  }
+  p {
+    max-width: 400px;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .mobile-users {
+    display: grid;
+  }
+
+  .actions {
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    position: relative;
+
+    .filters {
+      width: 100%;
+
+      input {
+        flex: 1;
+      }
+    }
+
+    .new-user-button {
+      position: absolute;
+      right: 0;
+    }
+  }
+
+  .new-user-form-popup {
+    padding: 1rem;
+
+    .popup-content {
+      padding: 1rem;
+
+      button {
+        width: 100%;
+      }
+    }
+
+    .form {
+      padding-top: 2rem;
+
+      .form-tabs {
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .users-table {
+    display: none;
+  }
+}

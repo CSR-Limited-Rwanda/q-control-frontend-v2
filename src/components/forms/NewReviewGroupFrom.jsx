@@ -1,14 +1,14 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import api from "@/utils/api";
 import NamesInitials from "../NamesInitials";
 import { useRouter } from "next/navigation";
-import { Check, Search } from 'lucide-react';
-import '../../styles/reviews/reviewGroups/_forms.scss'
+import { Check, Search } from "lucide-react";
+import "../../styles/reviews/reviewGroups/_forms.scss";
 
 const NewReviewGroupForm = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
@@ -199,7 +199,7 @@ const NewReviewGroupForm = () => {
               placeholder="Search members..."
               value={searchTerm}
               onChange={handleSearch}
-            // style={{ width: "100%", padding: "8px", marginBottom: "12px" }}
+              // style={{ width: "100%", padding: "8px", marginBottom: "12px" }}
             />
           </div>
           <div className="selected-members">
@@ -230,8 +230,9 @@ const NewReviewGroupForm = () => {
                     >
                       {/* {isSelected ? <CheckmarkSquare01Icon /> : <SquareIcon />} */}
                       <div
-                        className={`custom-checkbox ${isSelected ? "checked" : ""
-                          }`}
+                        className={`custom-checkbox ${
+                          isSelected ? "checked" : ""
+                        }`}
                       >
                         <svg viewBox="0 0 24 24" className="checkmark">
                           <path d="M5 12l5 5L19 7" />
@@ -288,7 +289,8 @@ const NewReviewGroupForm = () => {
               </p>
             </div>
             <div className="success-btn">
-              <Link href={`/permissions/review-groups/${groupId}/members/`}
+              <Link
+                href={`/permissions/review-groups/${groupId}/members/`}
                 className="visit-btn"
               >
                 Visit Group Details
@@ -326,7 +328,7 @@ const NewReviewGroupForm = () => {
         )}
       </div>
     </div>
-  )
+  );
 };
 
 export default NewReviewGroupForm;

@@ -5,6 +5,8 @@ import DashboardLayout from "../dashboard/layout";
 import Accounts from "@/components/accounts/tabs/Accounts";
 import PermissionGroups from "@/components/accounts/tabs/PermissionGroups";
 import Titles from "@/components/accounts/tabs/Titles";
+import ReviewGroups from "@/components/accounts/tabs/ReviewGroups";
+import { ReviewTemplates } from "@/components/accounts/tabs/ReviewTemplates";
 
 const AccountsPage = () => {
   const tabs = [
@@ -24,10 +26,10 @@ const AccountsPage = () => {
       name: "Review groups",
       id: "reviewGroups",
     },
-    // {
-    //   name: "Review templates",
-    //   id: "reviewTemplates"
-    // }
+    {
+      name: "Review templates",
+      id: "reviewTemplates",
+    },
   ];
 
   const [activeTab, setActiveTab] = useState(null);
@@ -63,8 +65,16 @@ const AccountsPage = () => {
           <PermissionGroups />
         </div>
       )}
-      {activeTab === "reviewGroups" && <div>Review groups</div>}
-      {activeTab === "reviewTemplates" && <div>Review templates</div>}
+      {activeTab === "reviewGroups" && (
+        <div>
+          <ReviewGroups />
+        </div>
+      )}
+      {activeTab === "reviewTemplates" && (
+        <div>
+          <ReviewTemplates />
+        </div>
+      )}
       {activeTab === "titles" && <Titles />}
     </DashboardLayout>
   );

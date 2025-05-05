@@ -1,78 +1,77 @@
 @import "../../variables";
 
-
-
 .mobile-users {
-    display: none;
-    max-height: 80vh;
-    overflow: auto;
-    gap: 1rem;
+  display: none;
+  max-height: 80vh;
+  overflow: auto;
+  gap: 1rem;
 
-    .user-card {
-        padding: 1rem;
-        border-radius: 0.5rem;
-        background-color: whitesmoke;
-        display: grid;
-        height: fit-content;
-        gap: 0.5rem;
-    }
+  .user-card {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: whitesmoke;
+    display: grid;
+    height: fit-content;
+    gap: 0.5rem;
+  }
 }
 
 .group-details-top-content {
-    .group-details-title {
-        display: flex;
-        gap: 16px;
-    }
+  .group-details-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 }
 
 .review-group-details-container {
-    background-color: $body-background-color;
-    padding: 24px;
-    border-radius: 16px;
+  background-color: $body-background-color;
+  padding: 24px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .review-group-details-contents {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    justify-content: space-between;
 
-    .review-group-details-contents {
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+
+      .col {
         display: flex;
-        justify-content: space-between;
+        gap: 12px;
 
-        .row {
-            display: flex;
-            align-items: center;
-            gap: 48px;
-
-            .col {
-                display: flex;
-                gap: 12px;
-
-                .review-title {
-                    font-size: 18px;
-                    font-weight: 700;
-                }
-
-                .review-date {
-                    color: #8d8d8d;
-                    font-weight: 400;
-                }
-
-                .review-created,
-                .review-update {
-                    color: #8d8d8d;
-                    font-weight: 400;
-                }
-
-                .review-created-by-name {
-                    font-size: 16px;
-                }
-            }
+        .review-title {
+          font-size: 18px;
+          font-weight: 700;
         }
-    }
 
-    .review-group-description {
-        p {
-            color: #777777;
-            font-size: 16px;
+        .review-date {
+          color: #8d8d8d;
+          font-weight: 400;
         }
+
+        .review-created,
+        .review-update {
+          color: #8d8d8d;
+          font-weight: 400;
+        }
+
+        .review-created-by-name {
+          font-size: 16px;
+        }
+      }
     }
+  }
+
+  .review-group-description {
+    p {
+      color: #777777;
+      font-size: 16px;
+    }
+  }
 }
