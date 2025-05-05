@@ -11,7 +11,7 @@ import ReviewGroups from '@/components/accounts/tabs/ReviewGroups';
 const AccountsPage = () => {
   const tabs = [
     {
-      name: "Accounts management",
+      name: "Account management",
       id: "accountsManagement"
     },
     // {
