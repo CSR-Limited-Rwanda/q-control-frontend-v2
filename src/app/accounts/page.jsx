@@ -14,10 +14,10 @@ const AccountsPage = () => {
       name: "Account management",
       id: "accountsManagement"
     },
-    // {
-    //   name: "Permission groups",
-    //   id: "permissionGroups"
-    // },
+    {
+      name: "Permission groups",
+      id: "permissionGroups"
+    },
     {
       name: "Titles",
       id: "titles"
