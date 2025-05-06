@@ -3,6 +3,7 @@ import api from "@/utils/api";
 
 import { CheckIcon } from "lucide-react";
 import "../../styles/_components.scss";
+import "../../styles/_forms.scss";
 
 const incidentOptions = [
   "General Patient Visitor",

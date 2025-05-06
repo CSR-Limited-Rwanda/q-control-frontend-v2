@@ -33,8 +33,8 @@ const NewReviewGroupForm = () => {
         description,
       };
 
-      setContinuing(true);
       try {
+        setContinuing(true);
         const response = await api.post("/permissions/review-groups/", payload);
 
         if (response.status === 201 || response.status === 200) {
@@ -49,6 +49,7 @@ const NewReviewGroupForm = () => {
         alert("Failed to add review group.");
       } finally {
         setSubmitting(false);
+        setContinuing(false);
       }
     }
   };
@@ -98,6 +99,7 @@ const NewReviewGroupForm = () => {
       alert("Something went wrong while adding members.");
     } finally {
       setSubmitting(false);
+      setLoading(false);
     }
   };
 

@@ -2,7 +2,18 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/app/dashboard/layout";
 import Link from "next/link";
-import { Plus, Pencil, MoveLeft, CirclePlusIcon, SquareX } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  MoveLeft,
+  CirclePlusIcon,
+  SquareX,
+  ArrowRight,
+  Trash2,
+  SquarePen,
+  MoveRight,
+  PlusCircle,
+} from "lucide-react";
 import api from "@/utils/api";
 import DateFormatter from "../DateFormatter";
 import { useParams } from "next/navigation";
@@ -12,10 +23,11 @@ import "../../styles/reviews/reviewTemplates/_reviewTemplates.scss";
 import AddTaskForm from "../forms/AddTaskForm";
 
 const ReviewTemplatesDetailsContent = () => {
-  const [members, setMembers] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [reviewTemplate, setReviewTemplate] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingTask, setLoadingTask] = useState(true);
   const [showAddTaskForm, setShowAddTaskForm] = useState(false);
   const { templateId } = useParams();
 
@@ -45,42 +57,45 @@ const ReviewTemplatesDetailsContent = () => {
     setShowAddTaskForm(!showAddTaskForm);
   };
 
-  //   useEffect(() => {
-  //     const fetchGroupMembers = async () => {
-  //       try {
-  //         const response = await api.get(
-  //           `/permissions/review-templates/${templateId}/members/`
-  //         );
-  //         console.log("data:", response);
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        setLoadingTask(true);
+        const response = await api.get(
+          `/permissions/review-templates/${templateId}/tasks/`
+        );
+        console.log("data:", response);
 
-  //         if (response.status === 200) {
-  //           if (Array.isArray(response.data)) {
-  //             setMembers(response.data);
-  //           } else {
-  //             setErrorMessage("Received data in unexpected format");
-  //             setMembers([]);
-  //           }
-  //         }
-  //       } catch (error) {
-  //         console.log(error);
-  //         if (error.response) {
-  //           setErrorMessage(
-  //             error.response.data?.message ||
-  //               error.response.data?.error ||
-  //               "Failed to get review templates"
-  //           );
-  //         } else if (error.request) {
-  //           setErrorMessage("No response from server");
-  //         } else {
-  //           setErrorMessage("Failed to make request");
-  //         }
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     };
-
-  //     fetchGroupMembers();
-  //   }, [templateId]);
+        if (response.status === 200) {
+          setLoadingTask(false);
+          console.log(response.data);
+          if (Array.isArray(response.data)) {
+            setTasks(response.data);
+          } else {
+            setErrorMessage("Received data in unexpected format");
+            setTasks([]);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response) {
+          setErrorMessage(
+            error.response.data?.message ||
+              error.response.data?.error ||
+              "Failed to get tasks"
+          );
+        } else if (error.request) {
+          setErrorMessage("No response from server");
+        } else {
+          setErrorMessage("Failed to make request");
+        }
+      } finally {
+        setIsLoading(false);
+        setLoadingTask(false);
+      }
+    };
+    fetchTasks();
+  }, []);
 
   if (isLoading) {
     return (
@@ -149,16 +164,82 @@ const ReviewTemplatesDetailsContent = () => {
         </div>
       </div>
 
-      <div className="create-task-container">
-        <Image src={"/empty-box.png"} height={80} width={80} alt="Empty Box" />
-        <h2>No task yet</h2>
-        <p>You must add at least two tasks for this template to be active</p>
-        <OutlineButton
-          onClick={handleShowAddTaskForm}
-          text={"Create task"}
-          prefixIcon={<CirclePlusIcon />}
-        />
-      </div>
+      {loadingTask ? (
+        <div className="loading-state">
+          <p>Loading tasks...</p>
+        </div>
+      ) : tasks.length > 0 ? (
+        <div className="tasks-wrapper">
+          {tasks.map((task, index) => (
+            <div key={index} className="task-container">
+              <div className="col">
+                <div className="row">
+                  <span>{task?.name}</span>
+                  <span>
+                    <span>{task?.number_of_days_to_complete}</span>{" "}
+                    <span>day(s) alloted</span>
+                  </span>
+                </div>
+                <div className="review-task">
+                  <h3>Admin review task</h3>
+                  <span>Admin, Supervisor, Manager review</span>
+                </div>
+
+                <div className="col">
+                  <div className="row">
+                    <span className="group-title">Assigned group(s)</span>{" "}
+                    <span className="group-number">
+                      {task.review_groups.length}
+                    </span>
+                  </div>
+                  <div className="groups-container">
+                    {task.review_groups.map((group, index) => (
+                      <div key={index} className="group-name">
+                        {group.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="task-actions">
+                  <div className="delete-btn">
+                    <Trash2 size={20} />
+                  </div>
+                  <div className="edit-btn">
+                    <SquarePen size={20} />
+                    <span>Edit Task</span>
+                  </div>
+                  <div className="details-btn">
+                    <MoveRight size={18} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="add-task-button" onClick={handleShowAddTaskForm}>
+            <div className="add-icon">
+              <PlusCircle size={50} />
+            </div>
+            <h3>Add Task</h3>
+            <p>You must add at least task for this template to be active</p>
+          </div>
+        </div>
+      ) : (
+        <div className="create-task-container">
+          <Image
+            src={"/empty-box.png"}
+            height={80}
+            width={80}
+            alt="Empty Box"
+          />
+          <h2>No task yet</h2>
+          <p>You must add at least two tasks for this template to be active</p>
+          <OutlineButton
+            onClick={handleShowAddTaskForm}
+            text={"Create task"}
+            prefixIcon={<CirclePlusIcon />}
+          />
+        </div>
+      )}
     </div>
   );
 };

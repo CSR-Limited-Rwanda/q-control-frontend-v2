@@ -1,4 +1,4 @@
-@import '../../variables';
+@import "../../variables";
 .action-buttons {
   display: flex;
   gap: 20px;
@@ -11,5 +11,4 @@
     background-color: $gray-color-shade;
     color: $dark-gray-color-shade;
   }
-
 }
