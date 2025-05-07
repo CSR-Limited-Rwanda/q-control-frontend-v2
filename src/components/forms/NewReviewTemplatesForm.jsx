@@ -15,7 +15,7 @@ const incidentOptions = [
   "Adverse Drug Reaction",
 ];
 
-const NewReviewTemplatesForm = () => {
+const NewReviewTemplatesForm = ({ discardFn }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [incidentType, setIncidentType] = useState("");
   const [name, setName] = useState("");
@@ -107,7 +107,9 @@ const NewReviewTemplatesForm = () => {
           </form>
 
           <div className="action-buttons">
-            <button className="third-button">Discard</button>
+            <button className="third-button" onClick={discardFn}>
+              Discard
+            </button>
             <button
               className="primary-button"
               onClick={(e) => {

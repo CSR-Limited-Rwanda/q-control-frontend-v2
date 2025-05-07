@@ -1,4 +1,4 @@
-@import "../../variables";
+@import "../../_variables";
 
 .mobile-users {
   display: none;
@@ -43,7 +43,8 @@
 
       .col {
         display: flex;
-        gap: 12px;
+        flex-direction: column;
+        gap: 10px;
 
         .review-title {
           font-size: 18px;

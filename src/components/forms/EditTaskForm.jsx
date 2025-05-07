@@ -9,15 +9,19 @@ import "../../styles/_components.scss";
 import "../../styles/_forms.scss";
 import "../../styles/reviews/reviewGroups/_forms.scss";
 
-const AddTaskForm = ({ discardFn }) => {
+const EditTaskForm = ({ data, discardFn }) => {
   const router = useRouter();
   const { templateId } = useParams();
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [taskName, setTaskName] = useState("");
-  const [numberOfDays, setNumberOfDays] = useState("");
-  const [description, setDescription] = useState("");
-  const [requireApprovalForAll, setRequireApprovalForAll] = useState(true);
+  const [taskName, setTaskName] = useState(data?.name);
+  const [numberOfDays, setNumberOfDays] = useState(
+    data?.number_of_days_to_complete
+  );
+  const [description, setDescription] = useState(data?.description);
+  const [requireApprovalForAll, setRequireApprovalForAll] = useState(
+    data?.require_approval_for_all_groups
+  );
 
   const [continuing, setContinuing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -25,7 +29,7 @@ const AddTaskForm = ({ discardFn }) => {
 
   const [groups, setGroups] = useState([]);
   const [filteredGroups, setFilteredGroups] = useState([]);
-  const [selectedGroups, setSelectedGroups] = useState([]);
+  const [selectedGroups, setSelectedGroups] = useState(data?.review_groups);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -41,21 +45,22 @@ const AddTaskForm = ({ discardFn }) => {
 
     const payload = {
       name: taskName,
-      number_of_days: Number(numberOfDays),
+      number_of_days_to_complete: Number(numberOfDays),
       description,
       require_approval_for_all_groups: requireApprovalForAll,
     };
 
     setContinuing(true);
+
     try {
-      const response = await api.post(
-        `/permissions/review-templates/${templateId}/tasks/`,
+      const response = await api.put(
+        `/permissions/review-templates/${templateId}/tasks/${data.id}/`,
         payload
       );
 
       if (response.status === 201 || response.status === 200) {
-        const newTaskId = response.data.id; // 🔥 Use this directly
-        setTaskId(newTaskId);
+        const editedTaskId = response.data.id; // 🔥 Use this directly
+        setTaskId(editedTaskId);
 
         if (selectedGroups.length === 0) {
           alert("Please select at least one group.");
@@ -66,16 +71,63 @@ const AddTaskForm = ({ discardFn }) => {
         try {
           setSubmitting(true);
           const patchResponse = await api.patch(
-            `/permissions/review-templates/${templateId}/tasks/${newTaskId}/review-groups/`,
+            `/permissions/review-templates/${templateId}/tasks/${editedTaskId}/review-groups/`,
             {
-              review_groups: selectedGroups.map((group) => group.id),
-              action: "add",
+              review_groups: data.review_groups.map((group) => group.id),
+              action: "remove",
             }
           );
 
           if ([200, 204].includes(patchResponse.status)) {
             console.log(patchResponse.data);
-            setCurrentStep(3);
+
+            try {
+              const response = await api.put(
+                `/permissions/review-templates/${templateId}/tasks/${data.id}/`,
+                payload
+              );
+
+              if (response.status === 201 || response.status === 200) {
+                const editedTaskId = response.data.id; // 🔥 Use this directly
+                setTaskId(editedTaskId);
+
+                if (selectedGroups.length === 0) {
+                  alert("Please select at least one group.");
+                  return;
+                }
+
+                console.log(selectedGroups);
+                try {
+                  setSubmitting(true);
+                  const patchResponse = await api.patch(
+                    `/permissions/review-templates/${templateId}/tasks/${editedTaskId}/review-groups/`,
+                    {
+                      review_groups: selectedGroups.map((group) => group.id),
+                      action: "add",
+                    }
+                  );
+
+                  if ([200, 204].includes(patchResponse.status)) {
+                    console.log(patchResponse.data);
+                    setCurrentStep(3);
+                  }
+                } catch (error) {
+                  console.error("Error adding groups:", error);
+                } finally {
+                  setSubmitting(false);
+                  setLoading(false);
+                }
+
+                console.log(response.data);
+              } else {
+                alert("Something went wrong. Please try again.");
+              }
+            } catch (error) {
+              console.error("Error adding task:", error);
+              alert("Failed to add task.");
+            } finally {
+              setContinuing(false);
+            }
           }
         } catch (error) {
           console.error("Error adding groups:", error);
@@ -205,33 +257,39 @@ const AddTaskForm = ({ discardFn }) => {
             <p>Loading groups...</p>
           ) : (
             <ul className="member-list">
-              {filteredGroups.map((group) => {
-                const isSelected = selectedGroups.some(
-                  (g) => g.id === group.id
-                );
-                return (
-                  <li
-                    key={group.id}
-                    className={`choice ${isSelected ? "checked" : ""}`}
-                    onClick={() => handleSelectMember(group)}
-                  >
-                    <label className="member-label">
-                      <div
-                        className={`custom-checkbox ${
-                          isSelected ? "checked" : ""
-                        }`}
-                      >
-                        <svg viewBox="0 0 24 24" className="checkmark">
-                          <path d="M5 12l5 5L19 7" />
-                        </svg>
-                      </div>
-                      <div className="member">
-                        <p>{group.title}</p>
-                      </div>
-                    </label>
-                  </li>
-                );
-              })}
+              {[...filteredGroups]
+                .sort((a, b) => {
+                  const aSelected = selectedGroups.some((g) => g.id === a.id);
+                  const bSelected = selectedGroups.some((g) => g.id === b.id);
+                  return aSelected === bSelected ? 0 : aSelected ? -1 : 1;
+                })
+                .map((group) => {
+                  const isSelected = selectedGroups.some(
+                    (g) => g.id === group.id
+                  );
+                  return (
+                    <li
+                      key={group.id}
+                      className={`choice ${isSelected ? "checked" : ""}`}
+                      onClick={() => handleSelectMember(group)}
+                    >
+                      <label className="member-label">
+                        <div
+                          className={`custom-checkbox ${
+                            isSelected ? "checked" : ""
+                          }`}
+                        >
+                          <svg viewBox="0 0 24 24" className="checkmark">
+                            <path d="M5 12l5 5L19 7" />
+                          </svg>
+                        </div>
+                        <div className="member">
+                          <p>{group.title}</p>
+                        </div>
+                      </label>
+                    </li>
+                  );
+                })}
             </ul>
           )}
           <div className="custom-radio-group">
@@ -293,7 +351,10 @@ const AddTaskForm = ({ discardFn }) => {
               </Link>
               <button
                 className="back-btn"
-                onClick={() => router.push("/permissions/review-templates")}
+                onClick={() => {
+                  window.location.reload();
+                  router.push(`/permissions/review-templates/${templateId}`);
+                }}
               >
                 Back To List
               </button>
@@ -332,4 +393,4 @@ const AddTaskForm = ({ discardFn }) => {
   );
 };
 
-export default AddTaskForm;
+export default EditTaskForm;

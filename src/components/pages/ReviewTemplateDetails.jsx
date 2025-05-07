@@ -13,6 +13,7 @@ import {
   SquarePen,
   MoveRight,
   PlusCircle,
+  Container,
 } from "lucide-react";
 import api from "@/utils/api";
 import DateFormatter from "../DateFormatter";
@@ -21,14 +22,19 @@ import Image from "next/image";
 import OutlineButton from "../OutlineButton";
 import "../../styles/reviews/reviewTemplates/_reviewTemplates.scss";
 import AddTaskForm from "../forms/AddTaskForm";
+import EditTaskForm from "../forms/EditTaskForm";
+import DeletePopup from "../forms/DeletePopup";
 
 const ReviewTemplatesDetailsContent = () => {
   const [tasks, setTasks] = useState([]);
+  const [task, setTask] = useState({});
   const [reviewTemplate, setReviewTemplate] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [loadingTask, setLoadingTask] = useState(true);
   const [showAddTaskForm, setShowAddTaskForm] = useState(false);
+  const [showEditTaskForm, setShowEditTaskForm] = useState(false);
+  const [showDeleteForm, setShowDeleteForm] = useState(false);
   const { templateId } = useParams();
 
   useEffect(() => {
@@ -39,6 +45,7 @@ const ReviewTemplatesDetailsContent = () => {
         );
         if (response.status === 200) {
           setReviewTemplate(response.data);
+          console.log(response.data);
         }
       } catch (error) {
         setErrorMessage(
@@ -52,10 +59,6 @@ const ReviewTemplatesDetailsContent = () => {
     };
     fetchReviewTemplates();
   }, []);
-
-  const handleShowAddTaskForm = () => {
-    setShowAddTaskForm(!showAddTaskForm);
-  };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -96,6 +99,46 @@ const ReviewTemplatesDetailsContent = () => {
     };
     fetchTasks();
   }, []);
+  const handleShowAddTaskForm = () => {
+    setShowAddTaskForm(!showAddTaskForm);
+  };
+  const handleShowEditTaskForm = () => {
+    setShowEditTaskForm(!showEditTaskForm);
+  };
+
+  const handleShowDeleteForm = () => {
+    setShowDeleteForm(!showDeleteForm);
+  };
+  const fetchTaskDetails = async (id) => {
+    try {
+      const response = await api.get(
+        `/permissions/review-templates/${templateId}/tasks/${id}/`
+      );
+      console.log("data:", response);
+
+      if (response.status === 200) {
+        setShowEditTaskForm(!showEditTaskForm);
+        setTask(response.data);
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        setErrorMessage(
+          error.response.data?.message ||
+            error.response.data?.error ||
+            "Failed to get tasks"
+        );
+      } else if (error.request) {
+        setErrorMessage("No response from server");
+      } else {
+        setErrorMessage("Failed to make request");
+      }
+    } finally {
+      setIsLoading(false);
+      setLoadingTask(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -118,7 +161,38 @@ const ReviewTemplatesDetailsContent = () => {
                 />
               </div>
               <div className="form">
-                <AddTaskForm />
+                <AddTaskForm discardFn={handleShowAddTaskForm} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showEditTaskForm && (
+        <div className="new-user-form-popup">
+          <div className="popup">
+            <div className="popup-content">
+              <div className="close">
+                <SquareX
+                  onClick={handleShowEditTaskForm}
+                  className="close-icon"
+                />
+              </div>
+              <div className="form">
+                <EditTaskForm discardFn={handleShowEditTaskForm} data={task} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showDeleteForm && (
+        <div className="new-user-form-popup delete-form-popup">
+          <div className="popup">
+            <div className="popup-content">
+              <div className="form">
+                <DeletePopup
+                  text={"Do you really want to delete this task"}
+                  cancelFn={handleShowDeleteForm}
+                />
               </div>
             </div>
           </div>
@@ -137,7 +211,7 @@ const ReviewTemplatesDetailsContent = () => {
         <div className="review-group-details-contents">
           <div className="row">
             <div className="col">
-              <h4 className="review-title">{reviewTemplate.title}</h4>
+              <h4 className="review-title">{reviewTemplate.name}</h4>
               <p className="review-date">
                 <DateFormatter dateString={reviewTemplate.created_at} />
               </p>
@@ -170,6 +244,13 @@ const ReviewTemplatesDetailsContent = () => {
         </div>
       ) : tasks.length > 0 ? (
         <div className="tasks-wrapper">
+          <div className="add-task-button" onClick={handleShowAddTaskForm}>
+            <div className="add-icon">
+              <PlusCircle size={50} />
+            </div>
+            <h3>Add Task</h3>
+            <p>You must add at least task for this template to be active</p>
+          </div>
           {tasks.map((task, index) => (
             <div key={index} className="task-container">
               <div className="col">
@@ -192,19 +273,30 @@ const ReviewTemplatesDetailsContent = () => {
                       {task.review_groups.length}
                     </span>
                   </div>
-                  <div className="groups-container">
-                    {task.review_groups.map((group, index) => (
-                      <div key={index} className="group-name">
-                        {group.name}
-                      </div>
-                    ))}
-                  </div>
+                  {task.review_groups.length > 0 ? (
+                    <div className="groups-container">
+                      {task.review_groups.map((group, index) => (
+                        <div key={index} className="group-name">
+                          {group.name}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="groups-container">
+                      <div className="group-name">No assigned group</div>
+                    </div>
+                  )}
                 </div>
                 <div className="task-actions">
                   <div className="delete-btn">
-                    <Trash2 size={20} />
+                    <Trash2 size={20} onClick={handleShowDeleteForm} />
                   </div>
-                  <div className="edit-btn">
+                  <div
+                    className="edit-btn"
+                    onClick={() => {
+                      fetchTaskDetails(task.id);
+                    }}
+                  >
                     <SquarePen size={20} />
                     <span>Edit Task</span>
                   </div>
@@ -215,13 +307,6 @@ const ReviewTemplatesDetailsContent = () => {
               </div>
             </div>
           ))}
-          <div className="add-task-button" onClick={handleShowAddTaskForm}>
-            <div className="add-icon">
-              <PlusCircle size={50} />
-            </div>
-            <h3>Add Task</h3>
-            <p>You must add at least task for this template to be active</p>
-          </div>
         </div>
       ) : (
         <div className="create-task-container">

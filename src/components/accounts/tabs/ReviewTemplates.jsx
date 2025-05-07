@@ -111,7 +111,7 @@ export const ReviewTemplates = () => {
               </div>
 
               <div className="form">
-                <NewReviewTemplatesForm />
+                <NewReviewTemplatesForm discardFn={handleShowNewUserForm} />
               </div>
             </div>
           </div>

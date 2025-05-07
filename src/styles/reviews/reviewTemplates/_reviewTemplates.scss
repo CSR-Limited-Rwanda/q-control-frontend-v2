@@ -64,6 +64,59 @@
   }
 }
 
+.delete-form-popup {
+  .popup-content {
+    max-width: 450px;
+    height: fit-content;
+  }
+
+  .delete-popup {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+
+    .trash-icon {
+      padding: 30px;
+      border: 3px solid $secondary-color;
+      color: $secondary-color;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h4 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 16px;
+      color: $dark-gray-color-shade;
+    }
+
+    .delete-btn {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 24px;
+      background-color: $secondary-color;
+      color: #ffffff;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+
+    .cancel-btn {
+      color: $text-color;
+      cursor: pointer;
+    }
+  }
+}
+
 .mobile-users {
   display: none;
   max-height: 80vh;
@@ -260,7 +313,6 @@
     > .col {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       gap: 10px;
       height: 100%;
 
@@ -330,6 +382,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-top: auto;
 
         .delete-btn {
           border: 2px solid $secondary-color;
@@ -376,6 +429,7 @@
     align-items: center;
     flex-direction: column;
     cursor: pointer;
+    max-width: 200px;
 
     .add-icon {
       color: $secondary-color;
@@ -388,9 +442,10 @@
     }
 
     p {
-      max-width: 300px;
+      max-width: 200px;
       text-align: center;
       color: $gray-color;
+      font-size: 14px;
     }
   }
 }
