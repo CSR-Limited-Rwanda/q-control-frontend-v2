@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MoveRight } from 'lucide-react';
+import { MoveRight, Notebook } from 'lucide-react';
 import api from "@/utils/api";
 import FacilityDepartments from "@/components/pages/facilities/FacilityDepartments";
 
@@ -9,7 +9,8 @@ const DepartmentsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [facilities, setFacilities] = useState([]);
-  const [selectedFacilityId, setSelectedFacilityId] = useState("");
+  const [selectedFacilityId, setSelectedFacilityId] = useState();
+  const [selectedDepartment, setSelectedDepartment] = useState(null)
   const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch all facilities on mount
@@ -19,7 +20,7 @@ const DepartmentsPage = () => {
         setIsLoading(true);
         const response = await api.get(`/facilities/`);
         if (response.status === 200) {
-          console.log('facilities', response.data)
+          // console.log('facilities', response.data)
           setFacilities(response.data);
         }
       } catch (error) {
@@ -45,7 +46,7 @@ const DepartmentsPage = () => {
         });
         if (response.status === 200) {
           setDepartments(response.data);
-          console.log(response.data);
+          // console.log(response.data);
         }
       } catch (error) {
         setErrorMessage("Error fetching departments");
@@ -57,6 +58,7 @@ const DepartmentsPage = () => {
 
     fetchDepartments();
   }, [selectedFacilityId]);
+
 
   return (
     <div>
@@ -80,12 +82,19 @@ const DepartmentsPage = () => {
       {isLoading && <p>Loading...</p>}
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {!isLoading && selectedFacilityId && (
-        <FacilityDepartments
-          departments={departments}
-          facilityId={selectedFacilityId}
-          staff={[]}
-          facility={facilities.find((f) => f.id === selectedFacilityId) || {}}
-        />
+        <div className="departments">
+          <div className="departments-list">
+            <div className="department-item">
+              <Notebook size={30} className="department-icon" />
+              {departments.map((department) => (
+                <div key={department.id}>
+                  <h3 className="department-title">{department.name}</h3>
+                  <p>Members:{department.members}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
