@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import api from "@/utils/api";
 
@@ -12,10 +12,13 @@ import DateFormatter from "@/components/DateFormatter";
 import NewReviewTemplatesForm from "@/components/forms/NewReviewTemplatesForm";
 import { Eye, PlusCircleIcon, SquarePen, SquareX, Trash2 } from "lucide-react";
 import DeletePopup from "@/components/forms/DeletePopup";
+import EditReviewTemplateForm from "@/components/forms/EditReviewTemplateForm";
 
 export const ReviewTemplates = () => {
   const router = useRouter();
   const [reviewTemplates, setReviewTemplates] = useState([]);
+  const [reviewTemplate, setReviewTemplate] = useState({});
+
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showNewUserForm, setShowNewUserForm] = useState(false);
@@ -25,6 +28,7 @@ export const ReviewTemplates = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isEmpty, setIsEmpty] = useState(localStorage.getItem("isEmpty"));
   const [clickedTemplateId, setClickedTemplateId] = useState(null);
+  const [showEditTemplateForm, setShowEditTemplateForm] = useState(false);
 
   const groupsWithFullname = reviewTemplates.map((user, index) => ({
     ...user, // spread the existing properties of the user
@@ -62,8 +66,11 @@ export const ReviewTemplates = () => {
   const handleShowNewUserForm = () => {
     setShowNewUserForm(!showNewUserForm);
   };
-  const handleRowClick = (templateId) => {
-    router.push(`/permissions/review-templates/${templateId}/`);
+  const handleShowEditTemplateForm = () => {
+    setShowEditTemplateForm(!showEditTemplateForm);
+  };
+  const handleRowClick = (id) => {
+    router.push(`/permissions/review-templates/${id}/`);
   };
   const handleShowDeleteForm = (id) => {
     setClickedTemplateId(id);
@@ -100,6 +107,31 @@ export const ReviewTemplates = () => {
     fetchReviewTemplates();
   }, []);
 
+  const fetchTemplateDetails = async (id) => {
+    try {
+      const response = await api.get(`/permissions/review-templates/${id}/`);
+
+      if (response.status === 200) {
+        setShowEditTemplateForm(!showEditTemplateForm);
+        setReviewTemplate(response.data);
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        setErrorMessage(
+          error.response.data?.message ||
+            error.response.data?.error ||
+            "Failed to get tasks"
+        );
+      } else if (error.request) {
+        setErrorMessage("No response from server");
+      } else {
+        setErrorMessage("Failed to make request");
+      }
+    }
+  };
+
   return isLoading ? (
     <div className="dashboard-page-content">
       <p>Loading...</p>
@@ -119,6 +151,27 @@ export const ReviewTemplates = () => {
 
               <div className="form">
                 <NewReviewTemplatesForm discardFn={handleShowNewUserForm} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showEditTemplateForm && (
+        <div className="new-user-form-popup">
+          <div className="popup">
+            <div className="popup-content">
+              <div className="close">
+                <SquareX
+                  onClick={handleShowEditTemplateForm}
+                  className="close-icon"
+                />
+              </div>
+
+              <div className="form">
+                <EditReviewTemplateForm
+                  data={reviewTemplate}
+                  discardFn={handleShowEditTemplateForm}
+                />
               </div>
             </div>
           </div>
@@ -197,7 +250,12 @@ export const ReviewTemplates = () => {
                   >
                     <Trash2 size={20} />
                   </div>
-                  <div className="edit-btn">
+                  <div
+                    className="edit-btn"
+                    onClick={() => {
+                      fetchTemplateDetails(reviewTemplate.id);
+                    }}
+                  >
                     <SquarePen size={20} />
                   </div>
                   <div
@@ -233,7 +291,12 @@ export const ReviewTemplates = () => {
                     onClick={() => handleShowDeleteForm(reviewTemplate.id)}
                   />
                 </div>
-                <div className="edit-btn">
+                <div
+                  className="edit-btn"
+                  onClick={() => {
+                    fetchTemplateDetails(reviewTemplate.id);
+                  }}
+                >
                   <SquarePen size={18} />
                 </div>
                 <div

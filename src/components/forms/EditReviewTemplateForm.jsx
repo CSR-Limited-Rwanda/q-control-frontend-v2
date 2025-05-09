@@ -4,6 +4,7 @@ import api from "@/utils/api";
 import { CheckIcon } from "lucide-react";
 import "../../styles/_components.scss";
 import "../../styles/_forms.scss";
+import { useRouter } from "next/navigation";
 
 const incidentOptions = [
   "General Patient Visitor",
@@ -15,12 +16,12 @@ const incidentOptions = [
   "Adverse Drug Reaction",
 ];
 
-const NewReviewTemplatesForm = ({ discardFn }) => {
+const EditReviewTemplateForm = ({ discardFn, data }) => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const [incidentType, setIncidentType] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [incidentType, setIncidentType] = useState(data?.incident_type);
+  const [name, setName] = useState(data?.name);
+  const [description, setDescription] = useState(data?.description);
   const [continuing, setContinuing] = useState(false);
 
   const goToDetails = (id) => {
@@ -41,8 +42,8 @@ const NewReviewTemplatesForm = ({ discardFn }) => {
 
       setContinuing(true);
       try {
-        const response = await api.post(
-          "/permissions/review-templates/",
+        const response = await api.put(
+          `/permissions/review-templates/${data.id}/`,
           payload
         );
 
@@ -53,8 +54,8 @@ const NewReviewTemplatesForm = ({ discardFn }) => {
           alert("Something went wrong. Please try again.");
         }
       } catch (error) {
-        console.error("Error adding review template:", error);
-        alert("Failed to add review template.");
+        console.error("Error editing review template:", error);
+        alert("Failed to edit review template .");
       } finally {
         setContinuing(false);
       }
@@ -130,15 +131,15 @@ const NewReviewTemplatesForm = ({ discardFn }) => {
       {/* Step 2: Confirmation */}
       {currentStep === 2 && (
         <div className="final-step">
-          <h2>Create Review Template</h2>
+          <h2>Update Review Template</h2>
           <div className="final-step-container">
             <div className="smessage">
               <div className="check-mark">
                 <CheckIcon size={46} />
               </div>
 
-              <h3>Template Created Successfully</h3>
-              <p className="description">Your new template has been created.</p>
+              <h3>Template Updated Successfully</h3>
+              <p className="description">Your template has been updated.</p>
             </div>
             <div className="success-btn">
               <button className="visit-btn" onClick={goToDetails}>
@@ -153,4 +154,4 @@ const NewReviewTemplatesForm = ({ discardFn }) => {
   );
 };
 
-export default NewReviewTemplatesForm;
+export default EditReviewTemplateForm;

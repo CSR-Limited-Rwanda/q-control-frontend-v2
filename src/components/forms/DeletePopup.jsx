@@ -5,6 +5,7 @@ import { LoaderSpinner } from "../LoaderSpinner";
 function DeletePopup({ apiUrl, text, cancelFn }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
+  const [errorExist, setErrorExist] = useState(false);
   const [success, setSuccess] = useState(false);
   const handleDelete = async (e) => {
     e.preventDefault();
@@ -19,11 +20,18 @@ function DeletePopup({ apiUrl, text, cancelFn }) {
         setSuccess(true);
         console.log(response.data);
         window.location.reload();
+        setErrorExist(false);
       } else {
         throw new Error(`Unexpected response: ${response.statusText}`);
       }
     } catch (err) {
-      setError(err.response?.data?.detail || err.message || "Delete failed.");
+      if (err.response?.data?.message || err.message) {
+        setError(
+          err.response?.data?.message || err.message || "Delete failed."
+        );
+        setErrorExist(true);
+        console.log(err);
+      }
     } finally {
       setIsDeleting(false);
     }
@@ -31,6 +39,8 @@ function DeletePopup({ apiUrl, text, cancelFn }) {
 
   return (
     <div className="delete-popup">
+      {errorExist && <div className="error-container">{error}</div>}
+
       <div className="trash-icon">
         <Trash2 size={34} />
       </div>

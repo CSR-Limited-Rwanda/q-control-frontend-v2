@@ -25,6 +25,7 @@ import "../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import AddTaskForm from "../forms/AddTaskForm";
 import EditTaskForm from "../forms/EditTaskForm";
 import DeletePopup from "../forms/DeletePopup";
+import EditReviewTemplateForm from "../forms/EditReviewTemplateForm";
 
 const ReviewTemplatesDetailsContent = () => {
   const [tasks, setTasks] = useState([]);
@@ -37,8 +38,12 @@ const ReviewTemplatesDetailsContent = () => {
   const [showAddTaskForm, setShowAddTaskForm] = useState(false);
   const [showEditTaskForm, setShowEditTaskForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
+  const [showEditTemplateForm, setShowEditTemplateForm] = useState(false);
   const { templateId } = useParams();
 
+  const handleShowEditTemplateForm = () => {
+    setShowEditTemplateForm(!showEditTemplateForm);
+  };
   useEffect(() => {
     const fetchReviewTemplates = async () => {
       try {
@@ -170,6 +175,27 @@ const ReviewTemplatesDetailsContent = () => {
           </div>
         </div>
       )}
+      {showEditTemplateForm && (
+        <div className="new-user-form-popup">
+          <div className="popup">
+            <div className="popup-content">
+              <div className="close">
+                <SquareX
+                  onClick={handleShowEditTemplateForm}
+                  className="close-icon"
+                />
+              </div>
+
+              <div className="form">
+                <EditReviewTemplateForm
+                  data={reviewTemplate}
+                  discardFn={handleShowEditTemplateForm}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {showEditTaskForm && (
         <div className="new-user-form-popup">
           <div className="popup">
@@ -232,7 +258,7 @@ const ReviewTemplatesDetailsContent = () => {
             </div>
           </div>
           <div>
-            <button>
+            <button onClick={handleShowEditTemplateForm}>
               <Pencil />
             </button>
           </div>
