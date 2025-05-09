@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { MoveRight, Notebook } from 'lucide-react';
 import api from "@/utils/api";
 import FacilityDepartments from "@/components/pages/facilities/FacilityDepartments";
+import { useRouter } from "next/navigation";
 
 const DepartmentsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,6 +13,7 @@ const DepartmentsPage = () => {
   const [selectedFacilityId, setSelectedFacilityId] = useState();
   const [selectedDepartment, setSelectedDepartment] = useState(null)
   const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter()
 
   // Fetch all facilities on mount
   useEffect(() => {
@@ -59,6 +61,10 @@ const DepartmentsPage = () => {
     fetchDepartments();
   }, [selectedFacilityId]);
 
+  const handleDepartmentClick = (department_id) => {
+    router.push(`/facilities/${selectedFacilityId}/departments/${department_id}`)
+  }
+
 
   return (
     <div>
@@ -87,7 +93,7 @@ const DepartmentsPage = () => {
             <div className="department-item">
               <Notebook size={30} className="department-icon" />
               {departments.map((department) => (
-                <div key={department.id}>
+                <div key={department.id} onClick={() => handleDepartmentClick(department.id)}>
                   <h3 className="department-title">{department.name}</h3>
                   <p>Members:{department.members}</p>
                 </div>

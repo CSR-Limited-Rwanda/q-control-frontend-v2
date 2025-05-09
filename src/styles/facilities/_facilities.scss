@@ -1,4 +1,4 @@
-@import '../variables';
+@import "../variables";
 
 .facilities-list,
 .departments-list {
@@ -8,7 +8,7 @@
   margin-top: 2rem;
 
   .department-item:nth-child(odd) {
-    background-color: #FFFBFB;
+    background-color: #fffbfb;
   }
 
   .facility-item,
@@ -26,7 +26,7 @@
     }
 
     .department-icon {
-      background-color: #FFF0E8;
+      background-color: #fff0e8;
       width: 3rem;
       height: 3rem;
       padding: 8px;
@@ -34,10 +34,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #F87C47;
+      color: #f87c47;
     }
-
-    
 
     .facility-title {
       color: $primary-color;
@@ -253,6 +251,109 @@
 
         small {
           text-wrap: nowrap;
+        }
+      }
+    }
+  }
+}
+
+.facility-department-details-header {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 8px;
+
+  .facility-department-details-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .col-1 {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      .icon-container {
+        background-color: #FFF0E8;
+        padding: 20px;
+        border-radius: 8px;
+      }
+
+      .facility-title {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .facility-name {
+          font-size: 18px;
+        }
+  
+        .date-created {
+          color: #BBBBBB;
+          font-weight: 400;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .col-2 {
+      display: flex;
+      gap: 16px;
+
+      .staff-card,
+      .complaints-card {
+        background-color: #f9f9f9;
+        padding: 8px 16px;
+        width: 150px;
+        max-width: 150px;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .staff-card-title, .complaints-card-title {
+          color: #8D8D8D;
+        }
+
+        .staff-card-desc, .complaints-card-desc {
+          font-size: 18px;
+          font-weight: bold;
+        }
+      }
+
+      .staff-members-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .staff-members-names {
+          display: flex;
+          align-items: center;
+
+          .staff-member-name-card {
+            height: 35px;
+            width: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: -5px;
+
+
+            .member-name {
+              font-weight: bold;
+              text-align: center;
+            }
+          }
+
+          .staff-member-name-card:nth-child(odd) {
+            background-color: #eff7fe;
+            color: #145c9e;
+          }
+
+          .staff-member-name-card:nth-child(even) {
+            background-color: #fdf0ea;
+            color: #f87c47;
+          }
         }
       }
     }
