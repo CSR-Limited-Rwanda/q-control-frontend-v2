@@ -6,6 +6,7 @@ import { Plus, Pencil, MoveLeft } from "lucide-react";
 import api from "@/utils/api";
 import DateFormatter from "../DateFormatter";
 import { useParams } from "next/navigation";
+import "../../styles/reviews/reviewGroups/_reviewGroups.scss";
 
 const ReviewGroupsDetailsContent = () => {
   const [members, setMembers] = useState([]);

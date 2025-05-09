@@ -21,6 +21,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import OutlineButton from "../OutlineButton";
 import "../../styles/reviews/reviewTemplates/_reviewTemplates.scss";
+import "../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import AddTaskForm from "../forms/AddTaskForm";
 import EditTaskForm from "../forms/EditTaskForm";
 import DeletePopup from "../forms/DeletePopup";
@@ -28,6 +29,7 @@ import DeletePopup from "../forms/DeletePopup";
 const ReviewTemplatesDetailsContent = () => {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState({});
+  const [taskId, setTaskId] = useState({});
   const [reviewTemplate, setReviewTemplate] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -106,7 +108,8 @@ const ReviewTemplatesDetailsContent = () => {
     setShowEditTaskForm(!showEditTaskForm);
   };
 
-  const handleShowDeleteForm = () => {
+  const handleShowDeleteForm = (id) => {
+    setTaskId(id);
     setShowDeleteForm(!showDeleteForm);
   };
   const fetchTaskDetails = async (id) => {
@@ -192,6 +195,7 @@ const ReviewTemplatesDetailsContent = () => {
                 <DeletePopup
                   text={"Do you really want to delete this task"}
                   cancelFn={handleShowDeleteForm}
+                  apiUrl={`/permissions/review-templates/${templateId}/tasks/${taskId}/`}
                 />
               </div>
             </div>
@@ -289,7 +293,10 @@ const ReviewTemplatesDetailsContent = () => {
                 </div>
                 <div className="task-actions">
                   <div className="delete-btn">
-                    <Trash2 size={20} onClick={handleShowDeleteForm} />
+                    <Trash2
+                      size={20}
+                      onClick={() => handleShowDeleteForm(task.id)}
+                    />
                   </div>
                   <div
                     className="edit-btn"

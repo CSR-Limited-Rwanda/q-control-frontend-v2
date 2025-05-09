@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 
 import api from "@/utils/api";
 
+import "../../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import "../../../styles/reviews/reviewTemplates/_reviewTemplates.scss";
 
 import DateFormatter from "@/components/DateFormatter";
 import NewReviewTemplatesForm from "@/components/forms/NewReviewTemplatesForm";
 import { Eye, PlusCircleIcon, SquarePen, SquareX, Trash2 } from "lucide-react";
+import DeletePopup from "@/components/forms/DeletePopup";
 
 export const ReviewTemplates = () => {
   const router = useRouter();
@@ -19,9 +21,10 @@ export const ReviewTemplates = () => {
   const [showNewUserForm, setShowNewUserForm] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
-
+  const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isEmpty, setIsEmpty] = useState(localStorage.getItem("isEmpty"));
+  const [clickedTemplateId, setClickedTemplateId] = useState(null);
 
   const groupsWithFullname = reviewTemplates.map((user, index) => ({
     ...user, // spread the existing properties of the user
@@ -61,6 +64,10 @@ export const ReviewTemplates = () => {
   };
   const handleRowClick = (templateId) => {
     router.push(`/permissions/review-templates/${templateId}/`);
+  };
+  const handleShowDeleteForm = (id) => {
+    setClickedTemplateId(id);
+    setShowDeleteForm(!showDeleteForm);
   };
   useEffect(() => {
     // get users from api
@@ -112,6 +119,21 @@ export const ReviewTemplates = () => {
 
               <div className="form">
                 <NewReviewTemplatesForm discardFn={handleShowNewUserForm} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showDeleteForm && (
+        <div className="new-user-form-popup delete-form-popup">
+          <div className="popup">
+            <div className="popup-content">
+              <div className="form">
+                <DeletePopup
+                  text={"Do you really want to delete this template"}
+                  cancelFn={handleShowDeleteForm}
+                  apiUrl={`/permissions/review-templates/${clickedTemplateId}/`}
+                />
               </div>
             </div>
           </div>
@@ -169,7 +191,10 @@ export const ReviewTemplates = () => {
                 <p>{reviewTemplate.description}</p>
 
                 <div className="template-action-btns">
-                  <div className="delete-btn">
+                  <div
+                    className="delete-btn"
+                    onClick={() => handleShowDeleteForm(reviewTemplate.id)}
+                  >
                     <Trash2 size={20} />
                   </div>
                   <div className="edit-btn">
@@ -177,7 +202,10 @@ export const ReviewTemplates = () => {
                   </div>
                   <div
                     className="details-btn"
-                    onClick={() => handleRowClick(reviewTemplate.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRowClick(reviewTemplate.id);
+                    }}
                   >
                     <Eye size={18} />
                     <span>View details</span>
@@ -192,11 +220,7 @@ export const ReviewTemplates = () => {
           )
         ) : reviewTemplates.length > 0 ? (
           reviewTemplates.map((reviewTemplate, index) => (
-            <div
-              className="template-card card"
-              key={index}
-              onClick={() => handleRowClick(reviewTemplate.id)}
-            >
+            <div className="template-card card" key={index}>
               <h3>{reviewTemplate.name}</h3>
               <DateFormatter dateString={reviewTemplate.created_at} />
 
@@ -204,14 +228,20 @@ export const ReviewTemplates = () => {
 
               <div className="template-action-btns">
                 <div className="delete-btn">
-                  <Trash2 size={18} />
+                  <Trash2
+                    size={18}
+                    onClick={() => handleShowDeleteForm(reviewTemplate.id)}
+                  />
                 </div>
                 <div className="edit-btn">
                   <SquarePen size={18} />
                 </div>
                 <div
                   className="details-btn"
-                  onClick={() => handleRowClick(reviewTemplate.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRowClick(reviewTemplate.id);
+                  }}
                 >
                   <div className="eye-icon">
                     <Eye size={18} />
