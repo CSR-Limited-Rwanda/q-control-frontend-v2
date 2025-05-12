@@ -92,20 +92,20 @@ const ReviewGroups = () => {
             {showNewUserForm && (
                 <div className="new-user-form-popup">
                     <div className="popup">
-                     <div className="popup-content">
-                        <div className="close">
-                          <SquareX
-                            onClick={handleShowNewUserForm}
-                            className="close-icon"
-                        />  
+                        <div className="popup-content">
+                            <div className="close">
+                                <SquareX
+                                    onClick={handleShowNewUserForm}
+                                    className="close-icon"
+                                />
+                            </div>
+                            <div className="form">
+                                <NewReviewGroupForm />
+                            </div>
+
                         </div>
-                        <div className="form">
-                          <NewReviewGroupForm />  
-                        </div>
-                        
-                    </div>   
                     </div>
-                    
+
                 </div>
             )}
             <div className="actions">
@@ -134,14 +134,17 @@ const ReviewGroups = () => {
                         placeholder="Search reviews by name or id"
                     />
                 </div>
-                <button
-                    type="button"
-                    onClick={handleShowNewUserForm}
-                    className="button tertiary-button new-user-button"
-                >
-                    <Plus size={20} />
-                    <span>Add New Group</span>
-                </button>
+                <div className="review-group-btn">
+                    <button
+                        type="button"
+                        onClick={handleShowNewUserForm}
+                        className="button tertiary-button new-review-group-button"
+                    >
+                        <Plus size={20} />
+                        <span>Add New Group</span>
+                    </button>
+                </div>
+
             </div>
             {/* users table */}
             <div className="table-container">

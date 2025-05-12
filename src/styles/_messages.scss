@@ -1,0 +1,27 @@
+.error-message,
+.warning-message,
+.success-message,
+.note-message {
+  padding: 1rem;
+  // border-radius: 0.5rem;
+  animation: messages ease 1s forwards;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  .message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+  }
+}
+
+.error-message {
+  background-color: rgba(255, 99, 71, 0.22);
+
+  .message-icon {
+    color: red;
+  }
+}

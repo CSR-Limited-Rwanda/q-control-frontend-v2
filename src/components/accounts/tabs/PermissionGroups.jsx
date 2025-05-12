@@ -81,7 +81,7 @@ const PermissionGroups = () => {
         try {
             const response = await api.get(`/permissions/`);
             if (response.status === 200) {
-                console.log(response.data);
+                // console.log(response.data);
                 setGroups(response.data);
                 return
             } else {
