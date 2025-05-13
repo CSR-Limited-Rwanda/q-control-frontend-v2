@@ -360,6 +360,20 @@
   }
 }
 
+.staff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .staff-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  
+}
+
 @media screen and (max-width: 960px) {
   .facilities-list {
     grid-template-columns: 1fr 1fr;

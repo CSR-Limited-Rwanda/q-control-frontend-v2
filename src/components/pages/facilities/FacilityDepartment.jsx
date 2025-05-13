@@ -7,7 +7,9 @@ import { Notebook } from 'lucide-react'
 import DateFormatter from '@/components/DateFormatter'
 import '../../../styles/facilities/_facilities.scss'
 import NoteMessage from '@/components/NoteMessage'
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, CircleX } from 'lucide-react';
+import { NotepadText, Frown, Users } from 'lucide-react'
+import NewUserForm from '@/components/accounts/forms/newUser/newUserForm'
 
 
 const FacilityDepartmentContent = () => {
@@ -18,6 +20,26 @@ const FacilityDepartmentContent = () => {
     const [complaints, setComplaints] = useState([])
     const [staffCount, setStaffCount] = useState(0)
     const [members, setMembers] = useState([])
+    const [activeTab, setActiveTab] = useState("reports");
+    const [department, setDepartment] = useState({})
+    const [showNewUserForm, setShowNewUserForm] = useState(false);
+
+
+    useEffect(() => {
+        const getDepartment = async () => {
+            try {
+                const res = await api.get(`/departments/${department_id}/`)
+                if (res.status === 200) {
+                    console.log('department:', res.data)
+                    setDepartment(res.data)
+                }
+            } catch (error) {
+                console.log(`an error occurred: ${error}`)
+            }
+        }
+        getDepartment()
+    }, [])
+
 
     // getting the department
     useEffect(() => {
@@ -86,12 +108,26 @@ const FacilityDepartmentContent = () => {
         getIncidents()
     }, [])
 
+    const handleShowNewUserForm = () => {
+        setShowNewUserForm(prev => !prev);
+    };
+    useEffect(() => {
+        setDepartment(localStorage.getItem("department"));
+    }, []);
+
     if (!facility) {
         return <div>Loading facility data...</div>;
     }
 
     return (
         <>
+            {showNewUserForm && (
+                <div className="new-user-form-popup">
+                    <div className="popup-content">
+                        <NewUserForm />
+                    </div>
+                </div>
+            )}
             <section className='facility-department-details-header'>
                 <div className='facility-department-details-row'>
                     <div className='col-1'>
@@ -150,6 +186,127 @@ const FacilityDepartmentContent = () => {
                     </div>
                 </div>
             </section>
+            <div className="tabs-list">
+                <div
+                    onClick={() => setActiveTab("reports")}
+                    className={`tab ${activeTab === "reports" ? "active" : ""}`}
+                >
+                    <NotepadText size={20} />
+                    Incidents reports
+                </div>
+                <div
+                    onClick={() => setActiveTab("complaints")}
+                    className={`tab ${activeTab === "complaints" ? "active" : ""}`}
+                >
+                    <Frown size={20} /> Complaints
+                </div>
+                {/* <div onClick={() => setActiveTab('documents')} className={`tab ${activeTab === 'documents' ? 'active' : ''}`}>Documents</div> */}
+                <div
+                    onClick={() => setActiveTab("staff")}
+                    className={`tab ${activeTab === "staff" ? "active" : ""}`}
+                >
+                    <Users size={20} /> Staff
+                </div>
+            </div>
+            {/* incident reports */}
+            {activeTab === "reports" && (
+                <div className="report-list-with-notes">
+                    <p>Incident reports of the department</p>
+                </div>
+            )}
+            {/* complaints */}
+            {activeTab === "complaints" && (
+                <div>
+                    <div className="table-container">
+                        <table className='review-groups-table'>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Claim ID</th>
+                                    <th>Patient name</th>
+                                    <th>MRN</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            {complaints && complaints.length > 0 ? (
+                                complaints.map((complaint) => (
+                                    <tbody>
+                                        <tr
+                                            // onClick={() => handleShowComplainDetails(complaint)}
+                                            key={index}
+                                        >
+                                            <td>{index + 1}</td>
+                                            <td>{complaint.id}</td>
+                                            <td>{complaint.patient_name}</td>
+                                            <td>{complaint.medical_record_number}</td>
+                                            <td>
+                                                {<DateFormatter dateString={complaint.created_at} />}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                ))
+                            ) : (
+                                <tbody>
+                                    <tr>
+                                    <td colSpan='5'>
+                                        <p>No complaints available</p>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            )}
+                        </table>
+                    </div>
+                </div>
+            )}
+            {/* staff */}
+            {activeTab === "staff" && (
+
+                <div className='staff-list'>
+                    <NoteMessage message={"Admin can add staff from here"} />
+                    <div className='staff-list-header'>
+                        <p>
+                            When you add a staff, they are going to be added under {department && department.name}
+                        </p>
+                        <button
+                            onClick={handleShowNewUserForm}
+                            type="button"
+                            className="tertiary-button"
+                        >
+                            Add staff
+                        </button>
+                    </div>
+                    <div className='table-container'>
+                        <table className='review-groups-table'>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                </tr>
+                            </thead>
+                            {department && (
+                                <tbody>
+                                    {department.members.map((member) => (
+                                        <tr key={member.id}>
+                                            <td>{member.id}</td>
+                                            <td>{member.first_name} {member.last_name}</td>
+                                            <td>{member.email}</td>
+                                            <td>{department.name}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            ) || (
+                                    <tbody>
+                                        <tr>
+                                            <td colSpan='5'>No member in this department</td>
+                                        </tr>
+                                    </tbody>
+                                )}
+                        </table>
+                    </div>
+                </div>
+            )}
         </>
     )
 }
