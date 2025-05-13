@@ -39,9 +39,9 @@ const ReviewGroupsDetailsContent = () => {
     const fetchGroupMembers = async () => {
       try {
         const response = await api.get(
-          `/permissions/review-groups/${reviewId}/`
+          `/permissions/review-groups/${reviewId}/members/`
         );
-        console.log("data:", response);
+        console.log("data:", response.data);
 
         if (response.status === 200) {
           if (Array.isArray(response.data)) {
@@ -70,7 +70,7 @@ const ReviewGroupsDetailsContent = () => {
     };
 
     fetchGroupMembers();
-  }, [reviewId]);
+  }, []);
 
   if (isLoading) {
     return (
