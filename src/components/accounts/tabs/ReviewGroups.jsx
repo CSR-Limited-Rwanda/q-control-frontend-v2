@@ -193,6 +193,7 @@ const ReviewGroups = () => {
             </td>
             <td>
               <EllipsisVertical />
+              <div className="actions-popup"></div>
             </td>
           </tr>
         ));
