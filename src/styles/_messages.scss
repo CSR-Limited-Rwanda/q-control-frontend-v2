@@ -3,7 +3,7 @@
 .success-message,
 .note-message {
   padding: 1rem;
-  // border-radius: 0.5rem;
+  border-radius: 0.5rem;
   animation: messages ease 1s forwards;
   display: flex;
   align-items: center;
@@ -16,6 +16,11 @@
     gap: 0.5rem;
     flex: 1;
   }
+}
+
+.note-message {
+  background-color: #e8f2fc;
+  color: #145C9E;
 }
 
 .error-message {

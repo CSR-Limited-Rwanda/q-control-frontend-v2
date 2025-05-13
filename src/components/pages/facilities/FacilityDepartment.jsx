@@ -7,9 +7,9 @@ import { Notebook } from 'lucide-react'
 import DateFormatter from '@/components/DateFormatter'
 import '../../../styles/facilities/_facilities.scss'
 import NoteMessage from '@/components/NoteMessage'
-import { ChevronDown } from 'lucide-react';
-import { NotepadText, Layers, Frown, Users } from 'lucide-react';
-import ErrorMessage from '@/components/messages/ErrorMessage'
+import { ChevronDown, CircleX } from 'lucide-react';
+import { NotepadText, Frown, Users } from 'lucide-react'
+import NewUserForm from '@/components/accounts/forms/newUser/newUserForm'
 
 
 const FacilityDepartmentContent = () => {
@@ -21,6 +21,25 @@ const FacilityDepartmentContent = () => {
     const [staffCount, setStaffCount] = useState(0)
     const [members, setMembers] = useState([])
     const [activeTab, setActiveTab] = useState("reports");
+    const [department, setDepartment] = useState({})
+    const [showNewUserForm, setShowNewUserForm] = useState(false);
+
+
+    useEffect(() => {
+        const getDepartment = async () => {
+            try {
+                const res = await api.get(`/departments/${department_id}/`)
+                if (res.status === 200) {
+                    console.log('department:', res.data)
+                    setDepartment(res.data)
+                }
+            } catch (error) {
+                console.log(`an error occurred: ${error}`)
+            }
+        }
+        getDepartment()
+    }, [])
+
 
     // getting the department
     useEffect(() => {
@@ -64,7 +83,7 @@ const FacilityDepartmentContent = () => {
             try {
                 const response = await api.get(`/facilities/departments/${department_id}/members/`)
                 if (response.status === 200) {
-                    console.log('facility department members', response.data)
+                    // console.log('facility department members', response.data)
                     setMembers(response.data.members)
                 }
             } catch (error) {
@@ -89,12 +108,26 @@ const FacilityDepartmentContent = () => {
         getIncidents()
     }, [])
 
+    const handleShowNewUserForm = () => {
+        setShowNewUserForm(prev => !prev);
+    };
+    useEffect(() => {
+        setDepartment(localStorage.getItem("department"));
+    }, []);
+
     if (!facility) {
         return <div>Loading facility data...</div>;
     }
 
     return (
         <>
+            {showNewUserForm && (
+                <div className="new-user-form-popup">
+                    <div className="popup-content">
+                        <NewUserForm />
+                    </div>
+                </div>
+            )}
             <section className='facility-department-details-header'>
                 <div className='facility-department-details-row'>
                     <div className='col-1'>
@@ -178,7 +211,7 @@ const FacilityDepartmentContent = () => {
             {/* incident reports */}
             {activeTab === "reports" && (
                 <div className="report-list-with-notes">
-                    <h2>Incident reports of the department</h2>
+                    <p>Incident reports of the department</p>
                 </div>
             )}
             {/* complaints */}
@@ -213,7 +246,13 @@ const FacilityDepartmentContent = () => {
                                     </tbody>
                                 ))
                             ) : (
-                                'No complaints available'
+                                <tbody>
+                                    <tr>
+                                    <td colSpan='5'>
+                                        <p>No complaints available</p>
+                                    </td>
+                                </tr>
+                                </tbody>
                             )}
                         </table>
                     </div>
@@ -221,7 +260,21 @@ const FacilityDepartmentContent = () => {
             )}
             {/* staff */}
             {activeTab === "staff" && (
-                <div>
+
+                <div className='staff-list'>
+                    <NoteMessage message={"Admin can add staff from here"} />
+                    <div className='staff-list-header'>
+                        <p>
+                            When you add a staff, they are going to be added under {department && department.name}
+                        </p>
+                        <button
+                            onClick={handleShowNewUserForm}
+                            type="button"
+                            className="tertiary-button"
+                        >
+                            Add staff
+                        </button>
+                    </div>
                     <div className='table-container'>
                         <table className='review-groups-table'>
                             <thead>
@@ -229,20 +282,27 @@ const FacilityDepartmentContent = () => {
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
+                                    <th>Department</th>
                                 </tr>
                             </thead>
-                            {Array.isArray(members) && members.length > 0 ? (
-                                members.map((member) => (
-                                    <tbody key={member.id}>
-                                        <tr>
+                            {department && (
+                                <tbody>
+                                    {department.members.map((member) => (
+                                        <tr key={member.id}>
                                             <td>{member.id}</td>
                                             <td>{member.first_name} {member.last_name}</td>
                                             <td>{member.email}</td>
+                                            <td>{department.name}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            ) || (
+                                    <tbody>
+                                        <tr>
+                                            <td colSpan='5'>No member in this department</td>
                                         </tr>
                                     </tbody>
-                                ))
-                            ) : 'No staff member available'
-                            }
+                                )}
                         </table>
                     </div>
                 </div>
