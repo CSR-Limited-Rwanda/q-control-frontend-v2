@@ -28,7 +28,7 @@ const ReviewGroupsDetailsContent = () => {
         setErrorMessage(
           error.response.data?.message ||
             error.response.data?.error ||
-            "Failed to get review group members"
+            "Failed to get review group"
         );
       }
     };
@@ -46,6 +46,7 @@ const ReviewGroupsDetailsContent = () => {
         if (response.status === 200) {
           if (Array.isArray(response.data)) {
             setMembers(response.data);
+            console.log(response.data);
           } else {
             setErrorMessage("Received data in unexpected format");
             setMembers([]);
