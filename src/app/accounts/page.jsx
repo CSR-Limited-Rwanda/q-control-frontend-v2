@@ -6,7 +6,9 @@ import Accounts from "@/components/accounts/tabs/Accounts";
 import PermissionGroups from "@/components/accounts/tabs/PermissionGroups";
 import Titles from "@/components/accounts/tabs/Titles";
 import ReviewGroups from "@/components/accounts/tabs/ReviewGroups";
-import { ReviewTemplates } from "@/components/accounts/tabs/ReviewTemplates";
+import { ReviewTemplates } from "@/components/accounts/tabs/ReviewTemplates";import DepartmentsPage from '@/components/accounts/tabs/Departments';
+
+
 
 const AccountsPage = () => {
   const tabs = [
@@ -14,10 +16,14 @@ const AccountsPage = () => {
       name: "Account management",
       id: "accountsManagement",
     },
-    // {
-    //   name: "Permission groups",
-    //   id: "permissionGroups"
-    // },
+    {
+      name: "Permission groups",
+      id: "permissionGroups"
+    },
+    {
+      name: "Departments",
+      id: "departments"
+    },
     {
       name: "Titles",
       id: "titles",
@@ -65,6 +71,9 @@ const AccountsPage = () => {
           <PermissionGroups />
         </div>
       )}
+      {
+        activeTab === 'departments' && <div><DepartmentsPage /></div>
+      }
       {activeTab === "reviewGroups" && (
         <div>
           <ReviewGroups />
