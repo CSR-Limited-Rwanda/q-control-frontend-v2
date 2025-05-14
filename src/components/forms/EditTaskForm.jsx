@@ -331,13 +331,13 @@ const EditTaskForm = ({ data, discardFn }) => {
       {/* Step 3: Success */}
       {currentStep === 3 && (
         <div className="final-step">
-          <h2>Task Created</h2>
+          <h2>Task Updated</h2>
           <div className="final-step-container">
             <div className="smessage">
               <div className="check-mark">
                 <Check size={46} />
               </div>
-              <h3>Task Created Successfully</h3>
+              <h3>Task Updated Successfully</h3>
               <p className="description">
                 Task and groups were added successfully.
               </p>
@@ -346,6 +346,7 @@ const EditTaskForm = ({ data, discardFn }) => {
               <Link
                 href={`/permissions/review-templates/${templateId}/`}
                 className="visit-btn"
+                onClick={() => window.location.reload()}
               >
                 Visit Task Details
               </Link>

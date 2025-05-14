@@ -4,6 +4,7 @@ import api from "@/utils/api";
 import { CheckIcon } from "lucide-react";
 import "../../styles/_components.scss";
 import "../../styles/_forms.scss";
+import { useParams, useRouter } from "next/navigation";
 
 const incidentOptions = [
   "General Patient Visitor",
@@ -22,9 +23,16 @@ const NewReviewTemplatesForm = ({ discardFn }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [continuing, setContinuing] = useState(false);
+  const { templateId } = useParams();
 
   const goToDetails = (id) => {
-    router.push(`/permissions/review-templates/${data.id}/`);
+    router.push(`/permissions/review-templates/${templateId}/`);
+  };
+
+  const refreshPage = () => {
+    window.location.reload();
+
+    router.push(`/permissions/review-templates/`);
   };
   const handleNextStep = async () => {
     if (currentStep === 1) {
@@ -144,7 +152,9 @@ const NewReviewTemplatesForm = ({ discardFn }) => {
               <button className="visit-btn" onClick={goToDetails}>
                 Manage Template
               </button>
-              <button className="back-btn">Back To List</button>
+              <button onClick={refreshPage} className="back-btn">
+                Back To List
+              </button>
             </div>
           </div>
         </div>

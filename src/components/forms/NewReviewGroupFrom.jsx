@@ -297,7 +297,15 @@ const NewReviewGroupForm = () => {
               >
                 Visit Group Details
               </Link>
-              <button className="back-btn">Back To List</button>
+              <button
+                onClick={() => {
+                  window.location.reload();
+                  router.push(`/permissions/review-groups/`);
+                }}
+                className="back-btn"
+              >
+                Back To List
+              </button>
             </div>
           </div>
         </div>

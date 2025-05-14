@@ -4,7 +4,14 @@ import { useRouter } from "next/navigation";
 import api from "@/utils/api";
 import DateFormatter from "@/components/DateFormatter";
 import NewReviewGroupForm from "@/components/forms/NewReviewGroupFrom";
-import { Plus, SquareX, EllipsisVertical } from "lucide-react";
+import {
+  Plus,
+  SquareX,
+  EllipsisVertical,
+  SquarePen,
+  Eye,
+  Trash2,
+} from "lucide-react";
 import "../../../styles/reviews/reviewGroups/_reviewGroups.scss";
 
 const ReviewGroups = () => {
@@ -16,13 +23,18 @@ const ReviewGroups = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-
+  const [openPopupId, setOpenPopupId] = useState(null);
   const [isEmpty, setIsEmpty] = useState(localStorage.getItem("isEmpty"));
 
   const groupsWithFullname = reviewGroups.map((user, index) => ({
     ...user, // spread the existing properties of the user
     full_name: `${user.last_name} ${user.first_name}`, // Add a unique key based on the index of the user
   }));
+
+  const handleEllipsisClick = (event, id) => {
+    event.stopPropagation(); // Prevent triggering document click
+    setOpenPopupId((prev) => (prev === id ? null : id));
+  };
 
   const search = (string) => {
     setIsSearching(true);
@@ -52,6 +64,18 @@ const ReviewGroups = () => {
   const handleRowClick = (reviewId) => {
     router.push(`/permissions/review-groups/${reviewId}/members/`);
   };
+
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setOpenPopupId(null);
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     // get users from api
     setIsEmpty(localStorage.getItem("isEmpty"));
@@ -191,9 +215,26 @@ const ReviewGroups = () => {
             <td>
               <DateFormatter dateString={reviewGroup.created_at} />
             </td>
-            <td>
-              <EllipsisVertical />
-              <div className="actions-popup"></div>
+            <td className="table-actions" style={{ position: "relative" }}>
+              <div onClick={(e) => handleEllipsisClick(e, reviewGroup.id)}>
+                <EllipsisVertical />
+              </div>
+              {openPopupId === reviewGroup.id && (
+                <div className="actions-popup">
+                  <div className="edit-btn">
+                    <SquarePen size={20} />
+                    <span>Edit</span>
+                  </div>
+                  <div className="details-btn">
+                    <Eye size={20} />
+                    <span>Details</span>
+                  </div>
+                  <div className="delete-btn">
+                    <Trash2 size={20} />
+                    <span>Delete</span>
+                  </div>
+                </div>
+              )}
             </td>
           </tr>
         ));
@@ -215,8 +256,26 @@ const ReviewGroups = () => {
           <td>
             <DateFormatter dateString={reviewGroup.created_at} />
           </td>
-          <td>
-            <EllipsisVertical />
+          <td className="table-actions">
+            <div onClick={(e) => handleEllipsisClick(e, reviewGroup.id)}>
+              <EllipsisVertical />
+            </div>
+            {openPopupId === reviewGroup.id && (
+              <div className="actions-popup">
+                <div className="edit-btn">
+                  <SquarePen size={20} />
+                  <span>Edit</span>
+                </div>
+                <div className="details-btn">
+                  <Eye size={20} />
+                  <span>Details</span>
+                </div>
+                <div className="delete-btn">
+                  <Trash2 size={20} />
+                  <span>Delete</span>
+                </div>
+              </div>
+            )}
           </td>
         </tr>
       ));
