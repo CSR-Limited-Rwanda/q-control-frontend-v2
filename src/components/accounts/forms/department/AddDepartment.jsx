@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import api from "@/utils/api"
 import { X } from "lucide-react"
 import ErrorMessage from "@/components/messages/ErrorMessage"
+import '../../../../styles/facilities/_facilities.scss'
 const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
     const [formData, setFormData] = useState({
         name: '',
@@ -23,8 +24,8 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
                 setIsLoading(true)
                 const res = await api.get(`/users/`)
                 if (res.status === 200) {
-                  console.log('Users:', res.data);
-                  setUsers(res.data)
+                    console.log('Users:', res.data);
+                    setUsers(res.data)
                 }
             } catch (error) {
                 console.log(`an error occurred: ${error}`)
@@ -75,7 +76,7 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
     return (
         <div className="popup">
             <div className="popup-content">
-                <button className="close-button" onClick={onclose}>
+                <button type="button" className="close" onClick={onClose}>
                     <X />
                 </button>
                 <h2>Add Department</h2>
@@ -137,7 +138,7 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
                         <small>Hold Ctrl/Cmd to select multiple members</small>
                     </div>
 
-                    <div className="form-actions">
+                    <div className="actions">
                         <button type="button" onClick={onClose} disabled={isLoading}>
                             Cancel
                         </button>
