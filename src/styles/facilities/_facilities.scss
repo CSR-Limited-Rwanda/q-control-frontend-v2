@@ -5,10 +5,13 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
-  margin-top: 2rem;
 
   .department-item:nth-child(odd) {
     background-color: #fffbfb;
+  }
+
+  .department-item:nth-child(even) {
+    background-color: #FCFCFC;
   }
 
   .facility-item,
@@ -19,6 +22,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    cursor: pointer;
 
     .department-title {
       font-size: 16px;
@@ -58,12 +62,34 @@
     }
   }
 
-  > :nth-child(even) {
-    background-color: lighten($color: $secondary-color, $amount: 32);
+  
+}
 
-    .icon {
-      background-color: lighten($color: $secondary-color, $amount: 25);
-      color: $secondary-color;
+.departments {
+  background-color: $body-background-color;
+  padding: 24px;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .departments-titles {
+    display: flex;
+    justify-content: space-between;
+
+    .first-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      h3 {
+        font-size: 20px;
+      }
+
+      p {
+        font-weight: 400;
+        font-size: 18px;
+      }
     }
   }
 }

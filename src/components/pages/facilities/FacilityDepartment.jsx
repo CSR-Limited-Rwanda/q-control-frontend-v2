@@ -7,59 +7,78 @@ import { Notebook } from 'lucide-react'
 import DateFormatter from '@/components/DateFormatter'
 import '../../../styles/facilities/_facilities.scss'
 import NoteMessage from '@/components/NoteMessage'
-import { ChevronDown, CircleX } from 'lucide-react';
+import { ChevronDown, CircleX, SquareX } from 'lucide-react';
 import { NotepadText, Frown, Users } from 'lucide-react'
 import NewUserForm from '@/components/accounts/forms/newUser/newUserForm'
+import NewReviewGroupForm from '@/components/forms/NewReviewGroupFrom'
 
 
 const FacilityDepartmentContent = () => {
     const params = useParams()
     const facility_id = params.facility_id
     const department_id = params.department_id
-    const [facility, setFacility] = useState("")
+    const [facility, setFacility] = useState(null)
     const [complaints, setComplaints] = useState([])
     const [staffCount, setStaffCount] = useState(0)
     const [members, setMembers] = useState([])
-    const [activeTab, setActiveTab] = useState("reports");
-    const [department, setDepartment] = useState({})
-    const [showNewUserForm, setShowNewUserForm] = useState(false);
+    const [activeTab, setActiveTab] = useState("staff")
+    const [department, setDepartment] = useState(null)
+    const [showNewUserForm, setShowNewUserForm] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
 
     useEffect(() => {
         const getDepartment = async () => {
             try {
-                const res = await api.get(`/departments/${department_id}/`)
+                setIsLoading(true);
+                const res = await api.get(`/departments/${department_id}/?expand=members,facility`);
                 if (res.status === 200) {
-                    console.log('department:', res.data)
-                    setDepartment(res.data)
+                    const departmentData = {
+                        ...res.data,
+                        members: res.data.members || [],
+                        facility: res.data.facility || { name: 'Unknown Facility' }
+                    };
+                    setDepartment(departmentData);
                 }
             } catch (error) {
-                console.log(`an error occurred: ${error}`)
+                console.error('Error fetching department:', error);
+                setError('Failed to load department data');
+            } finally {
+                setIsLoading(false);
             }
         }
-        getDepartment()
-    }, [])
+        
+        if (department_id) {
+            getDepartment();
+        }
+    }, [department_id]);
 
 
-    // getting the department
     useEffect(() => {
-        if (!facility_id) return
-
-        const fetchDepartments = async () => {
+        if (!facility_id) return;
+    
+        const fetchFacility = async () => {
             try {
-                // console.log('Fetching departments for facility:', facility_id)
-                const response = await api.get(`/facilities/${department_id}/`)
+                setIsLoading(true);
+                const response = await api.get(`/facilities/${facility_id}/?expand=departments`);
                 if (response.status === 200) {
-                    // console.log('facility department', response.data)
-                    setFacility(response.data)
-                    setStaffCount(response.data.staff_members?.length || 0)
+                    const facilityData = {
+                        ...response.data,
+                        staff_members: response.data.staff_members || [],
+                        departments: response.data.departments || []
+                    };
+                    setFacility(facilityData);
+                    setStaffCount(facilityData.staff_members.length);
                 }
             } catch (error) {
-                console.log(`an error has occurred: ${error}`)
+                console.error('Error fetching facility:', error);
+                setError('Failed to load facility data');
+            } finally {
+                setIsLoading(false);
             }
-        }
-        fetchDepartments()
-    }, [facility_id, params])
+        };
+        fetchFacility();
+    }, [facility_id]);
 
     // getting the complaints of a department
     useEffect(() => {
@@ -114,17 +133,19 @@ const FacilityDepartmentContent = () => {
     useEffect(() => {
         setDepartment(localStorage.getItem("department"));
     }, []);
+    
 
     if (!facility) {
         return <div>Loading facility data...</div>;
     }
+    
 
     return (
         <>
             {showNewUserForm && (
-                <div className="new-user-form-popup">
-                    <div className="popup-content">
-                        <NewUserForm />
+                <div className='popup'>
+                    <div className='popup-content'>
+                        <NewUserForm handleClose={handleShowNewUserForm} />
                     </div>
                 </div>
             )}
