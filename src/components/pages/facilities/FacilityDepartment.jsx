@@ -25,6 +25,7 @@ const FacilityDepartmentContent = () => {
     const [department, setDepartment] = useState(null)
     const [showNewUserForm, setShowNewUserForm] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [departmentMembers, setDepartmentMembers] = useState(0)
 
 
     useEffect(() => {
@@ -72,7 +73,6 @@ const FacilityDepartmentContent = () => {
                 }
             } catch (error) {
                 console.error('Error fetching facility:', error);
-                setError('Failed to load facility data');
             } finally {
                 setIsLoading(false);
             }
@@ -102,8 +102,9 @@ const FacilityDepartmentContent = () => {
             try {
                 const response = await api.get(`/facilities/departments/${department_id}/members/`)
                 if (response.status === 200) {
-                    // console.log('facility department members', response.data)
+                    console.log('facility department members', response.data.members.length)
                     setMembers(response.data.members)
+                    setDepartmentMembers(response.data.members.length)
                 }
             } catch (error) {
                 console.log(`an error has occurred: ${error}`)
@@ -163,7 +164,7 @@ const FacilityDepartmentContent = () => {
                     <div className='col-2'>
                         <div className='staff-card'>
                             <p className='staff-card-title'>Staff</p>
-                            <p className='staff-card-desc'>{staffCount}</p>
+                            <p className='staff-card-desc'>{departmentMembers}</p>
                         </div>
                         <div className='complaints-card'>
                             <p className='complaints-card-title'>Complaints</p>
