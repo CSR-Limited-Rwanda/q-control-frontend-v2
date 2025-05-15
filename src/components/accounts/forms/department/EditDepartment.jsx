@@ -133,7 +133,7 @@ const EditDepartment = ({
                         />
                     </div>
 
-                    {/* <div className="edit-form-group">
+                    {/* <div className="form-group">
                         <label>Head of Department:</label>
                         <select
                             name="header_of_department"

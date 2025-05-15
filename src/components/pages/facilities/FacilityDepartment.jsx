@@ -167,7 +167,7 @@ const FacilityDepartmentContent = () => {
         setDeleteError(null);
 
         try {
-            const res = await api.delete(`/departments/${department_id}/delete/`);
+            const res = await api.delete(`/departments/${department_id}/`);
 
             if (res.status === 200 || res.status === 204) {
                 router.push(`/accounts`);
