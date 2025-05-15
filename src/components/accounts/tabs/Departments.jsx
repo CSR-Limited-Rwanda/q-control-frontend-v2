@@ -49,7 +49,7 @@ const DepartmentsPage = () => {
         });
         if (response.status === 200) {
           setDepartments(response.data);
-          // console.log(response.data);
+          console.log(response.data);
         }
       } catch (error) {
         setErrorMessage("Error fetching departments");
@@ -123,7 +123,7 @@ const DepartmentsPage = () => {
                 <Notebook size={30} className="department-icon" />
                 <div>
                   <h3 className="department-title">{department.name}</h3>
-                  <p>Members:{department.members.length}</p>
+                  <p>Members: {Array.isArray(department.members) ? department.members.length : department.members}</p>
                 </div>
               </div>
             ))}
