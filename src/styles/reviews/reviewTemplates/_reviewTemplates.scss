@@ -64,6 +64,25 @@
   }
 }
 
+.success-container {
+  position: absolute;
+  top: 0;
+  background-color: rgb(40, 141, 65);
+  color: #ffffff;
+  width: 100%;
+  padding: 10px 15px;
+  transition: 0.5s ease-in;
+}
+
+.error-container {
+  position: absolute;
+  top: 0;
+  background-color: rgb(197, 60, 60);
+  color: #ffffff;
+  width: 100%;
+  padding: 10px 15px;
+  transition: 0.5s ease-in;
+}
 .delete-form-popup {
   .popup-content {
     max-width: 450px;

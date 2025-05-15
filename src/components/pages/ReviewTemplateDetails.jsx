@@ -292,7 +292,7 @@ const ReviewTemplatesDetailsContent = () => {
                   </span>
                 </div>
                 <div className="review-task">
-                  <h3>Admin review task</h3>
+                  <h3>{task?.description}</h3>
                   <span>Admin, Supervisor, Manager review</span>
                 </div>
 
