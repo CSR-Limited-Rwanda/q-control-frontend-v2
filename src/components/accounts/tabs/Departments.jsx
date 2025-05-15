@@ -115,18 +115,20 @@ const DepartmentsPage = () => {
             />
           )}
           <div className="departments-list">
-            {departments.map((department) => (
-              <div
-                key={department.id} className="department-item"
-                onClick={() => handleDepartmentClick(department.id)}
-              >
-                <Notebook size={30} className="department-icon" />
-                <div>
-                  <h3 className="department-title">{department.name}</h3>
-                  <p>Members: {Array.isArray(department.members) ? department.members.length : department.members}</p>
+            {Array.isArray(departments) && departments.length > 0 ?
+              departments.map((department) => (
+                <div
+                  key={department.id} className="department-item"
+                  onClick={() => handleDepartmentClick(department.id)}
+                >
+                  <Notebook size={30} className="department-icon" />
+                  <div>
+                    <h3 className="department-title">{department.name}</h3>
+                    <p>Members: {Array.isArray(department.members) ? department.members.length : department.members}</p>
+                  </div>
+               
                 </div>
-              </div>
-            ))}
+              )) : 'No departments found'}
           </div>
         </div>
       )}

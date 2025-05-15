@@ -25,6 +25,7 @@ import {
 import NewUserForm from '@/components/accounts/forms/newUser/newUserForm'
 import DeleteDepartmentPopup from '@/components/accounts/forms/department/DeleteDepartmentPopup'
 import ErrorMessage from '@/components/messages/ErrorMessage'
+import EditDepartment from '@/components/accounts/forms/department/EditDepartment'
 
 
 const FacilityDepartmentContent = () => {
@@ -44,6 +45,7 @@ const FacilityDepartmentContent = () => {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false)
     const [deleteError, setDeleteError] = useState(null)
+    const [showEditForm, setShowEditForm] = useState(false)
     const router = useRouter()
 
 
@@ -53,11 +55,13 @@ const FacilityDepartmentContent = () => {
                 setIsLoading(true);
                 const res = await api.get(`/departments/${department_id}/?expand=members,facility`);
                 if (res.status === 200) {
+                    const responseData = res.data.data || {}
                     const departmentData = {
-                        ...res.data,
-                        members: res.data.members || [],
-                        facility: res.data.facility || { name: 'Unknown Facility' }
-                    };
+                        ...responseData,
+                        members: responseData.members || [],
+                        facility: responseData.facility || {name: 'unknown facility'}
+                    }
+                    console.log('department', departmentData)
                     setDepartment(departmentData);
                 }
             } catch (error) {
@@ -194,6 +198,17 @@ const FacilityDepartmentContent = () => {
                     </div>
                 </div>
             )}
+
+            {showEditForm && (
+                <EditDepartment
+                    department={department}
+                    onClose={() => setShowEditForm(false)}
+                    onDepartmentUpdated={(updatedDepartment) => {
+                        setDepartment(updatedDepartment)
+                    }}
+                />
+            )}
+
             {showDeletePopup && (
                 <DeleteDepartmentPopup
                     onClose={() => setShowDeletePopup(false)}
@@ -204,6 +219,7 @@ const FacilityDepartmentContent = () => {
             {deleteError && (
                 <ErrorMessage message={deleteError} />
             )}
+
             <section className='facility-department-details-header'>
                 <div className='facility-department-details-row'>
                     <div className='col-1'>
@@ -254,7 +270,13 @@ const FacilityDepartmentContent = () => {
 
                             {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
                             <div className="actions-list">
-                                <div className="action">
+                                <div
+                                    className="action"
+                                    onClick={() => {
+                                        setShowEditForm(true)
+                                        setShowActions(false)
+                                    }}
+                                >
                                     <SquarePen />
                                     <span>Edit department</span>
                                 </div>
