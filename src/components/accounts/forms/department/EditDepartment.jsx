@@ -37,6 +37,7 @@ const EditDepartment = ({
                 setIsLoading(true)
                 const res = await api.get(`/users/`)
                 if (res.status === 200) {
+                    console.log('users', res.data)
                     setUsers(res.data)
                 }
             } catch (error) {
@@ -156,11 +157,10 @@ const EditDepartment = ({
                             name="members"
                             value={formData.members}
                             onChange={handleMembers}
-                            className="multi-select"
                         >
                             {users.map(user => (
                                 <option key={user.id} value={user.id}>
-                                    {user.first_name} {user.last_name}
+                                    {user.user.first_name} {user.user.last_name}
                                 </option>
 
                             ))}
