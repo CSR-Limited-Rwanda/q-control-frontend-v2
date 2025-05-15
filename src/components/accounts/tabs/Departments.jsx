@@ -1,10 +1,10 @@
 'use client'
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { MoveRight, Notebook } from 'lucide-react';
 import api from "@/utils/api";
-import FacilityDepartments from "@/components/pages/facilities/FacilityDepartments";
 import { useRouter } from "next/navigation";
+import AddDepartment from "../forms/department/AddDepartment";
+import '../../../styles/facilities/_facilities.scss'
 
 const DepartmentsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +13,7 @@ const DepartmentsPage = () => {
   const [selectedFacilityId, setSelectedFacilityId] = useState();
   const [selectedDepartment, setSelectedDepartment] = useState(null)
   const [errorMessage, setErrorMessage] = useState("");
+  const [showAddDepartment, setShowAddDepartment] = useState(false)
   const router = useRouter()
 
   // Fetch all facilities on mount
@@ -65,6 +66,10 @@ const DepartmentsPage = () => {
     router.push(`/facilities/${selectedFacilityId}/departments/${department_id}`)
   }
 
+  const handleDepartmentAdded = (newDepartment) => {
+    setDepartments(prev => [...prev, newDepartment])
+  }
+
 
   return (
     <div>
@@ -89,16 +94,39 @@ const DepartmentsPage = () => {
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {!isLoading && selectedFacilityId && (
         <div className="departments">
-          <div className="departments-list">
-            <div className="department-item">
-              <Notebook size={30} className="department-icon" />
-              {departments.map((department) => (
-                <div key={department.id} onClick={() => handleDepartmentClick(department.id)}>
-                  <h3 className="department-title">{department.name}</h3>
-                  <p>Members:{department.members}</p>
-                </div>
-              ))}
+          <div className="departments-titles">
+            <div className="first-col">
+              <h3>Departments</h3>
+              <p>Available departments</p>
             </div>
+            <div className="second-col">
+              <button
+                onClick={() => setShowAddDepartment(true)}
+              >
+                Add department
+              </button>
+            </div>
+          </div>
+          {showAddDepartment && (
+            <AddDepartment
+              facilityId={selectedFacilityId}
+              onClose={() => setShowAddDepartment(false)}
+              onDepartmentAdded={handleDepartmentAdded}
+            />
+          )}
+          <div className="departments-list">
+            {departments.map((department) => (
+              <div
+                key={department.id} className="department-item"
+                onClick={() => handleDepartmentClick(department.id)}
+              >
+                <Notebook size={30} className="department-icon" />
+                <div>
+                  <h3 className="department-title">{department.name}</h3>
+                  <p>Members:{department.members.length}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
