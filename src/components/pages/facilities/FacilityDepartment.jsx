@@ -2,15 +2,30 @@
 import { useState, useEffect } from 'react'
 import DashboardLayout from '@/app/dashboard/layout'
 import { useParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import api from '@/utils/api'
 import { Notebook } from 'lucide-react'
 import DateFormatter from '@/components/DateFormatter'
 import '../../../styles/facilities/_facilities.scss'
 import NoteMessage from '@/components/NoteMessage'
-import { ChevronDown, CircleX, SquareX } from 'lucide-react';
-import { NotepadText, Frown, Users } from 'lucide-react'
+import {
+    NotepadText,
+    Frown,
+    Users,
+    ChevronRight,
+    File,
+    Key,
+    Layers,
+    ListCheck,
+    SquarePen,
+    UserCheck,
+    UserX,
+    Trash2
+} from 'lucide-react'
 import NewUserForm from '@/components/accounts/forms/newUser/newUserForm'
-import NewReviewGroupForm from '@/components/forms/NewReviewGroupFrom'
+import DeleteDepartmentPopup from '@/components/accounts/forms/department/DeleteDepartmentPopup'
+import ErrorMessage from '@/components/messages/ErrorMessage'
+import EditDepartment from '@/components/accounts/forms/department/EditDepartment'
 
 
 const FacilityDepartmentContent = () => {
@@ -25,6 +40,13 @@ const FacilityDepartmentContent = () => {
     const [department, setDepartment] = useState(null)
     const [showNewUserForm, setShowNewUserForm] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [departmentMembers, setDepartmentMembers] = useState(0)
+    const [showActions, setShowActions] = useState(false)
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [deleteError, setDeleteError] = useState(null)
+    const [showEditForm, setShowEditForm] = useState(false)
+    const router = useRouter()
 
 
     useEffect(() => {
@@ -33,11 +55,13 @@ const FacilityDepartmentContent = () => {
                 setIsLoading(true);
                 const res = await api.get(`/departments/${department_id}/?expand=members,facility`);
                 if (res.status === 200) {
+                    const responseData = res.data.data || {}
                     const departmentData = {
-                        ...res.data,
-                        members: res.data.members || [],
-                        facility: res.data.facility || { name: 'Unknown Facility' }
-                    };
+                        ...responseData,
+                        members: responseData.members || [],
+                        facility: responseData.facility || {name: 'unknown facility'}
+                    }
+                    console.log('department', departmentData)
                     setDepartment(departmentData);
                 }
             } catch (error) {
@@ -47,7 +71,7 @@ const FacilityDepartmentContent = () => {
                 setIsLoading(false);
             }
         }
-        
+
         if (department_id) {
             getDepartment();
         }
@@ -56,7 +80,7 @@ const FacilityDepartmentContent = () => {
 
     useEffect(() => {
         if (!facility_id) return;
-    
+
         const fetchFacility = async () => {
             try {
                 setIsLoading(true);
@@ -72,7 +96,6 @@ const FacilityDepartmentContent = () => {
                 }
             } catch (error) {
                 console.error('Error fetching facility:', error);
-                setError('Failed to load facility data');
             } finally {
                 setIsLoading(false);
             }
@@ -102,8 +125,9 @@ const FacilityDepartmentContent = () => {
             try {
                 const response = await api.get(`/facilities/departments/${department_id}/members/`)
                 if (response.status === 200) {
-                    // console.log('facility department members', response.data)
+                    console.log('facility department members', response.data.members.length)
                     setMembers(response.data.members)
+                    setDepartmentMembers(response.data.members.length)
                 }
             } catch (error) {
                 console.log(`an error has occurred: ${error}`)
@@ -133,12 +157,37 @@ const FacilityDepartmentContent = () => {
     useEffect(() => {
         setDepartment(localStorage.getItem("department"));
     }, []);
-    
+
+    const handleShowActions = () => {
+        setShowActions(!showActions)
+    }
+
+    const handleDeleteDepartment = async () => {
+        setIsDeleting(true);
+        setDeleteError(null);
+
+        try {
+            const res = await api.delete(`/departments/${department_id}/`);
+
+            if (res.status === 200 || res.status === 204) {
+                router.push(`/accounts`);
+                console.log('clicked')
+            } else {
+                setDeleteError('Failed to delete department');
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            setDeleteError(error.response?.data?.message || 'Error deleting department');
+        } finally {
+            setIsDeleting(false);
+            setShowDeletePopup(false);
+        }
+    };
+
 
     if (!facility) {
         return <div>Loading facility data...</div>;
     }
-    
 
     return (
         <>
@@ -149,6 +198,28 @@ const FacilityDepartmentContent = () => {
                     </div>
                 </div>
             )}
+
+            {showEditForm && (
+                <EditDepartment
+                    department={department}
+                    onClose={() => setShowEditForm(false)}
+                    onDepartmentUpdated={(updatedDepartment) => {
+                        setDepartment(updatedDepartment)
+                    }}
+                />
+            )}
+
+            {showDeletePopup && (
+                <DeleteDepartmentPopup
+                    onClose={() => setShowDeletePopup(false)}
+                    onConfirm={handleDeleteDepartment}
+                    isLoading={isDeleting}
+                />
+            )}
+            {deleteError && (
+                <ErrorMessage message={deleteError} />
+            )}
+
             <section className='facility-department-details-header'>
                 <div className='facility-department-details-row'>
                     <div className='col-1'>
@@ -163,7 +234,7 @@ const FacilityDepartmentContent = () => {
                     <div className='col-2'>
                         <div className='staff-card'>
                             <p className='staff-card-title'>Staff</p>
-                            <p className='staff-card-desc'>{staffCount}</p>
+                            <p className='staff-card-desc'>{departmentMembers}</p>
                         </div>
                         <div className='complaints-card'>
                             <p className='complaints-card-title'>Complaints</p>
@@ -187,26 +258,45 @@ const FacilityDepartmentContent = () => {
                                 ) : (
                                     <NoteMessage message="no members" />
                                 )}
-                                {/* {Array.isArray(members) && members.map((member) => (
-                                    <div key={member.id} className='staff-member-name-card'>
-                                        <p className='member-name'>
-                                            {member.first_name?.charAt(0).toUpperCase() || 'None'} {member.last_name?.charAt(0).toUpperCase() || 'None'}
-                                        </p>
-                                    </div>
-                                ))} */}
                             </div>
                         </div>
                     </div>
                     <div className='col'>
-                        <button>
-                            <span>
-                                Actions
-                            </span>
-                            <ChevronDown />
-                        </button>
+                        <div onClick={handleShowActions} className={`actions-dropdown ${showActions && 'show'}`}>
+                            <div className="header">
+                                <span>Actions</span>
+                                <ChevronRight className='icon' />
+                            </div>
+
+                            {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
+                            <div className="actions-list">
+                                <div
+                                    className="action"
+                                    onClick={() => {
+                                        setShowEditForm(true)
+                                        setShowActions(false)
+                                    }}
+                                >
+                                    <SquarePen />
+                                    <span>Edit department</span>
+                                </div>
+                                <hr />
+                                <div
+                                    className="action"
+                                    onClick={() => {
+                                        setShowDeletePopup(true)
+                                        setShowActions(false)
+                                    }}
+                                >
+                                    <Trash2 />
+                                    <span>Delete department</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
+
             <div className="tabs-list">
                 <div
                     onClick={() => setActiveTab("reports")}
@@ -229,6 +319,7 @@ const FacilityDepartmentContent = () => {
                     <Users size={20} /> Staff
                 </div>
             </div>
+
             {/* incident reports */}
             {activeTab === "reports" && (
                 <div className="report-list-with-notes">
@@ -269,10 +360,10 @@ const FacilityDepartmentContent = () => {
                             ) : (
                                 <tbody>
                                     <tr>
-                                    <td colSpan='5'>
-                                        <p>No complaints available</p>
-                                    </td>
-                                </tr>
+                                        <td colSpan='5'>
+                                            <p>No complaints available</p>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             )}
                         </table>
