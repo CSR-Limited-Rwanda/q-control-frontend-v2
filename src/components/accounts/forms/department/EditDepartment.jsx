@@ -1,31 +1,44 @@
 'use client'
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import api from "@/utils/api"
 import { X } from "lucide-react"
+import api from "@/utils/api"
 import ErrorMessage from "@/components/messages/ErrorMessage"
 import '../../../../styles/facilities/_facilities.scss'
-const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
+
+
+const EditDepartment = ({
+    department,
+    onClose,
+    onDepartmentUpdated
+}) => {
     const [formData, setFormData] = useState({
         name: '',
-        facility_id: facilityId,
-        header_of_department: '',
         description: '',
+        // header_of_department: department?.header_of_department || '',
         members: []
     })
     const [users, setUsers] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
-    const router = useRouter()
+
+    useEffect(() => {
+        if (department) {
+            setFormData({
+                name: department.name || '',
+                description: department.description || '',
+                members: department.members?.map(member => member.id) || []
+            })
+        }
+    }, [])
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 setIsLoading(true)
-                const response = await api.get(`/users/`)
-                if (response.status === 200) {
-                    console.log('Users:', response.data);
-                    setUsers(response.data)
+                const res = await api.get(`/users/`)
+                if (res.status === 200) {
+                    console.log('users', res.data)
+                    setUsers(res.data)
                 }
             } catch (error) {
                 console.log(`an error occurred: ${error}`)
@@ -46,8 +59,7 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
     }
 
     const handleMembers = (e) => {
-        const options = Array.from(e.target.selectedOptions).map(option => parseInt(option.value, 10))
-        console.log('Selected member IDs:', options)
+        const options = Array.from(e.target.selectedOptions).map(option => option.value)
         setFormData(prev => ({
             ...prev,
             members: options
@@ -57,22 +69,42 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsLoading(true)
-        setError('')
-
         try {
-            const response = await api.post('/departments/', formData)
-            if (response.status === 201) {
-                onDepartmentAdded(response.data)
+            if (!department?.id) {
+                throw new Error('Department ID is missing')
+            }
+
+            const payload = {
+                name: formData.name,
+                description: formData.description,
+                members: formData.members.map(Number)
+            }
+
+            if (Object.keys(payload).length === 0) {
+                onClose()
+                return
+            }
+
+
+            const res = await api.put(`/departments/${department.id}/`, payload)
+            if (res.status === 200) {
+                const updatedDepartment = {
+                    ...department,
+                    ...res.data.data,
+                    members: res.data.data.members || []
+                }
+                onDepartmentUpdated(updatedDepartment)
                 onClose()
             }
         } catch (error) {
-            console.error(error)
-            setError(error.response?.data?.message || error.message || 'Failed to create department')
+            console.log('an error occurred', error)
+            setError(error.response?.data?.message || 'Failed to update the department')
         } finally {
             setIsLoading(false)
         }
     }
 
+    if (!department) return null
 
     return (
         <div className="popup">
@@ -80,7 +112,7 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
                 <button type="button" className="close" onClick={onClose}>
                     <X />
                 </button>
-                <h2>Add Department</h2>
+                <h2>Edit Department</h2>
                 {error && <ErrorMessage message={error} />}
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -90,7 +122,6 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            required
                         />
                     </div>
 
@@ -100,17 +131,15 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            required
                         />
                     </div>
 
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label>Head of Department:</label>
                         <select
                             name="header_of_department"
                             value={formData.header_of_department}
                             onChange={handleChange}
-                            required
                         >
                             <option value="">Select Head of Department</option>
                             {users.map(user => (
@@ -119,7 +148,7 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
                                 </option>
                             ))}
                         </select>
-                    </div>
+                    </div> */}
 
                     <div className="form-group">
                         <label>Members:</label>
@@ -128,12 +157,12 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
                             name="members"
                             value={formData.members}
                             onChange={handleMembers}
-                            className="multi-select"
                         >
                             {users.map(user => (
-                                <option key={user.id} value={user.user.id}>
+                                <option key={user.id} value={user.id}>
                                     {user.user.first_name} {user.user.last_name}
                                 </option>
+
                             ))}
                         </select>
                         <small>Hold Ctrl/Cmd to select multiple members</small>
@@ -144,7 +173,7 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
                             Cancel
                         </button>
                         <button type="submit" disabled={isLoading}>
-                            {isLoading ? 'Creating...' : 'Create Department'}
+                            {isLoading ? 'Saving...' : 'Update Department'}
                         </button>
                     </div>
                 </form>
@@ -153,4 +182,5 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
     )
 }
 
-export default AddDepartment
+export default EditDepartment
+
