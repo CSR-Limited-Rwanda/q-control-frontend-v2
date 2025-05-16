@@ -59,7 +59,7 @@ const FacilityDepartmentContent = () => {
                     const departmentData = {
                         ...responseData,
                         members: responseData.members || [],
-                        facility: responseData.facility || {name: 'unknown facility'}
+                        facility: responseData.facility || { name: 'unknown facility' }
                     }
                     console.log('department', departmentData)
                     setDepartment(departmentData);
@@ -136,7 +136,7 @@ const FacilityDepartmentContent = () => {
         fetchStaffMembers()
     }, [])
 
-    // fetching the incidents
+    // fetching the incidents of the departments
     useEffect(() => {
         const getIncidents = async () => {
             try {
@@ -227,9 +227,16 @@ const FacilityDepartmentContent = () => {
                             <Notebook size={30} color='#f87c47' className='icon' />
                         </div>
                         <div className='facility-title'>
-                            <h2 className='facility-name'>{facility.name}</h2>
-                            <p className='date-created'>Created on <DateFormatter dateString={facility.created_at} /></p>
+                            {department ? (
+                                <>
+                                    <h2 className='facility-name'>{department.name}</h2>
+                                    <p className='date-created'>Created on <DateFormatter dateString={department.created_at} /></p>
+                                </>
+                            ) : (
+                                <p>Loading department data...</p>
+                            )}
                         </div>
+
                     </div>
                     <div className='col-2'>
                         <div className='staff-card'>
@@ -261,7 +268,7 @@ const FacilityDepartmentContent = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='col'>
+                    <div className='col-3'>
                         <div onClick={handleShowActions} className={`actions-dropdown ${showActions && 'show'}`}>
                             <div className="header">
                                 <span>Actions</span>

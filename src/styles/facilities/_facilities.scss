@@ -383,6 +383,17 @@
         }
       }
     }
+
+    .col-3 {
+      .header {
+        cursor: pointer;
+      }
+      .actions-list {
+        .action {
+          cursor: pointer;
+        }
+      }
+    }
   }
 }
 
@@ -416,6 +427,25 @@
     .header-items {
       flex-direction: column;
       align-items: start;
+    }
+  }
+}
+
+// delete department popup
+.popup {
+  .popup-content {
+    .delete-department-buttons {
+      display: flex;
+      gap: 24px;
+
+      button {
+        width: 100%;
+      }
+
+      .cancel-delete-btn {
+        background-color: #F2F2F2;
+        color: #808080;
+      }
     }
   }
 }
