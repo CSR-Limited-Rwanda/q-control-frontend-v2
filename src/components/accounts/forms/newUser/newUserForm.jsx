@@ -33,7 +33,7 @@ const NewUserForm = ({
     hasReviewPermissions: existingUserData?.has_review_permissions || false,
     addToPermissionGroups: existingUserData.addToPermissionGroups,
     permissions: existingUserData?.permissions || [],
-    permissionGroups: existingUserData?.permissionGroups || [],
+    permissionGroups: existingUserData?.permissions_groups || [],
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -124,17 +124,17 @@ const NewUserForm = ({
       ).flat(),
       title_id: formData.title.value,
       review_permissions: formData.hasReviewPermissions,
-      permission_groups: formData.permissionGroups.map((group) => group.id),
+      permissions_groups: formData.permissionGroups.map((group) => group.id),
       // permissions: formData.permissions,
     };
 
     // addToPermissionGroup, remove permissions from payload, else, remove the permission_groups from payload
-    console.log(formData.addToPermissionGroups);
-    if (formData.addToPermissionGroups) {
-      delete payload.permissions;
-    } else {
-      delete payload.permission_groups;
-    }
+    // console.log(formData.addToPermissionGroups);
+    // if (formData.addToPermissionGroups) {
+    //   delete payload.permissions;
+    // } else {
+    //   delete payload.permission_groups;
+    // }
 
     try {
       localStorage.setItem("userInfo", JSON.stringify(payload));
