@@ -4,13 +4,22 @@ import { Square, SquareCheck, X } from "lucide-react";
 import api from "@/utils/api";
 import { SearchInput } from "@/components/forms/Search";
 
-const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
+const AccessPermissions = ({
+  formData,
+  setFormData,
+  userId,
+  handleClose,
+  email,
+}) => {
   const [facilities, setFacilities] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [selectedFacilities, setSelectedFacilities] = useState([]);
+  const [selectedFacilities, setSelectedFacilities] = useState(
+    formData.access_to_facilities || []
+  );
   const [selectedFacility, setSelectedFacility] = useState(null);
-  const [facilityDepartmentSelections, setFacilityDepartmentSelections] =
-    useState({});
+  const [selectedDepartments, setSelectedDepartments] = useState(
+    formData.access_to_department || []
+  );
   const [departmentSearch, setDepartmentSearch] = useState("");
   const [facilitySearch, setFacilitySearch] = useState("");
   const [isFetchingFacilities, setIsFetchingFacilities] = useState(false);
@@ -19,16 +28,25 @@ const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
   const [isSearchingFacility, setIsSearchingFacility] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Fetch facilities
   const fetchFacilities = async () => {
     setIsFetchingFacilities(true);
     try {
       const response = await api.get("/facilities/");
       if (response.status === 200) {
         const formatted = response.data.map((f) => ({
-          value: f.id,
-          label: f.name,
+          id: f.id,
+          name: f.name,
         }));
         setFacilities(formatted);
+
+        const matched = formatted.filter((f) =>
+          formData.access_to_facilities.some((facility) => facility.id === f.id)
+        );
+        setSelectedFacilities(matched);
+        if (matched.length > 0) {
+          setSelectedFacility(matched[0]);
+        }
       }
     } catch (err) {
       console.error("Failed to fetch facilities:", err);
@@ -37,16 +55,27 @@ const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
     }
   };
 
+  // Fetch departments
   const fetchDepartments = async (facilityId) => {
     setIsFetchingDepartments(true);
     try {
       const response = await api.get(`/departments/?facility_id=${facilityId}`);
       if (response.status === 200) {
         const formatted = response.data.map((d) => ({
-          value: d.id,
-          label: d.name,
+          id: d.id,
+          name: d.name,
         }));
         setDepartments(formatted);
+
+        // Merge matched departments with existing selectedDepartments
+        const matched = formatted.filter((d) =>
+          formData.access_to_department.some((dept) => dept.id === d.id)
+        );
+        setSelectedDepartments((prev) => {
+          const existingIds = new Set(prev.map((d) => d.id));
+          const newSelected = matched.filter((d) => !existingIds.has(d.id));
+          return [...prev, ...newSelected];
+        });
       }
     } catch (err) {
       console.error("Failed to fetch departments:", err);
@@ -55,55 +84,49 @@ const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
     }
   };
 
-  const toggleFacilities = (id) => {
+  // Toggle Facility Selection
+  const toggleFacility = (facility) => {
     setSelectedFacilities((prev) => {
-      const updated = prev.includes(id)
-        ? prev.filter((fid) => fid !== id)
-        : [...prev, id];
+      const exists = prev.find((f) => f.id === facility.id);
+      const updated = exists
+        ? prev.filter((f) => f.id !== facility.id)
+        : [...prev, facility];
 
-      if (updated.includes(id)) {
-        setSelectedFacility(id);
-      } else {
-        if (updated.length > 0) {
-          setSelectedFacility(updated[updated.length - 1]);
-        } else {
-          setSelectedFacility(null);
-          setDepartments([]);
-        }
+      setSelectedFacility(
+        updated.length > 0 ? updated[updated.length - 1] : null
+      );
+      if (updated.length === 0) {
+        setDepartments([]);
       }
 
       return updated;
     });
   };
 
-  const toggleDepartment = (facilityId, departmentId) => {
-    setFacilityDepartmentSelections((prev) => {
-      const selected = prev[facilityId] || [];
-      const updated = selected.includes(departmentId)
-        ? selected.filter((id) => id !== departmentId)
-        : [...selected, departmentId];
-
-      return {
-        ...prev,
-        [facilityId]: updated,
-      };
+  // Toggle Department Selection
+  const toggleDepartment = (department) => {
+    setSelectedDepartments((prev) => {
+      const exists = prev.find((d) => d.id === department.id);
+      return exists
+        ? prev.filter((d) => d.id !== department.id)
+        : [...prev, department];
     });
   };
 
   const filteredFacilities = facilities.filter((f) =>
-    f.label.toLowerCase().includes(facilitySearch.toLowerCase())
+    f.name.toLowerCase().includes(facilitySearch.toLowerCase())
   );
 
   const filteredDepartments = departments.filter((d) =>
-    d.label.toLowerCase().includes(departmentSearch.toLowerCase())
+    d.name.toLowerCase().includes(departmentSearch.toLowerCase())
   );
 
+  // Save handler
   const handleSave = async () => {
     const payload = {
-      access_to_facilities: selectedFacilities,
-      access_to_department: Object.values(
-        facilityDepartmentSelections || {}
-      ).flat(),
+      access_to_facilities: selectedFacilities.map((f) => f.id),
+      access_to_departments: selectedDepartments.map((d) => d.id),
+      email: email,
     };
 
     try {
@@ -111,41 +134,47 @@ const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
       const response = await api.put(`/users/${userId}/`, payload);
       if (response.status === 200) {
         console.log("Data saved successfully");
-        // window.location.reload();
+        window.location.reload();
+        console.log(response.data);
       }
     } catch (error) {
       console.error("Failed to save:", error);
+      alert("There was an error");
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Fetch facilities on mount
   useEffect(() => {
     fetchFacilities();
   }, []);
 
+  // Fetch departments when selected facility changes
   useEffect(() => {
     if (selectedFacility) {
-      fetchDepartments(selectedFacility);
+      fetchDepartments(selectedFacility.id);
       setDepartmentSearch("");
     }
   }, [selectedFacility]);
 
+  // Sync formData with selections
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      selectedFacilities,
-      facilityDepartmentSelections,
+      access_to_facilities: selectedFacilities,
+      access_to_department: selectedDepartments,
     }));
-  }, [selectedFacilities, facilityDepartmentSelections]);
+  }, [selectedFacilities, selectedDepartments]);
 
   return (
     <div className="popup">
       <div className="popup-content">
+        <h3>Edit Access Permissions</h3>
         <div className="close" onClick={handleClose}>
           <X size={32} />
         </div>
-        <div className="card" style={{ marginTop: "20px" }}>
+        <div className="card">
           <div className="form-group">
             <label>Access to facilities</label>
             <SearchInput
@@ -154,11 +183,13 @@ const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
               isSearching={isSearchingFacility}
             />
             {filteredFacilities.map((facility) => {
-              const selected = selectedFacilities.includes(facility.value);
+              const selected = selectedFacilities.some(
+                (f) => f.id === facility.id
+              );
               return (
                 <div
-                  key={facility.value}
-                  onClick={() => toggleFacilities(facility.value)}
+                  key={facility.id}
+                  onClick={() => toggleFacility(facility)}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -168,7 +199,7 @@ const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
                   }}
                 >
                   {selected ? <SquareCheck /> : <Square />}
-                  <span>{facility.label}</span>
+                  <span>{facility.name}</span>
                 </div>
               );
             })}
@@ -176,7 +207,7 @@ const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
 
           <div className="form-group">
             <label>Access to departments</label>
-            {selectedFacilities.length === 0 ? (
+            {selectedFacilities?.length === 0 ? (
               <p>
                 No department found, check facilities to see their departments.
               </p>
@@ -191,17 +222,14 @@ const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
                   {isFetchingDepartments ? (
                     <p>Loading departments...</p>
                   ) : filteredDepartments.length > 0 ? (
-                    filteredDepartments.map(({ value, label }) => {
-                      const checked =
-                        facilityDepartmentSelections[
-                          selectedFacility
-                        ]?.includes(value);
+                    filteredDepartments.map((department) => {
+                      const checked = selectedDepartments.some(
+                        (d) => d.id === department.id
+                      );
                       return (
                         <div
-                          key={value}
-                          onClick={() =>
-                            toggleDepartment(selectedFacility, value)
-                          }
+                          key={department.id}
+                          onClick={() => toggleDepartment(department)}
                           style={{
                             display: "flex",
                             alignItems: "center",
@@ -210,7 +238,9 @@ const AccessPermissions = ({ formData, setFormData, userId, handleClose }) => {
                           }}
                         >
                           {checked ? <SquareCheck /> : <Square />}
-                          <span style={{ marginLeft: "8px" }}>{label}</span>
+                          <span style={{ marginLeft: "8px" }}>
+                            {department.name}
+                          </span>
                         </div>
                       );
                     })

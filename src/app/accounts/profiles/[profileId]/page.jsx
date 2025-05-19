@@ -53,7 +53,7 @@ const ProfileDetailsPage = () => {
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     access_to_facilities: [],
-    access_to_departments: {},
+    access_to_department: {},
   });
 
   const handleShowUpdateForm = () => {
@@ -92,6 +92,7 @@ const ProfileDetailsPage = () => {
         const response = await api.get(`/users/${profileId}/`);
         console.log(response.data);
         if (response.status === 200) {
+          console.log(response.data);
           const data = response.data;
           const transformedProfile = {
             ...data,
@@ -106,7 +107,7 @@ const ProfileDetailsPage = () => {
           setProfile(transformedProfile);
           setFormData({
             access_to_facilities: data.access_to_facilities || [],
-            access_to_departments: data.access_to_departments || {},
+            access_to_department: data.access_to_department || {},
           });
         }
       } catch (error) {
@@ -302,6 +303,7 @@ const ProfileDetailsPage = () => {
           formData={formData}
           setFormData={setFormData}
           userId={profileId}
+          email={profile.user.email}
           handleClose={handleShowAccessPermissionsForm}
         />
       )}
