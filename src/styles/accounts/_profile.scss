@@ -65,13 +65,10 @@
         padding: 0.5rem;
         background-color: var(--shade);
         text-wrap: nowrap;
-
       }
-
     }
 
     &.show {
-
       .content {
         display: flex;
         flex-direction: column;
@@ -79,14 +76,12 @@
         flex-wrap: wrap !important;
       }
     }
-
   }
 }
 
 @media screen and (max-width: 768px) {
   .profile-page {
     .profile-details {
-
       .profile-info,
       .profile-tabs {
         flex: 1 1 100%;

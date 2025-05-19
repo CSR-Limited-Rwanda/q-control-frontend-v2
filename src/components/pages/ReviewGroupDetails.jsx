@@ -28,7 +28,7 @@ const ReviewGroupsDetailsContent = () => {
         setErrorMessage(
           error.response.data?.message ||
             error.response.data?.error ||
-            "Failed to get review group members"
+            "Failed to get review group"
         );
       }
     };
@@ -39,13 +39,14 @@ const ReviewGroupsDetailsContent = () => {
     const fetchGroupMembers = async () => {
       try {
         const response = await api.get(
-          `/permissions/review-groups/${reviewId}/`
+          `/permissions/review-groups/${reviewId}/members/`
         );
-        console.log("data:", response);
+        console.log("data:", response.data);
 
         if (response.status === 200) {
           if (Array.isArray(response.data)) {
             setMembers(response.data);
+            console.log(response.data);
           } else {
             setErrorMessage("Received data in unexpected format");
             setMembers([]);
@@ -69,7 +70,7 @@ const ReviewGroupsDetailsContent = () => {
     };
 
     fetchGroupMembers();
-  }, [reviewId]);
+  }, []);
 
   if (isLoading) {
     return (
