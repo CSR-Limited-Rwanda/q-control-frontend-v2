@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/utils/api";
 import DateFormatter from "@/components/DateFormatter";
@@ -11,8 +11,11 @@ import {
   SquarePen,
   Eye,
   Trash2,
+  EyeClosed,
 } from "lucide-react";
 import "../../../styles/reviews/reviewGroups/_reviewGroups.scss";
+import PrimaryButton from "@/components/PrimaryButton";
+import { SearchInput } from "@/components/forms/Search";
 
 const ReviewGroups = () => {
   const router = useRouter();
@@ -20,42 +23,25 @@ const ReviewGroups = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showNewUserForm, setShowNewUserForm] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
+  const [serverSearchResults, setServerSearchResults] = useState([]);
+  const [isServerSearching, setIsServerSearching] = useState(false);
   const [openPopupId, setOpenPopupId] = useState(null);
   const [isEmpty, setIsEmpty] = useState(localStorage.getItem("isEmpty"));
+  const [searchQuery, setSearchQuery] = useState("")
+  const [pageNumber, setPageNumber] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+  const [searchError, setSearchError] = useState(null);
 
-  const groupsWithFullname = reviewGroups.map((user, index) => ({
-    ...user, // spread the existing properties of the user
-    full_name: `${user.last_name} ${user.first_name}`, // Add a unique key based on the index of the user
-  }));
+  const createUrlParams = (params) => {
+    return Object.entries(params)
+      .filter(([_, value]) => value !== undefined)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join('&')
+  }
 
   const handleEllipsisClick = (event, id) => {
     event.stopPropagation(); // Prevent triggering document click
     setOpenPopupId((prev) => (prev === id ? null : id));
-  };
-
-  const search = (string) => {
-    setIsSearching(true);
-    localStorage.setItem("isEmpty", true);
-    const results = groupsWithFullname.filter((item) => {
-      return (
-        (item.id &&
-          item.id.toString().toLowerCase().includes(string.toLowerCase())) ||
-        (item?.title &&
-          item?.title.toLowerCase().includes(string.toLowerCase()))
-      );
-    });
-    if (results.length < 1) {
-      setIsSearchingTheDatabase(true);
-      setTimeout(() => {
-        setIsSearchingTheDatabase(false);
-      }, 3000);
-    }
-    setIsEmpty(false);
-    localStorage.setItem("isEmpty", false);
-    setSearchResults(results);
   };
 
   const handleShowNewUserForm = () => {
@@ -76,36 +62,76 @@ const ReviewGroups = () => {
     };
   }, []);
 
-  useEffect(() => {
-    // get users from api
-    setIsEmpty(localStorage.getItem("isEmpty"));
-
-    const fetchReviewGroups = async () => {
-      try {
-        const response = await api.get(`/permissions/review-groups/`);
-        if (response.status === 200) {
-          setReviewGroups(response.data);
-
-          console.log("groups.", groupsWithFullname);
-          console.log("data", response.data);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        if (error.response) {
-          setErrorMessage(
-            error.response.data.message ||
-              error.response.data.error ||
-              "Error setting a list of users"
-          );
-        } else {
-          setErrorMessage("Unknown error fetching users");
-        }
-        console.log(error);
-        setIsLoading(false);
+  const fetchReviewGroups = async (params) => {
+    try {
+      const url = `/permissions/review-groups/${params ? `?${params}` : ''}`
+      const response = await api.get(url);
+      if (response.status === 200) {
+        console.log('data', response.data)
+        return response.data
       }
-    };
-    fetchReviewGroups();
-  }, []);
+      return []
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage(
+          error.response.data.message ||
+          error.response.data.error ||
+          "Error setting a list of users"
+        );
+        console.log('error:', error)
+        return []
+      } else {
+        setErrorMessage("Unknown error fetching users");
+      }
+      console.log('error', error);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const loadInitialData = async () => {
+      const data = await fetchReviewGroups()
+      setReviewGroups(data)
+      setIsLoading(false)
+    }
+    loadInitialData()
+  }, [])
+
+  const handleSearch = useCallback(async () => {
+    try {
+      if (searchQuery.length >= 3) {
+        setIsServerSearching(true);
+        setSearchError(null);
+        const params = createUrlParams({
+          search: searchQuery,
+          page: pageNumber,
+          page_size: pageSize
+        });
+        const results = await fetchReviewGroups(params);
+        setServerSearchResults(results);
+        setReviewGroups([])
+      } else {
+        setServerSearchResults([]);
+        if (reviewGroups.length === 0) {
+          const data = await fetchReviewGroups()
+          setReviewGroups(data)
+        }
+      }
+    } catch (error) {
+      setSearchError("Failed to perform search");
+      console.error("Search error:", error);
+    } finally {
+      setIsServerSearching(false);
+    }
+  }, [searchQuery, pageNumber, pageSize]);
+
+
+  useEffect(() => {
+    const debounceTimeout = setTimeout(() => {
+      handleSearch()
+    }, 500)
+    return () => clearTimeout(debounceTimeout)
+  }, [searchQuery, handleSearch])
 
   return isLoading ? (
     <div className="dashboard-page-content">
@@ -138,24 +164,22 @@ const ReviewGroups = () => {
               {isEmpty
                 ? reviewGroups.length
                 : searchResults.length > 0
-                ? searchResults.length
-                : reviewGroups.length}
+                  ? searchResults.length
+                  : reviewGroups.length}
             </span>{" "}
             <span>Available</span>
           </div>
         </div>
 
         <div className="filters">
-          <input
-            onChange={(e) => {
-              search(e.target.value);
-            }}
-            type="search"
-            name=""
-            id=""
-            placeholder="Search reviews by name or id"
+          <SearchInput
+            value={searchQuery}
+            setValue={setSearchQuery}
+            isSearching={isServerSearching}
+            label={'Search reviews by name'}
           />
         </div>
+
         <button
           type="button"
           onClick={handleShowNewUserForm}
@@ -182,109 +206,96 @@ const ReviewGroups = () => {
       </div>
 
       <div className="mobile-users">
-        {reviewGroups &&
-          reviewGroups.map((reviewGroup, index) => (
-            <div key={index} className="user-card">
-              <p>
-                {reviewGroup?.user?.last_name} {reviewGroup?.user?.first_name}
-              </p>
-              <small>{reviewGroup?.user?.email}</small>
+        {isServerSearching ? (
+          <p>Searching database...</p>
+        ) : searchQuery.length >= 3 ? (
+          serverSearchResults.length > 0 ? (
+            serverSearchResults.map((reviewGroup) => (
+              <div key={reviewGroup.id} className="user-card">
+                <p>{reviewGroup.title}</p>
+                <small>{reviewGroup.description}</small>
+              </div>
+            ))
+          ) : (
+            <p>No review groups match your search</p>
+          )
+        ) : reviewGroups.length > 0 ? (
+          reviewGroups.map((reviewGroup) => (
+            <div key={reviewGroup.id} className="user-card">
+              <p>{reviewGroup.title}</p>
+              <small>{reviewGroup.description}</small>
             </div>
-          ))}
+          ))
+        ) : (
+          <p>No review groups available</p>
+        )}
       </div>
+
     </div>
   );
 
   function renderTableBody() {
-    if (isSearching) {
-      if (isSearchingTheDatabase) {
-        return (
-          <tr>
-            <td colSpan="5" className="searching_database">
-              <p>Searching database...</p>
-            </td>
-          </tr>
-        );
-      }
-      if (searchResults && searchResults.length > 0) {
-        return searchResults.map((reviewGroup, index) => (
-          <tr key={index} onClick={() => handleRowClick(reviewGroup.id)}>
-            <td>{reviewGroup.id}</td>
-            <td>{reviewGroup.title}</td>
-            <td>{reviewGroup.description}</td>
-            <td>
-              <DateFormatter dateString={reviewGroup.created_at} />
-            </td>
-            <td className="table-actions" style={{ position: "relative" }}>
-              <div onClick={(e) => handleEllipsisClick(e, reviewGroup.id)}>
-                <EllipsisVertical />
-              </div>
-              {openPopupId === reviewGroup.id && (
-                <div className="actions-popup">
-                  <div className="edit-btn">
-                    <SquarePen size={20} />
-                    <span>Edit</span>
-                  </div>
-                  <div className="details-btn">
-                    <Eye size={20} />
-                    <span>Details</span>
-                  </div>
-                  <div className="delete-btn">
-                    <Trash2 size={20} />
-                    <span>Delete</span>
-                  </div>
-                </div>
-              )}
-            </td>
-          </tr>
-        ));
-      }
+    // Determine which data to show based on search state
+    const displayData = searchQuery.length >= 3 ? serverSearchResults : reviewGroups;
+    const isSearchActive = searchQuery.length >= 3;
+    const noResults = displayData.length === 0;
+
+    // Loading state for server search
+    if (isServerSearching) {
       return (
         <tr>
-          <td colSpan="5" className="no-data-found">
-            <p>No data matching your search query</p>
+          <td colSpan="5" className="searching_database">
+            <p>Searching database...</p>
           </td>
         </tr>
       );
     }
-    if (reviewGroups.length > 0) {
-      return reviewGroups.map((reviewGroup, index) => (
-        <tr key={index} onClick={() => handleRowClick(reviewGroup.id)}>
-          <td>{reviewGroup.id}</td>
-          <td>{reviewGroup.title}</td>
-          <td>{reviewGroup.description}</td>
-          <td>
-            <DateFormatter dateString={reviewGroup.created_at} />
-          </td>
-          <td className="table-actions">
-            <div onClick={(e) => handleEllipsisClick(e, reviewGroup.id)}>
-              <EllipsisVertical />
-            </div>
-            {openPopupId === reviewGroup.id && (
-              <div className="actions-popup">
-                <div className="edit-btn">
-                  <SquarePen size={20} />
-                  <span>Edit</span>
-                </div>
-                <div className="details-btn">
-                  <Eye size={20} />
-                  <span>Details</span>
-                </div>
-                <div className="delete-btn">
-                  <Trash2 size={20} />
-                  <span>Delete</span>
-                </div>
-              </div>
-            )}
+
+    // No results state
+    if (noResults) {
+      return (
+        <tr>
+          <td colSpan="5">
+            {isSearchActive
+              ? "No review groups match your search"
+              : "No review groups available"}
           </td>
         </tr>
-      ));
+      );
     }
-    return (
-      <tr>
-        <td colSpan="5">No review group available</td>
+
+    // Render the table rows
+    return displayData.map((reviewGroup) => (
+      <tr key={reviewGroup.id} onClick={() => handleRowClick(reviewGroup.id)}>
+        <td>{reviewGroup.id}</td>
+        <td>{reviewGroup.title}</td>
+        <td>{reviewGroup.description}</td>
+        <td>
+          <DateFormatter dateString={reviewGroup.created_at} />
+        </td>
+        <td className="table-actions" style={{ position: "relative" }}>
+          <div onClick={(e) => handleEllipsisClick(e, reviewGroup.id)}>
+            <EllipsisVertical />
+          </div>
+          {openPopupId === reviewGroup.id && (
+            <div className="actions-popup">
+              <div className="edit-btn">
+                <SquarePen size={20} />
+                <span>Edit</span>
+              </div>
+              <div className="details-btn">
+                <Eye size={20} />
+                <span>Details</span>
+              </div>
+              <div className="delete-btn">
+                <Trash2 size={20} />
+                <span>Delete</span>
+              </div>
+            </div>
+          )}
+        </td>
       </tr>
-    );
+    ));
   }
 };
 
