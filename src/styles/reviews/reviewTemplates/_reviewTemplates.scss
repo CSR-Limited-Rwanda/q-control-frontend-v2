@@ -26,7 +26,7 @@
   .form {
     display: flex;
     flex-direction: column;
-    height: 90%;
+    height: 100%;
     gap: 1rem;
     // justify-content: space-between;
     overflow: auto;
@@ -41,11 +41,11 @@
     width: 100%;
     background-color: white;
     padding: 2rem;
-    // padding-top: 2rem;
     padding-top: 3rem;
     border-radius: 0.5rem;
     position: relative;
-    height: 680px;
+    max-height: 600px;
+    height: 100%;
     overflow: auto;
 
     .close {
@@ -356,17 +356,6 @@
         font-size: 14px;
       }
 
-      .review-task {
-        > h3 {
-          font-size: 16px;
-          font-weight: 600;
-        }
-        > span {
-          font-size: 14px;
-          color: $gray-color;
-        }
-      }
-
       > .col {
         display: flex;
         flex-direction: column;
@@ -475,6 +464,92 @@
       text-align: center;
       color: $gray-color;
       font-size: 14px;
+    }
+  }
+}
+
+.review-task {
+  > h3 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  > span {
+    font-size: 14px;
+    color: $gray-color;
+  }
+}
+
+.task-details-popup {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  gap: 30px;
+  > .col-1 {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .days {
+      background-color: #f9fcff;
+      color: $primary-color;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    > .col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      > .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+
+        .group-title {
+          color: $gray-color;
+          font-size: 14px;
+        }
+
+        .group-number {
+          padding: 5px 10px;
+          background-color: $secondary-color-shade;
+          border-radius: 8px;
+          color: $secondary-color;
+          font-size: 12px;
+        }
+      }
+
+      .groups-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        .group-name {
+          background-color: #f8f8f8;
+          padding: 8px 18px;
+          font-size: 12px;
+          color: $gray-color;
+          border-radius: 6px;
+          text-align: center;
+        }
+      }
+    }
+  }
+  > .col-2 {
+    margin-top: auto;
+
+    > span {
+      background-color: #f9fcff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
     }
   }
 }

@@ -59,7 +59,7 @@ const EditTaskForm = ({ data, discardFn }) => {
       );
 
       if (response.status === 201 || response.status === 200) {
-        const editedTaskId = response.data.id; // 🔥 Use this directly
+        const editedTaskId = response.data.id;
         setTaskId(editedTaskId);
 
         if (selectedGroups.length === 0) {
@@ -68,72 +68,96 @@ const EditTaskForm = ({ data, discardFn }) => {
         }
 
         console.log(selectedGroups);
-        try {
-          setSubmitting(true);
-          const patchResponse = await api.patch(
-            `/permissions/review-templates/${templateId}/tasks/${editedTaskId}/review-groups/`,
-            {
-              review_groups: data.review_groups.map((group) => group.id),
-              action: "remove",
-            }
-          );
 
-          if ([200, 204].includes(patchResponse.status)) {
-            console.log(patchResponse.data);
-
-            try {
-              const response = await api.put(
-                `/permissions/review-templates/${templateId}/tasks/${data.id}/`,
-                payload
-              );
-
-              if (response.status === 201 || response.status === 200) {
-                const editedTaskId = response.data.id; // 🔥 Use this directly
-                setTaskId(editedTaskId);
-
-                if (selectedGroups.length === 0) {
-                  alert("Please select at least one group.");
-                  return;
-                }
-
-                console.log(selectedGroups);
-                try {
-                  setSubmitting(true);
-                  const patchResponse = await api.patch(
-                    `/permissions/review-templates/${templateId}/tasks/${editedTaskId}/review-groups/`,
-                    {
-                      review_groups: selectedGroups.map((group) => group.id),
-                      action: "add",
-                    }
-                  );
-
-                  if ([200, 204].includes(patchResponse.status)) {
-                    console.log(patchResponse.data);
-                    setCurrentStep(3);
-                  }
-                } catch (error) {
-                  console.error("Error adding groups:", error);
-                } finally {
-                  setSubmitting(false);
-                  setLoading(false);
-                }
-
-                console.log(response.data);
-              } else {
-                alert("Something went wrong. Please try again.");
+        if (data.review_groups.length > 0) {
+          try {
+            setSubmitting(true);
+            const patchResponse = await api.patch(
+              `/permissions/review-templates/${templateId}/tasks/${editedTaskId}/review-groups/`,
+              {
+                review_groups: data.review_groups.map((group) => group.id),
+                action: "remove",
               }
-            } catch (error) {
-              console.error("Error adding task:", error);
-              alert("Failed to add task.");
-            } finally {
-              setContinuing(false);
+            );
+
+            if ([200, 204].includes(patchResponse.status)) {
+              console.log(patchResponse.data);
+
+              try {
+                const response = await api.put(
+                  `/permissions/review-templates/${templateId}/tasks/${data.id}/`,
+                  payload
+                );
+
+                if (response.status === 201 || response.status === 200) {
+                  const editedTaskId = response.data.id; // 🔥 Use this directly
+                  setTaskId(editedTaskId);
+
+                  if (selectedGroups.length === 0) {
+                    alert("Please select at least one group.");
+                    return;
+                  }
+
+                  console.log(selectedGroups);
+                  try {
+                    setSubmitting(true);
+                    const patchResponse = await api.patch(
+                      `/permissions/review-templates/${templateId}/tasks/${editedTaskId}/review-groups/`,
+                      {
+                        review_groups: selectedGroups.map((group) => group.id),
+                        action: "add",
+                      }
+                    );
+
+                    if ([200, 204].includes(patchResponse.status)) {
+                      console.log(patchResponse.data);
+                      setCurrentStep(3);
+                    }
+                  } catch (error) {
+                    console.error("Error adding groups:", error);
+                  } finally {
+                    setSubmitting(false);
+                    setLoading(false);
+                  }
+
+                  console.log(response.data);
+                } else {
+                  alert("Something went wrong. Please try again.");
+                }
+              } catch (error) {
+                console.error("Error adding task:", error);
+                alert("Failed to add task.");
+              } finally {
+                setContinuing(false);
+              }
             }
+          } catch (error) {
+            console.error("Error adding groups:", error);
+          } finally {
+            setSubmitting(false);
+            setLoading(false);
           }
-        } catch (error) {
-          console.error("Error adding groups:", error);
-        } finally {
-          setSubmitting(false);
-          setLoading(false);
+        } else {
+          try {
+            setSubmitting(true);
+            const patchResponse = await api.patch(
+              `/permissions/review-templates/${templateId}/tasks/${editedTaskId}/review-groups/`,
+              {
+                review_groups: selectedGroups.map((group) => group.id),
+                action: "add",
+              }
+            );
+
+            if ([200, 204].includes(patchResponse.status)) {
+              console.log(patchResponse.data);
+              setCurrentStep(3);
+            }
+          } catch (error) {
+            console.error("Error adding groups:", error);
+          } finally {
+            setSubmitting(false);
+            setLoading(false);
+          }
         }
 
         console.log(response.data);
@@ -195,7 +219,7 @@ const EditTaskForm = ({ data, discardFn }) => {
       {currentStep === 1 && (
         <div className="step-one">
           <form>
-            <h3>Create Task</h3>
+            <h3>Update Task</h3>
 
             <div className="field">
               <label htmlFor="taskName">Task Name</label>
