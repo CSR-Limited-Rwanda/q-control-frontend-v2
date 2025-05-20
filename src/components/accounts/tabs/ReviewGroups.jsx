@@ -11,10 +11,11 @@ import {
   SquarePen,
   Eye,
   Trash2,
-  EyeClosed,
+  X
 } from "lucide-react";
 import "../../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import PrimaryButton from "@/components/PrimaryButton";
+import OutlineButton from "@/components/OutlineButton";
 import { SearchInput } from "@/components/forms/Search";
 
 const ReviewGroups = () => {
@@ -30,6 +31,7 @@ const ReviewGroups = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [showFilters, setShowFilters] = useState(false)
   const [searchError, setSearchError] = useState(null);
 
   const createUrlParams = (params) => {
@@ -47,6 +49,7 @@ const ReviewGroups = () => {
   const handleShowNewUserForm = () => {
     setShowNewUserForm(!showNewUserForm);
   };
+
   const handleRowClick = (reviewId) => {
     router.push(`/permissions/review-groups/${reviewId}/members/`);
   };
@@ -125,6 +128,28 @@ const ReviewGroups = () => {
     }
   }, [searchQuery, pageNumber, pageSize]);
 
+  const handleApplyFilters = async () => {
+    const params = createUrlParams({
+      page: pageNumber,
+      page_size: pageSize
+    })
+    try {
+      setIsServerSearching(true)
+      const data = await fetchReviewGroups(params)
+      setReviewGroups(data)
+      setServerSearchResults([])
+    } catch (error) {
+      console.error("Error in filtering data:", error)
+    } finally {
+      setIsServerSearching(false)
+      setShowFilters(false)
+    }
+  }
+
+  const handleShowFilters = () => {
+    setShowFilters(!showFilters)
+  }
+
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -178,6 +203,44 @@ const ReviewGroups = () => {
             isSearching={isServerSearching}
             label={'Search reviews by name'}
           />
+        </div>
+
+        <div>
+          <div>
+            <span>Page: {pageNumber}</span>
+            <span>Per page: {pageSize}</span>
+          </div>
+          <div className="filters-popup">
+            <OutlineButton
+              onClick={handleShowFilters}
+              span={'Filters'}
+              prefixIcon={showFilters ? <X /> : <Plus />}
+            />
+
+            {
+              showFilters ?
+                <div className="side-popup">
+                  <div className="popup-content">
+                    <h3>Filters</h3>
+                    <form>
+                      <div className="half">
+                        <div className="form-group">
+                          <label htmlFor="page">Page</label>
+                          <input value={pageNumber} onChange={e => setPageNumber(e.target.value)} type="number" name="pageNumber" id="pageNumber" placeholder='Page number' />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="page">Page size</label>
+                          <input value={pageSize} onChange={e => setPageSize(e.target.value)} type="number" name="pageSize" id="pageSize" placeholder='Page size' />
+                        </div>
+                      </div>
+                    </form>
+
+                    <PrimaryButton text={'Apply filters'} onClick={handleApplyFilters} />
+                  </div>
+                </div>
+                : ''
+            }
+          </div>
         </div>
 
         <button
