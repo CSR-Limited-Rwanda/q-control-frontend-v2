@@ -185,14 +185,14 @@ const ReviewGroupsDetailsContent = () => {
                     <td>
                       {member.user.first_name} {member.user.last_name}
                     </td>
-                    <td>{member.cohesive_user_id}</td>
+                    <td>{member.id}</td>
                     <td>{member.user.email}</td>
                     <td>{member.phone_number || "N/A"}</td>
                     <td>{member?.facility?.name}</td>
                     <td>
-                      {member.access_to_department
-                        .map((dept) => dept.name)
-                        .join(", ")}
+                      {member?.access_to_department?.length > 0
+                        ? member.access_to_department.map((dept) => dept.name).join(", ")
+                        : 'No department'}
                     </td>
                   </tr>
                 ))

@@ -196,7 +196,7 @@ const ReviewGroups = () => {
           </div>
         </div>
 
-        <div className="filters">
+        <div className="search-filter">
           <SearchInput
             value={searchQuery}
             setValue={setSearchQuery}
@@ -205,7 +205,7 @@ const ReviewGroups = () => {
           />
         </div>
 
-        <div>
+        <div className="filters">
           <div>
             <span>Page: {pageNumber}</span>
             <span>Per page: {pageSize}</span>
