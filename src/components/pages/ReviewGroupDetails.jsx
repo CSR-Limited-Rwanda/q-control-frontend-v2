@@ -2,17 +2,19 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/app/dashboard/layout";
 import Link from "next/link";
-import { Plus, Pencil, MoveLeft } from "lucide-react";
+import { Plus, Pencil, MoveLeft, SquareX } from "lucide-react";
 import api from "@/utils/api";
 import DateFormatter from "../DateFormatter";
 import { useParams } from "next/navigation";
 import "../../styles/reviews/reviewGroups/_reviewGroups.scss";
+import AddMembersToReviewGroup from "../forms/AddMembersToReviewGroup";
 
 const ReviewGroupsDetailsContent = () => {
   const [members, setMembers] = useState([]);
   const [reviewGroup, setReviewGroup] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [showAddMembersForm, setShowAddMembersForm] = useState(false)
   const { reviewId } = useParams();
 
   useEffect(() => {
@@ -27,8 +29,8 @@ const ReviewGroupsDetailsContent = () => {
       } catch (error) {
         setErrorMessage(
           error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get review group"
+          error.response.data?.error ||
+          "Failed to get review group"
         );
       }
     };
@@ -56,8 +58,8 @@ const ReviewGroupsDetailsContent = () => {
         if (error.response) {
           setErrorMessage(
             error.response.data?.message ||
-              error.response.data?.error ||
-              "Failed to get review group members"
+            error.response.data?.error ||
+            "Failed to get review group members"
           );
         } else if (error.request) {
           setErrorMessage("No response from server");
@@ -72,6 +74,10 @@ const ReviewGroupsDetailsContent = () => {
     fetchGroupMembers();
   }, []);
 
+  const handleShowNewUserForm = () => {
+    setShowAddMembersForm(!showAddMembersForm);
+  };
+
   if (isLoading) {
     return (
       <div className="dashboard-page-content">
@@ -81,104 +87,127 @@ const ReviewGroupsDetailsContent = () => {
   }
 
   return (
-    <div className="dashboard-page-content">
-      <div className="group-details-top-content">
-        <div className="group-details-title">
-          <Link href="/accounts">
-            <MoveLeft />
-          </Link>
-          <p>Group details</p>
+    <>
+      <div className="dashboard-page-content">
+        {showAddMembersForm && (
+          <div className="new-user-form-popup">
+            <div className="popup">
+              <div className="popup-content">
+                <div className="close">
+                  <SquareX
+                    onClick={handleShowNewUserForm}
+                    className="close-icon"
+                  />
+                </div>
+                <div className="form">
+                  <AddMembersToReviewGroup
+                    groupId={reviewId}
+                    onClose={() => setShowAddMembersForm(false)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="group-details-top-content">
+          <div className="group-details-title">
+            <Link href="/accounts">
+              <MoveLeft />
+            </Link>
+            <p>Group details</p>
+          </div>
         </div>
-      </div>
 
-      <div className="review-group-details-container">
-        <div className="review-group-details-contents">
-          <div className="row">
-            <div className="col">
-              <h4 className="review-title">{reviewGroup.title}</h4>
-              <p className="review-date">
-                <DateFormatter dateString={reviewGroup.created_at} />
-              </p>
+        <div className="review-group-details-container">
+          <div className="review-group-details-contents">
+            <div className="row">
+              <div className="col">
+                <h4 className="review-title">{reviewGroup.title}</h4>
+                <p className="review-date">
+                  <DateFormatter dateString={reviewGroup.created_at} />
+                </p>
+              </div>
+              <div className="col">
+                <p className="review-created">Created by</p>
+                <p className="review-created-by-name">
+                  {reviewGroup.created_by || "N/A"}
+                </p>
+              </div>
+              <div className="col">
+                <p className="review-update">Last updated by</p>
+                <p>{reviewGroup.updated_by || "N/A"}</p>
+              </div>
             </div>
-            <div className="col">
-              <p className="review-created">Created by</p>
-              <p className="review-created-by-name">
-                {reviewGroup.created_by || "N/A"}
-              </p>
-            </div>
-            <div className="col">
-              <p className="review-update">Last updated by</p>
-              <p>{reviewGroup.updated_by || "N/A"}</p>
+            <div>
+              <button>
+                <Pencil />
+              </button>
             </div>
           </div>
-          <div>
-            <button>
-              <Pencil />
-            </button>
+          <div className="review-group-description">
+            <p>{reviewGroup.description || "No description provided"}</p>
           </div>
         </div>
-        <div className="review-group-description">
-          <p>{reviewGroup.description || "No description provided"}</p>
-        </div>
-      </div>
 
-      <div className="actions">
-        <div className="title">
-          <div>
-            <h3>Group members</h3>
-            <span>{members.length > 0 ? members.length : "0"}</span>{" "}
-            <span>Available</span>
+        <div className="actions">
+          <div className="title">
+            <div>
+              <h3>Group members</h3>
+              <span>{members.length > 0 ? members.length : "0"}</span>{" "}
+              <span>Available</span>
+            </div>
           </div>
+          <button
+            type="button"
+            className="button tertiary-button new-user-button"
+            onClick={() => setShowAddMembersForm(true)}
+          >
+            <Plus size={20} />
+            <span>Add Members</span>
+          </button>
         </div>
-        <button
-          type="button"
-          className="button tertiary-button new-user-button"
-        >
-          <Plus size={20} />
-          <span>Add Members</span>
-        </button>
-      </div>
-      <div className="table-container">
-        <table className="review-groups-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>ID</th>
-              <th>Email</th>
-              <th>Phone number</th>
-              <th>Facility</th>
-              <th>Department</th>
-            </tr>
-          </thead>
-          <tbody>
-            {members.length > 0 ? (
-              members.map((member) => (
-                <tr key={member.id}>
-                  <td>
-                    {member.user.first_name} {member.user.last_name}
-                  </td>
-                  <td>{member.cohesive_user_id}</td>
-                  <td>{member.user.email}</td>
-                  <td>{member.phone_number || "N/A"}</td>
-                  <td>{member?.facility?.name}</td>
-                  <td>
-                    {member.access_to_department
-                      .map((dept) => dept.name)
-                      .join(", ")}
+        <div className="table-container">
+          <table className="review-groups-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Phone number</th>
+                <th>Facility</th>
+                <th>Department</th>
+              </tr>
+            </thead>
+            <tbody>
+              {members.length > 0 ? (
+                members.map((member) => (
+                  <tr key={member.id}>
+                    <td>
+                      {member.user.first_name} {member.user.last_name}
+                    </td>
+                    <td>{member.cohesive_user_id}</td>
+                    <td>{member.user.email}</td>
+                    <td>{member.phone_number || "N/A"}</td>
+                    <td>{member?.facility?.name}</td>
+                    <td>
+                      {member.access_to_department
+                        .map((dept) => dept.name)
+                        .join(", ")}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="no-data-found">
+                    <p>No members found in this group</p>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="no-data-found">
-                  <p>No members found in this group</p>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
