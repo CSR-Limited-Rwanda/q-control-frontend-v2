@@ -53,9 +53,24 @@ const PermissionGroups = ({ formData, setFormData }) => {
   };
 
   const toggleFacilities = (id) => {
-    setSelectedFacilities((prev) =>
-      prev.includes(id) ? prev.filter((depId) => depId !== id) : [...prev, id]
-    );
+    setSelectedFacilities((prev) => {
+      const updated = prev.includes(id)
+        ? prev.filter((fid) => fid !== id)
+        : [...prev, id];
+
+      if (updated.includes(id)) {
+        setSelectedFacility(id); // Newly selected facility gets its departments shown
+      } else {
+        if (updated.length > 0) {
+          setSelectedFacility(updated[updated.length - 1]); // Show departments from most recently selected
+        } else {
+          setSelectedFacility(null); // No facility selected
+          setDepartments([]); // Clear departments
+        }
+      }
+
+      return updated;
+    });
   };
   const toggleDepartment = (facilityId, departmentId) => {
     setFacilityDepartmentSelections((prevSelections) => {
@@ -235,59 +250,53 @@ const PermissionGroups = ({ formData, setFormData }) => {
           })}
         </div>
         <div className="form-group">
-          <label htmlFor="permissionLevel">Access to deparment</label>
-          <select
-            onChange={(e) => setSelectedFacility(e.target.value)}
-            value={selectedFacility || ""}
-          >
-            <option value="" disabled>
-              Select a facility
-            </option>
-            {facilities.map((facility) => (
-              <option key={facility.value} value={facility.value}>
-                {facility.label}
-              </option>
-            ))}
-          </select>
-          {selectedFacility && (
-            <SearchInput
-              value={departmentSearch}
-              setValue={setDepartmentSearch}
-              isSearching={isSearchingDepartment}
-            />
+          <label htmlFor="departmentAccess">Access to departments</label>
+          {selectedFacilities.length === 0 ? (
+            <p>
+              No department found, check facilities to see their departments.
+            </p>
+          ) : (
+            <>
+              <SearchInput
+                value={departmentSearch}
+                setValue={setDepartmentSearch}
+                isSearching={isSearchingDepartment}
+              />
+              <div style={{ marginTop: "12px" }}>
+                {isFetchingDepartments ? (
+                  <p>Loading departments...</p>
+                ) : filteredDepartments.length > 0 ? (
+                  filteredDepartments.map(({ value, label }) => {
+                    const checked =
+                      facilityDepartmentSelections[selectedFacility]?.includes(
+                        value
+                      );
+                    return (
+                      <div
+                        key={value}
+                        onClick={() =>
+                          toggleDepartment(selectedFacility, value)
+                        }
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: "pointer",
+                          margin: "4px 0",
+                        }}
+                      >
+                        {checked ? <SquareCheck /> : <Square />}
+                        <span style={{ marginLeft: "8px" }}>{label}</span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p>No departments found.</p>
+                )}
+              </div>
+            </>
           )}
-          <div style={{ marginTop: "12px" }}>
-            {isFetchingDepartments ? (
-              <p>Loading departments...</p>
-            ) : isSearching ? (
-              <p>Searching...</p>
-            ) : filteredDepartments.length > 0 ? (
-              filteredDepartments.map(({ value, label }) => {
-                const checked =
-                  facilityDepartmentSelections[selectedFacility]?.includes(
-                    value
-                  );
-                return (
-                  <div
-                    key={value}
-                    onClick={() => toggleDepartment(selectedFacility, value)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      cursor: "pointer",
-                      margin: "4px 0",
-                    }}
-                  >
-                    {checked ? <SquareCheck /> : <Square />}
-                    <span style={{ marginLeft: "8px" }}>{label}</span>
-                  </div>
-                );
-              })
-            ) : (
-              <p>No departments found.</p>
-            )}
-          </div>
         </div>
+
         <div className="check-box" onClick={handleHasReviewPermissions}>
           {formData.hasReviewPermissions ? <SquareCheck /> : <Square />}
           <label htmlFor="hasReviewPermissions">Has review permissions</label>
