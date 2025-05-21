@@ -86,6 +86,14 @@
         }
       }
     }
+
+    .action-btn {
+      .actions-list {
+        .action {
+          cursor: pointer;
+        }
+      }
+    }
   }
 
   .review-group-description {

@@ -2,7 +2,15 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/app/dashboard/layout";
 import Link from "next/link";
-import { Plus, Pencil, MoveLeft, SquareX, ChevronRight, SquarePen, Trash2 } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  MoveLeft,
+  SquareX,
+  ChevronRight,
+  SquarePen,
+  Trash2
+} from "lucide-react";
 import api from "@/utils/api";
 import DateFormatter from "../DateFormatter";
 import { useParams } from "next/navigation";
@@ -10,6 +18,7 @@ import "../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import AddMembersToReviewGroup from "../forms/AddMembersToReviewGroup";
 import { useRouter } from "next/navigation";
 import DeleteReviewGroup from "../accounts/forms/reviewGroups/DeleteReviewGroup";
+import EditReviewGroup from "../accounts/forms/reviewGroups/EditReviewGroup";
 
 const ReviewGroupsDetailsContent = () => {
   const [members, setMembers] = useState([]);
@@ -172,6 +181,16 @@ const ReviewGroupsDetailsContent = () => {
           />
         )}
 
+        {showEditForm && (
+          <EditReviewGroup
+            reviewGroup={reviewGroup}
+            onClose={() => setShowEditForm(false)}
+            onReviewGroupUpdated={(updatedReviewGroup) => {
+              setReviewGroup(updatedReviewGroup)
+            }}
+          />
+        )}
+
         <div className="group-details-top-content">
           <div className="group-details-title">
             <Link href="/accounts">
@@ -201,12 +220,15 @@ const ReviewGroupsDetailsContent = () => {
                 <p>{reviewGroup.updated_by || "N/A"}</p>
               </div>
             </div>
-            <div>
-              <div onClick={handleShowActions} className={`actions-dropdown ${showActions && 'show'}`}>
-                <div className="header">
+            <div className="action-btn">
+              <div
+                onClick={handleShowActions}
+                className={`actions-dropdown ${showActions && 'show'}`}
+              >
+                <button className="header">
                   <span>Actions</span>
                   <ChevronRight className='icon' />
-                </div>
+                </button>
 
                 {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
                 <div className="actions-list">
