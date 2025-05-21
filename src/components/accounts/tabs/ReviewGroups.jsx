@@ -70,7 +70,6 @@ const ReviewGroups = () => {
       const url = `/permissions/review-groups/${params ? `?${params}` : ''}`
       const response = await api.get(url);
       if (response.status === 200) {
-        console.log('data', response.data)
         return response.data
       }
       return []

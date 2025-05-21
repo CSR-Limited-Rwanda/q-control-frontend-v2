@@ -2,12 +2,14 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/app/dashboard/layout";
 import Link from "next/link";
-import { Plus, Pencil, MoveLeft, SquareX } from "lucide-react";
+import { Plus, Pencil, MoveLeft, SquareX, ChevronRight, SquarePen, Trash2 } from "lucide-react";
 import api from "@/utils/api";
 import DateFormatter from "../DateFormatter";
 import { useParams } from "next/navigation";
 import "../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import AddMembersToReviewGroup from "../forms/AddMembersToReviewGroup";
+import { useRouter } from "next/navigation";
+import DeleteReviewGroup from "../accounts/forms/reviewGroups/DeleteReviewGroup";
 
 const ReviewGroupsDetailsContent = () => {
   const [members, setMembers] = useState([]);
@@ -15,8 +17,15 @@ const ReviewGroupsDetailsContent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showAddMembersForm, setShowAddMembersForm] = useState(false)
+  const [showActions, setShowActions] = useState(false)
+  const [showDeletePopup, setShowDeletePopup] = useState(false)
+  const [showEditForm, setShowEditForm] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
   const { reviewId } = useParams();
+  const router = useRouter()
 
+  // review group details
   useEffect(() => {
     const fetchReviewGroup = async () => {
       try {
@@ -24,6 +33,7 @@ const ReviewGroupsDetailsContent = () => {
           `/permissions/review-groups/${reviewId}/`
         );
         if (response.status === 200) {
+          // console.log('review group', response.data)
           setReviewGroup(response.data);
         }
       } catch (error) {
@@ -37,18 +47,19 @@ const ReviewGroupsDetailsContent = () => {
     fetchReviewGroup();
   }, []);
 
+  // review group members
   useEffect(() => {
     const fetchGroupMembers = async () => {
       try {
         const response = await api.get(
           `/permissions/review-groups/${reviewId}/members/`
         );
-        console.log("data:", response.data);
+        // console.log("data:", response.data);
 
         if (response.status === 200) {
           if (Array.isArray(response.data)) {
             setMembers(response.data);
-            console.log(response.data);
+            // console.log(response.data);
           } else {
             setErrorMessage("Received data in unexpected format");
             setMembers([]);
@@ -74,9 +85,48 @@ const ReviewGroupsDetailsContent = () => {
     fetchGroupMembers();
   }, []);
 
+
   const handleShowNewUserForm = () => {
     setShowAddMembersForm(!showAddMembersForm);
   };
+
+  const handleShowActions = () => {
+    setShowActions(!showActions)
+  }
+
+  const handleDeleteReviewGroup = async () => {
+    setIsDeleting(true);
+    setDeleteError(null);
+
+    try {
+      const res = await api.delete(`/permissions/review-groups/${reviewId}/`);
+
+      if (res.status === 200 || res.status === 204) {
+        setShowDeletePopup(false); // ✅ Close only on success
+        router.push(`/accounts`);
+      } else {
+        setDeleteError(res.data?.message || "Failed to delete review group");
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      setDeleteError(
+        error.response?.data?.message || error.response?.data?.error || 'Error deleting department'
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+
+  useEffect(() => {
+    if (deleteError) {
+      const timer = setTimeout(() => {
+        setShowDeletePopup(false)
+        setDeleteError(null)
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [deleteError])
 
   if (isLoading) {
     return (
@@ -109,6 +159,19 @@ const ReviewGroupsDetailsContent = () => {
             </div>
           </div>
         )}
+
+        {showDeletePopup && (
+          <DeleteReviewGroup
+            onClose={() => {
+              setShowDeletePopup(false)
+              setDeleteError(null)
+            }}
+            onConfirm={handleDeleteReviewGroup}
+            isLoading={isDeleting}
+            error={deleteError}
+          />
+        )}
+
         <div className="group-details-top-content">
           <div className="group-details-title">
             <Link href="/accounts">
@@ -139,9 +202,37 @@ const ReviewGroupsDetailsContent = () => {
               </div>
             </div>
             <div>
-              <button>
-                <Pencil />
-              </button>
+              <div onClick={handleShowActions} className={`actions-dropdown ${showActions && 'show'}`}>
+                <div className="header">
+                  <span>Actions</span>
+                  <ChevronRight className='icon' />
+                </div>
+
+                {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
+                <div className="actions-list">
+                  <div
+                    className="action"
+                    onClick={() => {
+                      setShowEditForm(true)
+                      setShowActions(false)
+                    }}
+                  >
+                    <SquarePen />
+                    <span>Edit review group</span>
+                  </div>
+                  <hr />
+                  <div
+                    className="action"
+                    onClick={() => {
+                      setShowDeletePopup(true)
+                      setShowActions(false)
+                    }}
+                  >
+                    <Trash2 />
+                    <span>Delete review group</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="review-group-description">

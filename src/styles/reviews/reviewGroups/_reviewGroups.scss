@@ -115,6 +115,34 @@
   }
 }
 
+// delete review group
+.popup {
+  .popup-content {
+    .delete-error-message {
+      background-color: #FBEDE7;
+      color: #F87C47;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .delete-review-group-buttons {
+      display: flex;
+      gap: 24px;
+
+      button {
+        width: 100%;
+      }
+
+      .cancel-delete-btn {
+        background-color: #F2F2F2;
+        color: #808080;
+      }
+    }
+  }
+}
+
 @media screen and (max-width: 540px) {
   .actions {
     flex-direction: column;
