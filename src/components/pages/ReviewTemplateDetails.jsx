@@ -174,7 +174,13 @@ const ReviewTemplatesDetailsContent = () => {
                 />
               </div>
               <div className="form">
-                <AddTaskForm discardFn={handleShowAddTaskForm} />
+                <AddTaskForm
+                  showTaskDetails={handleShowTaskDetailsPopup}
+                  discardFn={handleShowAddTaskForm}
+                  fetchTaskDetails={(taskId) => {
+                    fetchTaskDetails(taskId);
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -213,7 +219,8 @@ const ReviewTemplatesDetailsContent = () => {
               </div>
               <div className="form">
                 <EditTaskForm
-                  discardFn={handleShowTaskDetailsPopup}
+                  showTaskDetails={handleShowTaskDetailsPopup}
+                  discardFn={handleShowEditTaskForm}
                   data={task}
                 />
               </div>

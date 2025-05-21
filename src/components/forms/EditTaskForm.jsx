@@ -9,7 +9,7 @@ import "../../styles/_components.scss";
 import "../../styles/_forms.scss";
 import "../../styles/reviews/reviewGroups/_forms.scss";
 
-const EditTaskForm = ({ data, discardFn }) => {
+const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
   const router = useRouter();
   const { templateId } = useParams();
 
@@ -367,13 +367,15 @@ const EditTaskForm = ({ data, discardFn }) => {
               </p>
             </div>
             <div className="success-btn">
-              <Link
-                href={`/permissions/review-templates/${templateId}/`}
+              <div
                 className="visit-btn"
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  discardFn();
+                  showTaskDetails();
+                }}
               >
                 Visit Task Details
-              </Link>
+              </div>
               <button
                 className="back-btn"
                 onClick={() => {

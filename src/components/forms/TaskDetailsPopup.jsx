@@ -69,7 +69,13 @@ const TaskDetailsPopup = ({ task, discardFn, templateId }) => {
         </span>
         <div className="action-buttons">
           <>
-            <button className="third-button" onClick={discardFn}>
+            <button
+              className="third-button"
+              onClick={() => {
+                window.location.reload();
+                discardFn();
+              }}
+            >
               Discard
             </button>
             <button className="primary-button" onClick={handleCompleteTask}>
