@@ -330,10 +330,10 @@ const ReviewGroups = () => {
     return displayData.map((reviewGroup) => (
       <tr key={reviewGroup.id} onClick={() => handleRowClick(reviewGroup.id)}>
         <td>{reviewGroup.id}</td>
-        <td>{reviewGroup.title}</td>
-        <td>{reviewGroup.description}</td>
+        <td>{reviewGroup.title || 'Not provided'}</td>
+        <td>{reviewGroup.description || 'Not provided'}</td>
         <td>
-          <DateFormatter dateString={reviewGroup.created_at} />
+          <DateFormatter dateString={reviewGroup.created_at || 'N/A'} />
         </td>
         {/* <td className="table-actions" style={{ position: "relative" }}>
           <div onClick={(e) => handleEllipsisClick(e, reviewGroup.id)}>
