@@ -9,7 +9,7 @@ import "../../styles/_components.scss";
 import "../../styles/_forms.scss";
 import "../../styles/reviews/reviewGroups/_forms.scss";
 
-const AddTaskForm = ({ discardFn }) => {
+const AddTaskForm = ({ fetchTaskDetails, showTaskDetails, discardFn }) => {
   const router = useRouter();
   const { templateId } = useParams();
 
@@ -285,15 +285,22 @@ const AddTaskForm = ({ discardFn }) => {
               </p>
             </div>
             <div className="success-btn">
-              <Link
-                href={`/permissions/review-templates/${templateId}/`}
+              <div
                 className="visit-btn"
+                onClick={async () => {
+                  discardFn();
+                  await fetchTaskDetails(taskId);
+                  showTaskDetails();
+                }}
               >
                 Visit Task Details
-              </Link>
+              </div>
               <button
                 className="back-btn"
-                onClick={() => router.push("/permissions/review-templates")}
+                onClick={() => {
+                  window.location.reload();
+                  router.push(`/permissions/review-templates/${templateId}`);
+                }}
               >
                 Back To List
               </button>

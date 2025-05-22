@@ -27,6 +27,9 @@ const EditReviewTemplateForm = ({ discardFn, data }) => {
   const goToDetails = (id) => {
     router.push(`/permissions/review-templates/${data.id}/`);
   };
+  const refreshPage = () => {
+    router.push(`/accounts/`);
+  };
   const handleNextStep = async () => {
     if (currentStep === 1) {
       if (!incidentType || !name.trim() || !description.trim()) {
@@ -145,7 +148,9 @@ const EditReviewTemplateForm = ({ discardFn, data }) => {
               <button className="visit-btn" onClick={goToDetails}>
                 Manage Template
               </button>
-              <button className="back-btn">Back To List</button>
+              <button onClick={refreshPage} className="back-btn">
+                Back To List
+              </button>
             </div>
           </div>
         </div>

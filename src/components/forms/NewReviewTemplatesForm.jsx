@@ -23,16 +23,15 @@ const NewReviewTemplatesForm = ({ discardFn }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [continuing, setContinuing] = useState(false);
-  const { templateId } = useParams();
+  const [templateId, setTemplateId] = useState();
 
   const goToDetails = (id) => {
     router.push(`/permissions/review-templates/${templateId}/`);
   };
 
   const refreshPage = () => {
+    router.push(`/accounts/`);
     window.location.reload();
-
-    router.push(`/permissions/review-templates/`);
   };
   const handleNextStep = async () => {
     if (currentStep === 1) {
@@ -57,6 +56,7 @@ const NewReviewTemplatesForm = ({ discardFn }) => {
         if (response.status === 201 || response.status === 200) {
           setCurrentStep((prev) => prev + 1);
           console.log(response.data);
+          setTemplateId(response.data.id);
         } else {
           alert("Something went wrong. Please try again.");
         }
