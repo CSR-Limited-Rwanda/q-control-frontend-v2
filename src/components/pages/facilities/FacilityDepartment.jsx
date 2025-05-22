@@ -326,7 +326,8 @@ const FacilityDepartmentContent = () => {
                     <Users size={20} /> Staff
                 </div>
             </div>
-
+            
+            {/* tabs */}
             {/* incident reports */}
             {activeTab === "reports" && (
                 <div className="report-list-with-notes">
