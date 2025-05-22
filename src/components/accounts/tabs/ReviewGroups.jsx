@@ -187,8 +187,8 @@ const ReviewGroups = () => {
             <span>
               {isEmpty
                 ? reviewGroups.length
-                : searchResults?.length > 0
-                ? searchResults?.length
+                : serverSearchResults?.length > 0
+                ? serverSearchResults?.length
                 : reviewGroups.length}
             </span>{" "}
             <span>Available</span>
