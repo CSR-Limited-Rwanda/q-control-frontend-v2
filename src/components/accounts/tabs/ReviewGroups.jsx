@@ -187,8 +187,8 @@ const ReviewGroups = () => {
             <span>
               {isEmpty
                 ? reviewGroups.length
-                : searchResults.length > 0
-                  ? searchResults.length
+                : serverSearchResults.length > 0
+                  ? serverSearchResults.length
                   : reviewGroups.length}
             </span>{" "}
             <span>Available</span>
@@ -260,7 +260,7 @@ const ReviewGroups = () => {
               <th>Group Name</th>
               <th>Description</th>
               <th>Date Added</th>
-              <th>Action</th>
+              {/* <th>Action</th> */}
             </tr>
           </thead>
           <tbody>{renderTableBody()}</tbody>
@@ -335,7 +335,7 @@ const ReviewGroups = () => {
         <td>
           <DateFormatter dateString={reviewGroup.created_at} />
         </td>
-        <td className="table-actions" style={{ position: "relative" }}>
+        {/* <td className="table-actions" style={{ position: "relative" }}>
           <div onClick={(e) => handleEllipsisClick(e, reviewGroup.id)}>
             <EllipsisVertical />
           </div>
@@ -355,7 +355,7 @@ const ReviewGroups = () => {
               </div>
             </div>
           )}
-        </td>
+        </td> */}
       </tr>
     ));
   }
