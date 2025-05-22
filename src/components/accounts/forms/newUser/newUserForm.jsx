@@ -150,8 +150,8 @@ const NewUserForm = ({
   return (
     <div className="popup">
       <div className="popup-content">
-        <div className="close" onClick={handleClose}>
-          <X size={32} />
+        <div className="close-icon" onClick={handleClose}>
+          <X size={34} />
         </div>
         <div className="form">
           <h2>

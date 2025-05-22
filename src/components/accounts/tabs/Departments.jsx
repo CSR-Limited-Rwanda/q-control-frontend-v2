@@ -1,20 +1,20 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
-import { MoveRight, Notebook } from 'lucide-react';
+import { MoveRight, Notebook, PlusCircle, PlusIcon } from "lucide-react";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import AddDepartment from "../forms/department/AddDepartment";
-import '../../../styles/facilities/_facilities.scss'
+import "../../../styles/facilities/_facilities.scss";
 
 const DepartmentsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [facilities, setFacilities] = useState([]);
   const [selectedFacilityId, setSelectedFacilityId] = useState();
-  const [selectedDepartment, setSelectedDepartment] = useState(null)
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const [showAddDepartment, setShowAddDepartment] = useState(false)
-  const router = useRouter()
+  const [showAddDepartment, setShowAddDepartment] = useState(false);
+  const router = useRouter();
 
   // Fetch all facilities on mount
   useEffect(() => {
@@ -63,13 +63,14 @@ const DepartmentsPage = () => {
   }, [selectedFacilityId]);
 
   const handleDepartmentClick = (department_id) => {
-    router.push(`/facilities/${selectedFacilityId}/departments/${department_id}`)
-  }
+    router.push(
+      `/facilities/${selectedFacilityId}/departments/${department_id}`
+    );
+  };
 
   const handleDepartmentAdded = (newDepartment) => {
-    setDepartments(prev => [...prev, newDepartment])
-  }
-
+    setDepartments((prev) => [...prev, newDepartment]);
+  };
 
   return (
     <div>
@@ -100,9 +101,8 @@ const DepartmentsPage = () => {
               <p>Available departments</p>
             </div>
             <div className="second-col">
-              <button
-                onClick={() => setShowAddDepartment(true)}
-              >
+              <button onClick={() => setShowAddDepartment(true)}>
+                <PlusIcon />
                 Add department
               </button>
             </div>
@@ -115,20 +115,26 @@ const DepartmentsPage = () => {
             />
           )}
           <div className="departments-list">
-            {Array.isArray(departments) && departments.length > 0 ?
-              departments.map((department) => (
-                <div
-                  key={department.id} className="department-item"
-                  onClick={() => handleDepartmentClick(department.id)}
-                >
-                  <Notebook size={30} className="department-icon" />
-                  <div>
-                    <h3 className="department-title">{department.name}</h3>
-                    <p>Members: {Array.isArray(department.members) ? department.members.length : department.members}</p>
+            {Array.isArray(departments) && departments.length > 0
+              ? departments.map((department) => (
+                  <div
+                    key={department.id}
+                    className="department-item"
+                    onClick={() => handleDepartmentClick(department.id)}
+                  >
+                    <Notebook size={30} className="department-icon" />
+                    <div>
+                      <h3 className="department-title">{department.name}</h3>
+                      <p>
+                        Members:{" "}
+                        {Array.isArray(department.members)
+                          ? department.members.length
+                          : department.members}
+                      </p>
+                    </div>
                   </div>
-               
-                </div>
-              )) : 'No departments found'}
+                ))
+              : "No departments found"}
           </div>
         </div>
       )}

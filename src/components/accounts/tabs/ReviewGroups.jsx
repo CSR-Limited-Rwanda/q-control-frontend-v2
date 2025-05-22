@@ -11,7 +11,7 @@ import {
   SquarePen,
   Eye,
   Trash2,
-  X
+  X,
 } from "lucide-react";
 import "../../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import PrimaryButton from "@/components/PrimaryButton";
@@ -28,18 +28,18 @@ const ReviewGroups = () => {
   const [isServerSearching, setIsServerSearching] = useState(false);
   const [openPopupId, setOpenPopupId] = useState(null);
   const [isEmpty, setIsEmpty] = useState(localStorage.getItem("isEmpty"));
-  const [searchQuery, setSearchQuery] = useState("")
-  const [pageNumber, setPageNumber] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const [showFilters, setShowFilters] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [showFilters, setShowFilters] = useState(false);
   const [searchError, setSearchError] = useState(null);
 
   const createUrlParams = (params) => {
     return Object.entries(params)
       .filter(([_, value]) => value !== undefined)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join('&')
-  }
+      .join("&");
+  };
 
   const handleEllipsisClick = (event, id) => {
     event.stopPropagation(); // Prevent triggering document click
@@ -67,37 +67,37 @@ const ReviewGroups = () => {
 
   const fetchReviewGroups = async (params) => {
     try {
-      const url = `/permissions/review-groups/${params ? `?${params}` : ''}`
+      const url = `/permissions/review-groups/${params ? `?${params}` : ""}`;
       const response = await api.get(url);
       if (response.status === 200) {
-        return response.data
+        return response.data;
       }
-      return []
+      return [];
     } catch (error) {
       if (error.response) {
         setErrorMessage(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error setting a list of users"
+            error.response.data.error ||
+            "Error setting a list of users"
         );
-        console.log('error:', error)
-        return []
+        console.log("error:", error);
+        return [];
       } else {
         setErrorMessage("Unknown error fetching users");
       }
-      console.log('error', error);
+      console.log("error", error);
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
     const loadInitialData = async () => {
-      const data = await fetchReviewGroups()
-      setReviewGroups(data)
-      setIsLoading(false)
-    }
-    loadInitialData()
-  }, [])
+      const data = await fetchReviewGroups();
+      setReviewGroups(data);
+      setIsLoading(false);
+    };
+    loadInitialData();
+  }, []);
 
   const handleSearch = useCallback(async () => {
     try {
@@ -107,16 +107,16 @@ const ReviewGroups = () => {
         const params = createUrlParams({
           search: searchQuery,
           page: pageNumber,
-          page_size: pageSize
+          page_size: pageSize,
         });
         const results = await fetchReviewGroups(params);
         setServerSearchResults(results);
-        setReviewGroups([])
+        setReviewGroups([]);
       } else {
         setServerSearchResults([]);
         if (reviewGroups.length === 0) {
-          const data = await fetchReviewGroups()
-          setReviewGroups(data)
+          const data = await fetchReviewGroups();
+          setReviewGroups(data);
         }
       }
     } catch (error) {
@@ -130,32 +130,31 @@ const ReviewGroups = () => {
   const handleApplyFilters = async () => {
     const params = createUrlParams({
       page: pageNumber,
-      page_size: pageSize
-    })
+      page_size: pageSize,
+    });
     try {
-      setIsServerSearching(true)
-      const data = await fetchReviewGroups(params)
-      setReviewGroups(data)
-      setServerSearchResults([])
+      setIsServerSearching(true);
+      const data = await fetchReviewGroups(params);
+      setReviewGroups(data);
+      setServerSearchResults([]);
     } catch (error) {
-      console.error("Error in filtering data:", error)
+      console.error("Error in filtering data:", error);
     } finally {
-      setIsServerSearching(false)
-      setShowFilters(false)
+      setIsServerSearching(false);
+      setShowFilters(false);
     }
-  }
+  };
 
   const handleShowFilters = () => {
-    setShowFilters(!showFilters)
-  }
-
+    setShowFilters(!showFilters);
+  };
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
-      handleSearch()
-    }, 500)
-    return () => clearTimeout(debounceTimeout)
-  }, [searchQuery, handleSearch])
+      handleSearch();
+    }, 500);
+    return () => clearTimeout(debounceTimeout);
+  }, [searchQuery, handleSearch]);
 
   return isLoading ? (
     <div className="dashboard-page-content">
@@ -168,9 +167,10 @@ const ReviewGroups = () => {
           <div className="popup">
             <div className="popup-content">
               <div className="close">
-                <SquareX
+                <X
                   onClick={handleShowNewUserForm}
                   className="close-icon"
+                  size={34}
                 />
               </div>
               <div className="form">
@@ -187,9 +187,9 @@ const ReviewGroups = () => {
             <span>
               {isEmpty
                 ? reviewGroups.length
-                : searchResults.length > 0
-                  ? searchResults.length
-                  : reviewGroups.length}
+                : searchResults?.length > 0
+                ? searchResults?.length
+                : reviewGroups.length}
             </span>{" "}
             <span>Available</span>
           </div>
@@ -200,7 +200,7 @@ const ReviewGroups = () => {
             value={searchQuery}
             setValue={setSearchQuery}
             isSearching={isServerSearching}
-            label={'Search reviews by name'}
+            label={"Search reviews by name"}
           />
         </div>
 
@@ -212,33 +212,50 @@ const ReviewGroups = () => {
           <div className="filters-popup">
             <OutlineButton
               onClick={handleShowFilters}
-              span={'Filters'}
+              span={"Filters"}
               prefixIcon={showFilters ? <X /> : <Plus />}
             />
 
-            {
-              showFilters ?
-                <div className="side-popup">
-                  <div className="popup-content">
-                    <h3>Filters</h3>
-                    <form>
-                      <div className="half">
-                        <div className="form-group">
-                          <label htmlFor="page">Page</label>
-                          <input value={pageNumber} onChange={e => setPageNumber(e.target.value)} type="number" name="pageNumber" id="pageNumber" placeholder='Page number' />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="page">Page size</label>
-                          <input value={pageSize} onChange={e => setPageSize(e.target.value)} type="number" name="pageSize" id="pageSize" placeholder='Page size' />
-                        </div>
+            {showFilters ? (
+              <div className="side-popup">
+                <div className="popup-content">
+                  <h3>Filters</h3>
+                  <form>
+                    <div className="half">
+                      <div className="form-group">
+                        <label htmlFor="page">Page</label>
+                        <input
+                          value={pageNumber}
+                          onChange={(e) => setPageNumber(e.target.value)}
+                          type="number"
+                          name="pageNumber"
+                          id="pageNumber"
+                          placeholder="Page number"
+                        />
                       </div>
-                    </form>
+                      <div className="form-group">
+                        <label htmlFor="page">Page size</label>
+                        <input
+                          value={pageSize}
+                          onChange={(e) => setPageSize(e.target.value)}
+                          type="number"
+                          name="pageSize"
+                          id="pageSize"
+                          placeholder="Page size"
+                        />
+                      </div>
+                    </div>
+                  </form>
 
-                    <PrimaryButton text={'Apply filters'} onClick={handleApplyFilters} />
-                  </div>
+                  <PrimaryButton
+                    text={"Apply filters"}
+                    onClick={handleApplyFilters}
+                  />
                 </div>
-                : ''
-            }
+              </div>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 
@@ -292,13 +309,13 @@ const ReviewGroups = () => {
           <p>No review groups available</p>
         )}
       </div>
-
     </div>
   );
 
   function renderTableBody() {
     // Determine which data to show based on search state
-    const displayData = searchQuery.length >= 3 ? serverSearchResults : reviewGroups;
+    const displayData =
+      searchQuery.length >= 3 ? serverSearchResults : reviewGroups;
     const isSearchActive = searchQuery.length >= 3;
     const noResults = displayData.length === 0;
 

@@ -9,7 +9,8 @@ import {
   SquareX,
   ChevronRight,
   SquarePen,
-  Trash2
+  Trash2,
+  X,
 } from "lucide-react";
 import api from "@/utils/api";
 import DateFormatter from "../DateFormatter";
@@ -25,14 +26,14 @@ const ReviewGroupsDetailsContent = () => {
   const [reviewGroup, setReviewGroup] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [showAddMembersForm, setShowAddMembersForm] = useState(false)
-  const [showActions, setShowActions] = useState(false)
-  const [showDeletePopup, setShowDeletePopup] = useState(false)
-  const [showEditForm, setShowEditForm] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [deleteError, setDeleteError] = useState(null)
+  const [showAddMembersForm, setShowAddMembersForm] = useState(false);
+  const [showActions, setShowActions] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
   const { reviewId } = useParams();
-  const router = useRouter()
+  const router = useRouter();
 
   // review group details
   useEffect(() => {
@@ -48,8 +49,8 @@ const ReviewGroupsDetailsContent = () => {
       } catch (error) {
         setErrorMessage(
           error.response.data?.message ||
-          error.response.data?.error ||
-          "Failed to get review group"
+            error.response.data?.error ||
+            "Failed to get review group"
         );
       }
     };
@@ -78,8 +79,8 @@ const ReviewGroupsDetailsContent = () => {
         if (error.response) {
           setErrorMessage(
             error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get review group members"
+              error.response.data?.error ||
+              "Failed to get review group members"
           );
         } else if (error.request) {
           setErrorMessage("No response from server");
@@ -94,14 +95,13 @@ const ReviewGroupsDetailsContent = () => {
     fetchGroupMembers();
   }, []);
 
-
   const handleShowNewUserForm = () => {
     setShowAddMembersForm(!showAddMembersForm);
   };
 
   const handleShowActions = () => {
-    setShowActions(!showActions)
-  }
+    setShowActions(!showActions);
+  };
 
   const handleDeleteReviewGroup = async () => {
     setIsDeleting(true);
@@ -117,25 +117,26 @@ const ReviewGroupsDetailsContent = () => {
         setDeleteError(res.data?.message || "Failed to delete review group");
       }
     } catch (error) {
-      console.error('Delete error:', error);
+      console.error("Delete error:", error);
       setDeleteError(
-        error.response?.data?.message || error.response?.data?.error || 'Error deleting department'
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          "Error deleting department"
       );
     } finally {
       setIsDeleting(false);
     }
   };
 
-
   useEffect(() => {
     if (deleteError) {
       const timer = setTimeout(() => {
-        setShowDeletePopup(false)
-        setDeleteError(null)
-      }, 5000)
-      return () => clearTimeout(timer)
+        setShowDeletePopup(false);
+        setDeleteError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
     }
-  }, [deleteError])
+  }, [deleteError]);
 
   if (isLoading) {
     return (
@@ -153,9 +154,10 @@ const ReviewGroupsDetailsContent = () => {
             <div className="popup">
               <div className="popup-content">
                 <div className="close">
-                  <SquareX
+                  <X
                     onClick={handleShowNewUserForm}
                     className="close-icon"
+                    size={34}
                   />
                 </div>
                 <div className="form">
@@ -172,8 +174,8 @@ const ReviewGroupsDetailsContent = () => {
         {showDeletePopup && (
           <DeleteReviewGroup
             onClose={() => {
-              setShowDeletePopup(false)
-              setDeleteError(null)
+              setShowDeletePopup(false);
+              setDeleteError(null);
             }}
             onConfirm={handleDeleteReviewGroup}
             isLoading={isDeleting}
@@ -186,7 +188,7 @@ const ReviewGroupsDetailsContent = () => {
             reviewGroup={reviewGroup}
             onClose={() => setShowEditForm(false)}
             onReviewGroupUpdated={(updatedReviewGroup) => {
-              setReviewGroup(updatedReviewGroup)
+              setReviewGroup(updatedReviewGroup);
             }}
           />
         )}
@@ -223,11 +225,11 @@ const ReviewGroupsDetailsContent = () => {
             <div className="action-btn">
               <div
                 onClick={handleShowActions}
-                className={`actions-dropdown ${showActions && 'show'}`}
+                className={`actions-dropdown ${showActions && "show"}`}
               >
                 <button className="header">
                   <span>Actions</span>
-                  <ChevronRight className='icon' />
+                  <ChevronRight className="icon" />
                 </button>
 
                 {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
@@ -235,8 +237,8 @@ const ReviewGroupsDetailsContent = () => {
                   <div
                     className="action"
                     onClick={() => {
-                      setShowEditForm(true)
-                      setShowActions(false)
+                      setShowEditForm(true);
+                      setShowActions(false);
                     }}
                   >
                     <SquarePen />
@@ -246,8 +248,8 @@ const ReviewGroupsDetailsContent = () => {
                   <div
                     className="action"
                     onClick={() => {
-                      setShowDeletePopup(true)
-                      setShowActions(false)
+                      setShowDeletePopup(true);
+                      setShowActions(false);
                     }}
                   >
                     <Trash2 />
@@ -304,8 +306,10 @@ const ReviewGroupsDetailsContent = () => {
                     <td>{member?.facility?.name}</td>
                     <td>
                       {member?.access_to_department?.length > 0
-                        ? member.access_to_department.map((dept) => dept.name).join(", ")
-                        : 'No department'}
+                        ? member.access_to_department
+                            .map((dept) => dept.name)
+                            .join(", ")
+                        : "No department"}
                     </td>
                   </tr>
                 ))
