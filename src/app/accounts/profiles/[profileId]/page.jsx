@@ -34,6 +34,7 @@ import ActivateUserForm from "@/components/accounts/forms/ActivateUser";
 import DeleteUserForm from "@/components/accounts/forms/DeleteUser";
 import UserPermissions from "@/components/accounts/profile/userPermissions";
 import DeactivateUserForm from "@/components/accounts/forms/DeactivateUser";
+import AccessPermissions from "@/components/accounts/forms/AccessPermissions";
 
 const ProfileDetailsPage = () => {
   const { profileId } = useParams();
@@ -46,8 +47,14 @@ const ProfileDetailsPage = () => {
   const [showDeactivateUserForm, setShowDeactivateUserForm] = useState(false);
   const [showDeleteUserForm, setShowDeleteUserForm] = useState(false);
   const [showUserPermissionsForm, setShowUserPermissionsForm] = useState(false);
+  const [showAccessPermissionsForm, setShowAccessPermissionsForm] =
+    useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    access_to_facilities: [],
+    access_to_department: {},
+  });
 
   const handleShowUpdateForm = () => {
     setShowActions(false);
@@ -72,6 +79,9 @@ const ProfileDetailsPage = () => {
   const handleShowDeleteUserForm = () => {
     setShowDeleteUserForm(!showDeleteUserForm);
   };
+  const handleShowAccessPermissionsForm = () => {
+    setShowAccessPermissionsForm(!showAccessPermissionsForm);
+  };
   const handleShowUserPermissionsForm = () => {
     setShowUserPermissionsForm(!showUserPermissionsForm);
   };
@@ -82,6 +92,7 @@ const ProfileDetailsPage = () => {
         const response = await api.get(`/users/${profileId}/`);
         console.log(response.data);
         if (response.status === 200) {
+          console.log(response.data);
           const data = response.data;
           const transformedProfile = {
             ...data,
@@ -94,7 +105,10 @@ const ProfileDetailsPage = () => {
           };
 
           setProfile(transformedProfile);
-          console.log(transformedProfile);
+          setFormData({
+            access_to_facilities: data.access_to_facilities || [],
+            access_to_department: data.access_to_department || {},
+          });
         }
       } catch (error) {
         let message = "Something went wrong";
@@ -111,7 +125,8 @@ const ProfileDetailsPage = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [profileId]);
+
   return (
     <DashboardLayout>
       <div className="profile-page">
@@ -159,6 +174,15 @@ const ProfileDetailsPage = () => {
                   <Trash2 />
                   <span>Delete user</span>
                 </div>
+                <hr />
+                <div
+                  className="action"
+                  onClick={handleShowAccessPermissionsForm}
+                >
+                  <Key />
+                  <span>Access Permissions</span>
+                </div>
+                <hr />
               </div>
             </div>
           </div>
@@ -272,6 +296,15 @@ const ProfileDetailsPage = () => {
         <UserPermissions
           userId={profileId}
           togglePermissions={handleShowUserPermissionsForm}
+        />
+      )}
+      {showAccessPermissionsForm && (
+        <AccessPermissions
+          formData={formData}
+          setFormData={setFormData}
+          userId={profileId}
+          email={profile.user.email}
+          handleClose={handleShowAccessPermissionsForm}
         />
       )}
     </DashboardLayout>

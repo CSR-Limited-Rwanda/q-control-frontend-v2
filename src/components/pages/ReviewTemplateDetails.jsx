@@ -26,6 +26,7 @@ import AddTaskForm from "../forms/AddTaskForm";
 import EditTaskForm from "../forms/EditTaskForm";
 import DeletePopup from "../forms/DeletePopup";
 import EditReviewTemplateForm from "../forms/EditReviewTemplateForm";
+import TaskDetailsPopup from "../forms/TaskDetailsPopup";
 
 const ReviewTemplatesDetailsContent = () => {
   const [tasks, setTasks] = useState([]);
@@ -37,6 +38,7 @@ const ReviewTemplatesDetailsContent = () => {
   const [loadingTask, setLoadingTask] = useState(true);
   const [showAddTaskForm, setShowAddTaskForm] = useState(false);
   const [showEditTaskForm, setShowEditTaskForm] = useState(false);
+  const [showTaskDetailsPopup, setShowTaskDetailsPopup] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [showEditTemplateForm, setShowEditTemplateForm] = useState(false);
   const { templateId } = useParams();
@@ -113,6 +115,10 @@ const ReviewTemplatesDetailsContent = () => {
     setShowEditTaskForm(!showEditTaskForm);
   };
 
+  const handleShowTaskDetailsPopup = () => {
+    setShowTaskDetailsPopup(!showTaskDetailsPopup);
+  };
+
   const handleShowDeleteForm = (id) => {
     setTaskId(id);
     setShowDeleteForm(!showDeleteForm);
@@ -125,7 +131,6 @@ const ReviewTemplatesDetailsContent = () => {
       console.log("data:", response);
 
       if (response.status === 200) {
-        setShowEditTaskForm(!showEditTaskForm);
         setTask(response.data);
         console.log(response.data);
       }
@@ -169,7 +174,13 @@ const ReviewTemplatesDetailsContent = () => {
                 />
               </div>
               <div className="form">
-                <AddTaskForm discardFn={handleShowAddTaskForm} />
+                <AddTaskForm
+                  showTaskDetails={handleShowTaskDetailsPopup}
+                  discardFn={handleShowAddTaskForm}
+                  fetchTaskDetails={(taskId) => {
+                    fetchTaskDetails(taskId);
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -207,7 +218,32 @@ const ReviewTemplatesDetailsContent = () => {
                 />
               </div>
               <div className="form">
-                <EditTaskForm discardFn={handleShowEditTaskForm} data={task} />
+                <EditTaskForm
+                  showTaskDetails={handleShowTaskDetailsPopup}
+                  discardFn={handleShowEditTaskForm}
+                  data={task}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showTaskDetailsPopup && (
+        <div className="new-user-form-popup">
+          <div className="popup">
+            <div className="popup-content">
+              <div className="close">
+                <SquareX
+                  onClick={handleShowTaskDetailsPopup}
+                  className="close-icon"
+                />
+              </div>
+              <div className="form">
+                <TaskDetailsPopup
+                  discardFn={handleShowTaskDetailsPopup}
+                  task={task}
+                  templateId={templateId}
+                />
               </div>
             </div>
           </div>
@@ -326,14 +362,21 @@ const ReviewTemplatesDetailsContent = () => {
                   </div>
                   <div
                     className="edit-btn"
-                    onClick={() => {
-                      fetchTaskDetails(task.id);
+                    onClick={async () => {
+                      await fetchTaskDetails(task.id);
+                      setShowEditTaskForm(true);
                     }}
                   >
                     <SquarePen size={20} />
                     <span>Edit Task</span>
                   </div>
-                  <div className="details-btn">
+                  <div
+                    className="details-btn"
+                    onClick={() => {
+                      handleShowTaskDetailsPopup();
+                      fetchTaskDetails(task.id);
+                    }}
+                  >
                     <MoveRight size={18} />
                   </div>
                 </div>
