@@ -187,8 +187,8 @@ const ReviewGroups = () => {
             <span>
               {isEmpty
                 ? reviewGroups.length
-                : searchResults.length > 0
-                  ? searchResults.length
+                : serverSearchResults.length > 0
+                  ? serverSearchResults.length
                   : reviewGroups.length}
             </span>{" "}
             <span>Available</span>
@@ -260,7 +260,7 @@ const ReviewGroups = () => {
               <th>Group Name</th>
               <th>Description</th>
               <th>Date Added</th>
-              <th>Action</th>
+              {/* <th>Action</th> */}
             </tr>
           </thead>
           <tbody>{renderTableBody()}</tbody>
@@ -330,12 +330,12 @@ const ReviewGroups = () => {
     return displayData.map((reviewGroup) => (
       <tr key={reviewGroup.id} onClick={() => handleRowClick(reviewGroup.id)}>
         <td>{reviewGroup.id}</td>
-        <td>{reviewGroup.title}</td>
-        <td>{reviewGroup.description}</td>
+        <td>{reviewGroup.title || 'Not provided'}</td>
+        <td>{reviewGroup.description || 'Not provided'}</td>
         <td>
-          <DateFormatter dateString={reviewGroup.created_at} />
+          <DateFormatter dateString={reviewGroup.created_at || 'N/A'} />
         </td>
-        <td className="table-actions" style={{ position: "relative" }}>
+        {/* <td className="table-actions" style={{ position: "relative" }}>
           <div onClick={(e) => handleEllipsisClick(e, reviewGroup.id)}>
             <EllipsisVertical />
           </div>
@@ -355,7 +355,7 @@ const ReviewGroups = () => {
               </div>
             </div>
           )}
-        </td>
+        </td> */}
       </tr>
     ));
   }
