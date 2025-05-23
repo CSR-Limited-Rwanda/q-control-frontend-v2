@@ -327,66 +327,67 @@ const ProfileTabs = ({ userId }) => {
   }, []);
 
   return (
-    <div className="profile-data">
-      <div className="tabs">
-        <div
-          onClick={() => setActiveTab("reports")}
-          className={`tab ${activeTab === "reports" ? "active" : ""}`}
-        >
-          <ListCheck size={20} />
-          <p> Submitted reports</p>
-        </div>
-        <div
-          onClick={() => {
-            setActiveTab("drafts");
-            localStorage.removeItem("changeBreadCrumbs");
-          }}
-          className={`tab ${activeTab === "drafts" ? "active" : ""}`}
-        >
-          <Layers size={20} />
-          <p> Drafts reports</p>
-        </div>
-        <div
-          onClick={() => setActiveTab("complaints")}
-          className={`tab ${activeTab === "complaints" ? "active" : ""}`}
-        >
-          {" "}
-          <Frown size={20} /> <p>Complaints</p>
-        </div>
-        <div
-          onClick={() => setActiveTab("documents")}
-          className={`tab ${activeTab === "documents" ? "active" : ""}`}
-        >
-          <File />
-          <p>Documents</p>
-        </div>
-      </div>
+    <div>This feature is under development and testing.</div>
+    // <div className="profile-data">
+    //   <div className="tabs">
+    //     <div
+    //       onClick={() => setActiveTab("reports")}
+    //       className={`tab ${activeTab === "reports" ? "active" : ""}`}
+    //     >
+    //       <ListCheck size={20} />
+    //       <p> Submitted reports</p>
+    //     </div>
+    //     <div
+    //       onClick={() => {
+    //         setActiveTab("drafts");
+    //         localStorage.removeItem("changeBreadCrumbs");
+    //       }}
+    //       className={`tab ${activeTab === "drafts" ? "active" : ""}`}
+    //     >
+    //       <Layers size={20} />
+    //       <p> Drafts reports</p>
+    //     </div>
+    //     <div
+    //       onClick={() => setActiveTab("complaints")}
+    //       className={`tab ${activeTab === "complaints" ? "active" : ""}`}
+    //     >
+    //       {" "}
+    //       <Frown size={20} /> <p>Complaints</p>
+    //     </div>
+    //     <div
+    //       onClick={() => setActiveTab("documents")}
+    //       className={`tab ${activeTab === "documents" ? "active" : ""}`}
+    //     >
+    //       <File />
+    //       <p>Documents</p>
+    //     </div>
+    //   </div>
 
-      {activeTab === "reports" && (
-        <div className="tabs-content">
-          <h3>Your reports</h3>
-          <ProfileReports userId={userId} />
-        </div>
-      )}
-      {activeTab === "drafts" && (
-        <div className="tabs-content">
-          <h3>Your drafts</h3>
-          <DraftsTab />
-        </div>
-      )}
-      {activeTab === "complaints" && (
-        <div className="tabs-content">
-          <h3>Your complaints</h3>
-          <UserComplaints />
-        </div>
-      )}
-      {activeTab === "documents" && (
-        <div className="tabs-content">
-          <h3>Your documents</h3>
-          <ProfileDocuments />
-        </div>
-      )}
-    </div>
+    //   {activeTab === "reports" && (
+    //     <div className="tabs-content">
+    //       <h3>Your reports</h3>
+    //       <ProfileReports userId={userId} />
+    //     </div>
+    //   )}
+    //   {activeTab === "drafts" && (
+    //     <div className="tabs-content">
+    //       <h3>Your drafts</h3>
+    //       <DraftsTab />
+    //     </div>
+    //   )}
+    //   {activeTab === "complaints" && (
+    //     <div className="tabs-content">
+    //       <h3>Your complaints</h3>
+    //       <UserComplaints />
+    //     </div>
+    //   )}
+    //   {activeTab === "documents" && (
+    //     <div className="tabs-content">
+    //       <h3>Your documents</h3>
+    //       <ProfileDocuments />
+    //     </div>
+    //   )}
+    // </div>
   );
 };
 

@@ -66,9 +66,9 @@ const NewUserForm = ({
         const response = await api.put(`/users/${existingUserData.id}/`, data);
         if (response.status === 200) {
           setSuccessMessage("User updated successfully");
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+          // setTimeout(() => {
+          //   // window.location.reload();
+          // }, 1000);
         }
       } else {
         const response = await api.post("/users/", data);
@@ -80,6 +80,7 @@ const NewUserForm = ({
         }
       }
     } catch (error) {
+      console.log(error);
       let message;
       if (error?.response?.data) {
         message =
@@ -103,7 +104,6 @@ const NewUserForm = ({
   };
 
   const saveBasicInfo = () => {
-    setErrorMessage("");
     const payload = {
       first_name: formData.firstName,
       last_name: formData.lastName,
@@ -127,14 +127,14 @@ const NewUserForm = ({
       permissions_groups: formData.permissionGroups.map((group) => group.id),
       // permissions: formData.permissions,
     };
+    setErrorMessage("");
 
     // addToPermissionGroup, remove permissions from payload, else, remove the permission_groups from payload
     // console.log(formData.addToPermissionGroups);
-    // if (formData.addToPermissionGroups) {
-    //   delete payload.permissions;
-    // } else {
-    //   delete payload.permission_groups;
-    // }
+    if (isEditMode) {
+      delete payload.access_to_departments;
+      delete payload.access_to_facilities;
+    }
 
     try {
       localStorage.setItem("userInfo", JSON.stringify(payload));
@@ -150,8 +150,8 @@ const NewUserForm = ({
   return (
     <div className="popup">
       <div className="popup-content">
-        <div className="close-icon" onClick={handleClose}>
-          <X size={34} />
+        <div className="close" onClick={handleClose}>
+          <X size={34} className="close-icon" />
         </div>
         <div className="form">
           <h2>
