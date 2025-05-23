@@ -1,8 +1,7 @@
 // ReusableDatePicker.js
-'use client'
+"use client";
 import React, { forwardRef, useRef, useState } from "react";
-import { CalendarDays } from 'lucide-react';
-
+import { CalendarDays } from "lucide-react";
 
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -35,7 +34,7 @@ const CustomDatePicker = ({
       if (value.length <= 2) setMonth(value);
       if (value.length === 2) dayRef.current.focus();
     } else {
-      setMonth("")
+      setMonth("");
     }
   };
 
@@ -46,7 +45,7 @@ const CustomDatePicker = ({
       if (value.length <= 2) setDay(value);
       if (value.length === 2) yearRef.current.focus();
     } else {
-      setDay("")
+      setDay("");
     }
   };
 
@@ -59,13 +58,11 @@ const CustomDatePicker = ({
         const formattedDate = `${value}-${month}-${day}`;
         setSelectedDate(formattedDate);
         console.log("Formatted Date:", formattedDate);
+      } else {
+        setSelectedDate("");
       }
-      else {
-        setSelectedDate("")
-      }
-    }
-    else {
-      setYear("")
+    } else {
+      setYear("");
     }
   };
 
