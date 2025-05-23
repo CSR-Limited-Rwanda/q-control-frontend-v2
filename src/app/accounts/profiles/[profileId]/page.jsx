@@ -329,7 +329,8 @@ const ProfileTabs = ({ userId }) => {
   return (
     <div className="profile-data">
       <div className="tabs">
-        <div
+        <p>Profile data will be here</p>
+        {/* <div
           onClick={() => setActiveTab("reports")}
           className={`tab ${activeTab === "reports" ? "active" : ""}`}
         >
@@ -359,10 +360,10 @@ const ProfileTabs = ({ userId }) => {
         >
           <File />
           <p>Documents</p>
-        </div>
+        </div> */}
       </div>
 
-      {activeTab === "reports" && (
+      {/* {activeTab === "reports" && (
         <div className="tabs-content">
           <h3>Your reports</h3>
           <ProfileReports userId={userId} />
@@ -385,7 +386,7 @@ const ProfileTabs = ({ userId }) => {
           <h3>Your documents</h3>
           <ProfileDocuments />
         </div>
-      )}
+      )} */}
     </div>
   );
 };
