@@ -181,7 +181,7 @@ const Titles = () => {
                 <td>{title.id}</td>
                 <td>{title.name || "-"}</td>
                 <td>{title.description || "-"}</td>
-                <td>{<DateFormatter dateString={title.created_at} />}</td>
+                <td>{<DateFormatter dateString={title.created_at || "-"} />}</td>
               </tr>
             ))}
           </tbody>

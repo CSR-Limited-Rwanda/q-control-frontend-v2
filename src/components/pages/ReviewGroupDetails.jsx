@@ -206,13 +206,13 @@ const ReviewGroupsDetailsContent = () => {
               <div className="col">
                 <h4 className="review-title">{reviewGroup.title || 'Not provided'}</h4>
                 <p className="review-date">
-                  <DateFormatter dateString={reviewGroup.created_at} />
+                  <DateFormatter dateString={reviewGroup.created_at || "N/A"} />
                 </p>
               </div>
               <div className="col">
                 <p className="review-created">Created by</p>
                 <p className="review-created-by-name">
-                  {reviewGroup.created_by || "N/A"}
+                  {reviewGroup.created_by.first_name || "N/A"} {reviewGroup.created_by.last_name || "N/A"}
                 </p>
               </div>
               <div className="col">
