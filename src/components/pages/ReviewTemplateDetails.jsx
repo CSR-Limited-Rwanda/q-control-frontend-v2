@@ -62,6 +62,7 @@ const ReviewTemplatesDetailsContent = () => {
             error.response.data?.error ||
             "Failed to get review group members"
         );
+        console.log
       } finally {
         setIsLoading(false);
       }
@@ -285,12 +286,12 @@ const ReviewTemplatesDetailsContent = () => {
             <div className="col">
               <p className="review-created">Created by</p>
               <p className="review-created-by-name">
-                {reviewTemplate.created_by || "N/A"}
+                {reviewTemplate.created_by.first_name || "N/A"} {reviewTemplate.created_by.last_name || "N/A"}
               </p>
             </div>
             <div className="col">
               <p className="review-update">Last updated by</p>
-              <p>{reviewTemplate.updated_by || "N/A"}</p>
+              <p>{reviewTemplate.updated_by.first_name || "N/A"} {reviewTemplate.updated_by.last_name || "N/A"}</p>
             </div>
           </div>
           <div>
