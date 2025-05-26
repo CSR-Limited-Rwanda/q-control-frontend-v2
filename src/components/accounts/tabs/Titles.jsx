@@ -7,6 +7,7 @@ import { Plus, X } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import TitlesForm from "../forms/TitlesForm";
 import TitleDetails from "./TitleDetails";
+import DateFormatter from "@/components/DateFormatter";
 
 const Titles = () => {
   const [titles, setTitles] = useState([]);
@@ -180,7 +181,7 @@ const Titles = () => {
                 <td>{title.id}</td>
                 <td>{title.name || "-"}</td>
                 <td>{title.description || "-"}</td>
-                <td>{title.date_created || "-"}</td>
+                <td>{<DateFormatter dateString={title.created_at} />}</td>
               </tr>
             ))}
           </tbody>
