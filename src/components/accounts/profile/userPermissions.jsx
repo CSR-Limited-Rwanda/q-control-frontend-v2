@@ -95,6 +95,8 @@ const UserPermissions = ({ togglePermissions, userId }) => {
         style={{
           maxWidth: "800px",
           width: "100%",
+          minHeight: "400px",
+          maxHeight: "500px",
         }}
       >
         <h3>User permissions</h3>
