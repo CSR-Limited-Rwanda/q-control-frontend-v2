@@ -9,48 +9,89 @@ import { SearchInput } from "@/components/forms/Search";
 import NewUserForm from "../forms/newUser/newUserForm";
 import { useRouter } from "next/navigation";
 
+const DEFAULT_PAGE_SIZE = 10
+
 const Accounts = () => {
   const router = useRouter();
-  const [users, setUsers] = useState([]);
+  const [usersData, setUsersData] = useState({
+    results: [],
+    count: 0,
+    page: 1,
+    page_size: DEFAULT_PAGE_SIZE,
+    total_pages: 1,
+    has_next: false,
+    has_previous: false
+  })
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-
   const [showNewUserForm, setShowNewUserForm] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-
   const [isSearching, setIsSearching] = useState(false);
-  const isFocused = document.activeElement;
+
+  const { results: users, page, page_size, count, total_pages } = usersData
+
+  const fetchUsers = useCallback(async (params = '') => {
+    setIsLoading(true)
+    try {
+      const response = await api.get(`/users/?${params}`)
+      if (response.status === 200) {
+        console.log('users', response.data)
+        setUsersData(response.data)
+      } else {
+        setErrorMessage("Error fetching users.")
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error)
+      setErrorMessage("Error fetching users")
+    } finally {
+      setIsLoading(false)
+      setIsSearching(false)
+    }
+  }, [])
 
   const handleSearch = useCallback(() => {
-    if (searchQuery.length >= 3) {
-      setIsSearching(true);
+    console.log("Searching for:", searchQuery)
+    // Allow empty search or minimum 3 characters
+    if (searchQuery.length >= 3 || searchQuery.length === 0) {
+      setIsSearching(true)
       const params = createUrlParams({
-        q: searchQuery,
-        page: pageNumber,
-        page_size: pageSize,
-      });
-      handleFetchUsers(params);
-    } else if (searchQuery.length === 0 && isFocused) {
-      setIsSearching(true);
-      handleFetchUsers();
-    } else {
-      setIsSearching(false);
+        q: searchQuery.trim(), // Trim whitespace
+        page: 1, // Reset to first page on new search
+        page_size: page_size
+      })
+      fetchUsers(params)
     }
-  }, [searchQuery]);
+  }, [searchQuery, page_size, fetchUsers])
 
   const handleApplyFilters = () => {
-    const params = createUrlParams({
-      page: pageNumber,
-      page_size: pageSize,
-    });
-    setIsSearching(true);
-    handleFetchUsers(params);
-    setShowFilters(false);
+    setShowFilters(false)
   };
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > total_pages) return
+
+    const params = createUrlParams({
+      q: searchQuery.trim(),
+      page: newPage,
+      page_size: page_size
+    })
+    fetchUsers(params)
+  }
+
+  const handlePageSizeChange = (newSize) => {
+    setUsersData(prev => ({
+      ...prev,
+      page_size: newSize
+    }))
+
+    const params = createUrlParams({
+      q: searchQuery.trim(),
+      page: 1,
+      page_size: newSize
+    })
+    fetchUsers(params)
+  }
 
   const handleShowFilters = () => {
     setShowFilters(!showFilters);
@@ -61,36 +102,20 @@ const Accounts = () => {
     router.push(`/accounts/profiles/${user?.id}`);
   };
 
+  // Fixed debouncing effect - now properly watches searchQuery changes
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
-      handleSearch();
-    }, 300);
+      handleSearch()
+    }, 300)
 
-    return () => clearTimeout(debounceTimeout);
-  }, [searchQuery, handleSearch]);
+    return () => clearTimeout(debounceTimeout)
+  }, [searchQuery, handleSearch]) // Added proper dependencies
 
-  const handleFetchUsers = async (params) => {
-    setIsLoading(true);
-    try {
-      const response = await api.get(`/users/?${params}`);
-      if (response.status === 200) {
-        console.log(response.data);
-        setUsers(response.data);
-        return;
-      } else {
-        setErrorMessage("Error fetching users. Contact support.");
-      }
-    } catch (error) {
-      console.log(error);
-      setErrorMessage("Error fetching users. Contact support.");
-    } finally {
-      setIsLoading(false);
-      setIsSearching(false);
-    }
-  };
+  // Initial load - only runs once on mount
   useEffect(() => {
-    handleFetchUsers();
-  }, []);
+    fetchUsers();
+  }, [fetchUsers]);
+
   return (
     <>
       <div>
@@ -103,11 +128,12 @@ const Accounts = () => {
           />
 
           <div className="actions">
-            <span>Page: {pageNumber}</span>
-            <span>Per page: {pageSize}</span>
+            {/* <span>Page: {page} of {total_pages}</span> */}
+            <span>Total users: {count}</span>
+            {/* <span>Page: {page_size}</span> */}
             <div className="filters-popup">
               <OutlineButton
-                onClick={handleShowFilters}
+                onClick={() => setShowFilters(!showFilters)}
                 span={"Filters"}
                 prefixIcon={showFilters ? <X /> : <Plus />}
               />
@@ -119,26 +145,18 @@ const Accounts = () => {
                     <form>
                       <div className="half">
                         <div className="form-group">
-                          <label htmlFor="page">Page</label>
-                          <input
-                            value={pageNumber}
-                            onChange={(e) => setPageNumber(e.target.value)}
-                            type="number"
-                            name="pageNumber"
-                            id="pageNumber"
-                            placeholder="Page number"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="page">Page size</label>
-                          <input
-                            value={pageSize}
-                            onChange={(e) => setPageSize(e.target.value)}
-                            type="number"
+                          <label htmlFor="pageSize">Items per page</label>
+                          <select
+                            value={page_size}
+                            onChange={(e) => handlePageSizeChange(Number(e.target.value))}
                             name="pageSize"
                             id="pageSize"
-                            placeholder="Page size"
-                          />
+                          >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                          </select>
                         </div>
                       </div>
                     </form>
@@ -171,31 +189,48 @@ const Accounts = () => {
         ) : (
           <div className="users-table">
             {users.length > 0 ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Names</th>
-                    <th>Phone</th>
-                    <th>Facility</th>
-                  </tr>
-                </thead>
-                <tbody className={`${isSearching && "is-searching"}`}>
-                  {users.map((user) => (
-                    <tr key={user.id} onClick={() => handleNavigate(user)}>
-                      <td>
-                        <UserCard
-                          firstName={user.user.first_name}
-                          lastName={user.user.last_name}
-                          label={user.user.email}
-                        />
-                      </td>
-                      <td>{user.phone_number || "-"}</td>
-                      <td>{user?.facility?.name || "-"}</td>
+              <>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Names</th>
+                      <th>Phone</th>
+                      <th>Facility</th>
                     </tr>
-                  ))}
-                  <tr></tr>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className={`${isSearching && "is-searching"}`}>
+                    {users.map((user) => (
+                      <tr key={user.id} onClick={() => handleNavigate(user)}>
+                        <td>
+                          <UserCard
+                            firstName={user.user.first_name}
+                            lastName={user.user.last_name}
+                            label={user.user.email}
+                          />
+                        </td>
+                        <td>{user.phone_number || "-"}</td>
+                        <td>{user?.facility?.name || "-"}</td>
+                      </tr>
+                    ))}
+                    <tr></tr>
+                  </tbody>
+                </table>
+                <div className="pagination-controls">
+                  <button
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={!usersData.has_previous}
+                  >
+                    Previous
+                  </button>
+                  <span>Page {page} of {total_pages}</span>
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={!usersData.has_next}
+                  >
+                    Next
+                  </button>
+                </div>
+              </>
             ) : (
               <div className="no-content">
                 <h3>No users found</h3>

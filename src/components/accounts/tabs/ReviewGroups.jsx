@@ -70,7 +70,7 @@ const ReviewGroups = () => {
       const url = `/permissions/review-groups/${params ? `?${params}` : ''}`
       const response = await api.get(url);
       if (response.status === 200) {
-        return response.data
+        return response.data.results
       }
       return []
     } catch (error) {
@@ -109,8 +109,8 @@ const ReviewGroups = () => {
           page: pageNumber,
           page_size: pageSize
         });
-        const results = await fetchReviewGroups(params);
-        setServerSearchResults(results);
+        const response = await fetchReviewGroups(params);
+        setServerSearchResults(response);
         setReviewGroups([])
       } else {
         setServerSearchResults([]);
