@@ -15,6 +15,7 @@
     "@mui/x-date-pickers": "^8.2.0",
     "axios": "^1.8.4",
     "crypto-js": "^4.2.0",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.474.0",

@@ -8,6 +8,7 @@ import UserCard from "@/components/UserCard";
 import { SearchInput } from "@/components/forms/Search";
 import NewUserForm from "../forms/newUser/newUserForm";
 import { useRouter } from "next/navigation";
+import { format } from "date-fns";
 
 const DEFAULT_PAGE_SIZE = 10
 
@@ -116,6 +117,11 @@ const Accounts = () => {
     fetchUsers();
   }, [fetchUsers]);
 
+  // formatting date
+  function formatDate(isoString) {
+    return format(new Date(isoString), 'dd/MM/yyyy')
+  }
+
   return (
     <>
       <div>
@@ -194,8 +200,12 @@ const Accounts = () => {
                   <thead>
                     <tr>
                       <th>Names</th>
+                      <th>ID</th>
+                      <th>Email</th>
                       <th>Phone</th>
-                      <th>Facility</th>
+                      <th>Department</th>
+                      <th>Date added</th>
+                      {/* <th>Facility</th> */}
                     </tr>
                   </thead>
                   <tbody className={`${isSearching && "is-searching"}`}>
@@ -203,13 +213,17 @@ const Accounts = () => {
                       <tr key={user.id} onClick={() => handleNavigate(user)}>
                         <td>
                           <UserCard
-                            firstName={user.user.first_name}
-                            lastName={user.user.last_name}
-                            label={user.user.email}
+                            firstName={user.user.first_name || "N/A"}
+                            lastName={user.user.last_name || "N/A"}
+                            label={user.user.position || "N/A"}
                           />
                         </td>
-                        <td>{user.phone_number || "-"}</td>
-                        <td>{user?.facility?.name || "-"}</td>
+                        <td>{user.id || "N/A"}</td>
+                        <td>{user.user.email || "N/A"}</td>
+                        <td>{user.phone_number || "N/A"}</td>
+                        <td>{user.department.name || "N/A"}</td>
+                        {/* <td>{user?.facility?.name || "N/A"}</td> */}
+                        <td>{formatDate(user.created_at)}</td>
                       </tr>
                     ))}
                     <tr></tr>

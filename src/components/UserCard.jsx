@@ -13,9 +13,9 @@ const UserCard = ({ profileUrl, firstName, lastName, label }) => {
                 }
             </div>
             <div className="info">
-                <h4 className="name">
+                <p className="name">
                     {firstName} {lastName}
-                </h4>
+                </p>
                 <small className="label">
                     {label}
                 </small>
