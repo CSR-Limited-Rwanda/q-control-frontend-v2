@@ -10,7 +10,15 @@ import "../../../styles/reviews/reviewTemplates/_reviewTemplates.scss";
 
 import DateFormatter from "@/components/DateFormatter";
 import NewReviewTemplatesForm from "@/components/forms/NewReviewTemplatesForm";
-import { Eye, PlusCircleIcon, SquarePen, SquareX, Trash2 } from "lucide-react";
+import {
+  Eye,
+  PlusCircleIcon,
+  PlusIcon,
+  SquarePen,
+  SquareX,
+  Trash2,
+  X,
+} from "lucide-react";
 import DeletePopup from "@/components/forms/DeletePopup";
 import EditReviewTemplateForm from "@/components/forms/EditReviewTemplateForm";
 
@@ -142,9 +150,10 @@ export const ReviewTemplates = () => {
           <div className="popup">
             <div className="popup-content">
               <div className="close">
-                <SquareX
+                <X
                   onClick={handleShowNewUserForm}
                   className="close-icon"
+                  size={34}
                 />
               </div>
 
@@ -222,7 +231,7 @@ export const ReviewTemplates = () => {
           onClick={handleShowNewUserForm}
           className="button tertiary-button new-user-button"
         >
-          <PlusCircleIcon size={20} />
+          <PlusIcon size={24} />
           <span>Add New Template</span>
         </button>
       </div>

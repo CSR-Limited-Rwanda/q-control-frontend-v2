@@ -123,7 +123,7 @@ const FacilityInfo = ({ formData, setFormData }) => {
           <label htmlFor="title">Title</label>
           <Dropdown
             items={titles}
-            label={formData.title.label || "Select title"}
+            label={formData.title.name || "Select title"}
             onSelect={(title) =>
               setFormData((prevData) => ({ ...prevData, title }))
             }

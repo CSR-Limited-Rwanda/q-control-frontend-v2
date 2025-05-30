@@ -14,6 +14,8 @@ import {
   MoveRight,
   PlusCircle,
   Container,
+  CircleX,
+  X,
 } from "lucide-react";
 import api from "@/utils/api";
 import DateFormatter from "../DateFormatter";
@@ -167,12 +169,12 @@ const ReviewTemplatesDetailsContent = () => {
         <div className="new-user-form-popup">
           <div className="popup">
             <div className="popup-content">
-              <div className="close">
-                <SquareX
-                  onClick={handleShowAddTaskForm}
-                  className="close-icon"
-                />
-              </div>
+              <X
+                onClick={handleShowAddTaskForm}
+                size={34}
+                className="close-icon"
+              />
+
               <div className="form">
                 <AddTaskForm
                   showTaskDetails={handleShowTaskDetailsPopup}
@@ -191,9 +193,10 @@ const ReviewTemplatesDetailsContent = () => {
           <div className="popup">
             <div className="popup-content">
               <div className="close">
-                <SquareX
+                <X
                   onClick={handleShowEditTemplateForm}
                   className="close-icon"
+                  size={34}
                 />
               </div>
 
@@ -212,9 +215,10 @@ const ReviewTemplatesDetailsContent = () => {
           <div className="popup">
             <div className="popup-content">
               <div className="close">
-                <SquareX
+                <X
                   onClick={handleShowEditTaskForm}
                   className="close-icon"
+                  size={34}
                 />
               </div>
               <div className="form">
@@ -232,12 +236,12 @@ const ReviewTemplatesDetailsContent = () => {
         <div className="new-user-form-popup">
           <div className="popup">
             <div className="popup-content">
-              <div className="close">
-                <SquareX
-                  onClick={handleShowTaskDetailsPopup}
-                  className="close-icon"
-                />
-              </div>
+              <X
+                onClick={handleShowTaskDetailsPopup}
+                className="close-icon"
+                size={34}
+              />
+
               <div className="form">
                 <TaskDetailsPopup
                   discardFn={handleShowTaskDetailsPopup}
