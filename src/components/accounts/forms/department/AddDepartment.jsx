@@ -18,24 +18,24 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setIsLoading(true);
-        const response = await api.get(`/users/`);
-        if (response.status === 200) {
-          console.log("Users:", response.data);
-          setUsers(response.data);
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                setIsLoading(true)
+                const response = await api.get(`/users/`)
+                if (response.status === 200) {
+                    console.log('Users:', response.data.results);
+                    setUsers(response.data.results)
+                }
+            } catch (error) {
+                console.log(`an error occurred: ${error}`)
+                setError('Failed to fetch users')
+            } finally {
+                setIsLoading(false)
+            }
         }
-      } catch (error) {
-        console.log(`an error occurred: ${error}`);
-        setError("Failed to fetch users");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchUsers();
-  }, []);
+        fetchUsers()
+    }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -82,8 +82,8 @@ const AddMembersForm = ({ groupId, onClose }) => {
             });
 
             if (response.status === 200) {
-                setMembers(response.data);
-                setFilteredMembers(response.data);
+                setMembers(response.data.results);
+                setFilteredMembers(response.data.results);
             }
         } catch (error) {
             console.error("Error fetching members:", error);

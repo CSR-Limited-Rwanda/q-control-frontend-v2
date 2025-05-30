@@ -128,7 +128,7 @@ const NewReviewGroupForm = () => {
 
       if (response.status === 200) {
         setMembers(response.data);
-        setFilteredMembers(response.data);
+        setFilteredMembers(response.data.results);
       }
     } catch (error) {
       console.error("Error fetching members:", error);

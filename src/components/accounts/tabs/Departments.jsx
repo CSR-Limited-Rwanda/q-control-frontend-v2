@@ -48,8 +48,8 @@ const DepartmentsPage = () => {
           params: { facility_id: selectedFacilityId },
         });
         if (response.status === 200) {
-          setDepartments(response.data);
-          console.log(response.data);
+          setDepartments(response.data.results);
+          console.log(response.data.results);
         }
       } catch (error) {
         setErrorMessage("Error fetching departments");
@@ -69,8 +69,9 @@ const DepartmentsPage = () => {
   };
 
   const handleDepartmentAdded = (newDepartment) => {
-    setDepartments((prev) => [...prev, newDepartment]);
-  };
+    setDepartments(prev => Array.isArray(prev) ? [...prev, newDepartment] : [newDepartment]);
+  }
+
 
   return (
     <div>

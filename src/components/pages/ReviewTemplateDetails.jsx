@@ -61,8 +61,8 @@ const ReviewTemplatesDetailsContent = () => {
       } catch (error) {
         setErrorMessage(
           error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get review group members"
+          error.response.data?.error ||
+          "Failed to get review group members"
         );
         console.log
       } finally {
@@ -83,9 +83,8 @@ const ReviewTemplatesDetailsContent = () => {
 
         if (response.status === 200) {
           setLoadingTask(false);
-          console.log(response.data);
-          if (Array.isArray(response.data)) {
-            setTasks(response.data);
+          if (Array.isArray(response.data.results)) {
+            setTasks(response.data.results);
           } else {
             setErrorMessage("Received data in unexpected format");
             setTasks([]);
@@ -96,8 +95,8 @@ const ReviewTemplatesDetailsContent = () => {
         if (error.response) {
           setErrorMessage(
             error.response.data?.message ||
-              error.response.data?.error ||
-              "Failed to get tasks"
+            error.response.data?.error ||
+            "Failed to get tasks"
           );
         } else if (error.request) {
           setErrorMessage("No response from server");
@@ -142,8 +141,8 @@ const ReviewTemplatesDetailsContent = () => {
       if (error.response) {
         setErrorMessage(
           error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get tasks"
+          error.response.data?.error ||
+          "Failed to get tasks"
         );
       } else if (error.request) {
         setErrorMessage("No response from server");
@@ -290,12 +289,19 @@ const ReviewTemplatesDetailsContent = () => {
             <div className="col">
               <p className="review-created">Created by</p>
               <p className="review-created-by-name">
-                {reviewTemplate.created_by.first_name || "N/A"} {reviewTemplate.created_by.last_name || "N/A"}
+                {reviewTemplate.created_by
+                  ? `${reviewTemplate.created_by.first_name || "N/A"} ${reviewTemplate.created_by.last_name || "N/A"}`
+                  : "N/A"}
               </p>
+
             </div>
             <div className="col">
               <p className="review-update">Last updated by</p>
-              <p>{reviewTemplate.updated_by.first_name || "N/A"} {reviewTemplate.updated_by.last_name || "N/A"}</p>
+              <p>
+                {reviewTemplate.updated_by
+                  ? `${reviewTemplate.updated_by.first_name || "N/A"} ${reviewTemplate.updated_by.last_name}`
+                  : "N/A"}
+              </p>
             </div>
           </div>
           <div>

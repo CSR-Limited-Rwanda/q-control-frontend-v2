@@ -14,7 +14,7 @@ const EditDepartment = ({
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        // header_of_department: department?.header_of_department || '',
+        header_of_department: '',
         members: []
     })
     const [users, setUsers] = useState([])
@@ -26,7 +26,8 @@ const EditDepartment = ({
             setFormData({
                 name: department.name || '',
                 description: department.description || '',
-                members: department.members?.map(member => member.id) || []
+                members: department.members?.map(member => member.id) || [],
+                header_of_department: department.header_of_department?.id || '',
             })
         }
     }, [])
@@ -77,7 +78,8 @@ const EditDepartment = ({
             const payload = {
                 name: formData.name,
                 description: formData.description,
-                members: formData.members.map(Number)
+                members: formData.members.map(Number),
+                header_of_department: Number(formData.header_of_department)
             }
 
             if (Object.keys(payload).length === 0) {
@@ -86,13 +88,16 @@ const EditDepartment = ({
             }
 
 
-            const res = await api.put(`/departments/${department.id}/`, payload)
+            const res = await api.patch(`/departments/${department.id}/update/`, payload)
             if (res.status === 200) {
+                console.log('API response data:', res.data.data)
                 const updatedDepartment = {
                     ...department,
                     ...res.data.data,
-                    members: res.data.data.members || []
+                    members: res.data.data.members || [],
+                    header_of_department: res.data.data.header_of_department
                 }
+                console.log('Updated department:', updatedDepartment);
                 onDepartmentUpdated(updatedDepartment)
                 onClose()
             }
@@ -134,7 +139,7 @@ const EditDepartment = ({
                         />
                     </div>
 
-                    {/* <div className="form-group">
+                    <div className="form-group">
                         <label>Head of Department:</label>
                         <select
                             name="header_of_department"
@@ -143,12 +148,12 @@ const EditDepartment = ({
                         >
                             <option value="">Select Head of Department</option>
                             {users.map(user => (
-                                <option key={user.id} value={user.user.email}>
+                                <option key={user.id} value={user.id}>
                                     {user.user.first_name} {user.user.last_name} ({user.user.email})
                                 </option>
                             ))}
                         </select>
-                    </div> */}
+                    </div>
 
                     <div className="form-group">
                         <label>Members:</label>

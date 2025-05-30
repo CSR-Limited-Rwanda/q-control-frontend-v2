@@ -383,7 +383,7 @@ const FacilityDepartmentContent = () => {
 
                 <div className='staff-list'>
                     <NoteMessage message={"Admin can add staff from here"} />
-                    <div className='staff-list-header'>
+                    {/* <div className='staff-list-header'>
                         <p>
                             When you add a staff, they are going to be added under {department && department.name}
                         </p>
@@ -394,7 +394,7 @@ const FacilityDepartmentContent = () => {
                         >
                             Add staff
                         </button>
-                    </div>
+                    </div> */}
                     <div className='table-container'>
                         <table className='review-groups-table'>
                             <thead>

@@ -59,7 +59,7 @@ const FacilityInfo = ({ formData, setFormData }) => {
     try {
       const response = await api.get(`/titles/`);
       if (response.status === 200) {
-        const formattedTitles = response.data.map((title) => ({
+        const formattedTitles = response.data.results.map((title) => ({
           value: title.id,
           label: title.name,
         }));

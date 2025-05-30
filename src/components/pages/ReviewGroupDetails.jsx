@@ -214,7 +214,7 @@ const ReviewGroupsDetailsContent = () => {
               <div className="col">
                 <p className="review-created">Created by</p>
                 <p className="review-created-by-name">
-                  {reviewGroup.created_by.first_name || "N/A"} {reviewGroup.created_by.last_name || "N/A"}
+                  {reviewGroup.created_by || "N/A"}
                 </p>
               </div>
               <div className="col">

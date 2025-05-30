@@ -441,8 +441,8 @@ table {
       th {
         padding: 12px;
         text-align: left;
-        font-weight: bold;
-        border-bottom: 2px solid #ddd;
+        color: #A5A3A9;
+        font-weight: 700;
       }
     }
   }
@@ -461,8 +461,9 @@ table {
 
       td {
         padding: 12px;
-        border-bottom: 1px solid #ddd;
         word-wrap: break-word;
+        font-weight: 700;
+        color: #666666;
       }
     }
 
@@ -596,6 +597,7 @@ table {
     padding: 0.5rem;
     transition: all 0.3s ease-in-out;
     text-wrap: nowrap;
+    cursor: pointer;
   }
 
   & > :first-child {

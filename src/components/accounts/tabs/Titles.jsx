@@ -50,7 +50,7 @@ const Titles = () => {
       const response = await api.get(`/titles/?${params}`);
       console.log(response);
       if (response.status === 200) {
-        setTitles(response.data);
+        setTitles(response.data.results);
       }
     } catch (error) {
       console.error("Error fetching titles:", error);

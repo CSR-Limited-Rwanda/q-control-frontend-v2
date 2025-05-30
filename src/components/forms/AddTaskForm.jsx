@@ -117,8 +117,8 @@ const AddTaskForm = ({ fetchTaskDetails, showTaskDetails, discardFn }) => {
           search: query,
         },
       });
-      setGroups(res.data);
-      setFilteredGroups(res.data);
+      setGroups(res.data.results);
+      setFilteredGroups(res.data.results);
     } catch (error) {
       console.error("Failed to fetch groups:", error);
     } finally {
