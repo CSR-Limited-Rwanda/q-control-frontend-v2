@@ -18,7 +18,6 @@ export const ReviewTemplates = () => {
   const router = useRouter();
   const [reviewTemplates, setReviewTemplates] = useState([]);
   const [reviewTemplate, setReviewTemplate] = useState({});
-
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showNewUserForm, setShowNewUserForm] = useState(false);
@@ -84,7 +83,7 @@ export const ReviewTemplates = () => {
       try {
         const response = await api.get(`/permissions/review-templates/`);
         if (response.status === 200) {
-          setReviewTemplates(response.data);
+          setReviewTemplates(response.data.results);
 
           console.log(groupsWithFullname);
           console.log(response.data);
