@@ -198,7 +198,7 @@ const Accounts = () => {
                         <td>{user.id || "N/A"}</td>
                         <td>{user.user?.email || "N/A"}</td>
                         <td>{user?.phone_number || "N/A"}</td>
-                        <td>{user?.department.name || "N/A"}</td>
+                        <td>{user?.department?.name || "N/A"}</td>
                         {/* <td>{user?.facility?.name || "N/A"}</td> */}
                         <td>{formatDate(user.created_at)}</td>
                       </tr>
