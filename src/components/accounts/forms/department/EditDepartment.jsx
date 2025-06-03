@@ -38,8 +38,8 @@ const EditDepartment = ({
                 setIsLoading(true)
                 const res = await api.get(`/users/`)
                 if (res.status === 200) {
-                    console.log('users', res.data)
-                    setUsers(res.data)
+                    // console.log('users', res.data)
+                    setUsers(res.data.results)
                 }
             } catch (error) {
                 console.log(`an error occurred: ${error}`)
