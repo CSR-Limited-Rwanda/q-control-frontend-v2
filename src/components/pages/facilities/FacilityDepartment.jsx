@@ -154,6 +154,7 @@ const FacilityDepartmentContent = () => {
     const handleShowNewUserForm = () => {
         setShowNewUserForm(prev => !prev);
     };
+    
     useEffect(() => {
         setDepartment(localStorage.getItem("department"));
     }, []);
@@ -258,7 +259,7 @@ const FacilityDepartmentContent = () => {
                                     members.slice(-4).map((member) => (
                                         <div key={member.id} className='staff-member-name-card'>
                                             <p className='member-name'>
-                                                {member.first_name?.charAt(0).toUpperCase() || 'None'} {member.last_name?.charAt(0).toUpperCase() || 'None'}
+                                                {member.first_name?.charAt(0).toUpperCase() || ''} {member.last_name?.charAt(0).toUpperCase() || ''}
                                             </p>
                                         </div>
                                     ))

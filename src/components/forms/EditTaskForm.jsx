@@ -67,7 +67,7 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
           return;
         }
 
-        console.log(selectedGroups);
+        // console.log(selectedGroups);
 
         if (data.review_groups.length > 0) {
           try {
@@ -81,7 +81,7 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
             );
 
             if ([200, 204].includes(patchResponse.status)) {
-              console.log(patchResponse.data);
+              // console.log(patchResponse.data);
 
               try {
                 const response = await api.put(
@@ -193,8 +193,8 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
           search: query,
         },
       });
-      setGroups(res.data);
-      setFilteredGroups(res.data);
+      setGroups(res.data.results);
+      setFilteredGroups(res.data.results);
     } catch (error) {
       console.error("Failed to fetch groups:", error);
     } finally {
