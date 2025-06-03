@@ -4,6 +4,12 @@
   gap: 1rem;
 }
 
+.users-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
 .filters {
   display: flex;
   align-items: center;
@@ -13,6 +19,8 @@
   .search-input {
     max-width: 600px;
     width: 100%;
+    border: 1px solid #F5F5F7;
+    border-radius: 10px;
   }
 
   .filters-popup {

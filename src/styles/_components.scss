@@ -98,7 +98,7 @@ textarea {
   display: flex;
   align-items: center;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 10px;
 
   input {
     border: none;
@@ -415,6 +415,21 @@ form,
   justify-content: space-between;
 }
 
+.list-of-users {
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  p {
+    font-size: 14px;
+    color: #a5a3a9;
+  }
+}
+
 .actions {
   display: flex;
   align-items: center;
@@ -430,6 +445,10 @@ form,
   font-family: Arial, sans-serif;
 }
 
+.user-name {
+  font-size: 14px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -441,7 +460,7 @@ table {
       th {
         padding: 12px;
         text-align: left;
-        color: #A5A3A9;
+        color: #a5a3a9;
         font-weight: 700;
       }
     }
@@ -451,9 +470,9 @@ table {
     tr {
       cursor: pointer;
 
-      &:nth-child(even) {
-        background-color: #f9f9f9;
-      }
+      // &:nth-child(even) {
+      //   background-color: #f9f9f9;
+      // }
 
       &:hover {
         background-color: #f1f1f1;
@@ -464,6 +483,7 @@ table {
         word-wrap: break-word;
         font-weight: 700;
         color: #666666;
+        font-size: 14px;
       }
     }
 
@@ -662,6 +682,23 @@ table {
     .icon {
       transform: rotate(90deg);
     }
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: right;
+
+  .pagination-button {
+    color: #A5A3A9;
+    background-color: transparent;
+    border: 1px solid #F1F1F1;
+    border-radius: 0;
+  }
+
+  .active {
+    background-color: #145C9E;
+    color: #FFF;
   }
 }
 

@@ -41,7 +41,7 @@ const FacilityInfo = ({ formData, setFormData }) => {
     try {
       const response = await api.get(`/departments/?facility_id=${facilityId}`);
       if (response.status === 200) {
-        const formattedDepartments = response.data.map((department) => ({
+        const formattedDepartments = response.data.results.map((department) => ({
           value: department.id,
           label: department.name,
         }));
@@ -123,7 +123,7 @@ const FacilityInfo = ({ formData, setFormData }) => {
           <label htmlFor="title">Title</label>
           <Dropdown
             items={titles}
-            label={formData.title.name || "Select title"}
+            label={formData.title.label || "Select title"}
             onSelect={(title) =>
               setFormData((prevData) => ({ ...prevData, title }))
             }

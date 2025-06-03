@@ -1,6 +1,6 @@
 "use client";
 import api, { createUrlParams } from "@/utils/api";
-import { LoaderCircle, Plus, X } from "lucide-react";
+import { LoaderCircle, Plus, X, CirclePlus } from "lucide-react";
 import React, { useEffect, useState, useCallback } from "react";
 import PrimaryButton from "@/components/PrimaryButton";
 import OutlineButton from "@/components/OutlineButton";
@@ -124,8 +124,12 @@ const Accounts = () => {
 
   return (
     <>
-      <div>
+      <div className="users-container">
         <div className="filters">
+          <div className="list-of-users">
+            <h3>List of users</h3>
+            <p>{count} available user(s)</p>
+          </div>
           <SearchInput
             value={searchQuery}
             setValue={setSearchQuery}
@@ -134,54 +138,27 @@ const Accounts = () => {
           />
 
           <div className="actions">
-            {/* <span>Page: {page} of {total_pages}</span> */}
-            <span>Total users: {count}</span>
-            {/* <span>Page: {page_size}</span> */}
-            <div className="filters-popup">
-              <OutlineButton
-                onClick={() => setShowFilters(!showFilters)}
-                span={"Filters"}
-                prefixIcon={showFilters ? <X /> : <Plus />}
-              />
-
-              {showFilters ? (
-                <div className="side-popup">
-                  <div className="popup-content">
-                    <h3>Filters</h3>
-                    <form>
-                      <div className="half">
-                        <div className="form-group">
-                          <label htmlFor="pageSize">Items per page</label>
-                          <select
-                            value={page_size}
-                            onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                            name="pageSize"
-                            id="pageSize"
-                          >
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                          </select>
-                        </div>
-                      </div>
-                    </form>
-
-                    <PrimaryButton
-                      text={"Apply filters"}
-                      onClick={handleApplyFilters}
-                    />
-                  </div>
+            <form>
+              <div className="half">
+                <div className="form-group">
+                  <select
+                    value={page_size}
+                    onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                    name="pageSize"
+                    id="pageSize"
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
                 </div>
-              ) : (
-                ""
-              )}
-            </div>
-
+              </div>
+            </form>
             <PrimaryButton
               onClick={() => setShowNewUserForm(true)}
-              span="Add user"
-              prefixIcon={<Plus />}
+              span="New User"
+              prefixIcon={<CirclePlus />}
               customClass={"sticky-button"}
             />
           </div>
@@ -213,15 +190,15 @@ const Accounts = () => {
                       <tr key={user.id} onClick={() => handleNavigate(user)}>
                         <td>
                           <UserCard
-                            firstName={user.user.first_name || "N/A"}
-                            lastName={user.user.last_name || "N/A"}
-                            label={user.user.position || "N/A"}
+                            firstName={user.user?.first_name || "N/A"}
+                            lastName={user.user?.last_name || "N/A"}
+                            label={user.user?.position || "N/A"}
                           />
                         </td>
                         <td>{user.id || "N/A"}</td>
-                        <td>{user.user.email || "N/A"}</td>
-                        <td>{user.phone_number || "N/A"}</td>
-                        <td>{user.department.name || "N/A"}</td>
+                        <td>{user.user?.email || "N/A"}</td>
+                        <td>{user?.phone_number || "N/A"}</td>
+                        <td>{user?.department.name || "N/A"}</td>
                         {/* <td>{user?.facility?.name || "N/A"}</td> */}
                         <td>{formatDate(user.created_at)}</td>
                       </tr>
@@ -233,13 +210,63 @@ const Accounts = () => {
                   <button
                     onClick={() => handlePageChange(page - 1)}
                     disabled={!usersData.has_previous}
+                    className="pagination-button"
                   >
                     Previous
                   </button>
-                  <span>Page {page} of {total_pages}</span>
+
+                  {page > 2 && (
+                    <button
+                      onClick={() => handlePageChange(1)}
+                      className="pagination-button"
+                    >
+                      1
+                    </button>
+                  )}
+                  {page > 3 && <span className="pagination-ellipsis">...</span>}
+
+                  {/* pages around current page */}
+                  {Array.from({ length: Math.min(5, total_pages) }, (_, i) => {
+                    let pageNum;
+                    if (page <= 2) {
+                      pageNum = i + 1;
+                    } else if (page >= total_pages - 1) {
+                      pageNum = total_pages - 4 + i;
+                    } else {
+                      pageNum = page - 2 + i;
+                    }
+
+                    if (pageNum > 0 && pageNum <= total_pages) {
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => handlePageChange(pageNum)}
+                          className={`pagination-button ${pageNum === page ? 'active' : ''}`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    }
+                    return null;
+                  })}
+
+                  {/* Show ellipsis if needed */}
+                  {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
+
+                  {/* Show last page if not in final range */}
+                  {page < total_pages - 1 && (
+                    <button
+                      onClick={() => handlePageChange(total_pages)}
+                      className="pagination-button"
+                    >
+                      {total_pages}
+                    </button>
+                  )}
+
                   <button
                     onClick={() => handlePageChange(page + 1)}
                     disabled={!usersData.has_next}
+                    className="pagination-button"
                   >
                     Next
                   </button>

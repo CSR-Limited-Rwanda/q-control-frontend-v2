@@ -17,7 +17,7 @@ export const SearchInput = ({ value, setValue, isSearching, label }) => {
         ) : value ? (
           <X onClick={() => setValue("")} />
         ) : (
-          <Search className="search-icon" />
+          <Search color="#A5A3A9" className="search-icon" />
         )}
       </div>
     </div>

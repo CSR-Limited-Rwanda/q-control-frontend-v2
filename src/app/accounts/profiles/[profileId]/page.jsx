@@ -216,15 +216,15 @@ const ProfileDetailsPage = () => {
               <div className="details">
                 <div className="detail">
                   <small>First name</small>
-                  <p>{profile?.user.first_name}</p>
+                  <p>{profile?.user?.first_name}</p>
                 </div>
                 <div className="detail">
                   <small>Last name</small>
-                  <p>{profile?.user.last_name}</p>
+                  <p>{profile?.user?.last_name}</p>
                 </div>
                 <div className="detail">
                   <small>Email</small>
-                  <p>{profile?.user.email}</p>
+                  <p>{profile?.user?.email}</p>
                 </div>
                 <div className="detail">
                   <small>Phone</small>
