@@ -13,7 +13,7 @@ const UserCard = ({ profileUrl, firstName, lastName, label }) => {
                 }
             </div>
             <div className="info">
-                <p className="name">
+                <p className="user-name">
                     {firstName} {lastName}
                 </p>
                 <small className="label">

@@ -107,7 +107,7 @@ const PermissionGroups = ({ formData, setFormData }) => {
     try {
       const response = await api.get(`/departments/?facility_id=${facilityId}`);
       if (response.status === 200) {
-        const formattedDepartments = response.data.map((department) => ({
+        const formattedDepartments = response.data.results.map((department) => ({
           value: department.id,
           label: department.name,
         }));
