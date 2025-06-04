@@ -1,7 +1,7 @@
 "use client";
 import api, { createUrlParams } from "@/utils/api";
-import { LoaderCircle, Plus, X, CirclePlus } from "lucide-react";
-import React, { useEffect, useState, useCallback } from "react";
+import { LoaderCircle, Plus, X, CirclePlus, ChevronDown } from "lucide-react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import PrimaryButton from "@/components/PrimaryButton";
 import OutlineButton from "@/components/OutlineButton";
 import UserCard from "@/components/UserCard";
@@ -29,6 +29,8 @@ const Accounts = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+
+  const selectRef = useRef(null)
 
   const { results: users, page, page_size, count, total_pages } = usersData
 
@@ -122,6 +124,18 @@ const Accounts = () => {
     return format(new Date(isoString), 'dd/MM/yyyy')
   }
 
+  // 
+  const openDropdown = () => {
+    if(selectRef.current) {
+      if(selectRef.current.showPicker) {
+        selectRef.current.showPicker()
+      } else {
+        selectRef.current.focus()
+        selectRef.current.click()
+      }
+    }
+  }
+
   return (
     <>
       <div className="users-container">
@@ -140,8 +154,10 @@ const Accounts = () => {
           <div className="actions">
             <form>
               <div className="half">
+                <span>Show</span>
                 <div className="form-group">
                   <select
+                    ref={selectRef}
                     value={page_size}
                     onChange={(e) => handlePageSizeChange(Number(e.target.value))}
                     name="pageSize"
@@ -152,6 +168,7 @@ const Accounts = () => {
                     <option value="20">20</option>
                     <option value="50">50</option>
                   </select>
+                  <ChevronDown size={24} onClick={openDropdown} className="filter-icon" />
                 </div>
               </div>
             </form>
