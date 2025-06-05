@@ -18,28 +18,31 @@ import PrimaryButton from "@/components/PrimaryButton";
 import OutlineButton from "@/components/OutlineButton";
 import { SearchInput } from "@/components/forms/Search";
 
-const ReviewGroups = () => {
-  const router = useRouter();
-  const [reviewGroups, setReviewGroups] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [showNewUserForm, setShowNewUserForm] = useState(false);
-  const [serverSearchResults, setServerSearchResults] = useState([]);
-  const [isServerSearching, setIsServerSearching] = useState(false);
-  const [openPopupId, setOpenPopupId] = useState(null);
-  const [isEmpty, setIsEmpty] = useState(localStorage.getItem("isEmpty"));
-  const [searchQuery, setSearchQuery] = useState("");
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [showFilters, setShowFilters] = useState(false);
-  const [searchError, setSearchError] = useState(null);
+const DEFAULT_PAGE_SIZE = 10
 
-  const createUrlParams = (params) => {
-    return Object.entries(params)
-      .filter(([_, value]) => value !== undefined)
+const ReviewGroups = () => {
+  const [reviewGroupsData, setReviewGroupsData] = useState({
+    results: [],
+    count: 0,
+    page: 1,
+    page_size: DEFAULT_PAGE_SIZE,
+    total_pages: 1,
+    has_next: false,
+    has_previous: false
+  })
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [isServerSearching, setIsServerSearching] = useState(false)
+  const [showNewUserForm, setShowNewUserForm] = useState(false)
+  const [serverSearchResults, setServerSearchResults] = useState([])
+
+  const createUrlParams = (params) =>
+    Object.entries(params)
+      .filter(([_, value]) => value !== undefined && value !== "")
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join("&");
-  };
+      .join("&")
+
 
   const handleEllipsisClick = (event, id) => {
     event.stopPropagation(); // Prevent triggering document click
@@ -54,78 +57,67 @@ const ReviewGroups = () => {
     router.push(`/permissions/review-groups/${reviewId}/members/`);
   };
 
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setOpenPopupId(null);
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
+  const fetchReviewGroups = useCallback(async (params = "", isSearch = false) => {
+    setIsLoading(true);
+    try {
+      const response = await api.get(`/permissions/review-groups/?${params}`);
+      if (response.status === 200) {
+        if(isSearch) {
+          setServerSearchResults(response.data.results)
+        } else {
+          setReviewGroupsData(response.data)
+        }
+      } else {
+        setErrorMessage("Failed to fetch review groups");
+      }
+    } catch (error) {
+      console.error("Error fetching review groups:", error);
+      setErrorMessage("Error fetching review groups");
+    } finally {
+      setIsLoading(false);
+      setIsServerSearching(false);
+    }
   }, []);
 
-  const fetchReviewGroups = async (params) => {
-    try {
-      const url = `/permissions/review-groups/${params ? `?${params}` : ""}`;
-      const response = await api.get(url);
-      if (response.status === 200) {
-        return response.data.results
-      }
-      return [];
-    } catch (error) {
-      if (error.response) {
-        setErrorMessage(
-          error.response.data.message ||
-            error.response.data.error ||
-            "Error setting a list of users"
-        );
-        console.log("error:", error);
-        return [];
-      } else {
-        setErrorMessage("Unknown error fetching users");
-      }
-      console.log("error", error);
-      setIsLoading(false);
-    }
-  };
 
   useEffect(() => {
     const loadInitialData = async () => {
-      const data = await fetchReviewGroups();
-      setReviewGroups(data);
+      await fetchReviewGroups()
       setIsLoading(false);
     };
     loadInitialData();
   }, []);
 
-  const handleSearch = useCallback(async () => {
-    try {
-      if (searchQuery.length >= 3) {
-        setIsServerSearching(true);
-        setSearchError(null);
-        const params = createUrlParams({
-          search: searchQuery,
-          page: pageNumber,
-          page_size: pageSize,
-        });
-        const response = await fetchReviewGroups(params);
-        setServerSearchResults(response);
-        setReviewGroups([])
-      } else {
-        setServerSearchResults([]);
-        if (reviewGroups.length === 0) {
-          const data = await fetchReviewGroups();
-          setReviewGroups(data);
-        }
-      }
-    } catch (error) {
-      setSearchError("Failed to perform search");
-      console.error("Search error:", error);
-    } finally {
-      setIsServerSearching(false);
+  const handleSearch = useCallback(() => {
+    if (searchQuery.length === 0 || searchQuery.length >= 3) {
+      setIsServerSearching(true)
+      const params = createUrlParams({
+        q: searchQuery,
+        page: 1,
+        page_size: reviewGroupsData.page_size
+      })
+      fetchReviewGroups(params, true)
     }
-  }, [searchQuery, pageNumber, pageSize]);
+  }, [searchQuery, fetchReviewGroups, reviewGroupsData.page_size])
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > reviewGroupsData.total_pages) return
+    const params = createUrlParams({
+      q: searchQuery.trim(),
+      page: newPage,
+      page_size: reviewGroupsData.page_size
+    })
+    fetchReviewGroups(params)
+  }
+
+  const handlePageSizeChange = (newSize) => {
+    const params = createUrlParams({
+      q: searchQuery.trim(),
+      page: 1,
+      page_size: newSize
+    })
+    fetchReviewGroups(params)
+  }
 
   const handleApplyFilters = async () => {
     const params = createUrlParams({
@@ -135,7 +127,7 @@ const ReviewGroups = () => {
     try {
       setIsServerSearching(true);
       const data = await fetchReviewGroups(params);
-      setReviewGroups(data);
+      setReviewGroupsData(data);
       setServerSearchResults([]);
     } catch (error) {
       console.error("Error in filtering data:", error);
@@ -155,6 +147,10 @@ const ReviewGroups = () => {
     }, 500);
     return () => clearTimeout(debounceTimeout);
   }, [searchQuery, handleSearch]);
+
+  useEffect(() => {
+    fetchReviewGroups()
+  }, [fetchReviewGroups])
 
   return isLoading ? (
     <div className="dashboard-page-content">
@@ -184,13 +180,9 @@ const ReviewGroups = () => {
         <div className="title">
           <div>
             <h3>Review Groups</h3>
-            <span>
-              {isEmpty
-                ? reviewGroups.length
-                : serverSearchResults.length > 0
-                ? serverSearchResults.length
-                : reviewGroups.length}
-            </span>{" "}
+            {searchQuery.length >= 3 && serverSearchResults.length > 0
+              ? serverSearchResults.length
+              : reviewGroupsData.results.length}
             <span>Available</span>
           </div>
         </div>
@@ -202,61 +194,6 @@ const ReviewGroups = () => {
             isSearching={isServerSearching}
             label={"Search reviews by name"}
           />
-        </div>
-
-        <div className="filters">
-          <div>
-            <span>Page: {pageNumber}</span>
-            <span>Per page: {pageSize}</span>
-          </div>
-          <div className="filters-popup">
-            <OutlineButton
-              onClick={handleShowFilters}
-              span={"Filters"}
-              prefixIcon={showFilters ? <X /> : <Plus />}
-            />
-
-            {showFilters ? (
-              <div className="side-popup">
-                <div className="popup-content">
-                  <h3>Filters</h3>
-                  <form>
-                    <div className="half">
-                      <div className="form-group">
-                        <label htmlFor="page">Page</label>
-                        <input
-                          value={pageNumber}
-                          onChange={(e) => setPageNumber(e.target.value)}
-                          type="number"
-                          name="pageNumber"
-                          id="pageNumber"
-                          placeholder="Page number"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="page">Page size</label>
-                        <input
-                          value={pageSize}
-                          onChange={(e) => setPageSize(e.target.value)}
-                          type="number"
-                          name="pageSize"
-                          id="pageSize"
-                          placeholder="Page size"
-                        />
-                      </div>
-                    </div>
-                  </form>
-
-                  <PrimaryButton
-                    text={"Apply filters"}
-                    onClick={handleApplyFilters}
-                  />
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
         </div>
 
         <button
@@ -283,39 +220,13 @@ const ReviewGroups = () => {
           <tbody>{renderTableBody()}</tbody>
         </table>
       </div>
-
-      <div className="mobile-users">
-        {isServerSearching ? (
-          <p>Searching database...</p>
-        ) : searchQuery.length >= 3 ? (
-          serverSearchResults.length > 0 ? (
-            serverSearchResults.map((reviewGroup) => (
-              <div key={reviewGroup.id} className="user-card">
-                <p>{reviewGroup.title}</p>
-                <small>{reviewGroup.description}</small>
-              </div>
-            ))
-          ) : (
-            <p>No review groups match your search</p>
-          )
-        ) : reviewGroups.length > 0 ? (
-          reviewGroups.map((reviewGroup) => (
-            <div key={reviewGroup.id} className="user-card">
-              <p>{reviewGroup.title}</p>
-              <small>{reviewGroup.description}</small>
-            </div>
-          ))
-        ) : (
-          <p>No review groups available</p>
-        )}
-      </div>
     </div>
   );
 
   function renderTableBody() {
     // Determine which data to show based on search state
     const displayData =
-      searchQuery.length >= 3 ? serverSearchResults : reviewGroups;
+      searchQuery.length >= 3 ? serverSearchResults : reviewGroupsData.results;
     const isSearchActive = searchQuery.length >= 3;
     const noResults = displayData.length === 0;
 
@@ -345,34 +256,11 @@ const ReviewGroups = () => {
 
     // Render the table rows
     return displayData.map((reviewGroup) => (
-      <tr key={reviewGroup.id} onClick={() => handleRowClick(reviewGroup.id)}>
+      <tr key={reviewGroup.id}>
         <td>{reviewGroup.id}</td>
-        <td>{reviewGroup.title || 'Not provided'}</td>
-        <td>{reviewGroup.description || 'Not provided'}</td>
-        <td>
-          <DateFormatter dateString={reviewGroup.created_at || 'N/A'} />
-        </td>
-        {/* <td className="table-actions" style={{ position: "relative" }}>
-          <div onClick={(e) => handleEllipsisClick(e, reviewGroup.id)}>
-            <EllipsisVertical />
-          </div>
-          {openPopupId === reviewGroup.id && (
-            <div className="actions-popup">
-              <div className="edit-btn">
-                <SquarePen size={20} />
-                <span>Edit</span>
-              </div>
-              <div className="details-btn">
-                <Eye size={20} />
-                <span>Details</span>
-              </div>
-              <div className="delete-btn">
-                <Trash2 size={20} />
-                <span>Delete</span>
-              </div>
-            </div>
-          )}
-        </td> */}
+        <td>{reviewGroup.title || "N/A"}</td>
+        <td>{reviewGroup.description || "N/A"}</td>
+        <td><DateFormatter dateString={reviewGroup.created_at || "N/A"} /></td>
       </tr>
     ));
   }
