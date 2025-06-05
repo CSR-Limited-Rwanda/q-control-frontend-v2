@@ -479,6 +479,11 @@ table {
         text-align: left;
         color: #a5a3a9;
         font-weight: 700;
+
+        .sort-header {
+          display: flex;
+          align-items: center;
+        }
       }
     }
   }

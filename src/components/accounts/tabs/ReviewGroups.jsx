@@ -233,18 +233,18 @@ const ReviewGroups = () => {
                   <tr>
                     <th onClick={() => handleSort('id')}>
                       <div className="sort-header">
-                        ID {renderSortIcon('id')}
+                        <span>ID</span> {renderSortIcon('id')}
                       </div>
                     </th>
                     <th onClick={() => handleSort('title')}>
                       <div className="sort-header">
-                        Group Name {renderSortIcon('title')}
+                        <span>Group Name</span> {renderSortIcon('title')}
                       </div>
                     </th>
                     <th>Description</th>
                     <th onClick={() => handleSort('created_at')}>
                       <div className="sort-header">
-                        Date Added {renderSortIcon('created_at')}
+                        <span>Date Added</span> {renderSortIcon('created_at')}
                       </div>
                     </th>
                   </tr>
