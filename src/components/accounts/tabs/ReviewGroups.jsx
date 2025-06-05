@@ -1,26 +1,25 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import api from "@/utils/api";
+import api, { createUrlParams } from "@/utils/api";
 import DateFormatter from "@/components/DateFormatter";
 import NewReviewGroupForm from "@/components/forms/NewReviewGroupFrom";
 import {
-  Plus,
-  SquareX,
-  EllipsisVertical,
-  SquarePen,
-  Eye,
-  Trash2,
-  X,
+  ChevronDown,
+  CirclePlus,
+  LoaderCircle,
+  ChevronsUpDown,
+  ChevronUp
 } from "lucide-react";
 import "../../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import PrimaryButton from "@/components/PrimaryButton";
-import OutlineButton from "@/components/OutlineButton";
 import { SearchInput } from "@/components/forms/Search";
+import { openDropdown } from "@/utils/dropdownUtils";
 
 const DEFAULT_PAGE_SIZE = 10
 
 const ReviewGroups = () => {
+  const router = useRouter();
   const [reviewGroupsData, setReviewGroupsData] = useState({
     results: [],
     count: 0,
@@ -29,134 +28,129 @@ const ReviewGroups = () => {
     total_pages: 1,
     has_next: false,
     has_previous: false
-  })
-  const [isLoading, setIsLoading] = useState(true)
-  const [errorMessage, setErrorMessage] = useState("")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isServerSearching, setIsServerSearching] = useState(false)
-  const [showNewUserForm, setShowNewUserForm] = useState(false)
-  const [serverSearchResults, setServerSearchResults] = useState([])
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showNewUserForm, setShowNewUserForm] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [sortField, setSortField] = useState("created_at");
+  const [sortOrder, setSortOrder] = useState("desc");
 
-  const createUrlParams = (params) =>
-    Object.entries(params)
-      .filter(([_, value]) => value !== undefined && value !== "")
-      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join("&")
+  const { results: reviewGroups, page, page_size, count, total_pages } = reviewGroupsData;
 
-
-  const handleEllipsisClick = (event, id) => {
-    event.stopPropagation(); // Prevent triggering document click
-    setOpenPopupId((prev) => (prev === id ? null : id));
-  };
-
+  // handle review group form
   const handleShowNewUserForm = () => {
     setShowNewUserForm(!showNewUserForm);
   };
 
-  const handleRowClick = (reviewId) => {
-    router.push(`/permissions/review-groups/${reviewId}/members/`);
-  };
-
-  const fetchReviewGroups = useCallback(async (params = "", isSearch = false) => {
+  const fetchReviewGroups = useCallback(async (params = '') => {
     setIsLoading(true);
     try {
       const response = await api.get(`/permissions/review-groups/?${params}`);
       if (response.status === 200) {
-        if(isSearch) {
-          setServerSearchResults(response.data.results)
-        } else {
-          setReviewGroupsData(response.data)
-        }
+        setReviewGroupsData(response.data);
       } else {
-        setErrorMessage("Failed to fetch review groups");
+        setErrorMessage("Error fetching review groups.");
       }
     } catch (error) {
       console.error("Error fetching review groups:", error);
       setErrorMessage("Error fetching review groups");
     } finally {
       setIsLoading(false);
-      setIsServerSearching(false);
+      setIsSearching(false);
     }
-  }, []);
-
-
-  useEffect(() => {
-    const loadInitialData = async () => {
-      await fetchReviewGroups()
-      setIsLoading(false);
-    };
-    loadInitialData();
   }, []);
 
   const handleSearch = useCallback(() => {
-    if (searchQuery.length === 0 || searchQuery.length >= 3) {
-      setIsServerSearching(true)
+    if (searchQuery.length >= 3 || searchQuery.length === 0) {
+      setIsSearching(true);
       const params = createUrlParams({
-        q: searchQuery,
+        q: searchQuery.trim(),
         page: 1,
-        page_size: reviewGroupsData.page_size
-      })
-      fetchReviewGroups(params, true)
+        page_size: page_size,
+        sort_by: sortField,
+        sort_order: sortOrder
+      });
+      fetchReviewGroups(params);
     }
-  }, [searchQuery, fetchReviewGroups, reviewGroupsData.page_size])
+  }, [searchQuery, page_size, fetchReviewGroups, sortField, sortOrder]);
+
+  const handleSort = (field) => {
+    const newSortOrder = sortField === field ?
+      (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
+    setSortField(field);
+    setSortOrder(newSortOrder);
+
+    const params = createUrlParams({
+      q: searchQuery.trim(),
+      page: page,
+      page_size: page_size,
+      sort_by: field,
+      sort_order: newSortOrder
+    });
+    fetchReviewGroups(params);
+  };
 
   const handlePageChange = (newPage) => {
-    if (newPage < 1 || newPage > reviewGroupsData.total_pages) return
+    if (newPage < 1 || newPage > total_pages) return;
+
     const params = createUrlParams({
       q: searchQuery.trim(),
       page: newPage,
-      page_size: reviewGroupsData.page_size
-    })
-    fetchReviewGroups(params)
-  }
+      page_size: page_size,
+      sort_by: sortField,
+      sort_order: sortOrder
+    });
+    fetchReviewGroups(params);
+  };
 
   const handlePageSizeChange = (newSize) => {
+    setReviewGroupsData(prev => ({
+      ...prev,
+      page_size: newSize
+    }));
+
     const params = createUrlParams({
       q: searchQuery.trim(),
       page: 1,
-      page_size: newSize
-    })
-    fetchReviewGroups(params)
-  }
-
-  const handleApplyFilters = async () => {
-    const params = createUrlParams({
-      page: pageNumber,
-      page_size: pageSize,
+      page_size: newSize,
+      sort_by: sortField,
+      sort_order: sortOrder
     });
-    try {
-      setIsServerSearching(true);
-      const data = await fetchReviewGroups(params);
-      setReviewGroupsData(data);
-      setServerSearchResults([]);
-    } catch (error) {
-      console.error("Error in filtering data:", error);
-    } finally {
-      setIsServerSearching(false);
-      setShowFilters(false);
-    }
+    fetchReviewGroups(params);
   };
 
   const handleShowFilters = () => {
     setShowFilters(!showFilters);
   };
 
+  const handleRowClick = (reviewId) => {
+    router.push(`/permissions/review-groups/${reviewId}/members/`);
+  };
+
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
       handleSearch();
-    }, 500);
+    }, 300);
     return () => clearTimeout(debounceTimeout);
   }, [searchQuery, handleSearch]);
 
   useEffect(() => {
-    fetchReviewGroups()
-  }, [fetchReviewGroups])
+    const params = createUrlParams({
+      sort_by: sortField,
+      sort_order: sortOrder
+    });
+    fetchReviewGroups(params);
+  }, [fetchReviewGroups, sortField, sortOrder]);
 
-  return isLoading ? (
-    <div className="dashboard-page-content">
-      <p>Loading...</p>
-    </div>
-  ) : (
+  const renderSortIcon = (field) => {
+    if (sortField !== field) return <ChevronsUpDown size={16} />;
+    return sortOrder === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />;
+  };
+
+  return (
     <div className="dashboard-page-content">
       {showNewUserForm && (
         <div className="new-user-form-popup">
@@ -176,94 +170,171 @@ const ReviewGroups = () => {
           </div>
         </div>
       )}
-      <div className="actions">
+      <div className="filters">
         <div className="title">
           <div>
             <h3>Review Groups</h3>
-            {searchQuery.length >= 3 && serverSearchResults.length > 0
-              ? serverSearchResults.length
-              : reviewGroupsData.results.length}
-            <span>Available</span>
+            <p>{count} available group(s)</p>
           </div>
         </div>
 
-        <div className="search-filter">
-          <SearchInput
-            value={searchQuery}
-            setValue={setSearchQuery}
-            isSearching={isServerSearching}
-            label={"Search reviews by name"}
+        <SearchInput
+          value={searchQuery}
+          setValue={setSearchQuery}
+          isSearching={isSearching}
+          label={"Search groups by name or description"}
+        />
+
+        <div className="actions">
+          <form>
+            <div className="half">
+              <span>Show</span>
+              <div className="form-group">
+                <select
+                  value={page_size}
+                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                  name="pageSize"
+                  id="pageSize"
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+                <ChevronDown
+                  onClick={() => openDropdown('pageSize')}
+                  size={24}
+                  className="filter-icon"
+                />
+              </div>
+            </div>
+          </form>
+          <PrimaryButton
+            onClick={() => setShowNewUserForm(true)}
+            span="New Group"
+            prefixIcon={<CirclePlus />}
+            customClass={"sticky-button"}
           />
         </div>
+      </div>
 
-        <button
-          type="button"
-          onClick={handleShowNewUserForm}
-          className="button tertiary-button new-user-button"
-        >
-          <Plus size={20} />
-          <span>Add New Group</span>
-        </button>
-      </div>
-      {/* users table */}
-      <div className="table-container">
-        <table className="review-groups-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Group Name</th>
-              <th>Description</th>
-              <th>Date Added</th>
-              {/* <th>Action</th> */}
-            </tr>
-          </thead>
-          <tbody>{renderTableBody()}</tbody>
-        </table>
-      </div>
+      {isLoading && reviewGroups.length < 1 ? (
+        <LoaderCircle className="loading-icon" />
+      ) : errorMessage ? (
+        <div className="message error">
+          <span>{errorMessage}</span>
+        </div>
+      ) : (
+        <div className="users-table">
+          {reviewGroups.length > 0 ? (
+            <>
+              <table>
+                <thead>
+                  <tr>
+                    <th onClick={() => handleSort('id')}>
+                      <div className="sort-header">
+                        ID {renderSortIcon('id')}
+                      </div>
+                    </th>
+                    <th onClick={() => handleSort('title')}>
+                      <div className="sort-header">
+                        Group Name {renderSortIcon('title')}
+                      </div>
+                    </th>
+                    <th>Description</th>
+                    <th onClick={() => handleSort('created_at')}>
+                      <div className="sort-header">
+                        Date Added {renderSortIcon('created_at')}
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className={`${isSearching && "is-searching"}`}>
+                  {reviewGroups.map((group) => (
+                    <tr key={group.id} onClick={() => handleRowClick(group.id)}>
+                      <td>{group.id || "N/A"}</td>
+                      <td>{group.title || "N/A"}</td>
+                      <td>{group.description || "N/A"}</td>
+                      <td>
+                        <DateFormatter dateString={group.created_at} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="pagination-controls">
+                <button
+                  onClick={() => handlePageChange(page - 1)}
+                  disabled={!reviewGroupsData.has_previous}
+                  className="pagination-button"
+                >
+                  Previous
+                </button>
+
+                {page > 2 && (
+                  <button
+                    onClick={() => handlePageChange(1)}
+                    className="pagination-button"
+                  >
+                    1
+                  </button>
+                )}
+                {page > 3 && <span className="pagination-ellipsis">...</span>}
+
+                {Array.from({ length: Math.min(5, total_pages) }, (_, i) => {
+                  let pageNum;
+                  if (page <= 2) {
+                    pageNum = i + 1;
+                  } else if (page >= total_pages - 1) {
+                    pageNum = total_pages - 4 + i;
+                  } else {
+                    pageNum = page - 2 + i;
+                  }
+
+                  if (pageNum > 0 && pageNum <= total_pages) {
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`pagination-button ${pageNum === page ? 'active' : ''}`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  }
+                  return null;
+                })}
+
+                {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
+
+                {page < total_pages - 1 && (
+                  <button
+                    onClick={() => handlePageChange(total_pages)}
+                    className="pagination-button"
+                  >
+                    {total_pages}
+                  </button>
+                )}
+
+                <button
+                  onClick={() => handlePageChange(page + 1)}
+                  disabled={!reviewGroupsData.has_next}
+                  className="pagination-button"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="no-content">
+              <h3>No review groups found</h3>
+              <p>There are no review groups in the system.</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
-
-  function renderTableBody() {
-    // Determine which data to show based on search state
-    const displayData =
-      searchQuery.length >= 3 ? serverSearchResults : reviewGroupsData.results;
-    const isSearchActive = searchQuery.length >= 3;
-    const noResults = displayData.length === 0;
-
-    // Loading state for server search
-    if (isServerSearching) {
-      return (
-        <tr>
-          <td colSpan="5" className="searching_database">
-            <p>Searching database...</p>
-          </td>
-        </tr>
-      );
-    }
-
-    // No results state
-    if (noResults) {
-      return (
-        <tr>
-          <td colSpan="5">
-            {isSearchActive
-              ? "No review groups match your search"
-              : "No review groups available"}
-          </td>
-        </tr>
-      );
-    }
-
-    // Render the table rows
-    return displayData.map((reviewGroup) => (
-      <tr key={reviewGroup.id}>
-        <td>{reviewGroup.id}</td>
-        <td>{reviewGroup.title || "N/A"}</td>
-        <td>{reviewGroup.description || "N/A"}</td>
-        <td><DateFormatter dateString={reviewGroup.created_at || "N/A"} /></td>
-      </tr>
-    ));
-  }
 };
 
 export default ReviewGroups;
