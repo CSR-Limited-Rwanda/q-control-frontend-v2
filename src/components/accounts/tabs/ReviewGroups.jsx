@@ -15,6 +15,8 @@ import "../../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import PrimaryButton from "@/components/PrimaryButton";
 import { SearchInput } from "@/components/forms/Search";
 import { openDropdown } from "@/utils/dropdownUtils";
+import SortableHeader from "@/components/SortableHeader";
+import useSorting from "@/hooks/useSorting";
 
 const DEFAULT_PAGE_SIZE = 10
 
@@ -35,8 +37,7 @@ const ReviewGroups = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [sortField, setSortField] = useState("created_at");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const { sortField, sortOrder, handleSort, getSortParams } = useSorting()
 
   const { results: reviewGroups, page, page_size, count, total_pages } = reviewGroupsData;
 
@@ -46,6 +47,8 @@ const ReviewGroups = () => {
   };
 
   const fetchReviewGroups = useCallback(async (params = '') => {
+    const sortParams = getSortParams()
+    const fullParams = `${params}&${createUrlParams(sortParams)}`
     setIsLoading(true);
     try {
       const response = await api.get(`/permissions/review-groups/?${params}`);
@@ -77,21 +80,21 @@ const ReviewGroups = () => {
     }
   }, [searchQuery, page_size, fetchReviewGroups, sortField, sortOrder]);
 
-  const handleSort = (field) => {
-    const newSortOrder = sortField === field ?
-      (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
-    setSortField(field);
-    setSortOrder(newSortOrder);
+  // const handleSort = (field) => {
+  //   const newSortOrder = sortField === field ?
+  //     (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
+  //   setSortField(field);
+  //   setSortOrder(newSortOrder);
 
-    const params = createUrlParams({
-      q: searchQuery.trim(),
-      page: page,
-      page_size: page_size,
-      sort_by: field,
-      sort_order: newSortOrder
-    });
-    fetchReviewGroups(params);
-  };
+  //   const params = createUrlParams({
+  //     q: searchQuery.trim(),
+  //     page: page,
+  //     page_size: page_size,
+  //     sort_by: field,
+  //     sort_order: newSortOrder
+  //   });
+  //   fetchReviewGroups(params);
+  // };
 
   const handlePageChange = (newPage) => {
     if (newPage < 1 || newPage > total_pages) return;
@@ -231,22 +234,31 @@ const ReviewGroups = () => {
               <table>
                 <thead>
                   <tr>
-                    <th onClick={() => handleSort('id')}>
-                      <div className="sort-header">
-                        <span>ID</span> {renderSortIcon('id')}
-                      </div>
-                    </th>
-                    <th onClick={() => handleSort('title')}>
-                      <div className="sort-header">
-                        <span>Group Name</span> {renderSortIcon('title')}
-                      </div>
-                    </th>
+                    <SortableHeader
+                      field="id"
+                      currentField={sortField}
+                      currentOrder={sortOrder}
+                      onSort={handleSort}
+                    >
+                      ID
+                    </SortableHeader>
+                    <SortableHeader
+                      field="title"
+                      currentField={sortField}
+                      currentOrder={sortOrder}
+                      onSort={handleSort}
+                    >
+                      Group Name
+                    </SortableHeader>
                     <th>Description</th>
-                    <th onClick={() => handleSort('created_at')}>
-                      <div className="sort-header">
-                        <span>Date Added</span> {renderSortIcon('created_at')}
-                      </div>
-                    </th>
+                    <SortableHeader
+                      field="created_at"
+                      currentField={sortField}
+                      currentOrder={sortOrder}
+                      onSort={handleSort}
+                    >
+                      Date Created
+                    </SortableHeader>
                   </tr>
                 </thead>
                 <tbody className={`${isSearching && "is-searching"}`}>

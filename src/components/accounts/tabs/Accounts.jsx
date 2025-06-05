@@ -9,6 +9,8 @@ import NewUserForm from "../forms/newUser/newUserForm";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { openDropdown } from "@/utils/dropdownUtils";
+import SortableHeader from "@/components/SortableHeader";
+import useSorting from "@/hooks/useSorting";
 
 const DEFAULT_PAGE_SIZE = 10
 
@@ -30,9 +32,12 @@ const Accounts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
 
+  const { sortField, sortOrder, handleSort, getSortParams } = useSorting()
   const { results: users, page, page_size, count, total_pages } = usersData
 
   const fetchUsers = useCallback(async (params = '') => {
+    const sortParams = getSortParams()
+    const fullParams = `${params}&${createUrlParams(sortParams)}`
     setIsLoading(true)
     try {
       const response = await api.get(`/users/?${params}`)
@@ -57,9 +62,11 @@ const Accounts = () => {
     if (searchQuery.length >= 3 || searchQuery.length === 0) {
       setIsSearching(true)
       const params = createUrlParams({
-        q: searchQuery.trim(), // Trim whitespace
-        page: 1, // Reset to first page on new search
-        page_size: page_size
+        q: searchQuery.trim(),
+        page: 1,
+        page_size: page_size,
+        sort_by: sortField,
+        sort_order: sortOrder
       })
       fetchUsers(params)
     }
@@ -89,7 +96,9 @@ const Accounts = () => {
     const params = createUrlParams({
       q: searchQuery.trim(),
       page: 1,
-      page_size: newSize
+      page_size: newSize,
+      sort_by: sortField,
+      sort_order: sortOrder
     })
     fetchUsers(params)
   }
@@ -114,8 +123,12 @@ const Accounts = () => {
 
   // Initial load - only runs once on mount
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    const params = createUrlParams({
+      sort_by: sortField,
+      sort_order: sortOrder
+    })
+    fetchUsers(params);
+  }, [fetchUsers, sortField, sortOrder]);
 
   // formatting date
   function formatDate(isoString) {
@@ -178,12 +191,47 @@ const Accounts = () => {
                 <table>
                   <thead>
                     <tr>
-                      <th>Names</th>
-                      <th>ID</th>
-                      <th>Email</th>
+                    <SortableHeader
+                        field="first_name"
+                        currentField={sortField}
+                        currentOrder={sortOrder}
+                        onSort={handleSort}
+                      >
+                        Names
+                      </SortableHeader>
+                      <SortableHeader
+                        field="id"
+                        currentField={sortField}
+                        currentOrder={sortOrder}
+                        onSort={handleSort}
+                      >
+                        ID
+                      </SortableHeader>
+                      <SortableHeader
+                        field="email"
+                        currentField={sortField}
+                        currentOrder={sortOrder}
+                        onSort={handleSort}
+                      >
+                        Email
+                      </SortableHeader>
                       <th>Phone</th>
-                      <th>Department</th>
-                      <th>Date added</th>
+                      <SortableHeader
+                        field="department"
+                        currentField={sortField}
+                        currentOrder={sortOrder}
+                        onSort={handleSort}
+                      >
+                        Department
+                      </SortableHeader>
+                      <SortableHeader
+                        field="created_at"
+                        currentField={sortField}
+                        currentOrder={sortOrder}
+                        onSort={handleSort}
+                      >
+                        Date Added
+                      </SortableHeader>
                       {/* <th>Facility</th> */}
                     </tr>
                   </thead>
