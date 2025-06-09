@@ -3,13 +3,14 @@ import { SearchInput } from "@/components/forms/Search";
 import OutlineButton from "@/components/OutlineButton";
 import PrimaryButton from "@/components/PrimaryButton";
 import api, { createUrlParams } from "@/utils/api";
-import { Plus, X } from "lucide-react";
+import { Plus, X, ChevronDown } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import TitlesForm from "../forms/TitlesForm";
 import TitleDetails from "./TitleDetails";
 import DateFormatter from "@/components/DateFormatter";
 import SortableHeader from "@/components/SortableHeader";
 import useSorting from "@/hooks/useSorting";
+import { openDropdown } from "@/utils/dropdownUtils";
 
 const DEFAULT_PAGE_SIZE = 10
 const Titles = () => {
@@ -63,17 +64,20 @@ const Titles = () => {
       setErrorMessage("Error fetching titles")
     } finally {
       setIsFetchingTitles(false);
+      setIsSearching(false)
     }
 
   };
 
   const handleSearch = useCallback(() => {
-    if (searchQuery.length >= 3) {
+    if (searchQuery.length >= 3 || searchQuery.length === 0) {
       setIsSearching(true);
       const params = createUrlParams({
-        search: searchQuery,
-        page: pageNumber,
+        q: searchQuery.trim(),
+        page: 1,
         page_size: pageSize,
+        sort_by: sortField,
+        sort_order: sortOrder
       });
       fetchTitles(params);
     } else if (searchQuery.length === 0 && isFocused) {
@@ -107,6 +111,21 @@ const Titles = () => {
     setShowTitleDetails(!showTitleDetails);
   };
 
+  const handlePageSizeChange = (newSize) => {
+    setTitlesData(prev => ({
+      ...prev,
+      page_size: newSize
+    }))
+    const params = createUrlParams({
+      q: searchQuery.trim(),
+      page: 1,
+      page_size: newSize,
+      sort_by: sortField,
+      sort_order: sortOrder
+    })
+    fetchTitles(params)
+  }
+
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
       handleSearch();
@@ -129,56 +148,25 @@ const Titles = () => {
         />
 
         <div className="actions">
-          <span>Page: {pageNumber}</span>
-          <span>Per page: {pageSize}</span>
-          <div className="filters-popup">
-            <OutlineButton
-              onClick={handleShowFilters}
-              span={"Filters"}
-              prefixIcon={showFilters ? <X /> : <Plus />}
-            />
-
-            {showFilters ? (
-              <div className="side-popup">
-                <div className="popup-content">
-                  <h3>Filters</h3>
-                  <form>
-                    <div className="half">
-                      <div className="form-group">
-                        <label htmlFor="page">Page</label>
-                        <input
-                          value={pageNumber}
-                          onChange={(e) => setPageNumber(e.target.value)}
-                          type="number"
-                          name="pageNumber"
-                          id="pageNumber"
-                          placeholder="Page number"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="page">Page size</label>
-                        <input
-                          value={pageSize}
-                          onChange={(e) => setPageSize(e.target.value)}
-                          type="number"
-                          name="pageSize"
-                          id="pageSize"
-                          placeholder="Page size"
-                        />
-                      </div>
-                    </div>
-                  </form>
-
-                  <PrimaryButton
-                    text={"Apply filters"}
-                    onClick={handleApplyFilters}
-                  />
-                </div>
+          <form>
+            <div className="half">
+              <span>Show</span>
+              <div className="form-group">
+                <select
+                  value={page_size}
+                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                  name="pageSize"
+                  id="pageSize"
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+                <ChevronDown size={24} onClick={() => openDropdown('pageSize')} className="filter-icon" />
               </div>
-            ) : (
-              ""
-            )}
-          </div>
+            </div>
+          </form>
 
           <PrimaryButton
             onClick={handleShowNewTitleForm}
