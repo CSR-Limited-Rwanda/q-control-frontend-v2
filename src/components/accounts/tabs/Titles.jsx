@@ -126,6 +126,19 @@ const Titles = () => {
     fetchTitles(params)
   }
 
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > total_pages) return
+
+    const params = createUrlParams({
+      q: searchQuery.trim(),
+      page: newPage,
+      page_size: page_size,
+      sort_by: sortField,
+      sort_order: sortOrder
+    })
+    fetchTitles(params)
+  }
+
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
       handleSearch();
@@ -179,40 +192,106 @@ const Titles = () => {
       {isFetchingTitles ? (
         <p>Loading titles...</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <SortableHeader
-                field="name"
-                currentField={sortField}
-                currentOrder={sortOrder}
-                onSort={handleSort}
-              >
-                Name
-              </SortableHeader>
-              <th>Description</th>
-              <SortableHeader
-                field="created_at"
-                currentField={sortField}
-                currentOrder={sortOrder}
-                onSort={handleSort}
-              >
-                Date created
-              </SortableHeader>
-            </tr>
-          </thead>
-          <tbody>
-            {titles.map((title, index) => (
-              <tr onClick={() => handleShowTitleDetails(title)} key={index}>
-                <td>{title.id}</td>
-                <td>{title.name || "-"}</td>
-                <td>{title.description || "-"}</td>
-                <td>{<DateFormatter dateString={title.created_at || "-"} />}</td>
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <SortableHeader
+                  field="name"
+                  currentField={sortField}
+                  currentOrder={sortOrder}
+                  onSort={handleSort}
+                >
+                  Name
+                </SortableHeader>
+                <th>Description</th>
+                <SortableHeader
+                  field="created_at"
+                  currentField={sortField}
+                  currentOrder={sortOrder}
+                  onSort={handleSort}
+                >
+                  Date created
+                </SortableHeader>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {titles.map((title, index) => (
+                <tr onClick={() => handleShowTitleDetails(title)} key={index}>
+                  <td>{title.id}</td>
+                  <td>{title.name || "-"}</td>
+                  <td>{title.description || "-"}</td>
+                  <td>{<DateFormatter dateString={title.created_at || "-"} />}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="pagination-controls">
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={!titlesData.has_previous}
+              className="pagination-button"
+            >
+              Previous
+            </button>
+
+            {page > 2 && (
+              <button
+                onClick={() => handlePageChange(1)}
+                className="pagination-button"
+              >
+                1
+              </button>
+            )}
+            {page > 3 && <span className="pagination-ellipsis">...</span>}
+
+            {Array.from({ length: Math.min(5, total_pages) }, (_, i) => {
+              let pageNum;
+              if (page <= 2) {
+                pageNum = i + 1;
+              } else if (page >= total_pages - 1) {
+                pageNum = total_pages - 4 + i;
+              } else {
+                pageNum = page - 2 + i;
+              }
+
+              if (pageNum > 0 && pageNum <= total_pages) {
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    className={`pagination-button ${pageNum === page ? 'active' : ''}`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              }
+              return null;
+            })}
+
+            {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
+
+            {page < total_pages - 1 && (
+              <button
+                onClick={() => handlePageChange(total_pages)}
+                className="pagination-button"
+              >
+                {total_pages}
+              </button>
+            )}
+
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={!titlesData.has_next}
+              className="pagination-button"
+            >
+              Next
+            </button>
+          </div>
+        </>
+
+
       )}
 
       {showNewTitleForm && <TitlesForm handleClose={handleShowNewTitleForm} />}
