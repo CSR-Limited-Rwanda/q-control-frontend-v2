@@ -8,11 +8,21 @@ import React, { useCallback, useEffect, useState } from "react";
 import TitlesForm from "../forms/TitlesForm";
 import TitleDetails from "./TitleDetails";
 import DateFormatter from "@/components/DateFormatter";
+import SortableHeader from "@/components/SortableHeader";
+import useSorting from "@/hooks/useSorting";
 
+const DEFAULT_PAGE_SIZE = 10
 const Titles = () => {
-  const [titles, setTitles] = useState([]);
+  const [titlesData, setTitlesData] = useState({
+    results: [],
+    count: 0,
+    page: 1,
+    page_size: DEFAULT_PAGE_SIZE,
+    total_pages: 1,
+    has_next: false,
+    has_previous: false
+  })
   const [isFetchingTitles, setIsFetchingTitles] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -22,10 +32,40 @@ const Titles = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const [showFilters, setShowFilters] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+
   const isFocused = document.activeElement;
+
+  const { sortField, sortOrder, handleSort, getSortParams } = useSorting()
+  const { results: titles = [], page, page_size, count, total_pages } = titlesData
+
+  const fetchTitles = async (params = '') => {
+    const sortParams = getSortParams()
+    const fullParams = params ? `${params}&${createUrlParams(sortParams)}` : createUrlParams(sortParams)
+    setIsFetchingTitles(true);
+
+    try {
+      const response = await api.get(`/titles/?${fullParams}`);
+      if (response.status === 200) {
+        setTitlesData({
+          results: response.data.results || [],
+          count: response.data.count || 0,
+          page: response.data.page || 1,
+          page_size: response.data.page_size || DEFAULT_PAGE_SIZE,
+          total_pages: response.data.total_pages || 1,
+          has_next: response.data.has_next || false,
+          has_previous: response.data.has_previous || false
+        })
+      }
+    } catch (error) {
+      console.error("Error fetching titles:", error);
+      setErrorMessage("Error fetching titles")
+    } finally {
+      setIsFetchingTitles(false);
+    }
+
+  };
 
   const handleSearch = useCallback(() => {
     if (searchQuery.length >= 3) {
@@ -43,21 +83,6 @@ const Titles = () => {
       setIsSearching(false);
     }
   }, [searchQuery]);
-
-  const fetchTitles = async (params) => {
-    setIsFetchingTitles(true);
-    try {
-      const response = await api.get(`/titles/?${params}`);
-      console.log(response);
-      if (response.status === 200) {
-        setTitles(response.data.results);
-      }
-    } catch (error) {
-      console.error("Error fetching titles:", error);
-    } finally {
-      setIsFetchingTitles(false);
-    }
-  };
 
   const handleApplyFilters = () => {
     const params = createUrlParams({
@@ -91,7 +116,7 @@ const Titles = () => {
   }, [searchQuery, handleSearch]);
 
   useEffect(() => {
-    fetchTitles();
+    fetchTitles(createUrlParams(getSortParams()));
   }, []);
   return (
     <div className="titles-tab">
@@ -170,9 +195,23 @@ const Titles = () => {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Name</th>
+              <SortableHeader
+                field="name"
+                currentField={sortField}
+                currentOrder={sortOrder}
+                onSort={handleSort}
+              >
+                Name
+              </SortableHeader>
               <th>Description</th>
-              <th>Date created</th>
+              <SortableHeader
+                field="created_at"
+                currentField={sortField}
+                currentOrder={sortOrder}
+                onSort={handleSort}
+              >
+                Date created
+              </SortableHeader>
             </tr>
           </thead>
           <tbody>
