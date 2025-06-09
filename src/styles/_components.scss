@@ -724,6 +724,40 @@ table {
   }
 }
 
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #F5F5F7;
+  padding: 1px 28px;
+  border-radius: 4px;
+}
+
+.sort-btn {
+  background: transparent;
+  color: #A5A3A9;
+}
+
+.sort-select {
+  background: transparent;
+  border: transparent;
+  color: #A5A3A9;
+  font-weight: 600;
+}
+
+.sort-direction {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.sort-direction:hover {
+  background: #e0e0e0;
+}
+
 // Responsive styles
 @media (max-width: 768px) {
   table {
