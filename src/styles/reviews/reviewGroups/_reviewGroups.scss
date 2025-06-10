@@ -123,12 +123,18 @@
   }
 }
 
+.review-templates-btns {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 // delete review group
 .popup {
   .popup-content {
     .delete-error-message {
-      background-color: #FBEDE7;
-      color: #F87C47;
+      background-color: #fbede7;
+      color: #f87c47;
       border-radius: 12px;
       padding: 16px;
       display: flex;
@@ -144,7 +150,7 @@
       }
 
       .cancel-delete-btn {
-        background-color: #F2F2F2;
+        background-color: #f2f2f2;
         color: #808080;
       }
     }

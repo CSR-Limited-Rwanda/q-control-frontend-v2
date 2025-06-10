@@ -3,16 +3,27 @@ import { SearchInput } from "@/components/forms/Search";
 import OutlineButton from "@/components/OutlineButton";
 import PrimaryButton from "@/components/PrimaryButton";
 import api, { createUrlParams } from "@/utils/api";
-import { Plus, X } from "lucide-react";
+import { Plus, X, ChevronDown } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import TitlesForm from "../forms/TitlesForm";
 import TitleDetails from "./TitleDetails";
 import DateFormatter from "@/components/DateFormatter";
+import SortableHeader from "@/components/SortableHeader";
+import useSorting from "@/hooks/useSorting";
+import { openDropdown } from "@/utils/dropdownUtils";
 
+const DEFAULT_PAGE_SIZE = 10
 const Titles = () => {
-  const [titles, setTitles] = useState([]);
+  const [titlesData, setTitlesData] = useState({
+    results: [],
+    count: 0,
+    page: 1,
+    page_size: DEFAULT_PAGE_SIZE,
+    total_pages: 1,
+    has_next: false,
+    has_previous: false
+  })
   const [isFetchingTitles, setIsFetchingTitles] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -22,18 +33,51 @@ const Titles = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const [showFilters, setShowFilters] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+
   const isFocused = document.activeElement;
 
+  const { sortField, sortOrder, handleSort, getSortParams } = useSorting()
+  const { results: titles = [], page, page_size, count, total_pages } = titlesData
+
+  const fetchTitles = async (params = '') => {
+    const sortParams = getSortParams()
+    const fullParams = params ? `${params}&${createUrlParams(sortParams)}` : createUrlParams(sortParams)
+    setIsFetchingTitles(true);
+
+    try {
+      const response = await api.get(`/titles/?${fullParams}`);
+      if (response.status === 200) {
+        setTitlesData({
+          results: response.data.results || [],
+          count: response.data.count || 0,
+          page: response.data.page || 1,
+          page_size: response.data.page_size || DEFAULT_PAGE_SIZE,
+          total_pages: response.data.total_pages || 1,
+          has_next: response.data.has_next || false,
+          has_previous: response.data.has_previous || false
+        })
+      }
+    } catch (error) {
+      console.error("Error fetching titles:", error);
+      setErrorMessage("Error fetching titles")
+    } finally {
+      setIsFetchingTitles(false);
+      setIsSearching(false)
+    }
+
+  };
+
   const handleSearch = useCallback(() => {
-    if (searchQuery.length >= 3) {
+    if (searchQuery.length >= 3 || searchQuery.length === 0) {
       setIsSearching(true);
       const params = createUrlParams({
-        search: searchQuery,
-        page: pageNumber,
+        q: searchQuery.trim(),
+        page: 1,
         page_size: pageSize,
+        sort_by: sortField,
+        sort_order: sortOrder
       });
       fetchTitles(params);
     } else if (searchQuery.length === 0 && isFocused) {
@@ -43,21 +87,6 @@ const Titles = () => {
       setIsSearching(false);
     }
   }, [searchQuery]);
-
-  const fetchTitles = async (params) => {
-    setIsFetchingTitles(true);
-    try {
-      const response = await api.get(`/titles/?${params}`);
-      console.log(response);
-      if (response.status === 200) {
-        setTitles(response.data.results);
-      }
-    } catch (error) {
-      console.error("Error fetching titles:", error);
-    } finally {
-      setIsFetchingTitles(false);
-    }
-  };
 
   const handleApplyFilters = () => {
     const params = createUrlParams({
@@ -82,6 +111,34 @@ const Titles = () => {
     setShowTitleDetails(!showTitleDetails);
   };
 
+  const handlePageSizeChange = (newSize) => {
+    setTitlesData(prev => ({
+      ...prev,
+      page_size: newSize
+    }))
+    const params = createUrlParams({
+      q: searchQuery.trim(),
+      page: 1,
+      page_size: newSize,
+      sort_by: sortField,
+      sort_order: sortOrder
+    })
+    fetchTitles(params)
+  }
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > total_pages) return
+
+    const params = createUrlParams({
+      q: searchQuery.trim(),
+      page: newPage,
+      page_size: page_size,
+      sort_by: sortField,
+      sort_order: sortOrder
+    })
+    fetchTitles(params)
+  }
+
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
       handleSearch();
@@ -91,7 +148,7 @@ const Titles = () => {
   }, [searchQuery, handleSearch]);
 
   useEffect(() => {
-    fetchTitles();
+    fetchTitles(createUrlParams(getSortParams()));
   }, []);
   return (
     <div className="titles-tab">
@@ -104,56 +161,25 @@ const Titles = () => {
         />
 
         <div className="actions">
-          <span>Page: {pageNumber}</span>
-          <span>Per page: {pageSize}</span>
-          <div className="filters-popup">
-            <OutlineButton
-              onClick={handleShowFilters}
-              span={"Filters"}
-              prefixIcon={showFilters ? <X /> : <Plus />}
-            />
-
-            {showFilters ? (
-              <div className="side-popup">
-                <div className="popup-content">
-                  <h3>Filters</h3>
-                  <form>
-                    <div className="half">
-                      <div className="form-group">
-                        <label htmlFor="page">Page</label>
-                        <input
-                          value={pageNumber}
-                          onChange={(e) => setPageNumber(e.target.value)}
-                          type="number"
-                          name="pageNumber"
-                          id="pageNumber"
-                          placeholder="Page number"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="page">Page size</label>
-                        <input
-                          value={pageSize}
-                          onChange={(e) => setPageSize(e.target.value)}
-                          type="number"
-                          name="pageSize"
-                          id="pageSize"
-                          placeholder="Page size"
-                        />
-                      </div>
-                    </div>
-                  </form>
-
-                  <PrimaryButton
-                    text={"Apply filters"}
-                    onClick={handleApplyFilters}
-                  />
-                </div>
+          <form>
+            <div className="half">
+              <span>Show</span>
+              <div className="form-group">
+                <select
+                  value={page_size}
+                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                  name="pageSize"
+                  id="pageSize"
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+                <ChevronDown size={24} onClick={() => openDropdown('pageSize')} className="filter-icon" />
               </div>
-            ) : (
-              ""
-            )}
-          </div>
+            </div>
+          </form>
 
           <PrimaryButton
             onClick={handleShowNewTitleForm}
@@ -166,26 +192,106 @@ const Titles = () => {
       {isFetchingTitles ? (
         <p>Loading titles...</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Date created</th>
-            </tr>
-          </thead>
-          <tbody>
-            {titles.map((title, index) => (
-              <tr onClick={() => handleShowTitleDetails(title)} key={index}>
-                <td>{title.id}</td>
-                <td>{title.name || "-"}</td>
-                <td>{title.description || "-"}</td>
-                <td>{<DateFormatter dateString={title.created_at || "-"} />}</td>
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <SortableHeader
+                  field="name"
+                  currentField={sortField}
+                  currentOrder={sortOrder}
+                  onSort={handleSort}
+                >
+                  Name
+                </SortableHeader>
+                <th>Description</th>
+                <SortableHeader
+                  field="created_at"
+                  currentField={sortField}
+                  currentOrder={sortOrder}
+                  onSort={handleSort}
+                >
+                  Date created
+                </SortableHeader>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {titles.map((title, index) => (
+                <tr onClick={() => handleShowTitleDetails(title)} key={index}>
+                  <td>{title.id}</td>
+                  <td>{title.name || "-"}</td>
+                  <td>{title.description || "-"}</td>
+                  <td>{<DateFormatter dateString={title.created_at || "-"} />}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="pagination-controls">
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={!titlesData.has_previous}
+              className="pagination-button"
+            >
+              Previous
+            </button>
+
+            {page > 2 && (
+              <button
+                onClick={() => handlePageChange(1)}
+                className="pagination-button"
+              >
+                1
+              </button>
+            )}
+            {page > 3 && <span className="pagination-ellipsis">...</span>}
+
+            {Array.from({ length: Math.min(5, total_pages) }, (_, i) => {
+              let pageNum;
+              if (page <= 2) {
+                pageNum = i + 1;
+              } else if (page >= total_pages - 1) {
+                pageNum = total_pages - 4 + i;
+              } else {
+                pageNum = page - 2 + i;
+              }
+
+              if (pageNum > 0 && pageNum <= total_pages) {
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    className={`pagination-button ${pageNum === page ? 'active' : ''}`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              }
+              return null;
+            })}
+
+            {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
+
+            {page < total_pages - 1 && (
+              <button
+                onClick={() => handlePageChange(total_pages)}
+                className="pagination-button"
+              >
+                {total_pages}
+              </button>
+            )}
+
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={!titlesData.has_next}
+              className="pagination-button"
+            >
+              Next
+            </button>
+          </div>
+        </>
+
+
       )}
 
       {showNewTitleForm && <TitlesForm handleClose={handleShowNewTitleForm} />}

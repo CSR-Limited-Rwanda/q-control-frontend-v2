@@ -14,6 +14,12 @@
     background-color: #FCFCFC;
   }
 
+  .date {
+    color: #8D8D8D;
+    font-size: 14px;
+    font-weight: 400;
+  }
+
   .facility-item,
   .department-item {
     border: 1px solid #ddd;
@@ -90,6 +96,12 @@
         font-weight: 400;
         font-size: 18px;
       }
+    }
+
+    .second-col {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
   }
 }

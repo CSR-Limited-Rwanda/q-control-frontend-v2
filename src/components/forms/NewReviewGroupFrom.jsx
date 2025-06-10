@@ -300,7 +300,7 @@ const NewReviewGroupForm = () => {
               <button
                 onClick={() => {
                   window.location.reload();
-                  router.push(`/permissions/review-groups/`);
+                  router.push(`/accounts/`);
                 }}
                 className="back-btn"
               >

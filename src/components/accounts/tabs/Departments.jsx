@@ -1,10 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { MoveRight, Notebook, PlusCircle, PlusIcon } from "lucide-react";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  MoveRight,
+  Notebook,
+  PlusCircle,
+  PlusIcon,
+  ListFilter
+} from "lucide-react";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import AddDepartment from "../forms/department/AddDepartment";
 import "../../../styles/facilities/_facilities.scss";
+import { format } from "date-fns";
+import SortControl from "@/utils/SortControl";
 
 const DepartmentsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,6 +22,10 @@ const DepartmentsPage = () => {
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [showAddDepartment, setShowAddDepartment] = useState(false);
+  const [sortConfig, setSortConfig] = useState({
+    field: 'created_at',
+    direction: 'desc',
+  });
   const router = useRouter();
 
   // Fetch all facilities on mount
@@ -23,7 +35,6 @@ const DepartmentsPage = () => {
         setIsLoading(true);
         const response = await api.get(`/facilities/`);
         if (response.status === 200) {
-          // console.log('facilities', response.data)
           setFacilities(response.data);
         }
       } catch (error) {
@@ -49,7 +60,6 @@ const DepartmentsPage = () => {
         });
         if (response.status === 200) {
           setDepartments(response.data.results);
-          console.log(response.data.results);
         }
       } catch (error) {
         setErrorMessage("Error fetching departments");
@@ -62,6 +72,29 @@ const DepartmentsPage = () => {
     fetchDepartments();
   }, [selectedFacilityId]);
 
+  // sorting
+  const sortedDepartments = useMemo(() => {
+    if (!departments) return []
+
+    const sortableDepartments = [...departments]
+    return sortableDepartments.sort((a, b) => {
+      if (sortConfig.field === 'created_at') {
+        const dateA = new Date(a.created_at)
+        const dateB = new Date(b.created_at)
+        return sortConfig.direction === 'asc' ? dateA - dateB : dateB - dateA
+      }
+      const nameA = a.name.toLowerCase()
+      const nameB = b.name.toLowerCase()
+      if (nameA < nameB) return sortConfig.direction === 'asc' ? -1 : 1
+      if (nameA > nameB) return sortConfig.direction === 'asc' ? 1 : -1
+      return 0
+    })
+  }, [departments, sortConfig])
+
+  const handleSortChange = (config) => {
+    setSortConfig(config)
+  }
+
   const handleDepartmentClick = (department_id) => {
     router.push(
       `/facilities/${selectedFacilityId}/departments/${department_id}`
@@ -72,6 +105,9 @@ const DepartmentsPage = () => {
     setDepartments(prev => Array.isArray(prev) ? [...prev, newDepartment] : [newDepartment]);
   }
 
+  function formatDate(isoString) {
+    return format(new Date(isoString), 'dd/MM/yyyy')
+  }
 
   return (
     <div>
@@ -98,7 +134,9 @@ const DepartmentsPage = () => {
         <div className="departments">
           <div className="departments-titles">
             <div className="first-col">
-              <h3>Departments</h3>
+              <h3>
+                Departments
+              </h3>
               <p>Available departments</p>
             </div>
             <div className="second-col">
@@ -106,6 +144,15 @@ const DepartmentsPage = () => {
                 <PlusIcon />
                 Add department
               </button>
+              <SortControl
+                options={[
+                  { value: 'name', label: "Name" },
+                  { value: 'created_at', label: 'Date Created' }
+                ]}
+                defaultField="created_at"
+                defaultDirection="desc"
+                onChange={handleSortChange}
+              />
             </div>
           </div>
           {showAddDepartment && (
@@ -116,25 +163,24 @@ const DepartmentsPage = () => {
             />
           )}
           <div className="departments-list">
-            {Array.isArray(departments) && departments.length > 0
-              ? departments.map((department) => (
-                  <div
-                    key={department.id}
-                    className="department-item"
-                    onClick={() => handleDepartmentClick(department.id)}
-                  >
-                    <Notebook size={30} className="department-icon" />
-                    <div>
-                      <h3 className="department-title">{department.name}</h3>
-                      <p>
-                        Members:{" "}
-                        {Array.isArray(department.members)
-                          ? department.members.length
-                          : department.members}
-                      </p>
-                    </div>
+            {sortedDepartments.length > 0
+              ? sortedDepartments.map((department) => (
+                <div
+                  key={department.id}
+                  className="department-item"
+                  onClick={() => handleDepartmentClick(department.id)}
+                >
+                  <Notebook size={30} className="department-icon" />
+                  <div>
+                    <h3 className="department-title">{department.name}</h3>
+                    <p
+                      className="date"
+                    >
+                      Created on {formatDate(department.created_at)}
+                    </p>
                   </div>
-                ))
+                </div>
+              ))
               : "No departments found"}
           </div>
         </div>

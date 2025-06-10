@@ -24,7 +24,7 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
                 setIsLoading(true)
                 const response = await api.get(`/users/`)
                 if (response.status === 200) {
-                    console.log('Users:', response.data.results);
+                    // console.log('Users:', response.data.results);
                     setUsers(response.data.results)
                 }
             } catch (error) {
