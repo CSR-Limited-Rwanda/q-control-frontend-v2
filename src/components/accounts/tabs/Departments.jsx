@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import AddDepartment from "../forms/department/AddDepartment";
 import "../../../styles/facilities/_facilities.scss";
 import { format } from "date-fns";
+import SortControl from "@/utils/SortControl";
 
 const DepartmentsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,8 +23,8 @@ const DepartmentsPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showAddDepartment, setShowAddDepartment] = useState(false);
   const [sortConfig, setSortConfig] = useState({
-    field: 'name',
-    direction: 'asc',
+    field: 'created_at',
+    direction: 'desc',
   });
   const router = useRouter();
 
@@ -90,11 +91,8 @@ const DepartmentsPage = () => {
     })
   }, [departments, sortConfig])
 
-  const handleSortChange = (field) => {
-    setSortConfig(prev => ({
-      field,
-      direction: prev.field === field && prev.direction === 'asc' ? 'desc' : 'asc'
-    }))
+  const handleSortChange = (config) => {
+    setSortConfig(config)
   }
 
   const handleDepartmentClick = (department_id) => {
@@ -146,25 +144,15 @@ const DepartmentsPage = () => {
                 <PlusIcon />
                 Add department
               </button>
-              <div className="sort-controls">
-                <div>
-                  <ListFilter
-                    size={24}
-                    onClick={() => handleSortChange(sortConfig.field)}
-                    className="sort-btn"
-                  >
-                    {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                  </ListFilter>
-                </div>
-                <select
-                  value={sortConfig.field}
-                  onChange={(e) => handleSortChange(e.target.value)}
-                  className="sort-select"
-                >
-                  <option>Sort By: Name</option>
-                  <option>Sort By: Date Added</option>
-                </select>
-              </div>
+              <SortControl
+                options={[
+                  { value: 'name', label: "Name" },
+                  { value: 'created_at', label: 'Date Created' }
+                ]}
+                defaultField="created_at"
+                defaultDirection="desc"
+                onChange={handleSortChange}
+              />
             </div>
           </div>
           {showAddDepartment && (
