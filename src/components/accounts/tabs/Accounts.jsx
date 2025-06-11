@@ -42,7 +42,7 @@ const Accounts = () => {
     try {
       const response = await api.get(`/users/?${params}`)
       if (response.status === 200) {
-        console.log('users', response.data)
+        console.log('total_pages:', response.data.total_pages, 'count:', response.data.count, 'page_size:', response.data.page_size);
         setUsersData(response.data)
       } else {
         setErrorMessage("Error fetching users.")
@@ -191,7 +191,7 @@ const Accounts = () => {
                 <table>
                   <thead>
                     <tr>
-                    <SortableHeader
+                      <SortableHeader
                         field="first_name"
                         currentField={sortField}
                         currentOrder={sortOrder}
@@ -265,53 +265,15 @@ const Accounts = () => {
                     Previous
                   </button>
 
-                  {page > 2 && (
+                  {Array.from({ length: total_pages }, (_, i) => (
                     <button
-                      onClick={() => handlePageChange(1)}
-                      className="pagination-button"
+                      key={i + 1}
+                      onClick={() => handlePageChange(i + 1)}
+                      className={`pagination-button ${i + 1 === page ? 'active' : ''}`}
                     >
-                      1
+                      {i + 1}
                     </button>
-                  )}
-                  {page > 3 && <span className="pagination-ellipsis">...</span>}
-
-                  {/* pages around current page */}
-                  {Array.from({ length: Math.min(5, total_pages) }, (_, i) => {
-                    let pageNum;
-                    if (page <= 2) {
-                      pageNum = i + 1;
-                    } else if (page >= total_pages - 1) {
-                      pageNum = total_pages - 4 + i;
-                    } else {
-                      pageNum = page - 2 + i;
-                    }
-
-                    if (pageNum > 0 && pageNum <= total_pages) {
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => handlePageChange(pageNum)}
-                          className={`pagination-button ${pageNum === page ? 'active' : ''}`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    }
-                    return null;
-                  })}
-
-                  {/* Show ellipsis if needed */}
-                  {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
-
-                  {/* Show last page if not in final range */}
-                  {page < total_pages - 1 && (
-                    <button
-                      onClick={() => handlePageChange(total_pages)}
-                      className="pagination-button"
-                    >
-                      {total_pages}
-                    </button>
-                  )}
+                  ))}
 
                   <button
                     onClick={() => handlePageChange(page + 1)}
