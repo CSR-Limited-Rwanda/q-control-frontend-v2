@@ -147,7 +147,7 @@ const DepartmentsPage = () => {
               <SortControl
                 options={[
                   { value: 'name', label: "Name" },
-                  { value: 'created_at', label: 'Date Created' }
+                  { value: 'created_at', label: 'Date added' }
                 ]}
                 defaultField="created_at"
                 defaultDirection="desc"
