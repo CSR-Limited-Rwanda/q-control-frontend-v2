@@ -214,8 +214,8 @@ const ReviewGroups = () => {
           </form>
           <PrimaryButton
             onClick={() => setShowNewUserForm(true)}
-            span="New Group"
-            prefixIcon={<CirclePlus />}
+            span="Add New Group"
+            prefixIcon={<CirclePlus size={20} />}
             customClass={"sticky-button"}
           />
         </div>
