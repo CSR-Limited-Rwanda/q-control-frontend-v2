@@ -17,12 +17,15 @@ import {
     Lock,
     Settings,
     LogOut,
+    Dumbbell,
+    CirclePlus
 } from 'lucide-react';
 import { splitName } from '@/utils/text';
 import LoginPopup from '@/components/auth/Login';
 import { useAuthentication } from '@/context/authContext';
 import Image from 'next/image';
 import UserCard from '@/components/UserCard';
+import { usePathname } from 'next/navigation';
 
 const DashboardLayout = ({ children }) => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -30,6 +33,7 @@ const DashboardLayout = ({ children }) => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { isAuth, logout } = useAuthentication()
+    const pathname = usePathname()
 
     const handleMobileMenu = () => {
         setShowMobileMenu(!showMobileMenu);
@@ -50,9 +54,14 @@ const DashboardLayout = ({ children }) => {
         //     ]
         // },
         {
-            icon: <Users size={20} />,
+            icon: <Users size={24} />,
             label: 'Account Management',
             href: '/accounts'
+        },
+        {
+            icon: <Dumbbell size={24} />,
+            label: 'Incident Tracking',
+            href: '/incidents'
         },
         // {
         //     icon: <Boxes size={20} />,
@@ -81,7 +90,7 @@ const DashboardLayout = ({ children }) => {
 
     const MenuItem = ({ item, index }) => {
         const hasDropdown = item.items?.length > 0;
-        const isActive = activeDropdown === index;
+        const isActive = pathname === item.href || activeDropdown === index
 
         return (
             <div className="menu-item-container">
@@ -174,6 +183,10 @@ const DashboardLayout = ({ children }) => {
                             </div>
 
                             <div className="dashboard__header-actions">
+                                <button className='add-incident-btn'>
+                                    <CirclePlus />
+                                    <span>Add New</span>
+                                </button>
                                 {/* <ProfileMessages /> */}
                                 {/* <ProfileNotification /> */}
                                 <ProfileContainer />

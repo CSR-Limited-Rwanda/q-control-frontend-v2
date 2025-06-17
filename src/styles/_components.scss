@@ -43,6 +43,10 @@ button,
   }
 }
 
+.add-incident-btn {
+  border-radius: 6px;
+}
+
 .btn-secondary {
   background-color: var(--secondary);
   color: white;
@@ -631,6 +635,10 @@ table {
 .tabs {
   display: flex;
   align-items: center;
+  gap: 16px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
 
   .tab {
     display: flex;
@@ -640,6 +648,7 @@ table {
     transition: all 0.3s ease-in-out;
     text-wrap: nowrap;
     cursor: pointer;
+    color: #A5A3A9;
   }
 
   & > :first-child {
@@ -647,10 +656,10 @@ table {
   }
 
   .active {
-    background-color: var(--primary);
-    color: white;
-    border-radius: 4px;
-    padding: 0.5rem;
+    background-color: #F3F8FF;
+    color: #145C9E;
+    border-radius: 12px;
+    padding: 14px;
   }
 }
 
