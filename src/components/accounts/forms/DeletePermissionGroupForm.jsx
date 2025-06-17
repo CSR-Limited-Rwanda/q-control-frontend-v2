@@ -1,7 +1,7 @@
 import { AlertCircle } from "lucide-react";
-import "../../../../styles/reviews/reviewGroups/_reviewGroups.scss";
+import "../../../styles/reviews/reviewGroups/_reviewGroups.scss";
 
-const DeleteReviewGroup = ({ onClose, onConfirm, isLoading, error }) => {
+const DeletePermissionGroup = ({ onClose, onConfirm, isLoading, error }) => {
   return (
     <div className="popup">
       <div className="popup-content">
@@ -12,8 +12,8 @@ const DeleteReviewGroup = ({ onClose, onConfirm, isLoading, error }) => {
           </div>
         )}
         <div className="delete-review-group-titles">
-          <h3>Delete review group</h3>
-          <p>Are you sure you want to delete this review group?</p>
+          <h3>Delete permission group</h3>
+          <p>Are you sure you want to delete this permission group?</p>
         </div>
         <div className="delete-review-group-buttons">
           <button
@@ -36,4 +36,4 @@ const DeleteReviewGroup = ({ onClose, onConfirm, isLoading, error }) => {
   );
 };
 
-export default DeleteReviewGroup;
+export default DeletePermissionGroup;
