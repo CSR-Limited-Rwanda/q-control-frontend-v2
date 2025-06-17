@@ -1329,3 +1329,31 @@ textarea {
     cursor: pointer;
   }
 }
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  background-color: #f0f0f0;
+  border-radius: 20%;
+  cursor: pointer;
+
+  input {
+    display: none;
+  }
+  .checkmark {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+    fill: none;
+  }
+}
+
+.checked {
+  .checkmark {
+    stroke: #145c9e;
+    stroke-dashoffset: 0;
+  }
+}

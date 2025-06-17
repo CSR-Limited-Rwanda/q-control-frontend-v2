@@ -9,7 +9,8 @@ import {
   CirclePlus,
   LoaderCircle,
   ChevronsUpDown,
-  ChevronUp
+  ChevronUp,
+  X,
 } from "lucide-react";
 import "../../../styles/reviews/reviewGroups/_reviewGroups.scss";
 import PrimaryButton from "@/components/PrimaryButton";
@@ -18,7 +19,7 @@ import { openDropdown } from "@/utils/dropdownUtils";
 import SortableHeader from "@/components/SortableHeader";
 import useSorting from "@/hooks/useSorting";
 
-const DEFAULT_PAGE_SIZE = 10
+const DEFAULT_PAGE_SIZE = 10;
 
 const ReviewGroups = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const ReviewGroups = () => {
     page_size: DEFAULT_PAGE_SIZE,
     total_pages: 1,
     has_next: false,
-    has_previous: false
+    has_previous: false,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -37,18 +38,24 @@ const ReviewGroups = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const { sortField, sortOrder, handleSort, getSortParams } = useSorting()
+  const { sortField, sortOrder, handleSort, getSortParams } = useSorting();
 
-  const { results: reviewGroups, page, page_size, count, total_pages } = reviewGroupsData;
+  const {
+    results: reviewGroups,
+    page,
+    page_size,
+    count,
+    total_pages,
+  } = reviewGroupsData;
 
   // handle review group form
   const handleShowNewUserForm = () => {
     setShowNewUserForm(!showNewUserForm);
   };
 
-  const fetchReviewGroups = useCallback(async (params = '') => {
-    const sortParams = getSortParams()
-    const fullParams = `${params}&${createUrlParams(sortParams)}`
+  const fetchReviewGroups = useCallback(async (params = "") => {
+    const sortParams = getSortParams();
+    const fullParams = `${params}&${createUrlParams(sortParams)}`;
     setIsLoading(true);
     try {
       const response = await api.get(`/permissions/review-groups/?${params}`);
@@ -74,7 +81,7 @@ const ReviewGroups = () => {
         page: 1,
         page_size: page_size,
         sort_by: sortField,
-        sort_order: sortOrder
+        sort_order: sortOrder,
       });
       fetchReviewGroups(params);
     }
@@ -104,15 +111,15 @@ const ReviewGroups = () => {
       page: newPage,
       page_size: page_size,
       sort_by: sortField,
-      sort_order: sortOrder
+      sort_order: sortOrder,
     });
     fetchReviewGroups(params);
   };
 
   const handlePageSizeChange = (newSize) => {
-    setReviewGroupsData(prev => ({
+    setReviewGroupsData((prev) => ({
       ...prev,
-      page_size: newSize
+      page_size: newSize,
     }));
 
     const params = createUrlParams({
@@ -120,7 +127,7 @@ const ReviewGroups = () => {
       page: 1,
       page_size: newSize,
       sort_by: sortField,
-      sort_order: sortOrder
+      sort_order: sortOrder,
     });
     fetchReviewGroups(params);
   };
@@ -143,14 +150,18 @@ const ReviewGroups = () => {
   useEffect(() => {
     const params = createUrlParams({
       sort_by: sortField,
-      sort_order: sortOrder
+      sort_order: sortOrder,
     });
     fetchReviewGroups(params);
   }, [fetchReviewGroups, sortField, sortOrder]);
 
   const renderSortIcon = (field) => {
     if (sortField !== field) return <ChevronsUpDown size={16} />;
-    return sortOrder === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />;
+    return sortOrder === "asc" ? (
+      <ChevronUp size={16} />
+    ) : (
+      <ChevronDown size={16} />
+    );
   };
 
   return (
@@ -205,7 +216,7 @@ const ReviewGroups = () => {
                   <option value="50">50</option>
                 </select>
                 <ChevronDown
-                  onClick={() => openDropdown('pageSize')}
+                  onClick={() => openDropdown("pageSize")}
                   size={24}
                   className="filter-icon"
                 />
@@ -283,46 +294,63 @@ const ReviewGroups = () => {
                   Previous
                 </button>
 
+                {/* Always show first page */}
+                <button
+                  onClick={() => handlePageChange(1)}
+                  className={`pagination-button ${1 === page ? "active" : ""}`}
+                >
+                  1
+                </button>
+
+                {/* Show ellipsis if current page is far from start */}
+                {page > 3 && (
+                  <span className="pagination-ellipsis">
+                    <Ellipsis />
+                  </span>
+                )}
+
+                {/* Show one page before current if needed */}
                 {page > 2 && (
                   <button
-                    onClick={() => handlePageChange(1)}
+                    onClick={() => handlePageChange(page - 1)}
                     className="pagination-button"
                   >
-                    1
+                    {page - 1}
                   </button>
                 )}
-                {page > 3 && <span className="pagination-ellipsis">...</span>}
 
-                {Array.from({ length: Math.min(5, total_pages) }, (_, i) => {
-                  let pageNum;
-                  if (page <= 2) {
-                    pageNum = i + 1;
-                  } else if (page >= total_pages - 1) {
-                    pageNum = total_pages - 4 + i;
-                  } else {
-                    pageNum = page - 2 + i;
-                  }
+                {/* Show current page if it's not first or last */}
+                {page !== 1 && page !== total_pages && (
+                  <button
+                    onClick={() => handlePageChange(page)}
+                    className="pagination-button active"
+                  >
+                    {page}
+                  </button>
+                )}
 
-                  if (pageNum > 0 && pageNum <= total_pages) {
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => handlePageChange(pageNum)}
-                        className={`pagination-button ${pageNum === page ? 'active' : ''}`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  }
-                  return null;
-                })}
-
-                {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
-
+                {/* Show one page after current if needed */}
                 {page < total_pages - 1 && (
                   <button
-                    onClick={() => handlePageChange(total_pages)}
+                    onClick={() => handlePageChange(page + 1)}
                     className="pagination-button"
+                  >
+                    {page + 1}
+                  </button>
+                )}
+
+                {/* Show ellipsis if current page is far from end */}
+                {page < total_pages - 2 && (
+                  <span className="pagination-ellipsis">...</span>
+                )}
+
+                {/* Always show last page if it's not the first page */}
+                {total_pages > 1 && (
+                  <button
+                    onClick={() => handlePageChange(total_pages)}
+                    className={`pagination-button ${
+                      total_pages === page ? "active" : ""
+                    }`}
                   >
                     {total_pages}
                   </button>

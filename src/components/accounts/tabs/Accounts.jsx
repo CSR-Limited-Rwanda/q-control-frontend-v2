@@ -1,6 +1,6 @@
 "use client";
 import api, { createUrlParams } from "@/utils/api";
-import { LoaderCircle, CirclePlus, ChevronDown } from "lucide-react";
+import { LoaderCircle, CirclePlus, ChevronDown, Ellipsis } from "lucide-react";
 import React, { useEffect, useState, useCallback } from "react";
 import PrimaryButton from "@/components/PrimaryButton";
 import UserCard from "@/components/UserCard";
@@ -42,7 +42,7 @@ const Accounts = () => {
     try {
       const response = await api.get(`/users/?${params}`)
       if (response.status === 200) {
-        console.log('users', response.data)
+        console.log('total_pages:', response.data.total_pages, 'count:', response.data.count, 'page_size:', response.data.page_size);
         setUsersData(response.data)
       } else {
         setErrorMessage("Error fetching users.")
@@ -147,7 +147,7 @@ const Accounts = () => {
             value={searchQuery}
             setValue={setSearchQuery}
             isSearching={isSearching}
-            label={"Search users by email, names or phone number"}
+            label={"Search users by email or name"}
           />
 
           <div className="actions">
@@ -191,7 +191,7 @@ const Accounts = () => {
                 <table>
                   <thead>
                     <tr>
-                    <SortableHeader
+                      <SortableHeader
                         field="first_name"
                         currentField={sortField}
                         currentOrder={sortOrder}
@@ -265,49 +265,55 @@ const Accounts = () => {
                     Previous
                   </button>
 
+                  {/* Always show first page */}
+                  <button
+                    onClick={() => handlePageChange(1)}
+                    className={`pagination-button ${1 === page ? 'active' : ''}`}
+                  >
+                    1
+                  </button>
+
+                  {/* Show ellipsis if current page is far from start */}
+                  {page > 3 && <span className="pagination-ellipsis"><Ellipsis /></span>}
+
+                  {/* Show one page before current if needed */}
                   {page > 2 && (
                     <button
-                      onClick={() => handlePageChange(1)}
+                      onClick={() => handlePageChange(page - 1)}
                       className="pagination-button"
                     >
-                      1
+                      {page - 1}
                     </button>
                   )}
-                  {page > 3 && <span className="pagination-ellipsis">...</span>}
 
-                  {/* pages around current page */}
-                  {Array.from({ length: Math.min(5, total_pages) }, (_, i) => {
-                    let pageNum;
-                    if (page <= 2) {
-                      pageNum = i + 1;
-                    } else if (page >= total_pages - 1) {
-                      pageNum = total_pages - 4 + i;
-                    } else {
-                      pageNum = page - 2 + i;
-                    }
+                  {/* Show current page if it's not first or last */}
+                  {page !== 1 && page !== total_pages && (
+                    <button
+                      onClick={() => handlePageChange(page)}
+                      className="pagination-button active"
+                    >
+                      {page}
+                    </button>
+                  )}
 
-                    if (pageNum > 0 && pageNum <= total_pages) {
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => handlePageChange(pageNum)}
-                          className={`pagination-button ${pageNum === page ? 'active' : ''}`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    }
-                    return null;
-                  })}
-
-                  {/* Show ellipsis if needed */}
-                  {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
-
-                  {/* Show last page if not in final range */}
+                  {/* Show one page after current if needed */}
                   {page < total_pages - 1 && (
                     <button
-                      onClick={() => handlePageChange(total_pages)}
+                      onClick={() => handlePageChange(page + 1)}
                       className="pagination-button"
+                    >
+                      {page + 1}
+                    </button>
+                  )}
+
+                  {/* Show ellipsis if current page is far from end */}
+                  {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
+
+                  {/* Always show last page if it's not the first page */}
+                  {total_pages > 1 && (
+                    <button
+                      onClick={() => handlePageChange(total_pages)}
+                      className={`pagination-button ${total_pages === page ? 'active' : ''}`}
                     >
                       {total_pages}
                     </button>

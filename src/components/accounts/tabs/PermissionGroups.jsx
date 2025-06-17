@@ -7,6 +7,9 @@ import { Eye, Plus, SquarePen, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
+import AddPermissionGroupForm from "../forms/AddPermissionGroupForm";
+import DeletePermissionGroup from "../forms/DeletePermissionGroupForm";
+import EditPermissionGroupForm from "../forms/EditPermissionGroupForm";
 
 const PermissionGroups = () => {
   const router = useRouter();
@@ -17,6 +20,7 @@ const PermissionGroups = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const [showNewUserForm, setShowNewUserForm] = useState(false);
+  const [showEditPermissionForm, setShowEditPermissionForm] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [groupToShow, setGroupToShow] = useState(null);
 
@@ -26,6 +30,76 @@ const PermissionGroups = () => {
 
   const [isSearching, setIsSearching] = useState(false);
   const isFocused = document.activeElement;
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [groupId, setGroupId] = useState();
+  const [group, setGroup] = useState();
+
+  const handleShowDeleteModal = (id, group) => {
+    setShowDeleteModal(!showDeleteModal);
+    setGroup(group);
+    console.log(group);
+    setGroupId(id);
+    console.log(id);
+  };
+
+  const formatGroupDataForDelete = (group) => {
+    return {
+      group_name: group.name,
+      permissions: group.permissions.map((permGroup) => ({
+        feature: permGroup.feature,
+        permissions: permGroup.perms,
+      })),
+    };
+  };
+
+  const handleShowEditPermissionForm = (id) => {
+    setShowEditPermissionForm(!showEditPermissionForm);
+    setGroupId(id);
+  };
+  const handleDeletePermissionGroup = async () => {
+    setIsDeleting(true);
+    setDeleteError("");
+
+    const formattedBody = formatGroupDataForDelete(group);
+    console.log(formattedBody);
+
+    try {
+      const response = await api.delete(
+        `/permissions/${groupId}/remove-permissions/`,
+        {
+          data: formattedBody,
+        }
+      );
+
+      if (response.status === 204 || response.status === 200) {
+        console.log(response.data);
+
+        try {
+          const response = await api.delete(`/permissions/`, {
+            data: {
+              id: group.id,
+            },
+          });
+
+          if (response.status === 204 || response.status === 200) {
+            setShowDeleteModal(false);
+            window.location.reload();
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        handleFetchGroups();
+      } else {
+        throw new Error("Failed to delete group");
+      }
+    } catch (err) {
+      setDeleteError("Failed to delete permission group. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const handleSearch = useCallback(() => {
     if (searchQuery.length >= 3) {
@@ -44,6 +118,12 @@ const PermissionGroups = () => {
     }
   }, [searchQuery]);
 
+  const handleClose = () => {
+    setShowNewUserForm(false);
+  };
+  const handleCloseEditPermissionForm = () => {
+    setShowEditPermissionForm(false);
+  };
   const handleApplyFilters = () => {
     const params = createUrlParams({
       page: pageNumber,
@@ -76,7 +156,7 @@ const PermissionGroups = () => {
     try {
       const response = await api.get(`/permissions/`);
       if (response.status === 200) {
-        // console.log(response.data);
+        console.log(response.data);
         setGroups(response.data);
         return;
       } else {
@@ -183,7 +263,7 @@ const PermissionGroups = () => {
               <div
                 className="row"
                 key={index}
-                onClick={() => handleShowDetails(group)}
+                onDoubleClick={(e) => handleShowDetails(group)}
               >
                 <div className="col">
                   <span>{group.name}</span>
@@ -192,10 +272,20 @@ const PermissionGroups = () => {
                 <div className="col number">{group.permissions?.length}</div>
 
                 <div className="actions col">
-                  <div className="action danger">
+                  <div
+                    onClick={() => {
+                      handleShowDeleteModal(group.id, group);
+                    }}
+                    className="action danger"
+                  >
                     <Trash2 size={18} />
                   </div>
-                  <div className="action">
+                  <div
+                    onClick={() => {
+                      handleShowEditPermissionForm(group.id);
+                    }}
+                    className="action"
+                  >
                     <SquarePen size={18} />
                   </div>
                 </div>
@@ -221,6 +311,22 @@ const PermissionGroups = () => {
             </div>
           ))}
       </div>
+
+      {showNewUserForm && <AddPermissionGroupForm handleClose={handleClose} />}
+      {showEditPermissionForm && (
+        <EditPermissionGroupForm
+          handleClose={() => setShowEditPermissionForm(false)}
+          groupId={groupId}
+        />
+      )}
+      {showDeleteModal && (
+        <DeletePermissionGroup
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeletePermissionGroup}
+          isLoading={isDeleting}
+          error={deleteError}
+        />
+      )}
     </div>
   );
 };
