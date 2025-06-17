@@ -3,7 +3,11 @@ import { Check, LoaderCircle, PlusIcon, Search } from "lucide-react";
 import { useParams } from "react-router-dom";
 import api from "@/utils/api";
 
-const AddUserPermissionsFrom = ({ existingUsers, setExistingUsers, groupId }) => {
+const AddUserPermissionsFrom = ({
+  existingUsers,
+  setExistingUsers,
+  groupId,
+}) => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,8 +34,7 @@ const AddUserPermissionsFrom = ({ existingUsers, setExistingUsers, groupId }) =>
     setSuccessMessage("");
     const payload = {
       id: parseInt(groupId),
-    }
-
+    };
 
     try {
       console.log("user:", user);
@@ -45,8 +48,7 @@ const AddUserPermissionsFrom = ({ existingUsers, setExistingUsers, groupId }) =>
       if (response.status === 200) {
         setSuccessMessage("User added successfully");
         setExistingUsers((prev) => [...prev, user]);
-      }
-      else {
+      } else {
         setErrorMessage("Group ID is not defined");
       }
     } catch (error) {
@@ -57,15 +59,14 @@ const AddUserPermissionsFrom = ({ existingUsers, setExistingUsers, groupId }) =>
     }
   };
 
-
-
   useEffect(() => {
     const getUsers = async () => {
       try {
         const response = await api.get(`/users/?page_size=5`);
         if (response.status === 200) {
-          setUsers(response.data);
-          setFilteredUsers(response.data);
+          setUsers(response.data.results);
+          setFilteredUsers(response.data.results);
+          console.log(response.data);
         }
       } catch (error) {
         setErrorMessage("Error getting users");
@@ -81,9 +82,7 @@ const AddUserPermissionsFrom = ({ existingUsers, setExistingUsers, groupId }) =>
       {successMessage && (
         <div className="message success">{successMessage}</div>
       )}
-      {errorMessage && (
-        <div className="message error">{errorMessage}</div>
-      )}
+      {errorMessage && <div className="message error">{errorMessage}</div>}
 
       <div className="search-input">
         {isLoading ? (
@@ -102,36 +101,37 @@ const AddUserPermissionsFrom = ({ existingUsers, setExistingUsers, groupId }) =>
 
       <div className="search-results">
         {errorMessage && <p className="error">{errorMessage}</p>}
-        {filteredUsers.map((user) => (
-          <div key={user.id} className="search-result">
-            <div className="content">
-              <p>
-                {user.user.first_name} {user.user.last_name}
-              </p>
-              <small>{user.user.email}</small>
-            </div>
-            <div className="action">
-              {existingUsers &&
+        {filteredUsers.length > 0 &&
+          filteredUsers?.map((user) => (
+            <div key={user.id} className="search-result">
+              <div className="content">
+                <p>
+                  {user.user.first_name} {user.user.last_name}
+                </p>
+                <small>{user.user.email}</small>
+              </div>
+              <div className="action">
+                {existingUsers &&
                 existingUsers.some(
                   (existingUser) => existingUser.id === user.id
                 ) ? (
-                <>
-                  <Check />
-                  Added
-                </>
-              ) : (
-                <div onClick={() => handleAddUser(user)} className="action">
-                  {loadingState[user.id] ? (
-                    <LoaderCircle className="loading-icon" />
-                  ) : (
-                    <PlusIcon />
-                  )}
-                  Add
-                </div>
-              )}
+                  <>
+                    <Check />
+                    Added
+                  </>
+                ) : (
+                  <div onClick={() => handleAddUser(user)} className="action">
+                    {loadingState[user.id] ? (
+                      <LoaderCircle className="loading-icon" />
+                    ) : (
+                      <PlusIcon />
+                    )}
+                    Add
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
