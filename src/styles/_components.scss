@@ -17,7 +17,7 @@ button,
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   gap: 0.5rem;
   background-color: var(--primary);
   color: white;
@@ -41,6 +41,10 @@ button,
   &.loading {
     padding-right: 3rem;
   }
+}
+
+.add-incident-btn {
+  border-radius: 6px;
 }
 
 .btn-secondary {
@@ -347,7 +351,7 @@ form,
   align-items: center;
   justify-content: center;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 12px;
   font-weight: 500;
   transition: all var(--transition-speed) ease;
   cursor: pointer;
@@ -631,6 +635,10 @@ table {
 .tabs {
   display: flex;
   align-items: center;
+  gap: 16px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
 
   .tab {
     display: flex;
@@ -640,6 +648,7 @@ table {
     transition: all 0.3s ease-in-out;
     text-wrap: nowrap;
     cursor: pointer;
+    color: #A5A3A9;
   }
 
   & > :first-child {
@@ -647,10 +656,10 @@ table {
   }
 
   .active {
-    background-color: var(--primary);
-    color: white;
-    border-radius: 4px;
-    padding: 0.5rem;
+    background-color: #F3F8FF;
+    color: #145C9E;
+    border-radius: 12px;
+    padding: 14px;
   }
 }
 
@@ -733,7 +742,7 @@ table {
     gap: 8px;
     padding: 8px 12px;
     border: 1px solid #f5f5f7;
-    border-radius: 4px;
+    border-radius: 12px;
     background-color: #fff;
     cursor: pointer;
     font-size: 14px;

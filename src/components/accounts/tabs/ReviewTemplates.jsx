@@ -18,6 +18,7 @@ import {
   SquareX,
   Trash2,
   X,
+  CirclePlus
 } from "lucide-react";
 import DeletePopup from "@/components/forms/DeletePopup";
 import EditReviewTemplateForm from "@/components/forms/EditReviewTemplateForm";
@@ -261,7 +262,7 @@ export const ReviewTemplates = () => {
             onClick={handleShowNewUserForm}
             className="button tertiary-button new-user-button"
           >
-            <PlusIcon size={24} />
+            <CirclePlus size={20} />
             <span>Add New Template</span>
           </button>
           <SortControl
