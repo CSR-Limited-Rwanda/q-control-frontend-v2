@@ -58,11 +58,11 @@ const DashboardLayout = ({ children }) => {
             label: 'Account Management',
             href: '/accounts'
         },
-        {
-            icon: <Dumbbell size={24} />,
-            label: 'Incident Tracking',
-            href: '/incidents'
-        },
+        // {
+        //     icon: <Dumbbell size={24} />,
+        //     label: 'Incident Tracking',
+        //     href: '/incidents'
+        // },
         // {
         //     icon: <Boxes size={20} />,
         //     label: 'Inventory',
@@ -183,10 +183,10 @@ const DashboardLayout = ({ children }) => {
                             </div>
 
                             <div className="dashboard__header-actions">
-                                <button className='add-incident-btn'>
+                                {/* <button className='add-incident-btn'>
                                     <CirclePlus />
                                     <span>Add New</span>
-                                </button>
+                                </button> */}
                                 {/* <ProfileMessages /> */}
                                 {/* <ProfileNotification /> */}
                                 <ProfileContainer />
