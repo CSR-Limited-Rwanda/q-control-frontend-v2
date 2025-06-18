@@ -26,11 +26,15 @@ import { useAuthentication } from '@/context/authContext';
 import Image from 'next/image';
 import UserCard from '@/components/UserCard';
 import { usePathname } from 'next/navigation';
+import FormChoicesPopup from '@/components/forms/FormChoices';
 
 const DashboardLayout = ({ children }) => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [isFormChoicesOpen, setIsFormCHoicesOpen] = useState(false);
+    const [selectedForm, setSelectedForm] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { isAuth, logout } = useAuthentication()
     const pathname = usePathname()
@@ -58,11 +62,11 @@ const DashboardLayout = ({ children }) => {
             label: 'Account Management',
             href: '/accounts'
         },
-        // {
-        //     icon: <Dumbbell size={24} />,
-        //     label: 'Incident Tracking',
-        //     href: '/incidents'
-        // },
+        {
+            icon: <Dumbbell size={24} />,
+            label: 'Incident Tracking',
+            href: '/incidents'
+        },
         // {
         //     icon: <Boxes size={20} />,
         //     label: 'Inventory',
@@ -86,6 +90,14 @@ const DashboardLayout = ({ children }) => {
 
     const toggleDropdown = (index) => {
         setActiveDropdown(activeDropdown === index ? null : index);
+    };
+
+    const toggleFormChoicesOpen = () => {
+        setIsFormCHoicesOpen(!isFormChoicesOpen);
+    };
+
+    const tootlePopup = () => {
+        setIsPopupOpen(!isPopupOpen);
     };
 
     const MenuItem = ({ item, index }) => {
@@ -183,14 +195,60 @@ const DashboardLayout = ({ children }) => {
                             </div>
 
                             <div className="dashboard__header-actions">
-                                {/* <button className='add-incident-btn'>
+                                <button
+                                    onClick={toggleFormChoicesOpen}
+                                    className='add-incident-btn'
+                                >
                                     <CirclePlus />
                                     <span>Add New</span>
-                                </button> */}
+                                    {isFormChoicesOpen ? (
+                                        <FormChoicesPopup
+                                            tootlePopup={tootlePopup}
+                                            setSelectedForm={setSelectedForm}
+                                        />
+                                    ) : (
+                                        ""
+                                    )}
+                                </button>
                                 {/* <ProfileMessages /> */}
                                 {/* <ProfileNotification /> */}
                                 <ProfileContainer />
                             </div>
+                        </div>
+                        <div className="page-content">
+                            {isPopupOpen ? (
+                                <PopUp
+                                    tootlePopup={tootlePopup}
+                                    isPopupOpen={isPopupOpen}
+                                    popupContent={
+                                        selectedForm === "general" ? (
+                                            <GeneralIncidentForm />
+                                        ) : selectedForm === "lostAndFound" ? (
+                                            <LostAndFoundForm />
+                                        ) : selectedForm === "employee" ? (
+                                            <EmployeeIncidentForm />
+                                        ) : selectedForm === "medicationError" ? (
+                                            <MedicationErrorForm />
+                                        ) : selectedForm === "grievance" ? (
+                                            <GrievanceForm />
+                                        ) : selectedForm === "reactionReport" ? (
+                                            <DrugReactionForm />
+                                        ) : selectedForm === "workPlaceViolence" ? (
+                                            <WorkplaceViolenceIncidentForm />
+                                        ) : selectedForm === "healthIncident" ? (
+                                            <HealthIncidentInvestigationForm />
+                                        ) : selectedForm === "verbalComplaint" ? (
+                                            <VerbalComplaintForm />
+                                        ) : selectedForm === "grievanceInvestigation" ? (
+                                            <GrievanceInvestigationForm />
+                                        ) : (
+                                            ""
+                                        )
+                                    }
+                                />
+                            ) : (
+                                ""
+                            )}
                         </div>
                     </header>
 
