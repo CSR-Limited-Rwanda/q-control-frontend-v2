@@ -3,7 +3,7 @@ import { SearchInput } from "@/components/forms/Search";
 import OutlineButton from "@/components/OutlineButton";
 import PrimaryButton from "@/components/PrimaryButton";
 import api, { createUrlParams } from "@/utils/api";
-import { Plus, X, ChevronDown } from "lucide-react";
+import { Plus, X, ChevronDown, CirclePlus } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import TitlesForm from "../forms/TitlesForm";
 import TitleDetails from "./TitleDetails";
@@ -184,7 +184,7 @@ const Titles = () => {
           <PrimaryButton
             onClick={handleShowNewTitleForm}
             span="Add title"
-            prefixIcon={<Plus />}
+            prefixIcon={<CirclePlus size={20} />}
             customClass={"sticky-button"}
           />
         </div>

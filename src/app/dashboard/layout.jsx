@@ -17,19 +17,27 @@ import {
     Lock,
     Settings,
     LogOut,
+    Dumbbell,
+    CirclePlus
 } from 'lucide-react';
 import { splitName } from '@/utils/text';
 import LoginPopup from '@/components/auth/Login';
 import { useAuthentication } from '@/context/authContext';
 import Image from 'next/image';
 import UserCard from '@/components/UserCard';
+import { usePathname } from 'next/navigation';
+import FormChoicesPopup from '@/components/forms/FormChoices';
 
 const DashboardLayout = ({ children }) => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [isFormChoicesOpen, setIsFormCHoicesOpen] = useState(false);
+    const [selectedForm, setSelectedForm] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { isAuth, logout } = useAuthentication()
+    const pathname = usePathname()
 
     const handleMobileMenu = () => {
         setShowMobileMenu(!showMobileMenu);
@@ -50,9 +58,14 @@ const DashboardLayout = ({ children }) => {
         //     ]
         // },
         {
-            icon: <Users size={20} />,
+            icon: <Users size={24} />,
             label: 'Account Management',
             href: '/accounts'
+        },
+        {
+            icon: <Dumbbell size={24} />,
+            label: 'Incident Tracking',
+            href: '/incidents'
         },
         // {
         //     icon: <Boxes size={20} />,
@@ -79,9 +92,17 @@ const DashboardLayout = ({ children }) => {
         setActiveDropdown(activeDropdown === index ? null : index);
     };
 
+    const toggleFormChoicesOpen = () => {
+        setIsFormCHoicesOpen(!isFormChoicesOpen);
+    };
+
+    const tootlePopup = () => {
+        setIsPopupOpen(!isPopupOpen);
+    };
+
     const MenuItem = ({ item, index }) => {
         const hasDropdown = item.items?.length > 0;
-        const isActive = activeDropdown === index;
+        const isActive = pathname === item.href || activeDropdown === index
 
         return (
             <div className="menu-item-container">
@@ -174,10 +195,60 @@ const DashboardLayout = ({ children }) => {
                             </div>
 
                             <div className="dashboard__header-actions">
+                                <button
+                                    onClick={toggleFormChoicesOpen}
+                                    className='add-incident-btn'
+                                >
+                                    <CirclePlus />
+                                    <span>Add New</span>
+                                    {isFormChoicesOpen ? (
+                                        <FormChoicesPopup
+                                            tootlePopup={tootlePopup}
+                                            setSelectedForm={setSelectedForm}
+                                        />
+                                    ) : (
+                                        ""
+                                    )}
+                                </button>
                                 {/* <ProfileMessages /> */}
                                 {/* <ProfileNotification /> */}
                                 <ProfileContainer />
                             </div>
+                        </div>
+                        <div className="page-content">
+                            {isPopupOpen ? (
+                                <PopUp
+                                    tootlePopup={tootlePopup}
+                                    isPopupOpen={isPopupOpen}
+                                    popupContent={
+                                        selectedForm === "general" ? (
+                                            <GeneralIncidentForm />
+                                        ) : selectedForm === "lostAndFound" ? (
+                                            <LostAndFoundForm />
+                                        ) : selectedForm === "employee" ? (
+                                            <EmployeeIncidentForm />
+                                        ) : selectedForm === "medicationError" ? (
+                                            <MedicationErrorForm />
+                                        ) : selectedForm === "grievance" ? (
+                                            <GrievanceForm />
+                                        ) : selectedForm === "reactionReport" ? (
+                                            <DrugReactionForm />
+                                        ) : selectedForm === "workPlaceViolence" ? (
+                                            <WorkplaceViolenceIncidentForm />
+                                        ) : selectedForm === "healthIncident" ? (
+                                            <HealthIncidentInvestigationForm />
+                                        ) : selectedForm === "verbalComplaint" ? (
+                                            <VerbalComplaintForm />
+                                        ) : selectedForm === "grievanceInvestigation" ? (
+                                            <GrievanceInvestigationForm />
+                                        ) : (
+                                            ""
+                                        )
+                                    }
+                                />
+                            ) : (
+                                ""
+                            )}
                         </div>
                     </header>
 
