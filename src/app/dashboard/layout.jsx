@@ -27,6 +27,8 @@ import Image from 'next/image';
 import UserCard from '@/components/UserCard';
 import { usePathname } from 'next/navigation';
 import FormChoicesPopup from '@/components/forms/FormChoices';
+import GeneralIncidentForm from '@/components/incidents/incidentForms/GeneralIncidentForms/GeneralIncidentForm';
+import PopUp from '@/components/incidents/PopUp';
 
 const DashboardLayout = ({ children }) => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);

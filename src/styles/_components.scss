@@ -857,6 +857,49 @@ table {
   }
 }
 
+// form messages
+.form-complete-message {
+  border-radius: 12px;
+  width: 80%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  align-items: center;
+
+  button {
+    width: 100%;
+  }
+
+  .message-container {
+    background-color: #f7f7f7;
+    padding: 48px;
+    margin: auto;
+    display: grid;
+    height: fit-content;
+    gap: 24px;
+    border-radius: 12px;
+    text-align: center;
+    justify-items: center;
+
+    .icon {
+      background-color: #F87C47;
+      height: 100px;
+      width: 100px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .message {
+      color: #898989;
+    }
+  }
+}
+
 // Responsive styles
 @media (max-width: 768px) {
   table {
