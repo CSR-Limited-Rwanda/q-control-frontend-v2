@@ -41,7 +41,7 @@ const AddUserPermissionsFrom = ({
       console.log("permissionGroupID:", groupId);
       console.log("payload:", payload);
       const response = await api.post(
-        `/users/${user.id}/permissions/`,
+        `/users/${user.user.id}/permissions/`,
         payload
       );
       console.log(response);
