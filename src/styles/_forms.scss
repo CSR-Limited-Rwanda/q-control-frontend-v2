@@ -171,6 +171,7 @@ input[type="number"]:focus {
   flex-direction: column;
   gap: 24px;
   justify-content: start;
+  background-color: white;
 
   .form-steps {
     display: flex;
@@ -553,15 +554,18 @@ form {
   align-items: center;
   justify-content: center;
   padding: 48px;
+  background-color: #f8f8f8;
 
   .info-icon-main-container {
     padding: 20px;
     width: fit-content;
     border-radius: 50%;
+    background-color: #d9e8f6;
 
     .info-container {
       padding: 20px;
       border-radius: 50%;
+      background-color: #145c9e;
 
       .info-icon {
         border-radius: 50%;
@@ -571,8 +575,9 @@ form {
         align-items: center;
         justify-content: center;
 
-        i {
+        .icon {
           font-size: 18px;
+          color: white;
         }
       }
     }

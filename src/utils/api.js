@@ -35,3 +35,121 @@ export const createUrlParams = (params) => {
   const searchParams = new URLSearchParams(filteredParams);
   return searchParams.toString();
 };
+
+export const calculateAge = (dateOfBirth) => {
+  const today = new Date();
+  const birthDate = new Date(dateOfBirth);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
+
+//   export const exportTableToPDF = (headers, data, options = {}) => {
+//     const {
+//       title = "Report",
+//       fontSize = 14,
+//       textColor = "#000000",
+//       font = "helvetica",
+//     } = options;
+
+//     const doc = new jsPDF();
+
+//     doc.setFont(font);
+//     doc.setFontSize(fontSize);
+//     doc.setTextColor(textColor);
+
+//     doc.text(title, 14, 10);
+
+//     doc.setLineWidth(0.5);
+//     doc.line(14, 12, 200, 12);
+
+//     doc.setFontSize(12);
+//     doc.text("Generated on: " + new Date().toLocaleString(), 14, 18);
+
+//     doc.autoTable({
+//       head: [headers],
+//       body: data,
+//       startY: 22,
+//       theme: "striped",
+//       headStyles: {
+//         fillColor: [22, 160, 133],
+//         textColor: [255, 255, 255],
+//       },
+//       alternateRowStyles: {
+//         fillColor: [240, 240, 240],
+//       },
+//       styles: {
+//         fontSize: 10,
+//         font: font,
+//       },
+//     });
+
+//     doc.save(`${title}.pdf`);
+//   };
+
+//   export const exportExcel = (data, name) => {
+//     const workbook = XLSX.utils.book_new();
+
+//     const worksheet = XLSX.utils.json_to_sheet(data);
+
+//     XLSX.utils.book_append_sheet(workbook, worksheet, name || "cohesive");
+
+//     XLSX.writeFile(workbook, name + ".xlsx" || "cohesive_doc.xlsx");
+//   };
+
+export const formatDateTime = (date) => {
+  if (date) {
+    const newDate = new Date(date).toLocaleString("en-GB", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Ensures 24-hour format
+    });
+
+    return newDate;
+  } else {
+    return "N/A";
+  }
+};
+
+export const cleanedData = (data) => {
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const currentTime = new Date().toLocaleString("en-US", {
+    timeZone: userTimezone,
+    hour12: false,
+  });
+
+  return Object.entries(data).reduce(
+    (acc, [key, value]) => {
+      if (value !== null && value !== undefined && value !== "") {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {
+      meta: {
+        timezone: userTimezone,
+        currentTime: currentTime,
+        device: navigator.userAgent,
+      },
+    }
+  );
+};
+
+export const checkCurrentAccount = () => {
+  const facility = localStorage.getItem("activeAccount");
+  let facility_id = null;
+  if (facility && facility !== undefined) {
+    facility_id = JSON.parse(facility).id;
+    return facility_id;
+  } else {
+    return null;
+  }
+};
