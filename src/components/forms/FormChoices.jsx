@@ -3,10 +3,10 @@ import { useState } from "react";
 import SubmitComplaintForm from "./SubmitComplaintForm";
 import { GripVertical } from 'lucide-react';
 
-const FormChoicesPopup = ({ tootlePopup, setSelectedForm }) => {
+const FormChoicesPopup = ({ togglePopup, setSelectedForm }) => {
     const [showComplaintForm, setShowComplaintForm] = useState();
     const handleClick = (value) => {
-        tootlePopup();
+        togglePopup();
         setSelectedForm(value);
     };
 

@@ -37,7 +37,7 @@ textarea {
   align-items: center;
   border: 1px solid #f1f1f1;
   border-radius: 10px;
-  padding: 16px 18px;
+  padding: 14px 16px;
 
   input {
     border: 0;
@@ -70,6 +70,7 @@ input[type="number"]:focus {
   input[type="number"] {
     /* Optionally, remove box shadow from the input if it has default styles */
     box-shadow: none;
+    padding: 14px 16px;
   }
 }
 
@@ -369,6 +370,7 @@ form {
       padding: 12px 26px;
       border-radius: 6px;
       cursor: pointer;
+      background-color: #F9F9F9;
 
       input {
         width: unset;
@@ -924,6 +926,10 @@ textarea {
   gap: 1rem;
   background-color: white;
   z-index: 100;
+
+  h2 {
+    font-size: 18px;
+  }
 }
 
 .newIncidentForm {

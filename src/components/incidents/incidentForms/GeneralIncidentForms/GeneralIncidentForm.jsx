@@ -3,10 +3,10 @@ import { useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 // import axios from "axios";
 import api, {
-    API_URL,
-    cleanedData,
-    checkCurrentAccount,
-    calculateAge
+  API_URL,
+  cleanedData,
+  checkCurrentAccount,
+  calculateAge
 } from "@/utils/api";
 import CustomSelectInput from "@/components/CustomSelectInput";
 import CustomDatePicker from "@/components/CustomDatePicker";
@@ -15,16 +15,17 @@ import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
 import postDocumentHistory from "../../documentHistory/postDocumentHistory";
 import mediaAPI from "@/utils/mediaApi";
 import {
-    generalOutcomeOptions,
-    incidentTypesData,
-    statusesPrionToIncident
+  generalOutcomeOptions,
+  incidentTypesData,
+  statusesPrionToIncident
 } from "@/constants/constants";
-import { X, Square, SquareCheckBig, LoaderCircle } from "lucide-react";
+import { X, Square, SquareCheckBig, LoaderCircle, CircleCheck } from "lucide-react";
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { FacilityCard } from "@/components/DashboardContainer";
 import ErrorMessage from "@/components/messages/ErrorMessage";
 import DraftPopup from "@/components/DraftPopup";
 import '../../../../styles/_forms.scss'
+import '../../../../styles/generalIncident.scss'
 // import RichTexField from "./inputs/richTexField";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
@@ -326,7 +327,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
     try {
       setIsLoading(true);
       const response = await api.post(
-        `${API_URL}/incidents/general/new/`,
+        `${API_URL}/incidents/general-visitor/`,
 
         cleanedData(incidentData)
       );
@@ -355,7 +356,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         // setErrorFetching(error?.response?.data?.error);
         window.customToast.error(
           error?.response?.data?.message ||
-            "Error while creating new incident, please try again"
+          "Error while creating new incident, please try again"
         );
         return;
       } else {
@@ -818,13 +819,13 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   return (
     <div className="forms-container">
       <div className="forms-header">
-        <h2>New Incident</h2>
+        <h2>Add new incident</h2>
         <X
-          className="close-popup"
           onClick={() => {
             togglePopup();
             localStorage.setItem("updateNewIncident", "false");
           }}
+          className="close-icon"
         />
 
         {errorFetching && <ErrorMessage errorFetching={errorFetching} />}
@@ -834,7 +835,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             <>
               <div className={currentStep === 1 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <i className="fa-solid fa-circle-check"></i>
+                  <CircleCheck />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 1/7</p>
@@ -844,7 +845,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               <div className="divider"></div>
               <div className={currentStep === 2 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <i className="fa-solid fa-circle-check"></i>
+                  <CircleCheck />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 2/7</p>
@@ -854,7 +855,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               <div className="divider"></div>
               <div className={currentStep === 3 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <i className="fa-solid fa-circle-check"></i>
+                  <CircleCheck />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 3/7</p>
@@ -864,7 +865,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               <div className="divider"></div>
               <div className={currentStep === 4 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <i className="fa-solid fa-circle-check"></i>
+                  <CircleCheck />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 4/7</p>
@@ -883,7 +884,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               ></div>
               <div className={currentStep === 5 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <i className="fa-solid fa-circle-check"></i>
+                  <CircleCheck />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 5/7</p>
@@ -892,7 +893,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </div>
               <div className={currentStep === 6 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <i className="fa-solid fa-circle-check"></i>
+                  <CircleCheck />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 6/7</p>
@@ -901,7 +902,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </div>
               <div className={currentStep === 7 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <i className="fa-solid fa-circle-check"></i>
+                  <CircleCheck />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 7/7</p>
@@ -968,11 +969,10 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </div>
             </div>
 
-            <div className="half">
+            <div className="form-half">
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor first name</label>
                 <input
@@ -983,61 +983,37 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   name="patientVisitorFirstName"
                   id="patientVisitorFirstName"
                   placeholder="Patient or visitors first name"
+                  className="name-input"
                 />
-                {/* {showSuggestions && (
-                <div className="suggestions">
-                  <UserSuggestions
-                    string={patientVisitorName}
-                    handleSuggestion={handleSuggestion}
-                    suggestions={suggestions}
-                    filteredSuggestions={filteredSuggestions || suggestions}
-                    isLoading={fetchingSuggestions}
-                  />
-                </div>
-              )} */}
               </div>
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor last name</label>
                 <input
-                  // onClick={handleShowPatientSuggestions}
                   onChange={(e) => setPatientVisitorLastName(e.target.value)}
                   value={patientVisitorLastName}
                   type="text"
                   name="patientVisitorLastName"
                   id="patientVisitorLastName"
                   placeholder="Patient or visitors last name"
-                />
-                {/* {showSuggestions && (
-                <div className="suggestions">
-                  <UserSuggestions
-                    string={patientVisitorName}
-                    handleSuggestion={handleSuggestion}
-                    suggestions={suggestions}
-                    filteredSuggestions={filteredSuggestions || suggestions}
-                    isLoading={fetchingSuggestions}
-                  />
-                </div>
-              )} */}
-              </div>
-            </div>
-
-            <div className="half">
-              <div className="sex field name">
-                <label htmlFor="sex">Sex</label>
-                <CustomSelectInput
-                  options={["Male", "Female", "Others"]}
-                  placeholder={"sex"}
-                  selected={sex}
-                  setSelected={setSex}
+                  className="name-input"
                 />
               </div>
             </div>
 
-            <div className="half">
+            <div className="sex field name">
+              <label htmlFor="sex">Sex</label>
+              <CustomSelectInput
+                options={["Male", "Female", "Others"]}
+                placeholder={"sex"}
+                selected={sex}
+                setSelected={setSex}
+              />
+            </div>
+
+            <div className="form-half">
               <div className="incident-date field">
                 <label htmlFor="incidentDate">Date of birth</label>
                 <CustomDatePicker
@@ -1051,13 +1027,19 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                 <input
                   type="number"
                   placeholder="Enter age"
-                  value={age}
-                  onChange={(e) => setAge(e.target.value)}
+                  value={age || ''}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    if (value === '' || !isNaN(value)) {
+                      setAge(value === '' ? '' : parseInt(value, 10))
+                    }
+                  }}
+                  className="name-input"
                 />
               </div>
             </div>
 
-            <div className="half">
+            <div className="form-half">
               <div className="incident-date field">
                 <label htmlFor="incidentDate">Incident Date</label>
                 <CustomDatePicker
@@ -1076,19 +1058,22 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </div>
             </div>
 
-            <div className="mr field">
-              <label htmlFor="incidentMr">Medical Record Number (if any)</label>
-              <input
-                onChange={(e) => setMedicalRecordNumber(e.target.value)}
-                value={medicalRecordNumber}
-                type="text"
-                name="medicalRecoredNumber"
-                id="medicalRecoredNumber"
-                placeholder="Enter MR"
-              />
+            <div className="form-half">
+              <div>
+                <label htmlFor="incidentMr">Medical Record Number (if any)</label>
+                <input
+                  onChange={(e) => setMedicalRecordNumber(e.target.value)}
+                  value={medicalRecordNumber}
+                  type="text"
+                  name="medicalRecoredNumber"
+                  id="medicalRecoredNumber"
+                  placeholder="Enter MR"
+                  className="name-input"
+                />
+              </div>
             </div>
 
-            <div className="half field one">
+            <div className="form-half field one">
               <div className="address">
                 <label htmlFor="address">Address</label>
                 <input
@@ -1097,6 +1082,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   type="text"
                   name="address"
                   placeholder="Enter  patient or visitor address"
+                  className="name-input"
                 />
               </div>
 
@@ -1109,6 +1095,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   name="city"
                   id="city"
                   placeholder="City"
+                  className="name-input"
                 />
               </div>
 
@@ -1121,6 +1108,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   name="state"
                   id="state"
                   placeholder="Enter  patient or visitor state"
+                  className="name-input"
                 />
               </div>
               <div className="zipCode">
@@ -1132,6 +1120,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   name="zipCode"
                   id="zipCode"
                   placeholder="Zip code"
+                  className="name-input"
                 />
               </div>
 
@@ -1144,6 +1133,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   name="phoneNumber"
                   id="phoneNumber"
                   placeholder="Phone number"
+                  className="name-input"
                 />
               </div>
             </div>
@@ -1168,8 +1158,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </label>
               <div
                 className="check-boxes check-boxes-row"
-                //  onChange={(e) => setRoute(e.target.value)}
-                //  value={route}
+              //  onChange={(e) => setRoute(e.target.value)}
+              //  value={route}
               >
                 {statusesPrionToIncident.map((status, index) => (
                   <div
@@ -1674,7 +1664,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                         style={{
                           display:
                             specialTypes.includes(type.name) &&
-                            otherTypes !== "Specimen"
+                              otherTypes !== "Specimen"
                               ? "none"
                               : "block",
                         }}
@@ -1901,37 +1891,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                 multiple
               />
             </div>
-
-            {/* <div className="field">
-              <label htmlFor="isAnonymous">
-                Do you want to submit this incident as anonymous?
-              </label>
-              <div className="types">
-                <div className="type">
-                  <input
-                    onChange={handleIsAnonymous}
-                    type="radio"
-                    name="isAnonymous"
-                    checked={isAnonymous === true}
-                    id="yes"
-                    value="true"
-                  />
-                  <label htmlFor="yes">Yes</label>
-                </div>
-
-                <div className="type">
-                  <input
-                    onChange={handleIsAnonymous}
-                    type="radio"
-                    name="isAnonymous"
-                    id="no"
-                    checked={isAnonymous === false}
-                    value="false"
-                  />
-                  <label htmlFor="no">No</label>
-                </div>
-              </div>
-            </div> */}
           </div>
         ) : currentStep === 7 ? (
           // Display the success message
@@ -1964,9 +1923,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           >
             <span>{isLoading ? "Saving..." : "Save Incident"}</span>
             <i
-              className={`fa-solid fa-arrow-right ${
-                isLoading ? "loading" : ""
-              }`}
+              className={`fa-solid fa-arrow-right ${isLoading ? "loading" : ""
+                }`}
             ></i>
           </button>
         ) : currentStep < 7 ? (

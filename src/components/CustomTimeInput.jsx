@@ -4,8 +4,8 @@ import { Clock3 } from 'lucide-react';
 import { hoursArray, minutesArray } from '@/constants/constants';
 
 const CustomTimeInput = ({ setTime, defaultTime }) => {
-    const [hour, setHour] = useState(defaultTime?.split(':')[0]);
-    const [minutes, setMinutes] = useState(defaultTime?.split(':')[1]);
+    const [hour, setHour] = useState(defaultTime?.split(':')[0] || '')
+    const [minutes, setMinutes] = useState(defaultTime?.split(':')[1] || '');
     const [fullTime, setFullTime] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -76,14 +76,14 @@ const CustomTimeInput = ({ setTime, defaultTime }) => {
                             <div className="hours">
                                 {
                                     hoursArray && hoursArray.map(hour => (
-                                        <p className='unit' onClick={() => setHour(hour)}>{hour}</p>
+                                        <p key={hour} className='unit' onClick={() => setHour(hour)}>{hour}</p>
                                     ))
                                 }
                             </div>
                             <div className="minutes">
                                 {
                                     minutesArray && minutesArray.map(minute => (
-                                        <p className='unit' onClick={() => setMinutes(minute)}>{minute}</p>
+                                        <p key={minute} className='unit' onClick={() => setMinutes(minute)}>{minute}</p>
                                     ))
                                 }
                             </div>

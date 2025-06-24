@@ -74,6 +74,7 @@ const CustomDatePicker = ({
         maxLength="2"
         value={month}
         onChange={handleMonthChange}
+        className="date-input-field"
       />
       /
       <input

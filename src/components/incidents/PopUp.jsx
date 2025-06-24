@@ -1,4 +1,4 @@
-const PopUp = ({ tootlePopup, isPopupOpen, popupContent: PopupContent, spacialClass }) => {
+const PopUp = ({ togglePopup, isPopupOpen, popupContent: PopupContent, spacialClass }) => {
     return (
       <div className="pop-up incident-form-popup">
         <div className={`popup-content`}>

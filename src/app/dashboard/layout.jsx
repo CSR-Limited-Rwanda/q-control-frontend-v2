@@ -98,7 +98,7 @@ const DashboardLayout = ({ children }) => {
         setIsFormCHoicesOpen(!isFormChoicesOpen);
     };
 
-    const tootlePopup = () => {
+    const togglePopup = () => {
         setIsPopupOpen(!isPopupOpen);
     };
 
@@ -205,7 +205,7 @@ const DashboardLayout = ({ children }) => {
                                     <span>Add New</span>
                                     {isFormChoicesOpen ? (
                                         <FormChoicesPopup
-                                            tootlePopup={tootlePopup}
+                                            togglePopup={togglePopup}
                                             setSelectedForm={setSelectedForm}
                                         />
                                     ) : (
@@ -220,11 +220,11 @@ const DashboardLayout = ({ children }) => {
                         <div className="page-content">
                             {isPopupOpen ? (
                                 <PopUp
-                                    tootlePopup={tootlePopup}
+                                    togglePopup={togglePopup}
                                     isPopupOpen={isPopupOpen}
                                     popupContent={
                                         selectedForm === "general" ? (
-                                            <GeneralIncidentForm />
+                                            <GeneralIncidentForm togglePopup={togglePopup} />
                                         ) : selectedForm === "lostAndFound" ? (
                                             <LostAndFoundForm />
                                         ) : selectedForm === "employee" ? (
