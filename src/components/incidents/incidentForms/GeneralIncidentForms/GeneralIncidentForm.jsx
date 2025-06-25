@@ -38,7 +38,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   const [showPriorStatusOtherInput, setShowPriorStatusOtherInput] =
     useState("");
   const [statusPriorOtherInput, setStatusPriorOtherInput] = useState("");
-  const [currentStep, setCurrentStep] = useState(4);
+  const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [files, setFiles] = useState([]);
 
