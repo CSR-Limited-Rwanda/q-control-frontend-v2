@@ -88,3 +88,31 @@ input[type="radio"] {
     transform: translate(-50%, -50%);
   }
 
+
+  .status-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+  
+    .status {
+      flex: 49%;
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      background-color: $gray-color-shade;
+    }
+    .selected {
+      background-color: $secondary-color;
+      color: white;
+    }
+  }
+
+  .grid-choices {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+
+

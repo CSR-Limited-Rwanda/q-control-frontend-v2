@@ -38,7 +38,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   const [showPriorStatusOtherInput, setShowPriorStatusOtherInput] =
     useState("");
   const [statusPriorOtherInput, setStatusPriorOtherInput] = useState("");
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(4);
   const currentStepRef = useRef(currentStep);
   const [files, setFiles] = useState([]);
 
@@ -129,6 +129,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
   // form
   const [category, setCategory] = useState("");
+  const [profileType, setProfileType] = useState("")
   const [patientVisitorFirstName, setPatientVisitorFirstName] = useState("");
   const [patientVisitorLastName, setPatientVisitorLastName] = useState("");
   const [suggestions, setSuggestions] = useState({});
@@ -272,7 +273,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   };
 
   const handleCategory = (value) => {
-    setCategory(value);
+    setProfileType(value);
   };
 
   const handleRemovedFromService = (checked) => {
@@ -289,8 +290,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
       console.log("Updating incident with data:", incidentPostData);
 
-      const response = await api.patch(
-        `${API_URL}/incidents/general/${incidentId}/update/`,
+      const response = await api.put(
+        `${API_URL}/incidents/general-visitor/${incidentId}/`,
         incidentPostData
       );
 
@@ -404,8 +405,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         status: "Open",
       };
       try {
-        const response = await api.patch(
-          `${API_URL}/incidents/general/${incident_id}/update/`,
+        const response = await api.put(
+          `${API_URL}/incidents/general-visitor/${incident_id}/`,
 
           data
         );
@@ -441,7 +442,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
     if (currentStep === 1) {
       isValid = validateStep({
-        category: category,
+        profile_type: profileType,
         "patient visitor first name": patientVisitorFirstName,
         "patient visitor last name": patientVisitorFirstName,
         "incident date": incidentDate,
@@ -455,7 +456,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         gender: sex,
       });
 
-      console.log(checkCurrentAccount());
+      console.log("Facility ID", checkCurrentAccount());
       if (isValid) {
         const incidentPostData = {
           facility_id: checkCurrentAccount(),
@@ -477,6 +478,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             zip_code: zipCode,
             city: city,
             phone_number: phoneNumber,
+            profile_type: profileType,
           },
         };
         console.log(incidentPostData);
@@ -718,6 +720,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           physician_notified: {
             first_name: physicianNotifiedFirstName,
             last_name: physicianNotifiedLastName,
+            profile_type: "Physician",
           },
           date_physician_notified: physcianDate,
           time_physician_notified: physcianTime,
@@ -726,6 +729,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             first_name: familyNotifiedFirstName,
             last_name: familyNotifiedLastName,
             patient_id: parseInt(localStorage.getItem("patientId")),
+            profile_type: "Family",
           },
 
           date_family_notified: familyDate,
@@ -733,6 +737,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           notified_by: {
             first_name: notifiedByFirstName,
             last_name: notifiedByLastName,
+            profile_type: "Nurse",
           },
         };
 
@@ -926,7 +931,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   type="radio"
                   name="category"
                   id="Inpatient"
-                  checked={category === "Inpatient"}
+                  checked={profileType === "Inpatient"}
                   value="Inpatient"
                 />
                 <label htmlFor="Inpatient">Inpatient</label>
@@ -938,7 +943,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   type="radio"
                   name="category"
                   id="Outpatient"
-                  checked={category === "Outpatient"}
+                  checked={profileType === "Outpatient"}
                   value="Outpatient"
                 />
                 <label htmlFor="Outpatient">Outpatient</label>
@@ -950,7 +955,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   type="radio"
                   name="category"
                   id="ER"
-                  checked={category === "ER"}
+                  checked={profileType === "ER"}
                   value="ER"
                 />
                 <label htmlFor="ER">ER</label>
@@ -962,7 +967,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   type="radio"
                   name="category"
                   id="Visitor"
-                  checked={category === "Visitor"}
+                  checked={profileType === "Visitor"}
                   value="Visitor"
                 />
                 <label htmlFor="Visitor">Visitor</label>
@@ -1382,6 +1387,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                               ? "status selected"
                               : "status"
                           }
+                          key={treatment.name}
                         >
                           <p>{treatment.name}</p>
                         </div>
