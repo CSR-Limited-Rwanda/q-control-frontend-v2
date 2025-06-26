@@ -30,6 +30,7 @@ import FormChoicesPopup from "@/components/forms/FormChoices";
 import GeneralIncidentForm from "@/components/incidents/incidentForms/GeneralIncidentForms/GeneralIncidentForm";
 import PopUp from "@/components/incidents/PopUp";
 import EmployeeIncidentForm from "@/components/incidents/incidentForms/EmployeeIncidentForms/EmployeeIncidentForm";
+import LostAndFoundForm from "@/components/incidents/incidentForms/LostAndFoundForms/LostAndFoundForm";
 
 const DashboardLayout = ({ children }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
