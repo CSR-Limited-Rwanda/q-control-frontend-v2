@@ -31,6 +31,7 @@ import GeneralIncidentForm from "@/components/incidents/incidentForms/GeneralInc
 import PopUp from "@/components/incidents/PopUp";
 import EmployeeIncidentForm from "@/components/incidents/incidentForms/EmployeeIncidentForms/EmployeeIncidentForm";
 import LostAndFoundForm from "@/components/incidents/incidentForms/LostAndFoundForms/LostAndFoundForm";
+import GrievanceForm from "@/components/incidents/incidentForms/GrievanceForms/GrievanceForm";
 
 const DashboardLayout = ({ children }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -238,13 +239,13 @@ const DashboardLayout = ({ children }) => {
                                         selectedForm === "general" ? (
                                             <GeneralIncidentForm togglePopup={togglePopup} />
                                         ) : selectedForm === "lostAndFound" ? (
-                                            <LostAndFoundForm />
+                                            <LostAndFoundForm togglePopup={togglePopup} />
                                         ) : selectedForm === "employee" ? (
                                             <EmployeeIncidentForm />
                                         ) : selectedForm === "medicationError" ? (
                                             <MedicationErrorForm />
                                         ) : selectedForm === "grievance" ? (
-                                            <GrievanceForm />
+                                            <GrievanceForm togglePopup={togglePopup} />
                                         ) : selectedForm === "reactionReport" ? (
                                             <DrugReactionForm />
                                         ) : selectedForm === "workPlaceViolence" ? (

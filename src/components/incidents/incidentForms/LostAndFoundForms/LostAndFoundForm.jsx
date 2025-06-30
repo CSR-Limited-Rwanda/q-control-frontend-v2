@@ -28,6 +28,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
     const [dateReporting, setDateReporting] = useState("");
     const [timeReporting, setTimeReporting] = useState("");
     const [dateFound, setDateFound] = useState("");
+    const [propertyName, setPropertyName] = useState("")
 
     const [dateBirth, setDateBirth] = useState("");
     const [age, setAge] = useState("");
@@ -37,7 +38,6 @@ const LostAndFoundForm = ({ togglePopup }) => {
     const [descriptionOfProperty, setDescriptionOfProperty] = useState("");
     const [location, setLocation] = useState("");
     const [locationReturned, setLocationReturned] = useState("");
-    const [personWhoFoundProperty, setPersonWhoFoundProperty] = useState("");
     const [personWhoFoundPropertyFirstName, setPersonWhoFoundPropertyFirstName] = useState("");
     const [personWhoFoundPropertyLastName, setPersonWhoFoundPropertyLastName] = useState("");
     const [checkboxChecked, setCheckboxChecked] = useState(false);
@@ -136,6 +136,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
                 last_name: reporterLastName,
                 profile_type: "Patient"
             },
+            property_name: propertyName,
             item_description: descriptionOfProperty,
             date_reported: dateReporting,
             time_reported: timeReporting,
@@ -148,7 +149,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
             status: "Draft",
         };
-
+        console.log('data:', data)
         try {
             const response = await api.post(
                 `${API_URL}/incidents/lost-found/`,
@@ -272,6 +273,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
                 "Patient last name": patientLastName,
                 "Date Reporting": dateReporting,
                 "Time Reporting": timeReporting,
+                "Property Name": propertyName,
                 "Description Of Property": descriptionOfProperty,
             });
 
@@ -289,6 +291,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
                             last_name: reporterLastName,
                             profile_type: "Patient"
                         },
+                        property_name: propertyName,
                         item_description: descriptionOfProperty,
                         date_reported: dateReporting,
                         time_reported: timeReporting,
@@ -444,6 +447,19 @@ const LostAndFoundForm = ({ togglePopup }) => {
                                 name="relationship"
                                 id="relationship"
                                 placeholder="Enter Relationship"
+                            />
+                        </div>
+                        <div className="field name">
+                            <label htmlFor="propertyName">
+                                Property Name
+                            </label>
+                            <input
+                                onChange={(e) => setPropertyName(e.target.value)}
+                                value={propertyName}
+                                type="text"
+                                name="propertyName"
+                                id="propertyName"
+                                placeholder="Enter Property name"
                             />
                         </div>
                         <div className="field name">
