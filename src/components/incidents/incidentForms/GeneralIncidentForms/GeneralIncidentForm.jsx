@@ -3,10 +3,10 @@ import { useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 // import axios from "axios";
 import api, {
-    API_URL,
-    cleanedData,
-    checkCurrentAccount,
-    calculateAge
+  API_URL,
+  cleanedData,
+  checkCurrentAccount,
+  calculateAge,
 } from "@/utils/api";
 import CustomSelectInput from "@/components/CustomSelectInput";
 import CustomDatePicker from "@/components/CustomDatePicker";
@@ -15,16 +15,16 @@ import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
 import postDocumentHistory from "../../documentHistory/postDocumentHistory";
 import mediaAPI from "@/utils/mediaApi";
 import {
-    generalOutcomeOptions,
-    incidentTypesData,
-    statusesPrionToIncident
+  generalOutcomeOptions,
+  incidentTypesData,
+  statusesPrionToIncident,
 } from "@/constants/constants";
 import { X, Square, SquareCheckBig, LoaderCircle } from "lucide-react";
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { FacilityCard } from "@/components/DashboardContainer";
 import ErrorMessage from "@/components/messages/ErrorMessage";
 import DraftPopup from "@/components/DraftPopup";
-import '../../../../styles/_forms.scss'
+import "../../../../styles/_forms.scss";
 // import RichTexField from "./inputs/richTexField";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
@@ -2024,4 +2024,3 @@ export const UserSuggestions = ({
     </div>
   );
 };
-

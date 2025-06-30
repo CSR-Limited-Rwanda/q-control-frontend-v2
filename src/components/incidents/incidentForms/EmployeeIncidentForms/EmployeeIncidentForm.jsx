@@ -163,6 +163,13 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   // };
   const handleDateOfBirth = (date) => {
     const calculatedAge = calculateAge(date);
+
+    if (calculatedAge === null) {
+      setAge("");
+      setdateBirth(date);
+      return;
+    }
+
     setdateBirth(date);
     setAge(calculatedAge);
   };
@@ -532,7 +539,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             </div>
             <div className="name">
               <p className="step-name">Step 4/4</p>
-              <p className="step-details">Incident type</p>
+              <p className="step-details">Injury details</p>
             </div>
           </div>
         </div>
@@ -701,7 +708,11 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
                   <span>
                     {witness.user_data.first_name} {witness.user_data.last_name}
                   </span>
-                  <X size={18} onClick={() => handleRemoveWitness(witness)} />
+                  <X
+                    className="delete-witness"
+                    size={18}
+                    onClick={() => handleRemoveWitness(witness)}
+                  />
                 </div>
               ))}
             </div>

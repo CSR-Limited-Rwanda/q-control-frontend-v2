@@ -185,3 +185,96 @@ export const hoursArray = [...Array(25).keys()].map((h) =>
 export const minutesArray = [...Array(60).keys()].map((m) =>
   m.toString().padStart(2, "0")
 );
+
+export const drugRoutes = [
+  { label: "IV Push", value: "IV Push" },
+  { label: "IV Drip", value: "IV Drip" },
+  { label: "IM", value: "IM" },
+  { label: "Vaginal", value: "Vaginal" },
+  { label: "SC", value: "SC" },
+  { label: "PO", value: "PO" },
+  { label: "Per Rect", value: "Per Rect" },
+  { label: "Per Tube", value: "Per Tube" },
+  { label: "Per Trach", value: "Per Trach" },
+  { label: "Topical", value: "Topical" },
+  { label: "Other", value: "Other" },
+];
+
+export const whatHappenedOptions = [
+  { value: "Person", label: "Person" },
+  { value: "Formulation", label: "Formulation" },
+  { value: "Position", label: "Position" },
+  {
+    value: "Criteria Not Met",
+    label: "Given when criteria not met (e.g. BP, blood sugar, pain)",
+  },
+  { value: "Treatment Error", label: "Treatment error" },
+  { value: "drug", label: "Drug" },
+  { value: "IV Rate", label: "IV Rate" },
+  { value: "texture", label: "Texture" },
+  { value: "Extra Dose Given", label: "Extra dose given" },
+  { value: "Other", label: "Other", isOther: true },
+  { value: "dose", label: "Dose" },
+  { value: "Iv Solution", label: "IV Solution" },
+  { value: "Dose Omitted", label: "Dose Omitted" },
+  {
+    value: "Allergy To Drug",
+    label: "Given in the presence of documented allergy to drug",
+  },
+];
+
+export const severityCategories = [
+  {
+    category: "Category A",
+    value: 1,
+    description:
+      "Circumstances or events that have the capacity to cause a medication-use error.",
+  },
+  {
+    category: "Category B",
+    value: 2,
+    description:
+      "Error occurred, but was detected before it reached the individual.",
+  },
+  {
+    category: "Category C",
+    value: 3,
+    description:
+      "Error occurred, reached the individual, but caused no harm or is unlikely to cause harm.",
+  },
+  {
+    category: "Category D",
+    value: 4,
+    description:
+      "Error will require additional person monitoring, but is unlikely to result in a change in vital signs or cause harm.",
+  },
+  {
+    category: "Category E",
+    value: 5,
+    description:
+      "Error requires intervention and caused or is likely to cause the person temporary harm.",
+  },
+  {
+    category: "Category F",
+    value: 6,
+    description:
+      "Error caused or is likely to cause temporary harm requiring hospitalization.",
+  },
+  {
+    category: "Category G",
+    value: 7,
+    description:
+      "Error caused or is likely to cause permanent harm to the person.",
+  },
+  {
+    category: "Category H",
+    value: 8,
+    description:
+      "Error resulted in a near death event (e.g. anaphylaxis, cardiac arrest).",
+  },
+  {
+    category: "Category I",
+    value: 9,
+    description: "Error resulted in or contributed to the person’s death.",
+  },
+];
