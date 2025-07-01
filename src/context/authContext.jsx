@@ -16,48 +16,55 @@ export const useAuthentication = () => {
     // Ensure this code runs only on the client side
     if (typeof window === "undefined") return;
 
-    const params = new URLSearchParams(window.location.search);
-    const encryptedToken = params.get("token");
+    const init = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const encryptedToken = params.get("token");
 
-    if (!encryptionKey) {
-      window.location.href = `${domainName}/?error=Invalid encryption key`;
-      return; // Prevent further execution
-    }
-
-    // Decrypt the token
-    if (encryptedToken) {
-      const decryptedToken = decryptToken(encryptedToken, encryptionKey);
-      if (!decryptedToken) {
-        console.error("Failed to decrypt token");
-        setLoading(false);
+      if (!encryptionKey) {
+        window.location.href = `${domainName}/?error=Invalid encryption key`;
         return;
       }
-      // Store in localStorage
-      localStorage.setItem("access", decryptedToken);
 
-      // Clear query parameters from the URL
-      const newUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, newUrl);
-    }
+      // Decrypt the token
+      if (encryptedToken) {
+        const decryptedToken = decryptToken(encryptedToken, encryptionKey);
+        if (!decryptedToken) {
+          console.error("Failed to decrypt token");
+          setLoading(false);
+          return;
+        }
 
-    // Retrieve token from localStorage
-    const token = localStorage.getItem("access");
+        // Store in localStorage
+        localStorage.setItem("access", decryptedToken);
 
-    if (token) {
-      const tokenExpired = isTokenExpired(token);
-      if (tokenExpired) {
-        setIsAuth(false);
-      } else {
-        setIsAuth(true);
+        // Clear query parameters from the URL
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
 
-        const userInfo = getUserInfoFromToken(token);
-        if (userInfo) {
-          setUser(userInfo);
+      // Retrieve token from localStorage
+      const token = localStorage.getItem("access");
+
+      if (token) {
+        const tokenExpired = isTokenExpired(token);
+        if (tokenExpired) {
+          setIsAuth(false);
+        } else {
+          setIsAuth(true);
+
+          const result = await getUserInfoFromToken(token);
+          if (result && result.tokenUserInfo) {
+            console.log(result);
+            setUser(result.tokenUserInfo);
+          }
         }
       }
-    }
-    setLoading(false);
-  }, []); // Empty dependency array ensures this runs only once
+
+      setLoading(false);
+    };
+
+    init(); // Call the async function
+  }, []);
 
   const logout = () => {
     if (typeof window !== "undefined") {
@@ -114,31 +121,43 @@ async function getUserInfoFromToken(token) {
 
     // Decode the token
     const decodedToken = jwtDecode(token);
+    const userId = decodedToken.user_id;
 
-    // Extract user information
+    // Extract basic user info from token
     const userInfo = {
+      id: userId,
       firstName: decodedToken.first_name,
       lastName: decodedToken.last_name,
       email: decodedToken.email,
     };
 
-    const userId = decodedToken.user_id;
-    const response = await api.get(`/users/${userId}/`);
-    if (response.status === 200) {
-      console.log("User data:", response.data);
-      localStorage.setItem("loggedInUserInfo", JSON.stringify(response.data));
-      localStorage.setItem(
-        "facilityId",
-        JSON.stringify(response.data.facility.id)
-      );
-      return response.data;
-    } else {
-      console.error("Failed to fetch user data. Status:", response.status);
+    if (!userId) {
+      console.error("User ID not found in token");
+      return { tokenUserInfo: userInfo, serverUserData: null };
     }
 
-    return userInfo;
+    // Fetch user data from backend
+    const response = await api.get(`/users/${userId}/`);
+    if (response.status === 200) {
+      const serverData = response.data;
+
+      // Store in localStorage
+      localStorage.setItem("loggedInUserInfo", JSON.stringify(serverData));
+      localStorage.setItem(
+        "facilityId",
+        JSON.stringify(serverData.facility.id)
+      );
+
+      return {
+        tokenUserInfo: userInfo,
+        serverUserData: serverData,
+      };
+    } else {
+      console.error("Failed to fetch user data. Status:", response.status);
+      return { tokenUserInfo: userInfo, serverUserData: null };
+    }
   } catch (error) {
-    console.error("Error decoding token:", error);
+    console.error("Error decoding token or fetching user data:", error);
     return null;
   }
 }
