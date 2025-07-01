@@ -575,7 +575,7 @@ const GrievanceForm = ({ togglePopup }) => {
                 <label htmlFor="age">Age</label>
                 <input
                   onChange={(e) => setAge(e.target.value)}
-                  value={age}
+                  value={age} 
                   type="number"
                   name="age"
                   id="age"
