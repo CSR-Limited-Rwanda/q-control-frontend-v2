@@ -666,6 +666,54 @@ textarea {
 
 // Theming
 
+form {
+  .types {
+    .type {
+      background-color: $gray-color-shade;
+    }
+
+    .selected {
+      background-color: $secondary-color;
+      color: white;
+    }
+  }
+
+  input {
+    border-color: $gray-color-shade;
+  }
+}
+
+.form-notification {
+  background-color: $gray-color-shade;
+
+  .info-icon-main-container {
+    background-color: #d9e8f6;
+
+    .info-container {
+      background-color: $primary-color;
+
+      .info-icon {
+        border: 2px solid $body-background-color;
+
+        i {
+          font-size: 18px;
+          color: $body-background-color;
+        }
+      }
+    }
+  }
+
+  p {
+    color: $dark-secondary-color-shade;
+  }
+}
+
+.step-2-status {
+  > select {
+    border-color: $gray-color-shade;
+    color: $dark-gray-color-shade;
+  }
+}
 [data-theme="light"] {
   form {
     .types {

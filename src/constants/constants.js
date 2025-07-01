@@ -27,6 +27,11 @@ export const generalOutcomeOptions = [
   { label: "Other", value: "Other" },
 ];
 
+export const outcomeReasons = [
+  { name: "Reason for admission" },
+  { name: "Preventable" },
+  { name: "Dose related" },
+];
 export const incidentTypesData = {
   fall_related: [
     { name: "Reported fall not observed by staff" },
@@ -37,6 +42,7 @@ export const incidentTypesData = {
     { name: "While sitting" },
     { name: "While walking" },
   ],
+
   treatment_related: [
     { name: "Blood product problem" },
     { name: "Consent" },
@@ -278,3 +284,23 @@ export const severityCategories = [
     description: "Error resulted in or contributed to the person’s death.",
   },
 ];
+
+export const adrOutCome = [
+  { name: "Reason for Admission" },
+  { name: "Preventable" },
+  { name: "Dose Related" },
+];
+
+export const outComeData = {
+  Mild: [{ name: " required no intervention no ,apparent harm to patient" }],
+  Moderate: [
+    { name: "Required treatment or intervention due to temporary harm" },
+    { name: "Increased monitoring" },
+    { name: "Prolonged hospitalization" },
+  ],
+  Severe: [
+    { name: "Death" },
+    { name: "Increased length of stay" },
+    { name: "Permanent disability" },
+  ],
+};

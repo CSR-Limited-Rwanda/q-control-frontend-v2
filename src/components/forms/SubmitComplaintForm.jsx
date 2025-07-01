@@ -1,7 +1,7 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import api from "@/utils/api";
-import { X, CircleCheck, LoaderCircle, Square } from 'lucide-react';
+import { X, CircleCheck, LoaderCircle, Square } from "lucide-react";
 import CustomDatePicker from "../CustomDatePicker";
 import { howComplaintIsReceived } from "@/constants/constants";
 import RichTexField from "./RichTextField";
@@ -97,7 +97,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
     // get a list of users
     const fetchStaff = async () => {
       try {
-        const response = await api.get("accounts/users/list");
+        const response = await api.get("users/?page_size=5");
         setStaffList(response.data);
         console.log(response.data);
         setFetchingStaff(false);
@@ -120,7 +120,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
       <div className="form">
         <h3>Submit a new complaint</h3>
         <X className="close-popup" onClick={handleSubmitComplaint} />
-        <form action="">
+        <form action="" className="newIncidentForm">
           <div className="field">
             <label htmlFor="">Patient's name</label>
             <input
@@ -205,8 +205,9 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
           <div className="field">
             <label htmlFor="">How complaint was received</label>
             <div className="check-boxes">
-              {howComplaintIsReceived.map((howComplaintIsReceived) => (
+              {howComplaintIsReceived.map((howComplaintIsReceived, index) => (
                 <div
+                  key={index}
                   onClick={(e) =>
                     setHowComplaintWasReceived(howComplaintIsReceived)
                   }

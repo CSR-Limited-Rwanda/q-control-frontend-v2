@@ -1,6 +1,6 @@
 // ReusableDatePicker.js
 "use client";
-import React, { forwardRef, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { CalendarDays } from "lucide-react";
 
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -21,174 +21,159 @@ const CustomDatePicker = ({
   setSelectedDate,
   stopPropagation,
 }) => {
-  const [month, setMonth] = useState(selectedDate?.split("-")[1] || "");
-  const [day, setDay] = useState(selectedDate?.split("-")[2] || "");
-  const [year, setYear] = useState(selectedDate?.split("-")[0] || "");
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
+  const [year, setYear] = useState("");
 
   const dayRef = useRef(null);
   const yearRef = useRef(null);
 
+  // Sync internal state when selectedDate changes from parent
+  useEffect(() => {
+    if (selectedDate) {
+      const [y = "", m = "", d = ""] = selectedDate.split("-");
+      setYear(y || "");
+      setMonth(m || "");
+      setDay(d || "");
+    } else {
+      setYear("");
+      setMonth("");
+      setDay("");
+    }
+  }, [selectedDate]);
+
+  // Automatically update selectedDate when full date is entered
+  useEffect(() => {
+    if (year.length === 4 && month.length === 2 && day.length === 2) {
+      const formatted = `${year.padStart(4, "0")}-${month.padStart(
+        2,
+        "0"
+      )}-${day.padStart(2, "0")}`;
+      setSelectedDate(formatted);
+      console.log("Formatted Date:", formatted);
+    }
+  }, [year, month, day]);
+
   const handleMonthChange = (e) => {
     const value = e.target.value;
-    if (Number.isInteger(parseInt(value))) {
-      if (value.length <= 2) setMonth(value);
-      if (value.length === 2) dayRef.current.focus();
-    } else {
-      setMonth("");
+    if (/^\d{0,2}$/.test(value)) {
+      setMonth(value);
+      if (value.length === 2) dayRef.current?.focus();
     }
   };
 
   const handleDayChange = (e) => {
     const value = e.target.value;
-    // check if value is and integer
-    if (Number.isInteger(parseInt(value))) {
-      if (value.length <= 2) setDay(value);
-      if (value.length === 2) yearRef.current.focus();
-    } else {
-      setDay("");
+    if (/^\d{0,2}$/.test(value)) {
+      setDay(value);
+      if (value.length === 2) yearRef.current?.focus();
     }
   };
 
-  // Handle year input
   const handleYearChange = (e) => {
     const value = e.target.value;
-    if (Number.isInteger(parseInt(value))) {
-      if (value.length <= 4) {
-        setYear(value);
-        const formattedDate = `${value}-${month}-${day}`;
-        setSelectedDate(formattedDate);
-        console.log("Formatted Date:", formattedDate);
-      } else {
-        setSelectedDate("");
-      }
-    } else {
-      setYear("");
+    if (/^\d{0,4}$/.test(value)) {
+      setYear(value);
+      // No selectedDate update here — we wait for useEffect
     }
   };
 
   return (
-    <div className="date-input">
+    <div
+      className="date-input"
+      onClick={(e) => stopPropagation && e.stopPropagation()}
+    >
       <input
         type="text"
         placeholder="MM"
         maxLength="2"
-        value={month}
+        value={month || ""}
         onChange={handleMonthChange}
       />
       /
       <input
         type="text"
-        ref={dayRef} // Reference to jump to day input
+        ref={dayRef}
         placeholder="DD"
         maxLength="2"
-        value={day}
+        value={day || ""}
         onChange={handleDayChange}
       />
       /
       <input
         className="yyy"
         type="text"
-        ref={yearRef} // Reference to jump to year input
+        ref={yearRef}
         placeholder="YYYY"
         maxLength="4"
-        value={year}
+        value={year || ""}
         onChange={handleYearChange}
       />
     </div>
   );
-  // const handleStartDateChange = (date) => {
-  //   if (date !== "") {
-  //     setSelectedDate(format(date, "yyyy-MM-dd"));
-  //   }
-  // };
-  // const today = new Date().toISOString().split("T")[0];
-  // return (
-  //   // <input
-  //   //   type="date"
-  //   //   name=""
-  //   //   id=""
-  //   //   onClick={(e) => e.stopPropagation()}
-  //   //   onChange={(e) => setSelectedDate(e.target.value)}
-  //   //   value={selectedDate}
-  //   //   max={today}
-
-  //   // />
-  //   <DatePicker
-  //     selected={selectedDate ? new Date(selectedDate) : null}
-  //     onChange={handleStartDateChange}
-  //     customInput={<CustomInput />}
-  //     placeholderText="Click to select date"
-  //     dateFormat="MM-dd-yyyy"
-  //     showYearDropdown
-  //     scrollableYearDropdown
-  //     yearDropdownItemNumber={30}
-  //     showMonthDropdown
-  //     dropdownMode="select"
-  //     maxDate={new Date()}
-  //   />
-  // );
 };
-function CustomDatePickers({ selectedDate, setSelectedDate }) {
-  // Internal handler to safely process date changes
-  const handleDateChange = (newValue) => {
-    try {
-      // Ensure we always pass either null or a valid dayjs object
-      if (!newValue || !dayjs.isDayjs(newValue)) {
-        setSelectedDate(null);
-        return;
-      }
 
-      if (!newValue.isValid()) {
-        setSelectedDate(null);
-        return;
-      }
+// function CustomDatePickers({ selectedDate, setSelectedDate }) {
+//   // Internal handler to safely process date changes
+//   const handleDateChange = (newValue) => {
+//     try {
+//       // Ensure we always pass either null or a valid dayjs object
+//       if (!newValue || !dayjs.isDayjs(newValue)) {
+//         setSelectedDate(null);
+//         return;
+//       }
 
-      setSelectedDate(newValue);
-    } catch (error) {
-      console.error("Date parsing error:", error);
-      setSelectedDate(null);
-    }
-  };
+//       if (!newValue.isValid()) {
+//         setSelectedDate(null);
+//         return;
+//       }
 
-  // Safely get value for the DatePicker
-  const getDateValue = () => {
-    try {
-      if (
-        !selectedDate ||
-        !dayjs.isDayjs(selectedDate) ||
-        !selectedDate.isValid()
-      ) {
-        return null;
-      }
-      return selectedDate;
-    } catch {
-      return null;
-    }
-  };
+//       setSelectedDate(newValue);
+//     } catch (error) {
+//       console.error("Date parsing error:", error);
+//       setSelectedDate(null);
+//     }
+//   };
 
-  return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={["DatePicker"]}>
-        <DatePicker
-          label="Basic date picker"
-          format="DD/MM/YYYY"
-          value={getDateValue()}
-          onChange={handleDateChange}
-          clearable
-          slotProps={{
-            textField: {
-              size: "small",
-              error: false, // Prevent error state from showing
-            },
-          }}
-          // Handle any parsing errors gracefully
-          onError={() => {
-            handleDateChange(null);
-          }}
-        />
-      </DemoContainer>
-    </LocalizationProvider>
-  );
-}
+//   // Safely get value for the DatePicker
+//   const getDateValue = () => {
+//     try {
+//       if (
+//         !selectedDate ||
+//         !dayjs.isDayjs(selectedDate) ||
+//         !selectedDate.isValid()
+//       ) {
+//         return null;
+//       }
+//       return selectedDate;
+//     } catch {
+//       return null;
+//     }
+//   };
+
+//   return (
+//     <LocalizationProvider dateAdapter={AdapterDayjs}>
+//       <DemoContainer components={["DatePicker"]}>
+//         <DatePicker
+//           label="Basic date picker"
+//           format="DD/MM/YYYY"
+//           value={getDateValue()}
+//           onChange={handleDateChange}
+//           clearable
+//           slotProps={{
+//             textField: {
+//               size: "small",
+//               error: false, // Prevent error state from showing
+//             },
+//           }}
+//           // Handle any parsing errors gracefully
+//           onError={() => {
+//             handleDateChange(null);
+//           }}
+//         />
+//       </DemoContainer>
+//     </LocalizationProvider>
+//   );
+// }
 
 export default CustomDatePicker;

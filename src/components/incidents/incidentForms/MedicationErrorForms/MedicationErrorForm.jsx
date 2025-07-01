@@ -39,7 +39,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
   const [dayWeek, setDayWeek] = useState("");
   const [hour, setHour] = useState("");
   const [date, setDate] = useState("");
-  const [dateNotified, setDateNotified] = useState(null);
+  const [dateNotified, setDateNotified] = useState("");
   const [time, setTime] = useState("");
   const [timeNotified, setTimeNotified] = useState("");
   const [location, setLocation] = useState("");
