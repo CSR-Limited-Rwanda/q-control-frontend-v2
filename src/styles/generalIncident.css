@@ -1,0 +1,40 @@
+.pop-up {
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.4196078431);
+}
+.pop-up .popup-content {
+  max-width: 650px;
+  width: 100%;
+  height: -moz-fit-content;
+  height: fit-content;
+  max-height: 90vh;
+  overflow: auto;
+  padding-bottom: 0;
+  position: relative;
+  animation: openPopup 0.3s forwards;
+  border-left: 1px solid #eaeaea;
+  border-radius: 0.8rem;
+}
+.pop-up .popup-content .forms-container {
+  background-color: white;
+}
+
+.form-half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.form-half .name-input {
+  border: 1px solid #f1f1f1;
+  background: transparent;
+  border-radius: 10px;
+}/*# sourceMappingURL=generalIncident.css.map */

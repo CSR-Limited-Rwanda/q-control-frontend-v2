@@ -1,0 +1,54 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns of equal width */
+  gap: 16px; /* space between grid items */
+  row-gap: 20px;
+
+  .separator {
+    margin-block: 10px;
+  }
+}
+
+label {
+  cursor: pointer;
+}
+
+.grid-item {
+  display: flex;
+  cursor: pointer;
+  gap: 5px;
+}
+
+// .first-container {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 15px;
+// }
+
+.input-container {
+  display: flex;
+}
+
+.outcome-data {
+  display: flex;
+  padding-left: 20px;
+  margin-bottom: 3px;
+  label {
+    text-wrap: nowrap;
+  }
+}
+
+.separator {
+  margin-top: 20px;
+}
+
+.spacer {
+  flex-grow: 1;
+  gap: 10px;
+}
+
+.check-boxes-container {
+  .check-box {
+    margin-bottom: 5px;
+  }
+}

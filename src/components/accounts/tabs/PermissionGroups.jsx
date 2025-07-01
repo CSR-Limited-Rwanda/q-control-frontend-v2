@@ -2,7 +2,7 @@ import { SearchInput } from "@/components/forms/Search";
 import OutlineButton from "@/components/OutlineButton";
 import PrimaryButton from "@/components/PrimaryButton";
 import { useGroupContext } from "@/context/providers/Group";
-import api from "@/utils/api";
+import api, { createUrlParams } from "@/utils/api";
 import { Eye, Plus, SquarePen, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
