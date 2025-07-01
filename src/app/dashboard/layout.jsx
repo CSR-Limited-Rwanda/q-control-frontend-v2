@@ -32,6 +32,8 @@ import PopUp from "@/components/incidents/PopUp";
 import EmployeeIncidentForm from "@/components/incidents/incidentForms/EmployeeIncidentForms/EmployeeIncidentForm";
 import LostAndFoundForm from "@/components/incidents/incidentForms/LostAndFoundForms/LostAndFoundForm";
 import GrievanceForm from "@/components/incidents/incidentForms/GrievanceForms/GrievanceForm";
+import MedicationErrorForm from "@/components/incidents/incidentForms/MedicationErrorForms/MedicationErrorForm";
+import DrugReactionForm from "@/components/incidents/incidentForms/DrugReactionForms/DrugReactionForm";
 
 const DashboardLayout = ({ children }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -286,6 +288,7 @@ export default DashboardLayout;
 export const ProfileContainer = () => {
   const [showProfile, setShowProfile] = useState(false);
   const { isAuth, logout, user } = useAuthentication();
+  console.log('user', user)
   const handleShowProfile = () => {
     setShowProfile(!showProfile);
   };

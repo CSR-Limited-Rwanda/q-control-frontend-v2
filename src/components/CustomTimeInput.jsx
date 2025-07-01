@@ -1,7 +1,7 @@
-'use client'
-import { useState } from 'react';
-import { Clock3 } from 'lucide-react';
-import { hoursArray, minutesArray } from '@/constants/constants';
+"use client";
+import { useState } from "react";
+import { Clock3 } from "lucide-react";
+import { hoursArray, minutesArray } from "@/constants/constants";
 
 const CustomTimeInput = ({ setTime, defaultTime }) => {
     const [hour, setHour] = useState(defaultTime?.split(':')[0] || '')
@@ -9,33 +9,33 @@ const CustomTimeInput = ({ setTime, defaultTime }) => {
     const [fullTime, setFullTime] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
 
-    const handleHourChange = (e) => {
-        let value = parseInt(e.target.value, 10);
+  const handleHourChange = (e) => {
+    let value = parseInt(e.target.value, 10);
 
-        if (value > 23) {
-            value = 23;
-        } else if (value < 0 || isNaN(value)) {
-            value = '';
-        }
-        setHour(value);
-        setTime(`${value}:${minutes}`);
-    };
-
-    const handleMinutesChange = (e) => {
-        let value = parseInt(e.target.value, 10);
-
-        if (value > 59) {
-            value = 59;
-        } else if (value < 0 || isNaN(value)) {
-            value = '';
-        }
-        setMinutes(value);
-        setTime(`${hour}:${value}`);
-    };
-
-    const handleShowDropdown = () => {
-        setShowDropdown(!showDropdown)
+    if (value > 23) {
+      value = 23;
+    } else if (value < 0 || isNaN(value)) {
+      value = "";
     }
+    setHour(value);
+    setTime(`${value}:${minutes}`);
+  };
+
+  const handleMinutesChange = (e) => {
+    let value = parseInt(e.target.value, 10);
+
+    if (value > 59) {
+      value = 59;
+    } else if (value < 0 || isNaN(value)) {
+      value = "";
+    }
+    setMinutes(value);
+    setTime(`${hour}:${value}`);
+  };
+
+  const handleShowDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
 
     const handleSetTime = () => {
         setTime(`${hour}:${minutes}`);
@@ -70,7 +70,7 @@ const CustomTimeInput = ({ setTime, defaultTime }) => {
                 </div>
                 <Clock3 className='icon' onClick={handleShowDropdown} />
                 {
-                    showDropdown &&
+                    (showDropdown &&
                     <div className="time-hour-drop-down">
                         <div className="drop-downs">
                             <div className="hours">
@@ -89,14 +89,18 @@ const CustomTimeInput = ({ setTime, defaultTime }) => {
                             </div>
                         </div>
 
-                        <button onClick={handleSetTime} type='button' className="secondary-button">
-                            Set time
-                        </button>
-                    </div>
-                }
-            </div>
-        </>
-    );
-}
+            <button
+              onClick={handleSetTime}
+              type="button"
+              className="secondary-button"
+            >
+              Set time
+            </button>
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
 
 export default CustomTimeInput;

@@ -148,6 +148,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   const [age, setAge] = useState("");
   const [sex, setSex] = useState("");
   const [userId, setUserId] = useState();
+  const [facilityId, setFacilityId] = useState(localStorage.getItem('facilityId'))
   // Incident Location
 
   const [location, setLocation] = useState("");
@@ -459,13 +460,13 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       console.log("Facility ID", checkCurrentAccount());
       if (isValid) {
         const incidentPostData = {
-          facility_id: checkCurrentAccount(),
+          facility_id: facilityId,
           status: "Draft",
           current_step: currentStep,
           category: category,
           incident_date: incidentDate,
           incident_time: incidentTime,
-          report_facility_id: checkCurrentAccount(),
+          report_facility_id: facilityId,
           patient_visitor: {
             first_name: patientVisitorFirstName,
             last_name: patientVisitorLastName,
@@ -1988,4 +1989,3 @@ export const UserSuggestions = ({
     </div>
   );
 };
-
