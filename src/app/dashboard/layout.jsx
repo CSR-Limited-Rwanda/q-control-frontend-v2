@@ -69,11 +69,11 @@ const DashboardLayout = ({ children }) => {
       label: "Account Management",
       href: "/accounts",
     },
-    {
-      icon: <Dumbbell size={24} />,
-      label: "Incident Tracking",
-      href: "/incidents",
-    },
+    // {
+    //   icon: <Dumbbell size={24} />,
+    //   label: "Incident Tracking",
+    //   href: "/incidents",
+    // },
     // {
     //     icon: <Boxes size={20} />,
     //     label: 'Inventory',
@@ -103,9 +103,9 @@ const DashboardLayout = ({ children }) => {
     setIsFormCHoicesOpen(!isFormChoicesOpen);
   };
 
-    const togglePopup = () => {
-        setIsPopupOpen(!isPopupOpen);
-    };
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
 
   const MenuItem = ({ item, index }) => {
     const hasDropdown = item.items?.length > 0;
@@ -115,7 +115,8 @@ const DashboardLayout = ({ children }) => {
       <div className="menu-item-container">
         <a
           href={!hasDropdown ? item.href : "#"}
-          className={`menu-item ${isActive ? "active" : ""}`}
+          // className={`menu-item ${isActive ? "active" : ""}`}
+          className="menu-item active"
           onClick={(e) => {
             if (hasDropdown) {
               e.preventDefault();
@@ -153,14 +154,13 @@ const DashboardLayout = ({ children }) => {
     );
   };
 
-  useEffect(() => {});
+  useEffect(() => { });
   return isAuth ? (
     <div className="dashboard">
       {/* Sidebar */}
       <aside
-        className={`dashboard__sidebar ${
-          isSidebarCollapsed ? "collapsed" : ""
-        } ${showMobileMenu ? "mobile-open" : ""}`}
+        className={`dashboard__sidebar ${isSidebarCollapsed ? "collapsed" : ""
+          } ${showMobileMenu ? "mobile-open" : ""}`}
       >
         <div className="dashboard__logo">
           <Image src={"/logo.svg"} width={52} height={32} alt="logo" />
@@ -176,9 +176,8 @@ const DashboardLayout = ({ children }) => {
 
       {/* Main Content Area */}
       <main
-        className={`dashboard__main ${
-          isSidebarCollapsed ? "sidebar-collapsed" : ""
-        }`}
+        className={`dashboard__main ${isSidebarCollapsed ? "sidebar-collapsed" : ""
+          }`}
       >
         {/* Header */}
         <header className="dashboard__header">
@@ -211,63 +210,63 @@ const DashboardLayout = ({ children }) => {
                                 </div> */}
             </div>
 
-                            <div className="dashboard__header-actions">
-                                <button
-                                    onClick={toggleFormChoicesOpen}
-                                    className='add-incident-btn'
-                                >
-                                    <CirclePlus />
-                                    <span>Add New</span>
-                                    {isFormChoicesOpen ? (
-                                        <FormChoicesPopup
-                                            togglePopup={togglePopup}
-                                            setSelectedForm={setSelectedForm}
-                                        />
-                                    ) : (
-                                        ""
-                                    )}
-                                </button>
-                                {/* <ProfileMessages /> */}
-                                {/* <ProfileNotification /> */}
-                                <ProfileContainer />
-                            </div>
-                        </div>
-                        <div className="page-content">
-                            {isPopupOpen ? (
-                                <PopUp
-                                    togglePopup={togglePopup}
-                                    isPopupOpen={isPopupOpen}
-                                    popupContent={
-                                        selectedForm === "general" ? (
-                                            <GeneralIncidentForm togglePopup={togglePopup} />
-                                        ) : selectedForm === "lostAndFound" ? (
-                                            <LostAndFoundForm togglePopup={togglePopup} />
-                                        ) : selectedForm === "employee" ? (
-                                            <EmployeeIncidentForm />
-                                        ) : selectedForm === "medicationError" ? (
-                                            <MedicationErrorForm />
-                                        ) : selectedForm === "grievance" ? (
-                                            <GrievanceForm togglePopup={togglePopup} />
-                                        ) : selectedForm === "reactionReport" ? (
-                                            <DrugReactionForm />
-                                        ) : selectedForm === "workPlaceViolence" ? (
-                                            <WorkplaceViolenceIncidentForm />
-                                        ) : selectedForm === "healthIncident" ? (
-                                            <HealthIncidentInvestigationForm />
-                                        ) : selectedForm === "verbalComplaint" ? (
-                                            <VerbalComplaintForm />
-                                        ) : selectedForm === "grievanceInvestigation" ? (
-                                            <GrievanceInvestigationForm />
-                                        ) : (
-                                            ""
-                                        )
-                                    }
-                                />
-                            ) : (
-                                ""
-                            )}
-                        </div>
-                    </header>
+            <div className="dashboard__header-actions">
+              <button
+                onClick={toggleFormChoicesOpen}
+                className='add-incident-btn'
+              >
+                <CirclePlus />
+                <span>Add New</span>
+                {isFormChoicesOpen ? (
+                  <FormChoicesPopup
+                    togglePopup={togglePopup}
+                    setSelectedForm={setSelectedForm}
+                  />
+                ) : (
+                  ""
+                )}
+              </button>
+              {/* <ProfileMessages /> */}
+              {/* <ProfileNotification /> */}
+              <ProfileContainer />
+            </div>
+          </div>
+          <div className="page-content">
+            {isPopupOpen ? (
+              <PopUp
+                togglePopup={togglePopup}
+                isPopupOpen={isPopupOpen}
+                popupContent={
+                  selectedForm === "general" ? (
+                    <GeneralIncidentForm togglePopup={togglePopup} />
+                  ) : selectedForm === "lostAndFound" ? (
+                    <LostAndFoundForm togglePopup={togglePopup} />
+                  ) : selectedForm === "employee" ? (
+                    <EmployeeIncidentForm />
+                  ) : selectedForm === "medicationError" ? (
+                    <MedicationErrorForm />
+                  ) : selectedForm === "grievance" ? (
+                    <GrievanceForm togglePopup={togglePopup} />
+                  ) : selectedForm === "reactionReport" ? (
+                    <DrugReactionForm />
+                  ) : selectedForm === "workPlaceViolence" ? (
+                    <WorkplaceViolenceIncidentForm />
+                  ) : selectedForm === "healthIncident" ? (
+                    <HealthIncidentInvestigationForm />
+                  ) : selectedForm === "verbalComplaint" ? (
+                    <VerbalComplaintForm />
+                  ) : selectedForm === "grievanceInvestigation" ? (
+                    <GrievanceInvestigationForm />
+                  ) : (
+                    ""
+                  )
+                }
+              />
+            ) : (
+              ""
+            )}
+          </div>
+        </header>
 
         {/* Page Content */}
         <div className="dashboard__content">
