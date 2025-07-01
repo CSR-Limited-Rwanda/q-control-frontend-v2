@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <RootProvider>
-          <SwitchTheme />
+          {/* <SwitchTheme /> */}
           <ToastManager />
           {children}
         </RootProvider>

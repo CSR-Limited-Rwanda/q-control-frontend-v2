@@ -18,7 +18,7 @@ import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
 import postDocumentHistory from "../../documentHistory/postDocumentHistory";
 import {
   drugRoutes,
-  incident_agreement,
+  incidentTypesData,
   outComeData,
   outcomeReasons,
 } from "@/constants/constants";
@@ -85,9 +85,7 @@ const DrugReactionForm = ({ togglePopup }) => {
   const [briefSummary, setBriefSummary] = useState("");
   const [immediateActionsTaken, setImmediateActionsTaken] = useState("");
   const [description, setDescription] = useState("");
-  const [nurseNote, setNurseNote] = useState(false);
-  const [progressNote, setProgressNote] = useState("");
-  const [otherNote, setOtherNote] = useState(false);
+  const [selectedNote, setSelectedNote] = useState(""); // "Nurse note", "Progress note", "Other note"
   const [otherNoteDescription, setOtherNoteDescription] = useState("");
   const [treatmentDescription, setTreatmentDescription] = useState("");
   const [agreementDescription, setAgreementDescription] = useState("");
@@ -184,8 +182,16 @@ const DrugReactionForm = ({ togglePopup }) => {
     setVictimType(value);
   };
 
-  const handleProgressNote = (value) => {
-    setProgressNote(value);
+  const nurseNote = selectedNote === "Nurse note";
+  const progressNote = selectedNote === "Progress note";
+  const otherNote = selectedNote === "Other note";
+  const handleNoteChange = (value) => {
+    setSelectedNote(value);
+
+    // Optionally clear otherNoteDescription when deselecting "Other note"
+    if (value !== "Other note") {
+      setOtherNoteDescription("");
+    }
   };
 
   const handleReactionTreated = () => {
@@ -252,7 +258,7 @@ const DrugReactionForm = ({ togglePopup }) => {
     try {
       setIsLoading(true);
       const response = await api.post(
-        `${API_URL}/incidents/adverse_drug_reaction/new/`,
+        `${API_URL}/incidents/adverse-drug-reaction/`,
         cleanedData(drugReactionData),
         {
           headers: {
@@ -261,7 +267,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         }
       );
       if (response.status === 201) {
-        const id = response.data.data.id;
+        const id = response.data.id;
         localStorage.setItem("drugReactionId", id.toString());
         localStorage.setItem("updateNewIncident", "true");
         console.log(localStorage.getItem("updateNewIncident"));
@@ -291,8 +297,8 @@ const DrugReactionForm = ({ togglePopup }) => {
       setIsLoading(true);
       const id = localStorage.getItem("drugReactionId");
       console.log(id);
-      const response = await api.patch(
-        `${API_URL}/incidents/adverse_drug_reaction/${id}/update/`,
+      const response = await api.put(
+        `${API_URL}/incidents/adverse-drug-reaction/${id}/`,
         cleanedData(drugReactionData),
         {
           headers: {
@@ -356,19 +362,17 @@ const DrugReactionForm = ({ togglePopup }) => {
           patient_type: victimType,
           facility: checkCurrentAccount(),
           patient_name: {
-            user_data: {
-              first_name: firstName,
-              last_name: lastName,
-            },
-            profile_data: {
-              gender: sex,
-              address: address,
-              state: state,
-              zip_code: zipCode,
-              city: city,
-              phone_number: phoneNumber,
-              medical_record_number: incidentMr,
-            },
+            first_name: firstName,
+            last_name: lastName,
+            profile_type: "Patient",
+
+            gender: sex,
+            address: address,
+            state: state,
+            zip_code: zipCode,
+            city: city,
+            phone_number: phoneNumber,
+            medical_record_number: incidentMr,
           },
 
           incident_date: incidentDate,
@@ -401,10 +405,9 @@ const DrugReactionForm = ({ togglePopup }) => {
         drugReactionData = {
           provider: provider,
           observers_name: {
-            user_data: {
-              first_name: observersFirstName,
-              last_name: observersLastName,
-            },
+            first_name: observersFirstName,
+            last_name: observersLastName,
+            profile_type: "Staff",
           },
           time_of_report: timeOfReport,
           date_of_report: dateOfReport,
@@ -1060,8 +1063,8 @@ const DrugReactionForm = ({ togglePopup }) => {
 
               {route &&
                 (route === "others" ||
-                  route === "ivpush" ||
-                  route === "ivdrip") && (
+                  route === "IV Push" ||
+                  route === "IV Drip") && (
                   <div className="field">
                     <input
                       type="text"
@@ -1123,11 +1126,9 @@ const DrugReactionForm = ({ togglePopup }) => {
                     type="radio"
                     name="informationIn"
                     id="nurseNote"
-                    onChange={(e) => {
-                      handleProgressNote(e.target.value);
-                    }}
-                    checked={progressNote == "Nurse note"}
-                    value={"Nurse note"}
+                    onChange={(e) => handleNoteChange(e.target.value)}
+                    checked={selectedNote === "Nurse note"}
+                    value="Nurse note"
                   />
                   <label htmlFor="nurseNote">Nurse note</label>
                 </div>
@@ -1136,11 +1137,9 @@ const DrugReactionForm = ({ togglePopup }) => {
                     type="radio"
                     name="informationIn"
                     id="progressNote"
-                    onChange={(e) => {
-                      handleProgressNote(e.target.value);
-                    }}
-                    checked={progressNote == "Progress note"}
-                    value={"Progress note"}
+                    onChange={(e) => handleNoteChange(e.target.value)}
+                    checked={selectedNote === "Progress note"}
+                    value="Progress note"
                   />
                   <label htmlFor="progressNote">Progress note</label>
                 </div>
@@ -1149,32 +1148,22 @@ const DrugReactionForm = ({ togglePopup }) => {
                     type="radio"
                     name="informationIn"
                     id="otherLocationIn"
-                    onChange={(e) => {
-                      handleProgressNote(e.target.value);
-                    }}
-                    checked={progressNote == "Other note"}
-                    value={"Other note"}
+                    onChange={(e) => handleNoteChange(e.target.value)}
+                    checked={selectedNote === "Other note"}
+                    value="Other note"
                   />
                   <label htmlFor="otherLocationIn">Other</label>
                 </div>
               </div>
             </div>
 
-            {otherNote ? (
-              <>
-                <RichTexField
-                  value={otherNoteDescription}
-                  onEditorChange={setOtherNoteDescription}
-                />
-                {/* <textarea
-                  placeholder="Enter note"
-                  rows={3}
-                  value={otherNoteDescription}
-                  onChange={(e) => setOtherNoteDescription(e.target.value)}
-                ></textarea> */}
-              </>
-            ) : (
-              ""
+            {otherNote && (
+              <textarea
+                placeholder="Enter note"
+                rows={3}
+                value={otherNoteDescription}
+                onChange={(e) => setOtherNoteDescription(e.target.value)}
+              />
             )}
 
             <div className="field">
@@ -1239,7 +1228,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         ) : currentStep === 5 ? (
           <div className="step">
             <div className="grid-container">
-              {incident_agreement.map((agreement, index) => (
+              {incidentTypesData.incident_agreement.map((agreement, index) => (
                 <div key={index} className={`type grid-item`}>
                   <div
                     onClick={() => handleSelection(agreement.name)}
