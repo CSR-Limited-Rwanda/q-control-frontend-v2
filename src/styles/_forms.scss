@@ -1410,3 +1410,17 @@ form {
     stroke-dashoffset: 0;
   }
 }
+
+.user-complain-form {
+  .form {
+    background-color: $body-background-color;
+    > h3 {
+      padding: 24px;
+    }
+
+    > button {
+      margin-inline: 24px;
+      margin-bottom: 24px;
+    }
+  }
+}

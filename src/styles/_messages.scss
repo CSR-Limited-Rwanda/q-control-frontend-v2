@@ -20,7 +20,7 @@
 
 .note-message {
   background-color: #e8f2fc;
-  color: #145C9E;
+  color: #145c9e;
 }
 
 .error-message {
@@ -28,5 +28,21 @@
 
   .message-icon {
     color: red;
+  }
+}
+
+.success-message {
+  background-color: #55ffc976;
+
+  .message-icon {
+    color: green;
+  }
+}
+
+.warning-message {
+  background-color: rgb(255, 245, 186);
+
+  .message-icon {
+    color: rgb(121, 121, 5);
   }
 }
