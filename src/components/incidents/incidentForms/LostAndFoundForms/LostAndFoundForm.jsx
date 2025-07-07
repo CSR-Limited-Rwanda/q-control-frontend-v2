@@ -12,7 +12,7 @@ import CustomDatePicker from "@/components/CustomDatePicker";
 import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
 import postDocumentHistory from "../../documentHistory/postDocumentHistory";
 import CustomTimeInput from "@/components/CustomTimeInput";
-import { X, Square, SquareCheckBig } from "lucide-react";
+import { X, Square, SquareCheckBig, CircleCheck } from "lucide-react";
 import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 
@@ -336,7 +336,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
                     <div className="form-steps">
                         <div className={currentStep === 1 ? "step current-step" : "step"}>
                             <div className="icon">
-                                <i className="fa-solid fa-circle-check"></i>
+                                <CircleCheck />
                             </div>
                             <div className="name">
                                 <p className="step-name">Step 1/2</p>
@@ -345,7 +345,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
                         <div className="divider"></div>
                         <div className={currentStep === 2 ? "step current-step" : "step"}>
                             <div className="icon">
-                                <i className="fa-solid fa-circle-check"></i>
+                                <CircleCheck />
                             </div>
                             <div className="name">
                                 <p className="step-name">Step 2/2</p>

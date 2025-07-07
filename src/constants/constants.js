@@ -278,3 +278,19 @@ export const severityCategories = [
     description: "Error resulted in or contributed to the person’s death.",
   },
 ];
+
+export const injuresTypes = [
+  "Not applicable",
+  "Yelling",
+  "Stabbed",
+  "Spit upon",
+  "Cursing/berating",
+  "Cut",
+  "Bitten",
+  "Bodily harm",
+  "Grabbed/choked",
+  "Punched/hit/slapped",
+  "Shot",
+  "Sexual assault",
+  "Kicked",
+];
