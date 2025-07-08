@@ -54,7 +54,6 @@ export const useAuthentication = () => {
 
           const result = await getUserInfoFromToken(token);
           if (result && result.tokenUserInfo) {
-            console.log(result);
             setUser(result.tokenUserInfo);
           }
         }

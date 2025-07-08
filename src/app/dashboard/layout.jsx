@@ -35,6 +35,7 @@ import GrievanceForm from "@/components/incidents/incidentForms/GrievanceForms/G
 import MedicationErrorForm from "@/components/incidents/incidentForms/MedicationErrorForms/MedicationErrorForm";
 import DrugReactionForm from "@/components/incidents/incidentForms/DrugReactionForms/DrugReactionForm";
 import WorkplaceViolenceIncidentForm from "@/components/incidents/incidentForms/WorkplaceViolenceForms/WorkPlaceViolenceForm";
+import SubmitComplaintForm from "@/components/forms/SubmitComplaintForm";
 
 const DashboardLayout = ({ children }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -258,6 +259,11 @@ const DashboardLayout = ({ children }) => {
                     <VerbalComplaintForm />
                   ) : selectedForm === "grievanceInvestigation" ? (
                     <GrievanceInvestigationForm />
+                  ) : selectedForm === "complaintForm" ? (
+                    <SubmitComplaintForm
+                      hasHeight={false}
+                      handleSubmitComplaint={tootlePopup}
+                    />
                   ) : (
                     ""
                   )

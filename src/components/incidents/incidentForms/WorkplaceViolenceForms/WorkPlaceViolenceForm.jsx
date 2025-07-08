@@ -586,15 +586,15 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         if (response.status === 201) {
           localStorage.setItem(
             "workplaceViolenceId",
-            response.data.workplace_violence.id
+            response.data.id
           );
           removeError(errorFetching);
-          console.log(response.data.workplace_violence.id);
+          console.log(response.data.id);
           setCurrentStep(currentStep + 1);
           setIsLoading(false);
           console.log(response);
           postDocumentHistory(
-            response.data.workplace_violence.id,
+            response.data.id,
             "added a new incident",
             "create"
           );
@@ -604,10 +604,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       } catch (error) {
         setIsLoading(false);
         console.log(error);
-        if (error.response.data) {
-          appendError(error.response.data.error);
+        if (error.message) {
+          appendError(error.message);
           window.customToast.error(
-            error.response.data.message ||
+            error.message ||
             "Error while creating new incident, please try again"
           );
           return;
@@ -623,8 +623,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       console.log(incidentId);
       try {
         setIsLoading(true);
-        const response = await api.patch(
-          `${API_URL}/incidents/workplace_violence/${incidentId}/update/`,
+        const response = await api.put(
+          `${API_URL}/incidents/workplace-violence/${incidentId}/`,
           cleanedData(incidentPostData)
         );
 
@@ -858,10 +858,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         injuryData = {
           there_were_injuries: injuryCheck,
           persons_injured: injuries.map((injury) => ({
-            user_data: {
+              profile_type: "Victim",
               first_name: injury.user_data.first_name,
               last_name: injury.user_data.last_name,
-            },
+       
             injury_description: injury.injury_description,
           })),
           current_step: currentStep,
@@ -897,15 +897,11 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
 
       incidentPostData = {
         notification: securityalert,
-        incident_witness: witnesses.map((witness) => ({
-          user_data: {
+        incident_witnesses: witnesses.map((witness) => ({
             first_name: witness.user_data.first_name,
             last_name: witness.user_data.last_name,
-          },
-          profile_data: {
+            profile_type: "Witness",
             phone_number: witness.profile_data.phone_number,
-          },
-
           address: witness.address,
         })),
         current_step: currentStep,
