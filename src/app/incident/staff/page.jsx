@@ -4,11 +4,7 @@ import StaffIncidentList from "@/components/incidents/incidentLists/StaffInciden
 import React from "react";
 
 const page = () => {
-  return (
-    <DashboardLayout>
-      <StaffIncidentList />
-    </DashboardLayout>
-  );
+  return <DashboardLayout children={<StaffIncidentList />} />;
 };
 
 export default page;

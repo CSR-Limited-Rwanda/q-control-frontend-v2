@@ -11,6 +11,7 @@ import {
   PillBottle,
   Settings,
   Syringe,
+  Users,
 } from "lucide-react";
 
 const page = () => {
@@ -73,7 +74,7 @@ const page = () => {
               <i className="fa-solid fa-ellipsis-vertical"></i>
             </div>
             <div className="icon">
-              <FileText size={24} variant={"stroke"} />
+              <Users size={24} variant={"stroke"} />
             </div>
             <div className="text">
               <h3>Staff Incident Reports</h3>
