@@ -295,7 +295,7 @@ export default DashboardLayout;
 export const ProfileContainer = () => {
   const [showProfile, setShowProfile] = useState(false);
   const { isAuth, logout, user } = useAuthentication();
-  console.log("user", user);
+
   const handleShowProfile = () => {
     setShowProfile(!showProfile);
   };

@@ -159,13 +159,11 @@ const StaffIncidentList = () => {
   useEffect(() => {
     const fetchIncidentData = async () => {
       try {
-        const response = await api.get(
-          `${API_URL}/incidents/employee_incident/`
-        );
+        const response = await api.get(`${API_URL}/incidents/staff-incident/`);
         if (response.status === 200) {
           // Format the dates before setting the state
           // console.log(response.data)
-          const formattedData = response.data.incidents.map((item) => ({
+          const formattedData = response.data.map((item) => ({
             ...item,
             date_of_injury_or_near_miss: formatDate(
               item.date_of_injury_or_near_miss
@@ -174,6 +172,7 @@ const StaffIncidentList = () => {
           setIncidentData(formattedData);
           setIsFetching(false);
           setData(formattedData);
+          console.log(response.data);
         }
       } catch (error) {
         if (error.response) {
@@ -416,6 +415,7 @@ const StaffIncidentList = () => {
                     {incidentData &&
                       incidentData.map((incident, index) => (
                         <IncidentTableCard
+                          key={index}
                           incident={incident}
                           handleRowClick={handleRowClick}
                           handleSelectedItems={handleSelectedItems}
