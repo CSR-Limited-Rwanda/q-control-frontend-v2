@@ -1,118 +1,114 @@
 @import "./variables";
 
 .pop-up {
-    width: 100vw;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    background-color: rgba(0, 0, 0, 0.4196078431);
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.4196078431);
 
-    .popup-content {
-        max-width: 650px;
-        width: 100%;
-        height: fit-content;
-        max-height: 90vh;
-        overflow: auto;
-        padding-bottom: 0;
-        position: relative;
-        animation: openPopup 0.3s forwards;
-        border-left: 1px solid #eaeaea;
-        border-radius: 0.8rem;
+  .popup-content {
+    max-width: 650px;
+    width: 100%;
+    height: fit-content;
+    max-height: 90vh;
+    overflow: auto;
+    padding-bottom: 0;
+    position: relative;
+    animation: openPopup 0.3s forwards;
+    border-left: 1px solid #eaeaea;
+    border-radius: 0.8rem;
 
-        .forms-container {
-            background-color: white;
-        }
+    .forms-container {
+      background-color: white;
     }
+  }
 }
 
 .form-half {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 
-    .name-input {
-        border: 1px solid #f1f1f1;
-        background: transparent;
-        border-radius: 10px;
-        padding: 14px 16px;
-    }
+  .name-input {
+    border: 1px solid #f1f1f1;
+    background: transparent;
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
 }
 
 /* Reset default radio button styling */
 input[type="radio"] {
-    /* Remove default appearance */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border: 1px solid #ccc;
-    background-color: white;
+  /* Remove default appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+/* Hover state */
+input[type="radio"]:hover {
+  border-color: #007bff;
+}
+
+/* Focus state for accessibility */
+input[type="radio"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Checked state */
+input[type="radio"]:checked {
+  border-color: #007bff;
+  background-color: transparent;
+}
+
+/* Create custom dot for checked state */
+input[type="radio"]:checked::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #007bff;
+  transform: translate(-50%, -50%);
+}
+
+.status-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+
+  .status {
+    flex: 49%;
+    padding: 12px;
+    border-radius: 12px;
     cursor: pointer;
-    position: relative;
-    padding: 10px;
-    border-radius: 50%;
+    background-color: $gray-color-shade;
   }
-  
-  /* Hover state */
-  input[type="radio"]:hover {
-    border-color: #007bff;
+  .selected {
+    background-color: $secondary-color;
+    color: white;
   }
-  
-  /* Focus state for accessibility */
-  input[type="radio"]:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-  }
-  
-  /* Checked state */
-  input[type="radio"]:checked {
-    border-color: #007bff;
-    background-color: transparent;
-  }
-  
-  /* Create custom dot for checked state */
-  input[type="radio"]:checked::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #007bff;
-    transform: translate(-50%, -50%);
-  }
+}
 
-
-  .status-choices {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: space-between;
-  
-    .status {
-      flex: 49%;
-      padding: 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      background-color: $gray-color-shade;
-    }
-    .selected {
-      background-color: $secondary-color;
-      color: white;
-    }
-  }
-
-  .grid-choices {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-  }
-
-
-
+.grid-choices {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 
 const CustomSelectInput = ({ options, selected, setSelected, placeholder }) => {
@@ -19,7 +19,7 @@ const CustomSelectInput = ({ options, selected, setSelected, placeholder }) => {
       <input
         value={selected}
         readOnly
-        onChange={toggleShowOptions}
+        onClick={toggleShowOptions}
         type="text"
         name=""
         id=""
