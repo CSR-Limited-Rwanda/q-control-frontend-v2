@@ -1,0 +1,41 @@
+@import "../styles/variables";
+
+.incidents-reports {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .incident-report {
+    flex: 1 1 300px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: whitesmoke;
+    padding: 24px;
+    border-radius: 12px;
+
+    .list-icon {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 22px;
+      color: #8b8b8b;
+    }
+
+    .icon {
+      background-color: $secondary-color-shade;
+      padding: 12px;
+      border-radius: 6px;
+      color: $secondary-color;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &:nth-child(even) {
+      .icon {
+        background-color: #deeeff;
+      }
+    }
+  }
+}

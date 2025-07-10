@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import "@/styles/_dashboard.scss";
 import "@/styles/_components.scss";
@@ -156,13 +155,14 @@ const DashboardLayout = ({ children }) => {
     );
   };
 
-  useEffect(() => { });
+  useEffect(() => {});
   return isAuth ? (
     <div className="dashboard">
       {/* Sidebar */}
       <aside
-        className={`dashboard__sidebar ${isSidebarCollapsed ? "collapsed" : ""
-          } ${showMobileMenu ? "mobile-open" : ""}`}
+        className={`dashboard__sidebar ${
+          isSidebarCollapsed ? "collapsed" : ""
+        } ${showMobileMenu ? "mobile-open" : ""}`}
       >
         <div className="dashboard__logo">
           <Image src={"/logo.svg"} width={52} height={32} alt="logo" />
@@ -178,8 +178,9 @@ const DashboardLayout = ({ children }) => {
 
       {/* Main Content Area */}
       <main
-        className={`dashboard__main ${isSidebarCollapsed ? "sidebar-collapsed" : ""
-          }`}
+        className={`dashboard__main ${
+          isSidebarCollapsed ? "sidebar-collapsed" : ""
+        }`}
       >
         {/* Header */}
         <header className="dashboard__header">
@@ -215,7 +216,7 @@ const DashboardLayout = ({ children }) => {
             <div className="dashboard__header-actions">
               <button
                 onClick={toggleFormChoicesOpen}
-                className='add-incident-btn'
+                className="add-incident-btn"
               >
                 <CirclePlus />
                 <span>Add New</span>
@@ -294,7 +295,7 @@ export default DashboardLayout;
 export const ProfileContainer = () => {
   const [showProfile, setShowProfile] = useState(false);
   const { isAuth, logout, user } = useAuthentication();
-  console.log('user', user)
+  console.log("user", user);
   const handleShowProfile = () => {
     setShowProfile(!showProfile);
   };
