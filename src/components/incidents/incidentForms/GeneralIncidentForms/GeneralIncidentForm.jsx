@@ -841,7 +841,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             <>
               <div className={currentStep === 1 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <CircleCheck />
+                  <CircleCheck size={32} />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 1/7</p>
@@ -851,7 +851,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               <div className="divider"></div>
               <div className={currentStep === 2 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <CircleCheck />
+                  <CircleCheck size={32} />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 2/7</p>
@@ -861,7 +861,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               <div className="divider"></div>
               <div className={currentStep === 3 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <CircleCheck />
+                  <CircleCheck size={32} />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 3/7</p>
@@ -871,7 +871,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               <div className="divider"></div>
               <div className={currentStep === 4 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <CircleCheck />
+                  <CircleCheck size={32} />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 4/7</p>
@@ -888,27 +888,30 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                     : "step"
                 }
               ></div>
+              <div className="divider"></div>
               <div className={currentStep === 5 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <CircleCheck />
+                  <CircleCheck size={32} />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 5/7</p>
                   <p className="step-details">Notification</p>
                 </div>
               </div>
+              <div className="divider"></div>
               <div className={currentStep === 6 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <CircleCheck />
+                  <CircleCheck size={32} />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 6/7</p>
                   <p className="step-details">Notification</p>
                 </div>
               </div>
+              <div className="divider"></div>
               <div className={currentStep === 7 ? "step current-step" : "step"}>
                 <div className="icon">
-                  <CircleCheck />
+                  <CircleCheck size={32} />
                 </div>
                 <div className="name">
                   <p className="step-name">Step 7/7</p>
@@ -918,7 +921,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             </>
           )}
         </div>
-        <FacilityCard />
+        {/* <FacilityCard /> */}
         <DraftPopup incidentString="general" incidentType="general_incident" />
       </div>
       <form className="newIncidentForm">

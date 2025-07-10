@@ -71,11 +71,11 @@ const DashboardLayout = ({ children }) => {
       label: "Account Management",
       href: "/accounts",
     },
-    // {
-    //   icon: <Dumbbell size={24} />,
-    //   label: "Incident Tracking",
-    //   href: "/incidents",
-    // },
+    {
+      icon: <Dumbbell size={24} />,
+      label: "Incident Tracking",
+      href: "/incidents",
+    },
     // {
     //     icon: <Boxes size={20} />,
     //     label: 'Inventory',
@@ -117,8 +117,8 @@ const DashboardLayout = ({ children }) => {
       <div className="menu-item-container">
         <a
           href={!hasDropdown ? item.href : "#"}
-          // className={`menu-item ${isActive ? "active" : ""}`}
-          className="menu-item active"
+          className={`menu-item ${isActive ? "active" : ""}`}
+          // className="menu-item active"
           onClick={(e) => {
             if (hasDropdown) {
               e.preventDefault();
