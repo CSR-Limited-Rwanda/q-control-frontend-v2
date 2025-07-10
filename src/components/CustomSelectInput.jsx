@@ -19,7 +19,7 @@ const CustomSelectInput = ({ options, selected, setSelected, placeholder }) => {
       <input
         value={selected}
         readOnly
-        onChange={toggleShowOptions}
+        onClick={toggleShowOptions}
         type="text"
         name=""
         id=""

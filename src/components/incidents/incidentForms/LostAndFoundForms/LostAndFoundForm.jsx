@@ -12,9 +12,10 @@ import CustomDatePicker from "@/components/CustomDatePicker";
 import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
 import postDocumentHistory from "../../documentHistory/postDocumentHistory";
 import CustomTimeInput from "@/components/CustomTimeInput";
-import { X, Square, SquareCheckBig, CircleCheck } from "lucide-react";
+import { X, Square, SquareCheckBig, CircleCheck, MoveRight } from "lucide-react";
 import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
+import '../../../../styles/_forms.scss'
 
 const LostAndFoundForm = ({ togglePopup }) => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -336,26 +337,28 @@ const LostAndFoundForm = ({ togglePopup }) => {
                     <div className="form-steps">
                         <div className={currentStep === 1 ? "step current-step" : "step"}>
                             <div className="icon">
-                                <CircleCheck />
+                                <CircleCheck size={32} />
                             </div>
                             <div className="name">
                                 <p className="step-name">Step 1/2</p>
+                                <p className="step-details">Person taking report Info</p>
                             </div>
                         </div>
                         <div className="divider"></div>
                         <div className={currentStep === 2 ? "step current-step" : "step"}>
                             <div className="icon">
-                                <CircleCheck />
+                                <CircleCheck size={32} />
                             </div>
                             <div className="name">
                                 <p className="step-name">Step 2/2</p>
+                                <p className="step-details">Actions taken</p>
                             </div>
                         </div>
                     </div>
                 ) : (
                     ""
                 )}
-                <FacilityCard />
+                {/* <FacilityCard /> */}
                 <DraftPopup
                     incidentString="lost_and_found"
                     incidentType="lost_and_found"
@@ -620,12 +623,12 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
                 {currentStep === 3 && <FormCompleteMessage />}
             </form>
-            <div className="buttons">
+            <div className="incident-form-buttons">
                 {currentStep > 1 && currentStep <= 2 && (
                     <button
                         onClick={handlePreviousStep}
                         id="back-button"
-                        className="secondary-button"
+                        className="incident-back-btn"
                     >
                         <i className="fa-solid fa-arrow-left"></i>
                         <span>Back</span>
@@ -643,14 +646,24 @@ const LostAndFoundForm = ({ togglePopup }) => {
                     </button>
                 ) : (
                     currentStep < 2 && (
-                        <button
-                            onClick={handleNextStep}
-                            id="continue-button"
-                            className="primary-button"
-                        >
-                            <span>{isLoading ? "Processing..." : "Save & Continue"}</span>
-                            <i className="fa-solid fa-arrow-right"></i>
-                        </button>
+                        <>
+                            <button
+                                onClick={togglePopup}
+                                id="continue-button"
+                                className="incident-back-btn"
+                            >
+                                <span>Cancel</span>
+                                <i className="fa-solid fa-arrow-right"></i>
+                            </button>
+                            <button
+                                onClick={handleNextStep}
+                                id="continue-button"
+                                className="primary-button"
+                            >
+                                <span>{isLoading ? "Processing..." : "Continue"}</span>
+                                <MoveRight />
+                            </button>
+                        </>
                     )
                 )}
             </div>

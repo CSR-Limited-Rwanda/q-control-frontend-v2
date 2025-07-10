@@ -1,59 +1,59 @@
 @import "../styles/variables";
 
-.forms-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  justify-content: start;
+// .forms-container {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 24px;
+//   justify-content: start;
 
-  .form-steps {
-    display: flex;
-    align-items: start;
-    gap: 24px;
-    height: fit-content;
-    border: 1px solid #f1f1f1;
-    padding: 14px 12px;
-    border-radius: 12px;
+//   .form-steps {
+//     display: flex;
+//     align-items: start;
+//     gap: 24px;
+//     height: fit-content;
+//     border: 1px solid #f1f1f1;
+//     padding: 14px 12px;
+//     border-radius: 12px;
 
-    .step {
-      display: flex;
-      align-items: start;
-      gap: 6px;
+//     .step {
+//       display: flex;
+//       align-items: start;
+//       gap: 6px;
 
-      .icon {
-        color: gray;
-        font-size: 22px;
-      }
+//       .icon {
+//         color: gray;
+//         font-size: 22px;
+//       }
 
-      .step-details {
-        display: none;
-      }
-    }
+//       .step-details {
+//         display: none;
+//       }
+//     }
 
-    .current-step {
-      .step-details {
-        display: block;
-      }
+//     .current-step {
+//       .step-details {
+//         display: block;
+//       }
 
-      .icon {
-        color: $secondary-color;
-      }
-    }
-  }
+//       .icon {
+//         color: $secondary-color;
+//       }
+//     }
+//   }
 
-  .newIncidentForm {
-    .radio {
-      display: flex;
-    }
-  }
+//   .newIncidentForm {
+//     .radio {
+//       display: flex;
+//     }
+//   }
 
-  .form-buttons {
-    height: 48px;
-    // justify-self: end;
-    flex: 1;
-    background-color: white;
-  }
-}
+//   .form-buttons {
+//     height: 48px;
+//     // justify-self: end;
+//     flex: 1;
+//     background-color: white;
+//   }
+// }
 
 .pop-up {
   position: fixed;

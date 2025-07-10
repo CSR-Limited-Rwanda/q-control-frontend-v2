@@ -6,7 +6,7 @@ import CustomSelectInput from "@/components/CustomSelectInput";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import RichTexField from "@/components/forms/RichTextField";
 import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
-import { CirclePlus, X, Minus, CircleCheck } from 'lucide-react';
+import { CirclePlus, X, Minus, CircleCheck, MoveRight, MoveLeft } from 'lucide-react';
 import postDocumentHistory from "../../documentHistory/postDocumentHistory";
 import { injuresTypes } from "@/constants/constants";
 import CustomTimeInput from "@/components/CustomTimeInput";
@@ -2525,12 +2525,12 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             )}
           </form>
 
-          <div className="buttons">
+          <div className="incident-form-buttons">
             {currentStep > 1 && currentStep <= 10 ? (
               <button
                 onClick={handlePreviousStep}
                 id="back-button"
-                className="secondary-button"
+                className="incident-back-btn"
               >
                 <i className="fa-solid fa-arrow-left"></i>
                 <span>back</span>

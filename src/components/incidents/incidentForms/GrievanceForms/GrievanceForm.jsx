@@ -14,7 +14,7 @@ import CustomDatePicker from "@/components/CustomDatePicker";
 import FilesList from "../../documentHistory/FilesList";
 import mediaAPI from "@/utils/mediaApi";
 import CustomTimeInput from "@/components/CustomTimeInput";
-import { X } from "lucide-react";
+import { X, CircleCheck, MoveRight, MoveLeft } from "lucide-react";
 import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 
@@ -491,35 +491,38 @@ const GrievanceForm = ({ togglePopup }) => {
           <div className="form-steps">
             <div className={currentStep === 1 ? "step current-step" : "step"}>
               <div className="icon">
-                <i className="fa-solid fa-circle-check"></i>
+                <CircleCheck size={32} />
               </div>
               <div className="name">
                 <p className="step-name">Step 1/3</p>
+                <p className="step-details">Patient Information</p>
               </div>
             </div>
             <div className="divider"></div>
             <div className={currentStep === 2 ? "step current-step" : "step"}>
               <div className="icon">
-                <i className="fa-solid fa-circle-check"></i>
+                <CircleCheck size={32} />
               </div>
               <div className="name">
                 <p className="step-name">Step 2/3</p>
+                <p className="step-details">Complaints details</p>
               </div>
             </div>
             <div className="divider"></div>
             <div className={currentStep === 3 ? "step current-step" : "step"}>
               <div className="icon">
-                <i className="fa-solid fa-circle-check"></i>
+                <CircleCheck size={32} />
               </div>
               <div className="name">
                 <p className="step-name">Step 3/3</p>
+                <p className="step-details">Administrator details & Attachments</p>
               </div>
             </div>
           </div>
         ) : (
           ""
         )}
-        <FacilityCard />
+        {/* <FacilityCard /> */}
         <DraftPopup
           incidentString="grievance"
           incidentType="grievance_incident"
@@ -575,7 +578,7 @@ const GrievanceForm = ({ togglePopup }) => {
                 <label htmlFor="age">Age</label>
                 <input
                   onChange={(e) => setAge(e.target.value)}
-                  value={age} 
+                  value={age}
                   type="number"
                   name="age"
                   id="age"
@@ -953,10 +956,10 @@ const GrievanceForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="buttons">
+      <div className="incident-form-buttons">
         {currentStep > 1 && currentStep < 4 ? (
-          <button onClick={handlePreviousStep} className="secondary-button">
-            <i className="fa-solid fa-arrow-left"></i>
+          <button onClick={handlePreviousStep} className="incident-back-btn">
+            <MoveLeft />
             <span>back</span>
           </button>
         ) : (
@@ -970,7 +973,7 @@ const GrievanceForm = ({ togglePopup }) => {
             className="primary-button"
           >
             <span>{isLoading ? "Processing..." : "Save & Continue"}</span>
-            <i className="fa-solid fa-arrow-right"></i>
+            <MoveRight />
           </button>
         ) : currentStep === 3 ? (
           <button

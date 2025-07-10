@@ -176,29 +176,41 @@ input[type="number"]:focus {
 
   .form-steps {
     display: flex;
-    align-items: start;
-    gap: 24px;
+    justify-content: space-between;
+    gap: 10px;
     height: fit-content;
     border: 1px solid #f1f1f1;
     padding: 14px 12px;
     border-radius: 12px;
 
+    .name {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .step {
       display: flex;
-      align-items: start;
+      align-items: center;
       gap: 6px;
 
       .icon {
         color: gray;
+      }
 
-        i {
-          font-size: 22px;
-        }
+      .step-name {
+        display: none;
       }
 
       .step-details {
         display: none;
       }
+    }
+
+    .divider {
+      background-color: #EEEEEE;
+      height: 30px;
+      width: 2px;
     }
 
     .current-step {
@@ -208,6 +220,11 @@ input[type="number"]:focus {
 
       .icon {
         color: $secondary-color;
+      }
+
+      .step-name {
+        color: $secondary-color;
+        display: block;
       }
     }
   }
@@ -224,6 +241,24 @@ input[type="number"]:focus {
     flex: 1;
     background-color: white;
   }
+
+  .incident-form-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    gap: 1rem;
+    padding: 1.5rem;
+
+    button {
+      width: 200px;
+    }
+
+    .incident-back-btn {
+      background-color: #F2F2F2;
+      color: #808080;
+    }
+  }
+
 }
 
 .field {
