@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import api, {API_URL, calculateAge, cleanedData} from "@/utils/api";
+import api, { API_URL, calculateAge, cleanedData } from "@/utils/api";
 import { X, Eye, SaveAll, LoaderCircle, TextSearch } from 'lucide-react';
 import Link from "next/link";
 import RichTexField from "@/components/forms/RichTextField";
@@ -51,7 +51,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [timeOfInjury, setTimeOfInjury] = useState(
     data.time_of_injury_or_near_miss
   );
-  const [supervisorName, setSupervisorName] = useState(data.supervisor);
+
+  const [supervisorFirstName, setSupervisorFirstName] = useState(data.supervisor.first_name);
+  const [supervisorLastName, setSupervisorLastName] = useState(data.supervisor.last_name);
+
   const [doctorFirstName, setDoctorFirstName] = useState(
     data.doctor_consulted_info?.first_name
   );
@@ -73,10 +76,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [reportId, setReportID] = useState(null);
   const [witnesses, setWitnesses] = useState(
     data.witnesses.map((witness) => ({
-  
-        first_name: witness?.witness_name?.first_name,
-        last_name: witness?.witness_name?.last_name,
-     
+
+      first_name: witness?.witness_name?.first_name,
+      last_name: witness?.witness_name?.last_name,
+
     }))
   );
   const [success, setSuccess] = useState("false");
@@ -91,8 +94,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [newWitness, setNewWitness] = useState(
     data.witnesses.map((el) => {
       return {
-          first_name: el.witness_name.first_name,
-          last_name: el.witness_name.last_name,
+        first_name: el.witness_name.first_name,
+        last_name: el.witness_name.last_name,
       };
     })
   );
@@ -108,10 +111,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       setWitnesses([...witnesses, newWitness]);
 
       setNewWitness({
-      
-          first_name: "",
-          last_name: "",
-       
+
+        first_name: "",
+        last_name: "",
+
       });
 
       console.log(newWitness);
@@ -212,11 +215,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   };
   const handleModify = async (incidentStatus) => {
     const witnessesList = witnesses.map((el) => ({
-    
-        first_name: el.first_name,
-        last_name: el.last_name,
-        profile_type: "Witness"
-     
+      first_name: el.first_name,
+      last_name: el.last_name,
+      profile_type: "Witness"
+
     }));
     console.log(witnessesList);
     const incidentData = {
@@ -225,17 +227,21 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       patient_info:
         firstName && lastName
           ? {
-            
-                first_name: firstName,
-                last_name: lastName,
-                age: age,
-                date_of_birth: dateBirth,
-                profile_type: "Patient"
-            
-            }
+
+            first_name: firstName,
+            last_name: lastName,
+            age: age,
+            date_of_birth: dateBirth,
+            profile_type: "Patient"
+
+          }
           : null,
       job_title: jobTitle,
-      supervisor: supervisorName,
+      supervisor: {
+        first_name: supervisorFirstName,
+        last_name: supervisorLastName,
+        profile_type: "Supervisor",
+      },
       date_of_injury_or_near_miss: dateOfInjury,
       time_of_injury_or_near_miss: timeOfInjury,
       witnesses: witnessesList.length > 0 ? witnessesList : [],
@@ -253,13 +259,13 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       doctor_consulted_info:
         doctorFirstName && doctorLastName
           ? {
-         
-                first_name: doctorFirstName,
-                last_name: doctorLastName,
-                phone_number: doctorPhone || " ",
-                profile_type: "Physician"
-            
-            }
+
+            first_name: doctorFirstName,
+            last_name: doctorLastName,
+            phone_number: doctorPhone || " ",
+            profile_type: "Physician"
+
+          }
           : null,
 
       previous_injury: injuredBody,
@@ -287,8 +293,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error while updating the incident"
+          error.response.data.error ||
+          "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -334,7 +340,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
             <span>Add investigation</span>
             <TextSearch />
           </button>
-        
+
         )}
 
         <div className="buttons">
@@ -372,13 +378,12 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${
-                  status === "Draft"
+                className={`follow-up ${status === "Draft"
                     ? "in-progress"
                     : status === "Closed"
-                    ? "closed"
-                    : "Open"
-                }`}
+                      ? "closed"
+                      : "Open"
+                  }`}
               >
                 {status}
               </span>
@@ -467,17 +472,32 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
                 </label>
               </div>
             </div>
-            {supervisorName && (
-              <div className="supervisor flex-column field">
-                <label htmlFor="supervisorName">Supervisor</label>
-                <input
-                  onChange={(e) => setSupervisorName(e.target.value)}
-                  value={supervisorName}
-                  type="text"
-                  name="supervisorName"
-                  id="supervisorName"
-                  placeholder="Enter supervisor name"
-                />
+            {toldSupervisor && (
+              <div className="half">
+                <div className="supervisor field">
+                  <label htmlFor="supervisorName">
+                    Supervisor's first name
+                  </label>
+                  <input
+                    onChange={(e) => setSupervisorFirstName(e.target.value)}
+                    value={supervisorFirstName}
+                    type="text"
+                    name="supervisorFirstName"
+                    id="supervisorFirstName"
+                    placeholder="Enter supervisor's first name"
+                  />
+                </div>
+                <div className="supervisor field">
+                  <label htmlFor="supervisorName">Supervisor's last name</label>
+                  <input
+                    onChange={(e) => setSupervisorLastName(e.target.value)}
+                    value={supervisorLastName}
+                    type="text"
+                    name="supervisorLastName"
+                    id="supervisorLastName"
+                    placeholder="Enter supervisor's last name"
+                  />
+                </div>
               </div>
             )}
             <div className="half">
@@ -519,10 +539,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
                   onChange={(e) =>
                     setNewWitness({
                       ...newWitness,
-                    
-                        ...newWitness,
-                        first_name: e.target.value,
-                   
+
+                      ...newWitness,
+                      first_name: e.target.value,
+
                     })
                   }
                   value={newWitness?.first_name}
@@ -533,10 +553,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
                   onChange={(e) =>
                     setNewWitness({
                       ...newWitness,
-                   
-                        ...newWitness,
-                        last_name: e.target.value,
-                     
+
+                      ...newWitness,
+                      last_name: e.target.value,
+
                     })
                   }
                   value={newWitness?.last_name}
@@ -698,19 +718,19 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
               </div>
             )}
 
-            
-              <div className="field">
-                <label htmlFor="severityRating">Severity rating</label>
-                <input
-                  value={severityRating}
-                  onChange={(e) => setSeverityRating(e.target.value)}
-                  type="text"
-                  name="severityRating"
-                  id="severityRating"
-                  placeholder="Severity rating"
-                />
-              </div>
-        
+
+            <div className="field">
+              <label htmlFor="severityRating">Severity rating</label>
+              <input
+                value={severityRating}
+                onChange={(e) => setSeverityRating(e.target.value)}
+                type="text"
+                name="severityRating"
+                id="severityRating"
+                placeholder="Severity rating"
+              />
+            </div>
+
             <div className="field full">
               <h3>Supporting documents</h3>
               <FilesList documents={uploadedFiles} />
