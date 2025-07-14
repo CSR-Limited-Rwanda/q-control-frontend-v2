@@ -29,7 +29,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [savingDraft, setSavingDraft] = useState(false);
 
   const [statusType, setStatusType] = useState(data.incident_status);
-  const [status, setStatus] = useState(incident.status);
+  const [status, setStatus] = useState(incident?.status);
   const [firstName, setFirstName] = useState(
     data.patient_info?.first_name
   );
@@ -76,9 +76,9 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [reportId, setReportID] = useState(null);
   const [witnesses, setWitnesses] = useState(
     data.witnesses.map((witness) => ({
-
-      first_name: witness?.witness_name?.first_name,
-      last_name: witness?.witness_name?.last_name,
+      first_name: witness?.first_name,
+      last_name: witness?.last_name,
+      // profile_type: "Witness"
 
     }))
   );
@@ -94,8 +94,9 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [newWitness, setNewWitness] = useState(
     data.witnesses.map((el) => {
       return {
-        first_name: el.witness_name.first_name,
-        last_name: el.witness_name.last_name,
+        first_name: el.first_name,
+        last_name: el.last_name,
+        // profile_type: "Witness"
       };
     })
   );
@@ -109,12 +110,9 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       newWitness.last_name.trim() !== ""
     ) {
       setWitnesses([...witnesses, newWitness]);
-
       setNewWitness({
-
         first_name: "",
         last_name: "",
-
       });
 
       console.log(newWitness);
@@ -223,56 +221,49 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     console.log(witnessesList);
     const incidentData = {
       action: "modify",
-      incident_status: statusType,
-      patient_info:
-        firstName && lastName
-          ? {
-
+      incident_status: statusType || "Open",
+      patient_info: firstName && lastName
+        ? {
             first_name: firstName,
             last_name: lastName,
             age: age,
             date_of_birth: dateBirth,
             profile_type: "Patient"
-
           }
-          : null,
+        : null,
       job_title: jobTitle,
       supervisor: {
         first_name: supervisorFirstName,
         last_name: supervisorLastName,
-        profile_type: "Supervisor",
+        profile_type: "Supervisor"
       },
-      date_of_injury_or_near_miss: dateOfInjury,
-      time_of_injury_or_near_miss: timeOfInjury,
+      date_of_injury_or_near_miss: dateOfInjury || null,
+      time_of_injury_or_near_miss: timeOfInjury || null,
       witnesses: witnessesList.length > 0 ? witnessesList : [],
-      date_of_birth: dateBirth,
-      age: age,
       location: whereItHappened || "N/A",
       activity_at_time_of_incident: doingWhat || "N/A",
       incident_description: whatLedTo || "N/A",
       preventive_measures: DoneToPrevent || "N/A",
-      body_parts_injured: beingInjured,
-
+      body_parts_injured: beingInjured || "",
       doctor_consulted: seenDoctor,
       doctor_consulted_dated: dateSeenDoctor || null,
       doctor_consulted_time: timeSeenDoctor || null,
-      doctor_consulted_info:
-        doctorFirstName && doctorLastName
-          ? {
-
+      doctor_consulted_info: doctorFirstName && doctorLastName
+        ? {
             first_name: doctorFirstName,
             last_name: doctorLastName,
-            phone_number: doctorPhone || " ",
+            phone_number: doctorPhone || "",
             profile_type: "Physician"
-
           }
-          : null,
-
+        : null,
       previous_injury: injuredBody,
-      previous_injury_date: whenInjured,
-      status: incidentStatus,
+      previous_injury_date: whenInjured || null,
+      status: incidentStatus
     };
-    console.log(cleanedData(incidentData));
+    
+    // console.log(cleanedData(incidentData));
+    console.log("Submitting incident data", JSON.stringify(incidentData, null, 2));
+
     try {
       const response = await api.patch(
         `incidents/staff-incident/${staffIncidentId}/`,
