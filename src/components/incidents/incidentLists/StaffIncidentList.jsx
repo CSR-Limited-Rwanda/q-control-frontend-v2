@@ -12,6 +12,8 @@ import DateFormatter from "@/components/DateFormatter";
 import ModifyPageLoader from "@/components/loader";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import CustomSelectInput from "@/components/CustomSelectInput";
+import UserPermissions from "@/components/accounts/profile/userPermissions";
+import { usePermission } from "@/context/PermissionsContext";
 
 import {
   Eye,
@@ -116,10 +118,11 @@ const StaffIncidentList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/employee_incident/${incidentId}`);
+    router.push(`/incident/staff/${incidentId}`);
   };
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/employee_incident/${incidentId}/modify/`);
+    router.push(`/incident/staff/${incidentId}/update/`);
+    localStorage.setItem("staffIncidentId", incidentId)
   };
 
   const handleNonClickableColumnClick = (event) => {
