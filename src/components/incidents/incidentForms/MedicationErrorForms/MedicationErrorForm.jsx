@@ -278,6 +278,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
     const data = {
       // report_facility: checkCurrentAccount(),
       facility_id: facilityId,
+      report_facility: facilityId,
       patient: {
         first_name: firstName,
         last_name: lastName,
@@ -457,16 +458,11 @@ const MedicationErrorForm = ({ togglePopup }) => {
             current_step: currentStep,
             report_facility: checkCurrentAccount(),
             patient: {
-              user_data: {
-                first_name: firstName,
-                last_name: lastName,
-              },
-
-              profile_data: {
-                age: age,
-                date_of_birth: dateOfBirth,
-                medical_record_number: mrn,
-              },
+              first_name: firstName,
+              last_name: lastName,
+              age: age,
+              date_of_birth: dateOfBirth,
+              medical_record_number: mrn,
             },
 
             day_of_the_week: dayWeek,
