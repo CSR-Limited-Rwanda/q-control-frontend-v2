@@ -55,10 +55,8 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const [reportId, setReportID] = useState("");
   const [witnesses, setWitnesses] = useState([]);
   const [newWitness, setNewWitness] = useState({
-    user_data: {
-      first_name: "",
-      last_name: "",
-    },
+    first_name: "",
+    last_name: "",
   });
   const [success, setSuccess] = useState("false");
   const [incidentDate, setIncidentDate] = useState("");
@@ -133,17 +131,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     };
   }, []);
   const handleAddWitness = () => {
-    if (
-      newWitness.user_data.first_name.trim() &&
-      newWitness.user_data.last_name.trim() !== ""
-    ) {
+    if (newWitness.first_name.trim() && newWitness.last_name.trim() !== "") {
       setWitnesses([...witnesses, newWitness]);
 
       setNewWitness({
-        user_data: {
-          first_name: "",
-          last_name: "",
-        },
+        first_name: "",
+        last_name: "",
       });
 
       console.log(newWitness);
@@ -176,8 +169,8 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
   const handleStepOneSubmit = async () => {
     const witnessesList = witnesses.map((el) => ({
-      first_name: el.user_data.first_name,
-      last_name: el.user_data.last_name,
+      first_name: el.first_name,
+      last_name: el.last_name,
       profile_type: "Witness",
     }));
     const incidentData = {
@@ -439,10 +432,8 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
         if (localStorage.getItem("updateNewIncident") === "true") {
           const witnessesList = witnesses.map((el) => ({
-            user_data: {
-              first_name: el.user_data.first_name,
-              last_name: el.user_data.last_name,
-            },
+            first_name: el.first_name,
+            last_name: el.last_name,
           }));
           updateStepOne(
             cleanedData({
@@ -453,15 +444,11 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               patient_info:
                 firstName && lastName
                   ? {
-                      user_data: {
-                        first_name: firstName,
-                        last_name: lastName,
-                      },
-
-                      profile_data: {
-                        age: age,
-                        date_of_birth: dateBirth,
-                      },
+                      first_name: firstName,
+                      last_name: lastName,
+                      profile_type: "Patient",
+                      age: age,
+                      date_of_birth: dateBirth,
                     }
                   : null,
               job_title: jobTitle,
@@ -706,7 +693,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               {witnesses.map((witness, index) => (
                 <div className="witness field" key={index}>
                   <span>
-                    {witness.user_data.first_name} {witness.user_data.last_name}
+                    {witness.first_name} {witness.last_name}
                   </span>
                   <X
                     className="delete-witness"
@@ -725,13 +712,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
                   onChange={(e) =>
                     setNewWitness({
                       ...newWitness,
-                      user_data: {
-                        ...newWitness.user_data,
-                        first_name: e.target.value,
-                      },
+
+                      ...newWitness,
+                      first_name: e.target.value,
                     })
                   }
-                  value={newWitness.user_data.first_name}
+                  value={newWitness.first_name}
                   type="text"
                   placeholder="Enter witness first name"
                 />
@@ -739,13 +725,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
                   onChange={(e) =>
                     setNewWitness({
                       ...newWitness,
-                      user_data: {
-                        ...newWitness.user_data,
-                        last_name: e.target.value,
-                      },
+
+                      ...newWitness,
+                      last_name: e.target.value,
                     })
                   }
-                  value={newWitness.user_data.last_name}
+                  value={newWitness.last_name}
                   type="text"
                   placeholder="Enter witness last name"
                 />
