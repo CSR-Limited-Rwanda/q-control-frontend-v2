@@ -69,11 +69,13 @@ const DashboardLayout = ({ children }) => {
       icon: <Users size={24} />,
       label: "Account Management",
       href: "/accounts",
+      matchPaths: ["/accounts"],
     },
     {
       icon: <Dumbbell size={24} />,
       label: "Incident Tracking",
       href: "/incidents",
+      matchPaths: ["/incident", "/incidents"],
     },
     // {
     //     icon: <Boxes size={20} />,
@@ -108,20 +110,84 @@ const DashboardLayout = ({ children }) => {
     setIsPopupOpen(!isPopupOpen);
   };
 
-  const MenuItem = ({ item, index }) => {
+  // const MenuItem = ({ item, index }) => {
+  //   const hasDropdown = item.items?.length > 0;
+  //   const isActive = pathname === item.href || activeDropdown === index;
+
+  //   return (
+  //     <div className="menu-item-container">
+  //       <a
+  //         href={!hasDropdown ? item.href : "#"}
+  //         className={`menu-item ${isActive ? "active" : ""}`}
+  //         // className="menu-item active"
+  //         onClick={(e) => {
+  //           if (hasDropdown) {
+  //             e.preventDefault();
+  //             toggleDropdown(index);
+  //           }
+  //         }}
+  //       >
+  //         <span className="menu-item-icon">{item.icon}</span>
+  //         {!isSidebarCollapsed && (
+  //           <>
+  //             <span className="menu-item-label">{item.label}</span>
+  //             {hasDropdown && (
+  //               <ChevronDown
+  //                 size={16}
+  //                 className={`menu-item-arrow ${isActive ? "rotate" : ""}`}
+  //               />
+  //             )}
+  //           </>
+  //         )}
+  //       </a>
+  //       {hasDropdown && !isSidebarCollapsed && isActive && (
+  //         <div className="menu-dropdown">
+  //           {item.items.map((subItem, subIndex) => (
+  //             <a
+  //               key={subIndex}
+  //               href={subItem.href}
+  //               className="menu-dropdown-item"
+  //             >
+  //               {subItem.label}
+  //             </a>
+  //           ))}
+  //         </div>
+  //       )}
+  //     </div>
+  //   );
+  // };
+
+  // useEffect(() => {});
+
+  const MenuItem = ({ item }) => {
     const hasDropdown = item.items?.length > 0;
-    const isActive = pathname === item.href || activeDropdown === index;
+
+    const normalizePath = (path) => path.replace(/\/+$/, "");
+    const currentPath = normalizePath(pathname);
+
+    // Use matchPaths if defined, otherwise fall back to href
+    const matchPaths = item.matchPaths || [item.href];
+
+    const isActive = matchPaths.some(
+      (matchPath) =>
+        currentPath === normalizePath(matchPath) ||
+        currentPath.startsWith(`${normalizePath(matchPath)}/`)
+    );
+
+    const isDropdownOpen =
+      hasDropdown &&
+      item.items.some((subItem) =>
+        currentPath.startsWith(normalizePath(subItem.href))
+      );
 
     return (
       <div className="menu-item-container">
         <a
           href={!hasDropdown ? item.href : "#"}
           className={`menu-item ${isActive ? "active" : ""}`}
-          // className="menu-item active"
           onClick={(e) => {
             if (hasDropdown) {
               e.preventDefault();
-              toggleDropdown(index);
             }
           }}
         >
@@ -132,30 +198,37 @@ const DashboardLayout = ({ children }) => {
               {hasDropdown && (
                 <ChevronDown
                   size={16}
-                  className={`menu-item-arrow ${isActive ? "rotate" : ""}`}
+                  className={`menu-item-arrow ${
+                    isDropdownOpen ? "rotate" : ""
+                  }`}
                 />
               )}
             </>
           )}
         </a>
-        {hasDropdown && !isSidebarCollapsed && isActive && (
+
+        {hasDropdown && !isSidebarCollapsed && isDropdownOpen && (
           <div className="menu-dropdown">
-            {item.items.map((subItem, subIndex) => (
-              <a
-                key={subIndex}
-                href={subItem.href}
-                className="menu-dropdown-item"
-              >
-                {subItem.label}
-              </a>
-            ))}
+            {item.items.map((subItem, subIndex) => {
+              const isSubActive = currentPath === normalizePath(subItem.href);
+              return (
+                <a
+                  key={subIndex}
+                  href={subItem.href}
+                  className={`menu-dropdown-item ${
+                    isSubActive ? "active" : ""
+                  }`}
+                >
+                  {subItem.label}
+                </a>
+              );
+            })}
           </div>
         )}
       </div>
     );
   };
 
-  useEffect(() => {});
   return isAuth ? (
     <div className="dashboard">
       {/* Sidebar */}

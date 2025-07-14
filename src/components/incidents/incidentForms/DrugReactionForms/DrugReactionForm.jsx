@@ -97,6 +97,9 @@ const DrugReactionForm = ({ togglePopup }) => {
   const [fdaReported, setFdaReported] = useState(false);
   const [drugReactionData, setDrugReactionData] = useState();
   const [popupOpen, setPopupOpen] = useState(false);
+  const [facilityId, setFacilityId] = useState(
+    localStorage.getItem("facilityId")
+  );
 
   useEffect(() => {
     currentStepRef.current = currentStep;
@@ -361,7 +364,8 @@ const DrugReactionForm = ({ togglePopup }) => {
         drugReactionData = {
           current_step: currentStep,
           patient_type: victimType,
-          facility: checkCurrentAccount(),
+          facility: facilityId,
+          report_facility: facilityId,
           patient_name: {
             first_name: firstName,
             last_name: lastName,

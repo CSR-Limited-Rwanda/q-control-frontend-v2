@@ -66,6 +66,7 @@ const StaffIncidentList = () => {
 
   const [openAction, setOpenAction] = useState(false);
   const [openActionIndex, setOpenActionIndex] = useState("");
+
   const router = useRouter();
 
   const [data, setData] = useState([]); // To hold the table data // To hold filtered data
@@ -140,12 +141,12 @@ const StaffIncidentList = () => {
         (item.name && item.name.toLowerCase().includes(string.toLowerCase())) ||
         (item.id &&
           item.id.toString().toLowerCase().includes(string.toLowerCase())) ||
-        (item.patient_info?.user?.first_name &&
-          item.patient_info?.user?.first_name
+        (item.patient_info?.first_name &&
+          item.patient_info?.first_name
             .toLowerCase()
             .includes(string.toLowerCase())) ||
-        (item.patient_info?.user?.last_name &&
-          item.patient_info?.user?.last_name
+        (item.patient_info?.last_name &&
+          item.patient_info?.last_name
             .toLowerCase()
             .includes(string.toLowerCase()))
     );
@@ -498,8 +499,8 @@ const StaffTable = ({
 
     const sortByFacilityName = (field) => {
       return [...items].sort((a, b) => {
-        const nameA = a.patient_info?.user?.first_name || "";
-        const nameB = b.patient_info?.user?.first_name || "";
+        const nameA = a.patient_info?.first_name || "";
+        const nameB = b.patient_info?.first_name || "";
         const result = nameA.localeCompare(nameB);
         return direction === "asc" ? result : -result;
       });
@@ -602,9 +603,9 @@ const StaffTable = ({
               <td>{employee.original_report || employee.id} </td>
               <td>{employee.report_facility?.name || "Not provided"}</td>
               <td>
-                {employee.patient_info?.user?.last_name ||
-                employee.patient_info?.user?.first_name
-                  ? `${employee.patient_info?.user?.last_name} ${employee.patient_info?.user?.first_name}`
+                {employee.patient_info?.last_name ||
+                employee.patient_info?.first_name
+                  ? `${employee.patient_info?.last_name} ${employee.patient_info?.first_name}`
                   : "Not provided"}
               </td>
 
