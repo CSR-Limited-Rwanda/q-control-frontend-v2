@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-// import "../../assets/css/main/main.css";
 import api, { API_URL, exportExcel } from "@/utils/api";
 
-// import TableActionsPopup from "../general/popups/tableActionPopup";
-// import { usePermission } from "../../contexts/permissionsContext";
-// import NoAccessPage from "../../pages/errorPages/401";
-
 import { useRouter } from "next/navigation";
-// import SliceText from "../general/sliceText";
 import DateFormatter from "@/components/DateFormatter";
 import ModifyPageLoader from "@/components/loader";
 import CustomDatePicker from "@/components/CustomDatePicker";
@@ -26,20 +20,6 @@ import {
   X,
 } from "lucide-react";
 
-const handleSearch = (items, searchString) => {
-  if (searchString.length > 2) {
-    const results = items.filter((item) => {
-      return (
-        item.patient.toLowerCase().includes(searchString.toLowerCase()) ||
-        item.incident_type.toLowerCase().includes(searchString.toLowerCase()) ||
-        item.follow_up.toLowerCase().includes(searchString.toLowerCase())
-      );
-    });
-    return results;
-  }
-  return [];
-};
-
 function formatDate(dateString) {
   const date = new Date(dateString);
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -49,34 +29,48 @@ function formatDate(dateString) {
 }
 
 const StaffIncidentList = () => {
-  //   const permission = usePermission();
   const [errorFetching, setErrorFetching] = useState("");
   const [isFetching, setIsFetching] = useState(true);
   const [incidentData, setIncidentData] = useState([]);
-  const [searchResults, setSearchResults] = useState("");
-  const [resultsFound, setResultsFound] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [filterByDate, setFilterByDate] = useState(false);
-
-  const [selectedItems, setSelectedItems] = useState([]);
   const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
-
-  const [openAction, setOpenAction] = useState(false);
-  const [openActionIndex, setOpenActionIndex] = useState("");
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [openFilters, setOpenFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   const router = useRouter();
 
-  const [data, setData] = useState([]); // To hold the table data // To hold filtered data
+  const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
-
     status: "",
   });
-  const [openFilters, setOpenFilters] = useState(false);
 
-  // Handle filter application
+  // Calculate pagination data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentIncidentData = incidentData.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const currentSearchResults = searchResults.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(
+    (isSearching ? searchResults.length : incidentData.length) / itemsPerPage
+  );
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   const applyFilters = () => {
     const newFilteredData = data.filter((item) => {
       const incidentDate = new Date(item.date_of_injury_or_near_miss);
@@ -91,34 +85,39 @@ const StaffIncidentList = () => {
 
       return (
         withinDateRange &&
-        (!filters.status.toLowerCase() ||
-          item.status.toLowerCase() === filters.status.toLowerCase())
+        (!filters.status?.toLowerCase() ||
+          item.status?.toLowerCase() === filters.status?.toLowerCase())
       );
     });
-    console.log("filters", filters);
-    console.log("new filtered data", newFilteredData);
-    setIncidentData(newFilteredData); // Update filtered data state
+
+    if (newFilteredData.length === 0) {
+      setIsSearchingTheDatabase(true);
+      setTimeout(() => {
+        setIsSearchingTheDatabase(false);
+      }, 3000);
+    }
+    setIncidentData(newFilteredData);
+    setIsSearching(true);
+    setCurrentPage(1); // Reset to first page when filters are applied
     toggleOpenFilters();
   };
 
-  // Clear filters
   const clearFilters = () => {
     setFilters({
       start_date: "",
       end_date: "",
-
       status: "",
     });
-    setIncidentData(data); // Reset filtered data to all data
-  };
-  const toggleAction = (index) => {
-    setOpenActionIndex(index);
-    setOpenAction(!openAction);
+    setIncidentData(data);
+    setIsSearching(false);
+    setCurrentPage(1); // Reset to first page when filters are cleared
+    toggleOpenFilters();
   };
 
   const handleRowClick = (incidentId) => {
     router.push(`/incident/employee_incident/${incidentId}`);
   };
+
   const navigateToModify = (incidentId) => {
     router.push(`/incident/employee_incident/${incidentId}/modify/`);
   };
@@ -147,46 +146,16 @@ const StaffIncidentList = () => {
             .toLowerCase()
             .includes(string.toLowerCase()))
     );
-    if (results.length < 1) {
+    if (results.length === 0) {
       setIsSearchingTheDatabase(true);
       setTimeout(() => {
         setIsSearchingTheDatabase(false);
       }, 3000);
     }
-    console.log(string, incidentData, results);
     setSearchResults(results);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
-  useEffect(() => {
-    const fetchIncidentData = async () => {
-      try {
-        const response = await api.get(`${API_URL}/incidents/staff-incident/`);
-        if (response.status === 200) {
-          // Format the dates before setting the state
-          // console.log(response.data)
-          const formattedData = response.data.map((item) => ({
-            ...item,
-            date_of_injury_or_near_miss: formatDate(
-              item.date_of_injury_or_near_miss
-            ),
-          }));
-          setIncidentData(formattedData);
-          setIsFetching(false);
-          setData(formattedData);
-          console.log(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          setErrorFetching(error.response.data.error);
-        } else {
-          setErrorFetching("An error occurred while fetching incident data.");
-        }
-        setIsFetching(false);
-        console.log(error);
-      }
-    };
-    fetchIncidentData();
-  }, []);
   const handleSelectedItems = (item) => {
     if (!selectedItems.includes(item)) {
       setSelectedItems([...selectedItems, item]);
@@ -198,12 +167,47 @@ const StaffIncidentList = () => {
   };
 
   const handleSelectAll = (items) => {
-    if (selectedItems !== items) {
-      setSelectedItems(items);
+    const allSelected = items.every((item) =>
+      selectedItems.some((selected) => selected.id === item.id)
+    );
+    if (!allSelected) {
+      setSelectedItems([...new Set([...selectedItems, ...items])]);
     } else {
-      setSelectedItems([]);
+      setSelectedItems(
+        selectedItems.filter(
+          (selected) => !items.some((item) => item.id === selected.id)
+        )
+      );
     }
   };
+
+  useEffect(() => {
+    const fetchIncidentData = async () => {
+      try {
+        const response = await api.get(`${API_URL}/incidents/staff-incident/`);
+        if (response.status === 200) {
+          const formattedData = response.data.map((item) => ({
+            ...item,
+            date_of_injury_or_near_miss: formatDate(
+              item.date_of_injury_or_near_miss
+            ),
+          }));
+          setIncidentData(formattedData);
+          setData(formattedData);
+          setIsFetching(false);
+        }
+      } catch (error) {
+        if (error.response?.data?.error) {
+          setErrorFetching(error.response.data.error);
+        } else {
+          setErrorFetching("An error occurred while fetching incident data.");
+        }
+        setIsFetching(false);
+      }
+    };
+    fetchIncidentData();
+  }, []);
+
   return isFetching ? (
     <ModifyPageLoader />
   ) : (
@@ -218,8 +222,8 @@ const StaffIncidentList = () => {
             <div className="tab-header">
               <div className="title-container-action">
                 <div className="title-container">
-                  <h2 className="title">Staff Incident Report</h2>
-                  <p>{incidentData.length} incidents available</p>
+                  <h2 className="title">Staff Incident Tracking List</h2>
+                  <p>{incidentData.length} incident(s) available</p>
                 </div>
               </div>
 
@@ -291,16 +295,12 @@ const StaffIncidentList = () => {
                   ""
                 )}
                 <input
-                  onChange={(e) => {
-                    search(e.target.value);
-                  }}
-                  // value={searchString}
+                  onChange={(e) => search(e.target.value)}
                   type="search"
                   name="systemSearch"
                   id="systemSearch"
                   placeholder="Search by facility, staff name"
                 />
-
                 {selectedItems.length > 0 ? (
                   <button
                     onClick={() =>
@@ -308,7 +308,6 @@ const StaffIncidentList = () => {
                     }
                     className="secondary-button"
                   >
-                    {" "}
                     <File /> <span>Export</span>
                   </button>
                 ) : (
@@ -332,16 +331,15 @@ const StaffIncidentList = () => {
                     <div className="searching_database">
                       <p>Searching database</p>
                     </div>
-                  ) : searchResults && searchResults.length > 0 ? (
+                  ) : currentSearchResults.length > 0 ? (
                     <div className="results-table">
                       <div className="results-count">
                         <span className="count">{searchResults.length}</span>{" "}
                         result(s) found
                       </div>
-
                       <div>
                         <StaffTable
-                          incidentData={searchResults}
+                          incidentData={currentSearchResults}
                           handleRowClick={handleRowClick}
                           selectedItems={selectedItems}
                           handleSelectedItems={handleSelectedItems}
@@ -350,6 +348,7 @@ const StaffIncidentList = () => {
                             handleNonClickableColumnClick
                           }
                           setIncidentData={setSearchResults}
+                          navigateToModify={navigateToModify}
                         />
                         <div className="mobile-table">
                           <button
@@ -357,24 +356,53 @@ const StaffIncidentList = () => {
                             type="button"
                             className="tertiary-button"
                           >
-                            {" "}
-                            {selectedItems === searchResults ? (
+                            {searchResults.every((item) =>
+                              selectedItems.some(
+                                (selected) => selected.id === item.id
+                              )
+                            ) ? (
                               <SquareCheck />
                             ) : (
                               <Square />
                             )}{" "}
                             Select all
                           </button>
-
-                          {searchResults &&
-                            searchResults.map((incident, index) => (
-                              <IncidentTableCard
-                                incident={incident}
-                                handleRowClick={handleRowClick}
-                                handleSelectedItems={handleSelectedItems}
-                                selectedItems={selectedItems}
-                              />
-                            ))}
+                          {currentSearchResults.map((incident, index) => (
+                            <IncidentTableCard
+                              key={index}
+                              incident={incident}
+                              handleRowClick={handleRowClick}
+                              handleSelectedItems={handleSelectedItems}
+                              selectedItems={selectedItems}
+                            />
+                          ))}
+                        </div>
+                        <div className="pagination-controls">
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            Prev
+                          </button>
+                          {pageNumbers.map((number) => (
+                            <button
+                              key={number}
+                              className={`pagination-button ${
+                                currentPage === number ? "active" : ""
+                              }`}
+                              onClick={() => handlePageChange(number)}
+                            >
+                              {number}
+                            </button>
+                          ))}
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -387,7 +415,7 @@ const StaffIncidentList = () => {
               ) : (
                 <>
                   <StaffTable
-                    incidentData={incidentData}
+                    incidentData={currentIncidentData}
                     handleNonClickableColumnClick={
                       handleNonClickableColumnClick
                     }
@@ -404,25 +432,53 @@ const StaffIncidentList = () => {
                       type="button"
                       className="tertiary-button"
                     >
-                      {" "}
-                      {selectedItems === incidentData ? (
+                      {incidentData.every((item) =>
+                        selectedItems.some(
+                          (selected) => selected.id === item.id
+                        )
+                      ) ? (
                         <SquareCheck />
                       ) : (
                         <Square />
                       )}{" "}
                       Select all
                     </button>
-
-                    {incidentData &&
-                      incidentData.map((incident, index) => (
-                        <IncidentTableCard
-                          key={index}
-                          incident={incident}
-                          handleRowClick={handleRowClick}
-                          handleSelectedItems={handleSelectedItems}
-                          selectedItems={selectedItems}
-                        />
-                      ))}
+                    {currentIncidentData.map((incident, index) => (
+                      <IncidentTableCard
+                        key={index}
+                        incident={incident}
+                        handleRowClick={handleRowClick}
+                        handleSelectedItems={handleSelectedItems}
+                        selectedItems={selectedItems}
+                      />
+                    ))}
+                  </div>
+                  <div className="pagination-controls">
+                    <button
+                      className="pagination-button"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      Prev
+                    </button>
+                    {pageNumbers.map((number) => (
+                      <button
+                        key={number}
+                        className={`pagination-button ${
+                          currentPage === number ? "active" : ""
+                        }`}
+                        onClick={() => handlePageChange(number)}
+                      >
+                        {number}
+                      </button>
+                    ))}
+                    <button
+                      className="pagination-button"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
                   </div>
                 </>
               )}
@@ -434,8 +490,6 @@ const StaffIncidentList = () => {
   );
 };
 
-export default StaffIncidentList;
-
 const StaffTable = ({
   incidentData,
   handleNonClickableColumnClick,
@@ -446,7 +500,6 @@ const StaffTable = ({
   handleSelectedItems,
   setIncidentData,
 }) => {
-  //   const permission = usePermission();
   const [sortDesc, setSortDesc] = useState(false);
   const [nameAZ, setNameAZ] = useState(false);
   const [dateRecent, setDateRecent] = useState(false);
@@ -520,40 +573,43 @@ const StaffTable = ({
       case "datetime":
         return sortByDateTime(field);
       default:
-        return items; // Return unsorted if the sortBy criteria doesn't match
+        return items;
     }
   };
+
   return (
     <table>
       <thead>
         <tr>
           <th>
             <div onClick={() => handleSelectAll(incidentData)}>
-              {" "}
-              {selectedItems === incidentData ? <SquareCheck /> : <Square />}
+              {incidentData.every((item) =>
+                selectedItems.some((selected) => selected.id === item.id)
+              ) ? (
+                <SquareCheck />
+              ) : (
+                <Square />
+              )}
             </div>
           </th>
-
           <th>No</th>
           <th className="sort-cell">
-            ID{" "}
+            ID
             <SortByNumberIcon
               setSortDesc={setSortDesc}
               handleSortById={handleSortById}
               sortDesc={sortDesc}
-            />{" "}
+            />
           </th>
           <th>Facility</th>
           <th className="sort-cell">
-            Staff name{" "}
+            Staff name
             <SortNameIcon
               handleSortById={handleSortByName}
               sortDesc={nameAZ}
               setSortDesc={setNameAZ}
-            />{" "}
+            />
           </th>
-
-          {/* <th>Brief description of incident & Type of injury</th> */}
           <th>Claims Notified</th>
           <th className="sort-cell">
             Injury Date & Time
@@ -563,13 +619,11 @@ const StaffTable = ({
               sortDesc={dateRecent}
             />
           </th>
-          {/* <th>Claim </th> */}
-          <th>Claim contact & PH </th>
+          <th>Claim contact & PH</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
-
       <tbody>
         {incidentData.length > 0 ? (
           incidentData.map((employee, index) => (
@@ -582,6 +636,9 @@ const StaffTable = ({
                 )
               }
               key={index}
+              className={`table-card ${
+                selectedItems.includes(employee) ? "selected" : ""
+              }`}
             >
               <td>
                 <div
@@ -595,9 +652,8 @@ const StaffTable = ({
                   )}
                 </div>
               </td>
-
               <td>{index + 1}</td>
-              <td>{employee.original_report || employee.id} </td>
+              <td>{employee.original_report || employee.id}</td>
               <td>{employee.report_facility?.name || "Not provided"}</td>
               <td>
                 {employee.patient_info?.last_name ||
@@ -605,31 +661,17 @@ const StaffTable = ({
                   ? `${employee.patient_info?.last_name} ${employee.patient_info?.first_name}`
                   : "Not provided"}
               </td>
-
-              {/* <td>
-                            {(
-                              <SliceText
-                                text={employee.incident_description}
-                                maxLength={25}
-                              />
-                            ) || "-"}
-                          </td> */}
               <td>{employee.claim || "Not Specified"}</td>
               <td>
-                {(
-                  <div>
-                    <DateFormatter
-                      dateString={employee.date_of_injury_or_near_miss}
-                    />
-                    ,&nbsp;{employee.time_of_injury_or_near_miss}
-                  </div>
-                ) || "-"}
+                <div>
+                  <DateFormatter
+                    dateString={employee.date_of_injury_or_near_miss}
+                  />
+                  , {employee.time_of_injury_or_near_miss || "-"}
+                </div>
               </td>
               <td>{employee.claim || "Not Specified"}</td>
-              {/* <td>{employee.claim || "Not Specified"}</td> */}
-              {/* header add - claims */}
               <td>
-                {" "}
                 <p
                   className={`follow-up ${
                     employee.status === "Draft"
@@ -642,25 +684,6 @@ const StaffTable = ({
                   {employee.status || "Not specified"}
                 </p>
               </td>
-              {/* <td
-                            onClick={() => toggleAction(index)}
-                            className="action-col"
-                          >
-                            <MoreHorizontalSquare01Icon
-                              size={24}
-                              variant={"stroke"}
-                            />
-                            {openAction && openActionIndex === index ? (
-                              <TableActionsPopup
-                                incidentId={employee.id}
-                                detailPageLink={"/incident/employee_incident"}
-                                deleteAPI={""}
-                                editPageLink={""}
-                              />
-                            ) : (
-                              ""
-                            )}
-                          </td> */}
               <td
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
@@ -676,7 +699,6 @@ const StaffTable = ({
                       )
                     }
                   />
-
                   <Eye
                     size={20}
                     onClick={() =>
@@ -693,7 +715,7 @@ const StaffTable = ({
           ))
         ) : (
           <tr>
-            <td>No data found</td>
+            <td colSpan="10">No data found</td>
           </tr>
         )}
       </tbody>
@@ -703,14 +725,16 @@ const StaffTable = ({
 
 const IncidentTableCard = ({
   incident,
-  items,
   handleRowClick,
   handleSelectedItems,
   selectedItems,
 }) => {
-  //   const permission = usePermission();
   return (
-    <div className="table-card">
+    <div
+      className={`table-card ${
+        selectedItems.includes(incident) ? "selected" : ""
+      }`}
+    >
       <div className="card-header">
         <div className="id-number">
           <div onClick={() => handleSelectedItems(incident)} className="icon">
@@ -720,11 +744,9 @@ const IncidentTableCard = ({
               <Square />
             )}
           </div>
-
           <span>ID</span>
-          <span>{incident.original_report || incident.id} </span>
+          <span>{incident.original_report || incident.id}</span>
         </div>
-
         <div
           onClick={() =>
             handleRowClick(
@@ -737,7 +759,6 @@ const IncidentTableCard = ({
           <span>View more</span>
         </div>
       </div>
-      {items}
       <div className="card-content-items">
         <div className="item">
           <label htmlFor="">Facility: </label>
@@ -745,21 +766,22 @@ const IncidentTableCard = ({
         </div>
         <div className="item">
           <label htmlFor="">Staff Name: </label>
-          <span>{incident?.name || "Not provided"}</span>
+          <span>
+            {incident.patient_info?.last_name ||
+            incident.patient_info?.first_name
+              ? `${incident.patient_info?.last_name} ${incident.patient_info?.first_name}`
+              : "Not provided"}
+          </span>
         </div>
-
         <div className="item">
           <label htmlFor="">Injury Date & Time: </label>
           <span>
-            {" "}
-            {(
-              <span>
-                <DateFormatter
-                  dateString={incident?.date_of_injury_or_near_miss}
-                />
-                , &nbsp; {incident?.time_of_injury_or_near_miss}
-              </span>
-            ) || "-"}
+            <span>
+              <DateFormatter
+                dateString={incident?.date_of_injury_or_near_miss}
+              />
+              , {incident?.time_of_injury_or_near_miss || "-"}
+            </span>
           </span>
         </div>
         <div className="item">
@@ -770,7 +792,6 @@ const IncidentTableCard = ({
           <label htmlFor="">Claims contact & PH: </label>
           <span>{incident?.claim || "Not provided"}</span>
         </div>
-
         <div className="item">
           <label htmlFor="">Status: </label>
           <span
@@ -788,47 +809,6 @@ const IncidentTableCard = ({
       </div>
     </div>
   );
-};
-
-const handleSorting = (items, sortBy, direction = "asc", field) => {
-  console.log(items);
-  console.log("sorting items:", sortBy, direction, field);
-
-  const sortByNumber = (field) => {
-    return [...items].sort((a, b) => {
-      const result = a.id - b.id;
-      return direction === "asc" ? result : -result;
-    });
-  };
-
-  const sortByFacilityName = (field) => {
-    return [...items].sort((a, b) => {
-      const nameA = a.patient_visitor?.first_name || "";
-      const nameB = b.patient_visitor?.first_name || "";
-      const result = nameA.localeCompare(nameB);
-      return direction === "asc" ? result : -result;
-    });
-  };
-
-  const sortByDateTime = (field) => {
-    return [...items].sort((a, b) => {
-      const dateA = new Date(a.incident_date);
-      const dateB = new Date(b.incident_date);
-      const result = dateA - dateB;
-      return direction === "asc" ? result : -result;
-    });
-  };
-
-  switch (sortBy) {
-    case "number":
-      return sortByNumber(field);
-    case "name":
-      return sortByFacilityName(field);
-    case "datetime":
-      return sortByDateTime(field);
-    default:
-      return items; // Return unsorted if the sortBy criteria doesn't match
-  }
 };
 
 export const SortByNumberIcon = ({ handleSortById, sortDesc, setSortDesc }) => {
@@ -870,3 +850,5 @@ export const SortIcon = ({ sort }) => {
     </div>
   );
 };
+
+export default StaffIncidentList;

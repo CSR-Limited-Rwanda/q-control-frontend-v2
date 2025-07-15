@@ -2,13 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import api, { API_URL, exportExcel } from "@/utils/api";
 
-// import TableActionsPopup from "../general/popups/tableActionPopup";
-// import {
-//   useDepartments,
-//   usePermission,
-// } from "../../contexts/permissionsContext";
-// import NoAccessPage from "../../pages/errorPages/401";
-
 import {
   Eye,
   File,
@@ -50,28 +43,44 @@ const PatientVisitorGrievanceList = () => {
   const [errorFetching, setErrorFetching] = useState("");
   const [isFetching, setIsFetching] = useState(true);
   const [grievanceData, setGrievanceData] = useState([]);
-
   const [searchResults, setSearchResults] = useState([]);
   const [resultsFound, setResultsFound] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filterByDate, setFilterByDate] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
-
   const [selectedItems, setSelectedItems] = useState([]);
   const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
-
   const [openAction, setOpenAction] = useState(false);
   const [openActionIndex, setOpenActionIndex] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
   const router = useRouter();
 
-  const [data, setData] = useState([]); // To hold the table data // To hold filtered data
+  const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
     status: "",
   });
   const [openFilters, setOpenFilters] = useState(false);
+
+  // Calculate pagination data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentGrievanceData = grievanceData.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const currentSearchResults = searchResults.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(
+    (isSearching ? searchResults.length : grievanceData.length) / itemsPerPage
+  );
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const toggleOpenFilters = () => {
     setOpenFilters(!openFilters);
@@ -96,13 +105,20 @@ const PatientVisitorGrievanceList = () => {
   };
 
   const handleSelectAll = (items) => {
-    if (selectedItems !== items) {
-      setSelectedItems(items);
+    const allSelected = items.every((item) =>
+      selectedItems.some((selected) => selected.id === item.id)
+    );
+    if (!allSelected) {
+      setSelectedItems([...new Set([...selectedItems, ...items])]);
     } else {
-      setSelectedItems([]);
+      setSelectedItems(
+        selectedItems.filter(
+          (selected) => !items.some((item) => item.id === selected.id)
+        )
+      );
     }
   };
-  // Handle filter application
+
   const applyFilters = () => {
     const newFilteredData = data.filter((item) => {
       const incidentDate = new Date(item.date);
@@ -121,14 +137,12 @@ const PatientVisitorGrievanceList = () => {
           item.status.toLowerCase() === filters.status.toLowerCase())
       );
     });
-    console.log("filters", filters);
-    console.log("new filtered data", newFilteredData);
     setSearchResults(newFilteredData);
-    setGrievanceData(newFilteredData); // Update filtered data state
+    setGrievanceData(newFilteredData);
+    setCurrentPage(1); // Reset to first page when filters are applied
     toggleOpenFilters();
   };
 
-  // Clear filters
   const clearFilters = () => {
     setFilters({
       start_date: "",
@@ -136,12 +150,15 @@ const PatientVisitorGrievanceList = () => {
       status: "",
     });
     setIsSearching(false);
-    setGrievanceData(data); // Reset filtered data to all data
+    setGrievanceData(data);
+    setCurrentPage(1); // Reset to first page when filters are cleared
     toggleOpenFilters();
   };
+
   const handleRowClick = (incidentId) => {
     router.push(`/incident/grievance/${incidentId}`);
   };
+
   const navigateToModify = (incidentId) => {
     router.push(`/incident/grievance/${incidentId}/modify/`);
   };
@@ -154,6 +171,7 @@ const PatientVisitorGrievanceList = () => {
     setOpenActionIndex(index);
     setOpenAction(!openAction);
   };
+
   const toggleFilterByDate = () => {
     setFilterByDate(!filterByDate);
   };
@@ -181,6 +199,11 @@ const PatientVisitorGrievanceList = () => {
       }, 3000);
     }
     setSearchResults(results);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   useEffect(() => {
@@ -193,12 +216,11 @@ const PatientVisitorGrievanceList = () => {
             date: formatDate(item.date),
           }));
           setGrievanceData(formattedData);
-          setIsFetching(false);
           setData(formattedData);
-          console.log(response.data);
+          setIsFetching(false);
         }
       } catch (error) {
-        if (error.response.data.error) {
+        if (error.response?.data?.error) {
           setErrorFetching(error.response.data.error);
           setIsFetching(false);
         } else {
@@ -208,7 +230,6 @@ const PatientVisitorGrievanceList = () => {
       }
     };
     fetchGrievanceData();
-    setIsFetching(false);
   }, []);
 
   return isFetching ? (
@@ -226,8 +247,8 @@ const PatientVisitorGrievanceList = () => {
               <div className="tab-header">
                 <div className="title-container-action">
                   <div className="title-container">
-                    <h2 className="title">Grievance List</h2>
-                    <p>{grievanceData.length} incidents available</p>
+                    <h2 className="title">Grievance Tracking List</h2>
+                    <p>{grievanceData.length} incident(s) available</p>
                   </div>
                 </div>
               </div>
@@ -244,7 +265,7 @@ const PatientVisitorGrievanceList = () => {
 
                 <div
                   onClick={() => setActiveTab("drafts")}
-                  className={`drafts tracking-tab  ${
+                  className={`drafts tracking-tab ${
                     activeTab === "drafts" ? "active" : ""
                   }`}
                 >
@@ -330,7 +351,6 @@ const PatientVisitorGrievanceList = () => {
                       onChange={(e) => {
                         search(e.target.value);
                       }}
-                      // value={searchString}
                       type="search"
                       name="systemSearch"
                       id="systemSearch"
@@ -344,8 +364,7 @@ const PatientVisitorGrievanceList = () => {
                         }
                         className="secondary-button"
                       >
-                        {" "}
-                        <FileExportIcon /> <span>Export</span>
+                        <File /> <span>Export</span>
                       </button>
                     ) : (
                       <button
@@ -366,7 +385,7 @@ const PatientVisitorGrievanceList = () => {
                           <div className="searching_database">
                             <p>Searching database</p>
                           </div>
-                        ) : searchResults && searchResults.length > 0 ? (
+                        ) : currentSearchResults.length > 0 ? (
                           <div className="results-table">
                             <div className="results-count">
                               <span className="count">
@@ -374,10 +393,9 @@ const PatientVisitorGrievanceList = () => {
                               </span>{" "}
                               result(s) found
                             </div>
-
                             <>
                               <GrievanceTable
-                                incidentData={searchResults}
+                                incidentData={currentSearchResults}
                                 handleNonClickableColumnClick={
                                   handleNonClickableColumnClick
                                 }
@@ -388,32 +406,66 @@ const PatientVisitorGrievanceList = () => {
                                 handleSelectAll={handleSelectAll}
                                 handleSelectedItems={handleSelectedItems}
                               />
-
                               <div className="mobile-table">
                                 <button
-                                  onClick={() => handleSelectAll(grievanceData)}
+                                  onClick={() => handleSelectAll(searchResults)}
                                   type="button"
                                   className="tertiary-button"
                                 >
-                                  {" "}
-                                  {selectedItems === searchResults ? (
+                                  {searchResults.every((item) =>
+                                    selectedItems.some(
+                                      (selected) => selected.id === item.id
+                                    )
+                                  ) ? (
                                     <SquareCheck />
                                   ) : (
                                     <Square />
                                   )}{" "}
                                   Select all
                                 </button>
-
-                                {searchResults.map((grievance, index) => (
-                                  <IncidentTableCard
-                                    key={index}
-                                    incident={grievance}
-                                    navigateToModify={navigateToModify}
-                                    handleRowClick={handleRowClick}
-                                    selectedItems={selectedItems}
-                                    handleSelectedItems={handleSelectedItems}
-                                  />
+                                {currentSearchResults.map(
+                                  (grievance, index) => (
+                                    <IncidentTableCard
+                                      key={index}
+                                      incident={grievance}
+                                      navigateToModify={navigateToModify}
+                                      handleRowClick={handleRowClick}
+                                      selectedItems={selectedItems}
+                                      handleSelectedItems={handleSelectedItems}
+                                    />
+                                  )
+                                )}
+                              </div>
+                              <div className="pagination-controls">
+                                <button
+                                  className="pagination-button"
+                                  onClick={() =>
+                                    handlePageChange(currentPage - 1)
+                                  }
+                                  disabled={currentPage === 1}
+                                >
+                                  Prev
+                                </button>
+                                {pageNumbers.map((number) => (
+                                  <button
+                                    key={number}
+                                    className={`pagination-button ${
+                                      currentPage === number ? "active" : ""
+                                    }`}
+                                    onClick={() => handlePageChange(number)}
+                                  >
+                                    {number}
+                                  </button>
                                 ))}
+                                <button
+                                  className="pagination-button"
+                                  onClick={() =>
+                                    handlePageChange(currentPage + 1)
+                                  }
+                                  disabled={currentPage === totalPages}
+                                >
+                                  Next
+                                </button>
                               </div>
                             </>
                           </div>
@@ -426,7 +478,7 @@ const PatientVisitorGrievanceList = () => {
                     ) : (
                       <>
                         <GrievanceTable
-                          incidentData={grievanceData}
+                          incidentData={currentGrievanceData}
                           handleNonClickableColumnClick={
                             handleNonClickableColumnClick
                           }
@@ -437,23 +489,24 @@ const PatientVisitorGrievanceList = () => {
                           handleSelectAll={handleSelectAll}
                           handleSelectedItems={handleSelectedItems}
                         />
-
                         <div className="mobile-table">
                           <button
                             onClick={() => handleSelectAll(grievanceData)}
                             type="button"
                             className="tertiary-button"
                           >
-                            {" "}
-                            {selectedItems === grievanceData ? (
+                            {grievanceData.every((item) =>
+                              selectedItems.some(
+                                (selected) => selected.id === item.id
+                              )
+                            ) ? (
                               <SquareCheck />
                             ) : (
                               <Square />
                             )}{" "}
                             Select all
                           </button>
-
-                          {grievanceData.map((grievance, index) => (
+                          {currentGrievanceData.map((grievance, index) => (
                             <IncidentTableCard
                               key={index}
                               incident={grievance}
@@ -463,6 +516,33 @@ const PatientVisitorGrievanceList = () => {
                               handleSelectedItems={handleSelectedItems}
                             />
                           ))}
+                        </div>
+                        <div className="pagination-controls">
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            Prev
+                          </button>
+                          {pageNumbers.map((number) => (
+                            <button
+                              key={number}
+                              className={`pagination-button ${
+                                currentPage === number ? "active" : ""
+                              }`}
+                              onClick={() => handlePageChange(number)}
+                            >
+                              {number}
+                            </button>
+                          ))}
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                          </button>
                         </div>
                       </>
                     )}
@@ -561,20 +641,25 @@ const GrievanceTable = ({
       case "datetime":
         return sortByDateTime(field);
       default:
-        return items; // Return unsorted if the sortBy criteria doesn't match
+        return items;
     }
   };
+
   return (
     <table>
       <thead>
         <tr>
           <th>
             <div onClick={() => handleSelectAll(incidentData)}>
-              {" "}
-              {selectedItems === incidentData ? <SquareCheck /> : <Square />}
+              {incidentData.every((item) =>
+                selectedItems.some((selected) => selected.id === item.id)
+              ) ? (
+                <SquareCheck />
+              ) : (
+                <Square />
+              )}
             </div>
           </th>
-
           <th>No</th>
           <th className="sort-cell">
             ID
@@ -582,19 +667,18 @@ const GrievanceTable = ({
               setSortDesc={setSortDesc}
               handleSortById={handleSortById}
               sortDesc={sortDesc}
-            />{" "}
+            />
           </th>
           <th>Facility</th>
           <th className="sort-cell">
-            Name{" "}
+            Name
             <SortNameIcon
               handleSortById={handleSortByName}
               sortDesc={nameAZ}
               setSortDesc={setNameAZ}
-            />{" "}
+            />
           </th>
           <th>MRN</th>
-
           <th className="sort-cell">
             Date
             <SortDateIcon
@@ -607,7 +691,6 @@ const GrievanceTable = ({
           <th>Action</th>
         </tr>
       </thead>
-
       <tbody>
         {incidentData.length > 0 ? (
           incidentData.map((grievance, index) => (
@@ -636,10 +719,9 @@ const GrievanceTable = ({
                   )}
                 </div>
               </td>
-
               <td>{index + 1}</td>
-              <td>{grievance.original_report || grievance.id} </td>
-              <td>{grievance.report_facility?.name || "No provided"}</td>
+              <td>{grievance.original_report || grievance.id}</td>
+              <td>{grievance.report_facility?.name || "Not provided"}</td>
               <td>
                 {grievance.patient_name?.last_name ||
                 grievance.patient_name?.first_name
@@ -650,12 +732,10 @@ const GrievanceTable = ({
                 {grievance.patient_name?.medical_record_number ||
                   "Not specified"}
               </td>
-
-              {/* <td>{grievance.form_initiated_by || "-"}</td> */}
-
-              <td>{<DateFormatter dateString={grievance.date} /> || "-"}</td>
               <td>
-                {" "}
+                <DateFormatter dateString={grievance.date} />
+              </td>
+              <td>
                 <p
                   className={`follow-up ${
                     grievance.status === "Draft"
@@ -668,7 +748,6 @@ const GrievanceTable = ({
                   {grievance.status || "Not specified"}
                 </p>
               </td>
-
               <td
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
@@ -686,7 +765,6 @@ const GrievanceTable = ({
                       }
                     />
                   )}
-
                   <Eye
                     size={20}
                     onClick={() =>
@@ -734,11 +812,9 @@ const IncidentTableCard = ({
               <Square />
             )}
           </div>
-
           <span>ID</span>
-          <span>{incident.original_report || incident.id} </span>
+          <span>{incident.original_report || incident.id}</span>
         </div>
-
         <div
           onClick={() =>
             handleRowClick(
@@ -792,7 +868,7 @@ const ComplaintsTab = () => {
   const [showComplaintDetails, setShowComplainDetails] = useState(false);
   const [selectedComplain, setSelectedComplain] = useState({});
   const [isSearching, setIsSearching] = useState(false);
-  const [data, setData] = useState([]); // To hold the table data // To hold filtered data
+  const [data, setData] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [filters, setFilters] = useState({
     end_date: "",
@@ -800,6 +876,20 @@ const ComplaintsTab = () => {
     resolved_by_staff: null,
   });
   const [openFilters, setOpenFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  // Calculate pagination data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentGrievanceComplaints = isSearching
+    ? searchResults.slice(indexOfFirstItem, indexOfLastItem)
+    : grievanceComplaints.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(
+    (isSearching ? searchResults.length : grievanceComplaints.length) /
+      itemsPerPage
+  );
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const handleSortById = () => {
     const results = handleSorting(
@@ -870,7 +960,7 @@ const ComplaintsTab = () => {
       case "datetime":
         return sortByDateTime(field);
       default:
-        return items; // Return unsorted if the sortBy criteria doesn't match
+        return items;
     }
   };
 
@@ -886,7 +976,6 @@ const ComplaintsTab = () => {
     return `${year}-${month}-${day}`;
   }
 
-  // Handle filter application
   const applyFilters = () => {
     const newFilteredData = data.filter((item) => {
       const incidentDate = new Date(item.date_of_complaint);
@@ -905,32 +994,33 @@ const ComplaintsTab = () => {
           item.resolved_by_staff === filters.resolved_by_staff)
       );
     });
-    console.log("filters", filters);
-    console.log("new filtered data", newFilteredData);
-    setGrievanceComplaints(newFilteredData); // Update filtered data state
+    setGrievanceComplaints(newFilteredData);
+    setCurrentPage(1); // Reset to first page when filters are applied
     toggleOpenFilters();
   };
 
-  // Clear filters
   const clearFilters = () => {
     setFilters({
       start_date: "",
       end_date: "",
       resolved_by_staff: null,
     });
-    setGrievanceComplaints(data); // Reset filtered data to all data
+    setGrievanceComplaints(data);
+    setCurrentPage(1); // Reset to first page when filters are cleared
   };
 
   const search = (string) => {
     setIsSearching(true);
-    if (Object.keys(string).length < 2) {
+    if (string.length < 2) {
       setIsSearching(false);
-    }
-    if (Object.keys(string).length > 2) {
+      setSearchResults([]);
+    } else {
       const results = handleSearch(grievanceComplaints, string);
       setSearchResults(results);
+      setCurrentPage(1); // Reset to first page when searching
     }
   };
+
   const handleShowComplainDetails = () => {
     setShowComplainDetails(!showComplaintDetails);
   };
@@ -938,6 +1028,10 @@ const ComplaintsTab = () => {
   const handleSelectedComplaint = (complaint) => {
     setSelectedComplain(complaint);
     handleShowComplainDetails();
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   useEffect(() => {
@@ -949,7 +1043,6 @@ const ComplaintsTab = () => {
             ...item,
             date_of_complaint: formatDate(item.date_of_complaint),
           }));
-          console.log(formattedData);
           setGrievanceComplaints(formattedData);
           setData(formattedData);
           setLoadingComplaints(false);
@@ -960,6 +1053,7 @@ const ComplaintsTab = () => {
     };
     fetchGrievanceComplaints();
   }, []);
+
   return (
     <div className="incident-list">
       <div className="filters">
@@ -968,7 +1062,6 @@ const ComplaintsTab = () => {
             <div onClick={toggleOpenFilters} className="close-icon">
               <X size={24} variant={"stroke"} />
             </div>
-
             <h3>Filter incident data</h3>
             <div className="filter-buttons">
               <CustomSelectInput
@@ -980,12 +1073,10 @@ const ComplaintsTab = () => {
                     : filters.resolved_by_staff
                     ? "Yes"
                     : "No"
-                } // Handle empty state
+                }
                 setSelected={(value) => {
-                  // Handle "Yes" and "No" as true/false, or set to null if empty
                   const resolvedByStaff =
                     value === "Yes" ? true : value === "No" ? false : null;
-                  console.log("heyyy", resolvedByStaff);
                   setFilters({
                     ...filters,
                     resolved_by_staff: resolvedByStaff,
@@ -994,7 +1085,6 @@ const ComplaintsTab = () => {
                 name="status"
                 id="status"
               />
-
               <div className="filter-range">
                 <span>Start date</span>
                 <CustomDatePicker
@@ -1006,7 +1096,6 @@ const ComplaintsTab = () => {
                   dateFormat="yyyy-MM-dd"
                 />
               </div>
-
               <div className="filter-range">
                 <span>End date</span>
                 <CustomDatePicker
@@ -1018,7 +1107,6 @@ const ComplaintsTab = () => {
                   dateFormat="yyyy-MM-dd"
                 />
               </div>
-
               <div className="pop-up-buttons">
                 <button onClick={clearFilters} className="outline-button">
                   <X size={20} variant={"stroke"} />
@@ -1042,7 +1130,6 @@ const ComplaintsTab = () => {
             onChange={(e) => {
               search(e.target.value);
             }}
-            // value={searchString}
             type="search"
             name="systemSearch"
             id="systemSearch"
@@ -1057,148 +1144,233 @@ const ComplaintsTab = () => {
         </button>
       </div>
       <br />
-      <table>
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>
-              <div className="sort-cell">
-                ID
-                <SortByNumberIcon
-                  setSortDesc={setSortDesc}
-                  handleSortById={handleSortById}
-                  sortDesc={sortDesc}
-                />{" "}
-              </div>
-            </th>
-            <th>
-              <div className="sort-cell">
-                Patient Name
-                <SortNameIcon
-                  handleSortById={handleSortByName}
-                  sortDesc={nameAZ}
-                  setSortDesc={setNameAZ}
-                />{" "}
-              </div>{" "}
-            </th>
-
-            <th>MRN</th>
-
-            {/* <th>Title</th> */}
-            {/* <th>Patient Name</th> */}
-
-            {/* <th>Date of Complaint-Grievance</th> */}
-
-            {/* <th>Nature of complaint-Grievance</th> */}
-            <th>
-              <div className="sort-cell">
-                Date of Complaint
-                <SortDateIcon
-                  setSortDesc={setDateRecent}
-                  handleSortById={handleFilterByDate}
-                  sortDesc={dateRecent}
-                />
-              </div>{" "}
-            </th>
-
-            {/* <th>Follow up</th> */}
-            {/* <th>Complaint resolved by staff present</th> */}
-            <th>Resolved by staff</th>
-            <th>How complaint was taken</th>
-          </tr>
-        </thead>
-        {/* {isSearching ? (
-      <tbody>
-        {searchResults.length > 0 ? (
-          searchResults.map((grievance, index) => (
-            <tr>
-              <td>{index + 1}</td>
-              <td>{grievance.patient_name}</td>
-              <td>
-                {grievance.phone_number ||
-                  "Not specified"}
-              </td>
-              <td>{grievance.medical_record_number || "-"}</td>
-              <td>{grievance.complaint_nature || "-"}</td>
-              <td>{grievance.complaint_type || "Not specified"}</td>
-              <td>{grievance.date_of_complaint || "-"} </td>
-              <td>
-                {grievance.resolved_by_staff || "Not specified"}
-              </td>
-              <td>{grievance.how_complaint_was_taken || "-"}</td>
-              
-            </tr>
-          ))
-        ) : (
-          <p>Nothing found</p>
-        )}
-      </tbody>
-    ) : ( */}
-        <tbody>
-          {showComplaintDetails && (
-            <ComplainDetails
-              handleShowComplainDetails={handleShowComplainDetails}
-              complaint={selectedComplain}
-            />
-          )}
-          {grievanceComplaints.length > 0 ? (
-            grievanceComplaints.map((complaint, index) => (
-              <tr
-                key={index}
-                onClick={() => handleSelectedComplaint(complaint)}
-              >
-                <td>{index + 1}</td>
-                <td>{complaint.id}</td>
-                <td>{complaint.patient_name}</td>
-
-                <td>{complaint.medical_record_number || "-"}</td>
-
-                <td>
-                  {<DateFormatter dateString={complaint.date_of_complaint} /> ||
-                    "-"}
-                </td>
-
-                <td>
-                  {" "}
-                  <p
-                    className={`follow-up ${
-                      complaint.resolved_by_staff === false
-                        ? "in-progress"
-                        : "Open"
+      {isSearching ? (
+        <div className="search-results">
+          {searchResults.length > 0 ? (
+            <>
+              <table>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>
+                      <div className="sort-cell">
+                        ID
+                        <SortByNumberIcon
+                          setSortDesc={setSortDesc}
+                          handleSortById={handleSortById}
+                          sortDesc={sortDesc}
+                        />
+                      </div>
+                    </th>
+                    <th>
+                      <div className="sort-cell">
+                        Patient Name
+                        <SortNameIcon
+                          handleSortById={handleSortByName}
+                          sortDesc={nameAZ}
+                          setSortDesc={setNameAZ}
+                        />
+                      </div>
+                    </th>
+                    <th>MRN</th>
+                    <th>
+                      <div className="sort-cell">
+                        Date of Complaint
+                        <SortDateIcon
+                          setSortDesc={setDateRecent}
+                          handleSortById={handleFilterByDate}
+                          sortDesc={dateRecent}
+                        />
+                      </div>
+                    </th>
+                    <th>Resolved by staff</th>
+                    <th>How complaint was taken</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {showComplaintDetails && (
+                    <ComplainDetails
+                      handleShowComplainDetails={handleShowComplainDetails}
+                      complaint={selectedComplain}
+                    />
+                  )}
+                  {currentGrievanceComplaints.map((complaint, index) => (
+                    <tr
+                      key={index}
+                      onClick={() => handleSelectedComplaint(complaint)}
+                    >
+                      <td>{index + 1}</td>
+                      <td>{complaint.id}</td>
+                      <td>{complaint.patient_name}</td>
+                      <td>{complaint.medical_record_number || "-"}</td>
+                      <td>
+                        <DateFormatter
+                          dateString={complaint.date_of_complaint}
+                        />{" "}
+                      </td>
+                      <td>
+                        <p
+                          className={`follow-up ${
+                            complaint.resolved_by_staff === false
+                              ? "in-progress"
+                              : "Open"
+                          }`}
+                        >
+                          {(complaint.resolved_by_staff ? "Yes" : "No") ||
+                            "Not specified"}
+                        </p>
+                      </td>
+                      <td>{complaint.how_complaint_was_taken || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="pagination-controls">
+                <button
+                  className="pagination-button"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Prev
+                </button>
+                {pageNumbers.map((number) => (
+                  <button
+                    key={number}
+                    className={`pagination-button ${
+                      currentPage === number ? "active" : ""
                     }`}
+                    onClick={() => handlePageChange(number)}
                   >
-                    {(complaint.resolved_by_staff ? "Yes" : "No") ||
-                      "Not specified"}
-                  </p>
-                </td>
-
-                <td>{complaint.how_complaint_was_taken || "-"}</td>
-              </tr>
-            ))
+                    {number}
+                  </button>
+                ))}
+                <button
+                  className="pagination-button"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            </>
           ) : (
-            <tr>
-              <td>No data found</td>
-            </tr>
+            <p>Nothing found</p>
           )}
-        </tbody>
-        {/* )} */}
-      </table>
+        </div>
+      ) : (
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>
+                  <div className="sort-cell">
+                    ID
+                    <SortByNumberIcon
+                      setSortDesc={setSortDesc}
+                      handleSortById={handleSortById}
+                      sortDesc={sortDesc}
+                    />
+                  </div>
+                </th>
+                <th>
+                  <div className="sort-cell">
+                    Patient Name
+                    <SortNameIcon
+                      handleSortById={handleSortByName}
+                      sortDesc={nameAZ}
+                      setSortDesc={setNameAZ}
+                    />
+                  </div>
+                </th>
+                <th>MRN</th>
+                <th>
+                  <div className="sort-cell">
+                    Date of Complaint
+                    <SortDateIcon
+                      setSortDesc={setDateRecent}
+                      handleSortById={handleFilterByDate}
+                      sortDesc={dateRecent}
+                    />
+                  </div>
+                </th>
+                <th>Resolved by staff</th>
+                <th>How complaint was taken</th>
+              </tr>
+            </thead>
+            <tbody>
+              {showComplaintDetails && (
+                <ComplainDetails
+                  handleShowComplainDetails={handleShowComplainDetails}
+                  complaint={selectedComplain}
+                />
+              )}
+              {currentGrievanceComplaints.length > 0 ? (
+                currentGrievanceComplaints.map((complaint, index) => (
+                  <tr
+                    key={index}
+                    onClick={() => handleSelectedComplaint(complaint)}
+                  >
+                    <td>{index + 1}</td>
+                    <td>{complaint.id}</td>
+                    <td>{complaint.patient_name}</td>
+                    <td>{complaint.medical_record_number || "-"}</td>
+                    <td>
+                      <DateFormatter dateString={complaint.date_of_complaint} />{" "}
+                    </td>
+                    <td>
+                      <p
+                        className={`follow-up ${
+                          complaint.resolved_by_staff === false
+                            ? "in-progress"
+                            : "Open"
+                        }`}
+                      >
+                        {(complaint.resolved_by_staff ? "Yes" : "No") ||
+                          "Not specified"}
+                      </p>
+                    </td>
+                    <td>{complaint.how_complaint_was_taken || "-"}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td>No data found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <div className="pagination-controls">
+            <button
+              className="pagination-button"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Prev
+            </button>
+            {pageNumbers.map((number) => (
+              <button
+                key={number}
+                className={`pagination-button ${
+                  currentPage === number ? "active" : ""
+                }`}
+                onClick={() => handlePageChange(number)}
+              >
+                {number}
+              </button>
+            ))}
+            <button
+              className="pagination-button"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
-
-{
-  /* <div className="tabs">
-              <div onClick={() => setActiveTab('all')} className={`reports-tab tracking-tab ${activeTab === 'all' ? 'active' : ''}`}>
-                <Note01Icon />
-                <span>All reports</span>
-              </div>
-
-              <div onClick={() => setActiveTab('drafts')} className={`drafts tracking-tab  ${activeTab === 'drafts' ? 'active' : ''}`}>
-                <NoteEditIcon />
-                <span>Drafts</span>
-              </div>
-            </div> */
-}
 
 export default PatientVisitorGrievanceList;
