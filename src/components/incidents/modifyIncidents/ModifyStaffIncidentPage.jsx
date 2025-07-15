@@ -10,13 +10,13 @@ import mediaAPI from "@/utils/mediaApi";
 import CustomSelectInput from "@/components/CustomSelectInput";
 import BackToPage from "@/components/BackToPage";
 import postDocumentHistory from "@/components/incidents/documentHistory/postDocumentHistory";
-import EmployeeIncidentForm from "./incidents/incidentForms/EmployeeIncidentForms/EmployeeIncidentForm";
+import EmployeeIncidentForm from "../incidentForms/EmployeeIncidentForms/EmployeeIncidentForm";
 // import HealthIncidentInvestigationForm from "../healthIncidentForm";
 import FilesList from "@/components/incidents/documentHistory/FilesList";
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
-import CantModify from "./CantModify";
-import CustomDatePicker from "./CustomDatePicker";
+import CantModify from "../../CantModify";
+import CustomDatePicker from "../../CustomDatePicker";
 
 import "@/styles/_modifyIncident.scss"
 
@@ -76,9 +76,9 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [reportId, setReportID] = useState(null);
   const [witnesses, setWitnesses] = useState(
     data.witnesses.map((witness) => ({
-      first_name: witness?.first_name,
-      last_name: witness?.last_name,
-      // profile_type: "Witness"
+      first_name: witness?.first_name || "",
+      last_name: witness?.last_name || "",
+      profile_type: "Witness"
 
     }))
   );

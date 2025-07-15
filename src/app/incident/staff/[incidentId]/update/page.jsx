@@ -1,5 +1,4 @@
 "use client"
-
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import DashboardLayout from "@/app/dashboard/layout";
@@ -11,7 +10,7 @@ import api from "@/utils/api";
 import { ArrowRight } from "lucide-react";
 // import { FacilityBreadCrumbs } from "../../drugReactionIncident/modifyMedicalAdverseDrugReactionIncidentPage";
 // import NoResources from "../../../../../components/general/noResources";
-import ModifyStaffIncident from "@/components/ModifyStaffIncidentPage";
+import ModifyStaffIncident from "@/components/incidents/modifyIncidents/ModifyStaffIncidentPage";
 
 const ModifyStaffIncidentPageContent = () => {
   const [error, setError] = useState();

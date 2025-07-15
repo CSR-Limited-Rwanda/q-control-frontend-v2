@@ -132,7 +132,8 @@ const GeneralPatientVisitorList = () => {
     router.push(`/incident/general/${incidentId}`);
   };
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/general/${incidentId}/modify/`);
+    router.push(`/incident/general/${incidentId}/update/`);
+    localStorage.setItem("generalIncidentId", incidentId)
   };
 
   // allow actions column to be not clickable
