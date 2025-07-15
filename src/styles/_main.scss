@@ -1629,6 +1629,16 @@ input[type="checkbox"] {
   }
 }
 
+.grievance-tab-headers {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.grievance-tracking-headers {
+  flex-direction: column;
+}
+
 .grid-choices {
   display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
