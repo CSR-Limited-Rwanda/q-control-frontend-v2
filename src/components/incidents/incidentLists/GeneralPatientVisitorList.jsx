@@ -2,13 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import api, { API_URL, exportExcel } from "@/utils/api";
 
-// import TableActionsPopup from "../general/popups/tableActionPopup";
-// import {
-//   useDepartments,
-//   usePermission,
-// } from "../../contexts/permissionsContext";
-// import NoAccessPage from "../../pages/errorPages/401";
-
 import {
   Eye,
   File,
@@ -41,17 +34,16 @@ function formatDate(dateString) {
 const GeneralPatientVisitorList = () => {
   const [errorFetching, setErrorFetching] = useState("");
   const [isFetching, setIsFetching] = useState(true);
-
   const [incidentData, setIncidentData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
-
-  const [searchResults, setSearchResults] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [openAction, setOpenAction] = useState(false);
   const [openFilters, setOpenFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
   const router = useRouter();
-  const [startDate, setStartDate] = useState(null);
 
   const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
@@ -61,6 +53,22 @@ const GeneralPatientVisitorList = () => {
     incident_type: "",
     category: "",
   });
+
+  // Calculate pagination data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentIncidentData = incidentData.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const currentSearchResults = searchResults.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(
+    (isSearching ? searchResults.length : incidentData.length) / itemsPerPage
+  );
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const handleSelectedItems = (item) => {
     if (!selectedItems.includes(item)) {
@@ -73,14 +81,21 @@ const GeneralPatientVisitorList = () => {
   };
 
   const handleSelectAll = (items) => {
-    if (selectedItems !== items) {
-      setSelectedItems(items);
+    const allSelected = items.every((item) =>
+      selectedItems.some((selected) => selected.id === item.id)
+    );
+    if (!allSelected) {
+      setSelectedItems([...new Set([...selectedItems, ...items])]);
     } else {
-      setSelectedItems([]);
+      setSelectedItems(
+        selectedItems.filter(
+          (selected) => !items.some((item) => item.id === selected.id)
+        )
+      );
     }
   };
+
   const applyFilters = () => {
-    setIsSearching(true);
     const newFilteredData = data.filter((item) => {
       const incidentDate = new Date(item.incident_date);
       const startDate = filters.start_date
@@ -99,7 +114,7 @@ const GeneralPatientVisitorList = () => {
         (!filters?.incident_type?.toLowerCase() ||
           item?.incident_type?.toLowerCase() ===
             filters?.incident_type?.toLowerCase()) &&
-        (!filters.category.toLowerCase() ||
+        (!filters?.category?.toLowerCase() ||
           item?.category?.toLowerCase() === filters?.category?.toLowerCase())
       );
     });
@@ -110,11 +125,12 @@ const GeneralPatientVisitorList = () => {
         setIsSearchingTheDatabase(false);
       }, 3000);
     }
-    setSearchResults(newFilteredData);
+    setIncidentData(newFilteredData);
+    setIsSearching(true);
+    setCurrentPage(1); // Reset to first page when filters are applied
     toggleOpenFilters();
   };
 
-  // Clear filters
   const clearFilters = () => {
     setFilters({
       start_date: "",
@@ -123,33 +139,30 @@ const GeneralPatientVisitorList = () => {
       incident_type: "",
       category: "",
     });
-    setIsSearching(false); // Reset filtered data to all data
-    toggleOpenFilters();
+    setIncidentData(data);
+    setIsSearching(false);
+    setCurrentPage(1); // Reset to first page when filters are cleared
   };
 
-  // row click
   const handleRowClick = (incidentId) => {
     router.push(`/incident/general/${incidentId}`);
   };
+
   const navigateToModify = (incidentId) => {
     router.push(`/incident/general/${incidentId}/update/`);
     localStorage.setItem("generalIncidentId", incidentId)
   };
 
-  // allow actions column to be not clickable
   const handleNonClickableColumnClick = (event) => {
     event.stopPropagation();
   };
+
   const toggleOpenFilters = () => {
     setOpenFilters(!openFilters);
-  };
-  const toggleAction = (index) => {
-    setOpenAction(!openAction);
   };
 
   const search = (string) => {
     setIsSearching(true);
-
     const results = incidentData.filter(
       (item) =>
         (item.patient_visitor?.first_name &&
@@ -178,6 +191,7 @@ const GeneralPatientVisitorList = () => {
       }, 3000);
     }
     setSearchResults(results);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
   useEffect(() => {
@@ -190,10 +204,8 @@ const GeneralPatientVisitorList = () => {
             incident_date: formatDate(item.incident_date),
           }));
           setData(formattedData);
-
           setIncidentData(formattedData);
           setIsFetching(false);
-          console.log(response.data);
         } else {
           setErrorFetching("Unexpected response format.");
           setIsFetching(false);
@@ -228,7 +240,10 @@ const GeneralPatientVisitorList = () => {
             <div className="tab-header">
               <div className="title-container-action">
                 <div className="title-container">
-                  <h2 className="title">Incident Tracking List</h2>
+                  <h2 className="title">
+                    General Patient Visitor Incident Tracking List
+                  </h2>
+                  <p>{incidentData.length} incident(s) available</p>
                 </div>
               </div>
 
@@ -333,7 +348,6 @@ const GeneralPatientVisitorList = () => {
                   onChange={(e) => {
                     search(e.target.value);
                   }}
-                  // value={searchString}
                   type="search"
                   name="systemSearch"
                   id="systemSearch"
@@ -346,7 +360,6 @@ const GeneralPatientVisitorList = () => {
                     }
                     className="secondary-button"
                   >
-                    {" "}
                     <File /> <span>Export</span>
                   </button>
                 ) : (
@@ -370,7 +383,7 @@ const GeneralPatientVisitorList = () => {
                     <div className="searching_database">
                       <p>Searching database</p>
                     </div>
-                  ) : searchResults && searchResults.length > 0 ? (
+                  ) : currentSearchResults.length > 0 ? (
                     <div className="results-table">
                       <div className="results-count">
                         <span className="count">{searchResults.length}</span>{" "}
@@ -378,7 +391,7 @@ const GeneralPatientVisitorList = () => {
                       </div>
                       <>
                         <GeneralIncidentTable
-                          incidentData={searchResults}
+                          incidentData={currentSearchResults}
                           handleSelectAll={handleSelectAll}
                           selectedItems={selectedItems}
                           handleSelectedItems={handleSelectedItems}
@@ -387,47 +400,75 @@ const GeneralPatientVisitorList = () => {
                           }
                           navigateToModify={navigateToModify}
                           handleRowClick={handleRowClick}
+                          setIncidentData={setSearchResults}
                         />
-
                         <div className="mobile-table">
                           <button
                             onClick={() => handleSelectAll(searchResults)}
                             type="button"
                             className="tertiary-button"
                           >
-                            {" "}
-                            {selectedItems === incidentData ? (
+                            {searchResults.every((item) =>
+                              selectedItems.some(
+                                (selected) => selected.id === item.id
+                              )
+                            ) ? (
                               <SquareCheck />
                             ) : (
                               <Square />
                             )}{" "}
                             Select all
                           </button>
-
-                          {searchResults &&
-                            searchResults.map((incident, index) => (
-                              <IncidentTableCard
-                                key={index}
-                                incident={incident}
-                                navigateToModify={navigateToModify}
-                                handleRowClick={handleRowClick}
-                                selectedItems={selectedItems}
-                                handleSelectedItems={handleSelectedItems}
-                              />
-                            ))}
+                          {currentSearchResults.map((incident, index) => (
+                            <IncidentTableCard
+                              key={index}
+                              incident={incident}
+                              navigateToModify={navigateToModify}
+                              handleRowClick={handleRowClick}
+                              selectedItems={selectedItems}
+                              handleSelectedItems={handleSelectedItems}
+                            />
+                          ))}
+                        </div>
+                        <div className="pagination-controls">
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            Prev
+                          </button>
+                          {pageNumbers.map((number) => (
+                            <button
+                              key={number}
+                              className={`pagination-button ${
+                                currentPage === number ? "active" : ""
+                              }`}
+                              onClick={() => handlePageChange(number)}
+                            >
+                              {number}
+                            </button>
+                          ))}
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                          </button>
                         </div>
                       </>
                     </div>
                   ) : (
                     <div className="no-data-found">
-                      <p>No data found with your search found</p>
+                      <p>No data found with your search</p>
                     </div>
                   )}
                 </div>
               ) : (
                 <>
                   <GeneralIncidentTable
-                    incidentData={incidentData}
+                    incidentData={currentIncidentData}
                     setIncidentData={setIncidentData}
                     handleSelectAll={handleSelectAll}
                     selectedItems={selectedItems}
@@ -444,26 +485,54 @@ const GeneralPatientVisitorList = () => {
                       type="button"
                       className="tertiary-button"
                     >
-                      {" "}
-                      {selectedItems === searchResults ? (
+                      {incidentData.every((item) =>
+                        selectedItems.some(
+                          (selected) => selected.id === item.id
+                        )
+                      ) ? (
                         <SquareCheck />
                       ) : (
                         <Square />
                       )}{" "}
                       Select all
                     </button>
-
-                    {incidentData &&
-                      incidentData.map((incident, index) => (
-                        <IncidentTableCard
-                          key={index}
-                          incident={incident}
-                          navigateToModify={navigateToModify}
-                          handleRowClick={handleRowClick}
-                          selectedItems={selectedItems}
-                          handleSelectedItems={handleSelectedItems}
-                        />
-                      ))}
+                    {currentIncidentData.map((incident, index) => (
+                      <IncidentTableCard
+                        key={index}
+                        incident={incident}
+                        navigateToModify={navigateToModify}
+                        handleRowClick={handleRowClick}
+                        selectedItems={selectedItems}
+                        handleSelectedItems={handleSelectedItems}
+                      />
+                    ))}
+                  </div>
+                  <div className="pagination-controls">
+                    <button
+                      className="pagination-button"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      Prev
+                    </button>
+                    {pageNumbers.map((number) => (
+                      <button
+                        key={number}
+                        className={`pagination-button ${
+                          currentPage === number ? "active" : ""
+                        }`}
+                        onClick={() => handlePageChange(number)}
+                      >
+                        {number}
+                      </button>
+                    ))}
+                    <button
+                      className="pagination-button"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
                   </div>
                 </>
               )}
@@ -474,8 +543,6 @@ const GeneralPatientVisitorList = () => {
     </>
   );
 };
-
-export default GeneralPatientVisitorList;
 
 const GeneralIncidentTable = ({
   incidentData,
@@ -490,6 +557,7 @@ const GeneralIncidentTable = ({
   const [sortDesc, setSortDesc] = useState(false);
   const [nameAZ, setNameAZ] = useState(false);
   const [dateRecent, setDateRecent] = useState(false);
+
   const handleSortById = () => {
     const results = handleSorting(
       incidentData,
@@ -522,17 +590,63 @@ const GeneralIncidentTable = ({
     setIncidentData(results);
     setDateRecent(!dateRecent);
   };
+
+  const handleSorting = (items, sortBy, direction = "asc", field) => {
+    console.log(items);
+    console.log("sorting items:", sortBy, direction, field);
+
+    const sortByNumber = (field) => {
+      return [...items].sort((a, b) => {
+        const result = a.id - b.id;
+        return direction === "asc" ? result : -result;
+      });
+    };
+
+    const sortByFacilityName = (field) => {
+      return [...items].sort((a, b) => {
+        const nameA = a.patient_visitor?.first_name || "";
+        const nameB = b.patient_visitor?.first_name || "";
+        const result = nameA.localeCompare(nameB);
+        return direction === "asc" ? result : -result;
+      });
+    };
+
+    const sortByDateTime = (field) => {
+      return [...items].sort((a, b) => {
+        const dateA = new Date(a.incident_date);
+        const dateB = new Date(b.incident_date);
+        const result = dateA - dateB;
+        return direction === "asc" ? result : -result;
+      });
+    };
+
+    switch (sortBy) {
+      case "number":
+        return sortByNumber(field);
+      case "name":
+        return sortByFacilityName(field);
+      case "datetime":
+        return sortByDateTime(field);
+      default:
+        return items;
+    }
+  };
+
   return (
     <table>
       <thead>
         <tr>
           <th>
             <div onClick={() => handleSelectAll(incidentData)}>
-              {" "}
-              {selectedItems === incidentData ? <SquareCheck /> : <Square />}
+              {incidentData.every((item) =>
+                selectedItems.some((selected) => selected.id === item.id)
+              ) ? (
+                <SquareCheck />
+              ) : (
+                <Square />
+              )}
             </div>
           </th>
-
           <th>No</th>
           <th className="sort-cell">
             ID
@@ -540,11 +654,11 @@ const GeneralIncidentTable = ({
               setSortDesc={setSortDesc}
               handleSortById={handleSortById}
               sortDesc={sortDesc}
-            />{" "}
+            />
           </th>
           <th>Facility</th>
           <th className="sort-cell">
-            Name{" "}
+            Name
             <SortNameIcon
               handleSortById={handleSortByName}
               sortDesc={nameAZ}
@@ -553,7 +667,7 @@ const GeneralIncidentTable = ({
           </th>
           <th>Type of incident</th>
           <th className="sort-cell">
-            Date & Time{" "}
+            Date & Time
             <SortDateIcon
               setSortDesc={setDateRecent}
               handleSortById={handleFilterByDate}
@@ -567,10 +681,9 @@ const GeneralIncidentTable = ({
         </tr>
       </thead>
       <tbody>
-        {incidentData.length > 0 &&
+        {incidentData.length > 0 ? (
           incidentData.map((incident, index) => (
             <tr
-              // onDoubleClick={() => handleRowClick(incident.id)}
               onDoubleClick={() =>
                 handleRowClick(
                   incident.original_report
@@ -595,10 +708,9 @@ const GeneralIncidentTable = ({
                   )}
                 </div>
               </td>
-
               <td>{index + 1}</td>
               <td className="tag">
-                {incident.original_report || incident.id}{" "}
+                {incident.original_report || incident.id}
                 {incident.is_modified ? (
                   <div className="tag-data">Edited</div>
                 ) : (
@@ -614,17 +726,14 @@ const GeneralIncidentTable = ({
               </td>
               <td>{incident.incident_type || "Not provided"}</td>
               <td>
-                {(
-                  <div>
-                    <DateFormatter dateString={incident.incident_date} />
-                    ,&nbsp; {incident.incident_time}
-                  </div>
-                ) || "-"}
+                <div>
+                  <DateFormatter dateString={incident.incident_date} />,{" "}
+                  {incident.incident_time}
+                </div>{" "}
               </td>
               <td>{incident.severity_rating || "Not provided"}</td>
               <td>{incident.category || "Not provided"}</td>
               <td>
-                {" "}
                 <p
                   className={`follow-up ${
                     incident.status === "Draft"
@@ -654,7 +763,6 @@ const GeneralIncidentTable = ({
                       }
                     />
                   )}
-
                   <Eye
                     size={20}
                     onClick={() =>
@@ -668,7 +776,12 @@ const GeneralIncidentTable = ({
                 </div>
               </td>
             </tr>
-          ))}
+          ))
+        ) : (
+          <tr>
+            <td colSpan="11">No data found</td>
+          </tr>
+        )}
       </tbody>
     </table>
   );
@@ -697,11 +810,9 @@ const IncidentTableCard = ({
               <Square />
             )}
           </div>
-
           <span>ID</span>
-          <span>{incident.original_report || incident.id} </span>
+          <span>{incident.original_report || incident.id}</span>
         </div>
-
         <div
           onClick={() =>
             handleRowClick(
@@ -725,7 +836,12 @@ const IncidentTableCard = ({
         </div>
         <div className="item">
           <label htmlFor="">Date & Time: </label>
-          <span>{incident.incident_date || "Not provided"}</span>
+          <span>
+            <span>
+              <DateFormatter dateString={incident?.incident_date} />,{" "}
+              {incident?.incident_time}
+            </span>{" "}
+          </span>
         </div>
         <div className="item">
           <label htmlFor="">Status: </label>
@@ -746,46 +862,4 @@ const IncidentTableCard = ({
   );
 };
 
-// a function to perform sorting on an array
-// we can sort by id(bigger or smaller), facility name (a-z, z-a), date and time (recent, oldest)
-
-const handleSorting = (items, sortBy, direction = "asc", field) => {
-  console.log(items);
-  console.log("sorting items:", sortBy, direction, field);
-
-  const sortByNumber = (field) => {
-    return [...items].sort((a, b) => {
-      const result = a.id - b.id;
-      return direction === "asc" ? result : -result;
-    });
-  };
-
-  const sortByFacilityName = (field) => {
-    return [...items].sort((a, b) => {
-      const nameA = a.patient_visitor?.first_name || "";
-      const nameB = b.patient_visitor?.first_name || "";
-      const result = nameA.localeCompare(nameB);
-      return direction === "asc" ? result : -result;
-    });
-  };
-
-  const sortByDateTime = (field) => {
-    return [...items].sort((a, b) => {
-      const dateA = new Date(a.incident_date);
-      const dateB = new Date(b.incident_date);
-      const result = dateA - dateB;
-      return direction === "asc" ? result : -result;
-    });
-  };
-
-  switch (sortBy) {
-    case "number":
-      return sortByNumber(field);
-    case "name":
-      return sortByFacilityName(field);
-    case "datetime":
-      return sortByDateTime(field);
-    default:
-      return items; // Return unsorted if the sortBy criteria doesn't match
-  }
-};
+export default GeneralPatientVisitorList;

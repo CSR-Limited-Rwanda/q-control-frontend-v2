@@ -2,13 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import api, { API_URL, exportExcel } from "@/utils/api";
 
-// import TableActionsPopup from "../general/popups/tableActionPopup";
-// import {
-//   useDepartments,
-//   usePermission,
-// } from "../../contexts/permissionsContext";
-// import NoAccessPage from "../../pages/errorPages/401";
-
 import {
   Eye,
   File,
@@ -39,8 +32,6 @@ const handleSearch = (items, searchString) => {
         item.person_taking_report
           .toLowerCase()
           .includes(searchString.toLowerCase())
-        // (item.incident_type && item.incident_type.toLowerCase().includes(searchString.toLowerCase())) ||
-        // (item.follow_up && item.follow_up.toLowerCase().includes(searchString.toLowerCase()))
       );
     });
     return results;
@@ -50,7 +41,7 @@ const handleSearch = (items, searchString) => {
 
 const formatTime = (timeString) => {
   const [hours, minutes, seconds] = timeString.split(":");
-  return `${hours}:${minutes}:${seconds.split(".")[0]}`; // Exclude milliseconds
+  return `${hours}:${minutes}:${seconds.split(".")[0]}`;
 };
 
 const LostAndFoundList = () => {
@@ -59,29 +50,42 @@ const LostAndFoundList = () => {
   const [incidentData, setIncidentData] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  // const [filterByDate, setFilterByDate] = useState(false);
   const [openAction, setOpenAction] = useState(false);
   const [openActionIndex, setOpenActionIndex] = useState("");
-
   const [selectedItems, setSelectedItems] = useState([]);
   const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
-
-  // filters
   const [filterByType, setFilterByType] = useState("");
   const [filterByStatus, setFilterByStatus] = useState("");
   const [filterByCareLevel, setFilterByCareLevel] = useState("");
-
   const [filterByDate, setFilterByDate] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
   const router = useRouter();
 
-  const [data, setData] = useState([]); // To hold the table data // To hold filtered data
+  const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
-
     status: "",
   });
   const [openFilters, setOpenFilters] = useState(false);
+
+  // Calculate pagination data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentIncidentData = incidentData.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const currentSearchResults = searchResults.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(
+    (isSearching ? searchResults.length : incidentData.length) / itemsPerPage
+  );
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const toggleOpenFilters = () => {
     setOpenFilters(!openFilters);
@@ -95,7 +99,6 @@ const LostAndFoundList = () => {
     return `${year}-${month}-${day}`;
   }
 
-  // Handle filter application
   const applyFilters = () => {
     const newFilteredData = data.filter((item) => {
       const incidentDate = new Date(item.date_reported);
@@ -114,25 +117,25 @@ const LostAndFoundList = () => {
           item.status.toLowerCase() === filters.status.toLowerCase())
       );
     });
-    console.log("filters", filters);
-    console.log("new filtered data", newFilteredData);
-    setIncidentData(newFilteredData); // Update filtered data state
+    setIncidentData(newFilteredData);
+    setCurrentPage(1); // Reset to first page when filters are applied
     toggleOpenFilters();
   };
 
-  // Clear filters
   const clearFilters = () => {
     setFilters({
       start_date: "",
       end_date: "",
       status: "",
     });
-    setIncidentData(data); // Reset filtered data to all data
+    setIncidentData(data);
+    setCurrentPage(1); // Reset to first page when filters are cleared
   };
 
   const handleRowClick = (incidentId) => {
     router.push(`/incident/lost_and_found/${incidentId}`);
   };
+
   const navigateToModify = (incidentId) => {
     router.push(`/incident/lost_and_found/${incidentId}/modify/`);
   };
@@ -159,19 +162,43 @@ const LostAndFoundList = () => {
             .includes(string.toLowerCase()))
     );
 
-    if (results.length < 0) {
+    if (results.length < 1) {
       setIsSearchingTheDatabase(true);
       setTimeout(() => {
         setIsSearchingTheDatabase(false);
       }, 3000);
     }
-    console.log(
-      "Lost and found: ",
-      results.length,
-      " in ",
-      incidentData.length
-    );
     setSearchResults(results);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handleSelectedItems = (item) => {
+    if (!selectedItems.includes(item)) {
+      setSelectedItems([...selectedItems, item]);
+    } else {
+      setSelectedItems(
+        selectedItems.filter((selectedItem) => selectedItem.id !== item.id)
+      );
+    }
+  };
+
+  const handleSelectAll = (items) => {
+    const allSelected = items.every((item) =>
+      selectedItems.some((selected) => selected.id === item.id)
+    );
+    if (!allSelected) {
+      setSelectedItems([...new Set([...selectedItems, ...items])]);
+    } else {
+      setSelectedItems(
+        selectedItems.filter(
+          (selected) => !items.some((item) => item.id === selected.id)
+        )
+      );
+    }
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   useEffect(() => {
@@ -183,7 +210,6 @@ const LostAndFoundList = () => {
             ...item,
             date_reported: formatDate(item.date_reported),
           }));
-          console.log("API Response:", response.data);
           setIncidentData(formattedData);
           setData(formattedData);
         } else {
@@ -203,23 +229,6 @@ const LostAndFoundList = () => {
     fetchIncidentData();
   }, []);
 
-  const handleSelectedItems = (item) => {
-    if (!selectedItems.includes(item)) {
-      setSelectedItems([...selectedItems, item]);
-    } else {
-      setSelectedItems(
-        selectedItems.filter((selectedItem) => selectedItem.id !== item.id)
-      );
-    }
-  };
-
-  const handleSelectAll = (items) => {
-    if (selectedItems !== items) {
-      setSelectedItems(items);
-    } else {
-      setSelectedItems([]);
-    }
-  };
   return isFetching ? (
     <div className="getting-data">
       <p>Getting data...</p>
@@ -235,8 +244,8 @@ const LostAndFoundList = () => {
           <div className="tab-header">
             <div className="title-container-action">
               <div className="title-container">
-                <h2 className="title">Lost & Found Property report</h2>
-                <p>{incidentData.length} incidents available</p>
+                <h2 className="title">Lost & Found Property Tracking List</h2>
+                <p>{incidentData.length} incident(s) available</p>
               </div>
             </div>
 
@@ -308,7 +317,6 @@ const LostAndFoundList = () => {
                 onChange={(e) => {
                   search(e.target.value);
                 }}
-                // value={searchString}
                 type="search"
                 name="systemSearch"
                 id="systemSearch"
@@ -322,7 +330,6 @@ const LostAndFoundList = () => {
                   }
                   className="secondary-button"
                 >
-                  {" "}
                   <File /> <span>Export</span>
                 </button>
               ) : (
@@ -345,7 +352,7 @@ const LostAndFoundList = () => {
                     <div className="searching_database">
                       <p>Searching database</p>
                     </div>
-                  ) : searchResults && searchResults.length > 0 ? (
+                  ) : currentSearchResults.length > 0 ? (
                     <div className="results-table">
                       <div className="results-count">
                         <span className="count">{searchResults.length}</span>{" "}
@@ -353,7 +360,7 @@ const LostAndFoundList = () => {
                       </div>
                       <>
                         <LostFOundTable
-                          incidentData={searchResults}
+                          incidentData={currentSearchResults}
                           handleNonClickableColumnClick={
                             handleNonClickableColumnClick
                           }
@@ -370,26 +377,54 @@ const LostAndFoundList = () => {
                             type="button"
                             className="tertiary-button"
                           >
-                            {" "}
-                            {selectedItems === searchResults ? (
+                            {searchResults.every((item) =>
+                              selectedItems.some(
+                                (selected) => selected.id === item.id
+                              )
+                            ) ? (
                               <SquareCheck />
                             ) : (
                               <Square />
                             )}{" "}
                             Select all
                           </button>
-
-                          {searchResults &&
-                            searchResults.map((incident, index) => (
-                              <IncidentTableCard
-                                key={index}
-                                incident={incident}
-                                handleRowClick={handleRowClick}
-                                selectedItems={selectedItems}
-                                handleSelectedItems={handleSelectedItems}
-                                handleSelectAll={handleSelectAll}
-                              />
-                            ))}
+                          {currentSearchResults.map((incident, index) => (
+                            <IncidentTableCard
+                              key={index}
+                              incident={incident}
+                              handleRowClick={handleRowClick}
+                              selectedItems={selectedItems}
+                              handleSelectedItems={handleSelectedItems}
+                              handleSelectAll={handleSelectAll}
+                            />
+                          ))}
+                        </div>
+                        <div className="pagination-controls">
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            Prev
+                          </button>
+                          {pageNumbers.map((number) => (
+                            <button
+                              key={number}
+                              className={`pagination-button ${
+                                currentPage === number ? "active" : ""
+                              }`}
+                              onClick={() => handlePageChange(number)}
+                            >
+                              {number}
+                            </button>
+                          ))}
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                          </button>
                         </div>
                       </>
                     </div>
@@ -402,7 +437,7 @@ const LostAndFoundList = () => {
               ) : (
                 <>
                   <LostFOundTable
-                    incidentData={incidentData}
+                    incidentData={currentIncidentData}
                     handleNonClickableColumnClick={
                       handleNonClickableColumnClick
                     }
@@ -419,26 +454,54 @@ const LostAndFoundList = () => {
                       type="button"
                       className="tertiary-button"
                     >
-                      {" "}
-                      {selectedItems === searchResults ? (
+                      {incidentData.every((item) =>
+                        selectedItems.some(
+                          (selected) => selected.id === item.id
+                        )
+                      ) ? (
                         <SquareCheck />
                       ) : (
                         <Square />
                       )}{" "}
                       Select all
                     </button>
-
-                    {incidentData &&
-                      incidentData.map((incident, index) => (
-                        <IncidentTableCard
-                          key={index}
-                          incident={incident}
-                          handleRowClick={handleRowClick}
-                          selectedItems={selectedItems}
-                          handleSelectedItems={handleSelectedItems}
-                          handleSelectAll={handleSelectAll}
-                        />
-                      ))}
+                    {currentIncidentData.map((incident, index) => (
+                      <IncidentTableCard
+                        key={index}
+                        incident={incident}
+                        handleRowClick={handleRowClick}
+                        selectedItems={selectedItems}
+                        handleSelectedItems={handleSelectedItems}
+                        handleSelectAll={handleSelectAll}
+                      />
+                    ))}
+                  </div>
+                  <div className="pagination-controls">
+                    <button
+                      className="pagination-button"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      Prev
+                    </button>
+                    {pageNumbers.map((number) => (
+                      <button
+                        key={number}
+                        className={`pagination-button ${
+                          currentPage === number ? "active" : ""
+                        }`}
+                        onClick={() => handlePageChange(number)}
+                      >
+                        {number}
+                      </button>
+                    ))}
+                    <button
+                      className="pagination-button"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
                   </div>
                 </>
               )}
@@ -450,7 +513,6 @@ const LostAndFoundList = () => {
   );
 };
 
-export default LostAndFoundList;
 const LostFOundTable = ({
   incidentData,
   handleNonClickableColumnClick,
@@ -557,20 +619,25 @@ const LostFOundTable = ({
       case "datetime":
         return sortByDateTime(field);
       default:
-        return items; // Return unsorted if the sortBy criteria doesn't match
+        return items;
     }
   };
+
   return (
     <table>
       <thead>
         <tr>
           <th>
             <div onClick={() => handleSelectAll(incidentData)}>
-              {" "}
-              {selectedItems === incidentData ? <SquareCheck /> : <Square />}
+              {incidentData.every((item) =>
+                selectedItems.some((selected) => selected.id === item.id)
+              ) ? (
+                <SquareCheck />
+              ) : (
+                <Square />
+              )}
             </div>
           </th>
-
           <th>No</th>
           <th>
             <div className="sort-cell">
@@ -579,7 +646,7 @@ const LostFOundTable = ({
                 setSortDesc={setSortDesc}
                 handleSortById={handleSortById}
                 sortDesc={sortDesc}
-              />{" "}
+              />
             </div>
           </th>
           <th>Facility</th>
@@ -600,24 +667,19 @@ const LostFOundTable = ({
                 handleSortById={handleSortByName}
                 sortDesc={nameAZ}
                 setSortDesc={setNameAZ}
-              />{" "}
+              />
             </div>
           </th>
-          {/* <th>Description of items</th> */}
           <th>
             <div className="sort-cell">
-              Person reporting{" "}
+              Person reporting
               <SortNameIcon2
                 handleSortById={handleSortByName2}
                 sortDesc={nameAZ2}
                 setSortDesc={setNameAZ2}
-              />{" "}
+              />
             </div>
           </th>
-          {/* <th>Items released</th> */}
-          {/* <th>Location found</th> */}
-          {/* <th>Location disposed</th> */}
-          {/* <th>Date items were disposed</th> */}
           <th>Status</th>
           <th className="action-col">Action</th>
         </tr>
@@ -638,8 +700,6 @@ const LostFOundTable = ({
                 selectedItems.includes(incident) ? "selected" : ""
               }`}
             >
-              {/* check box */}
-
               <td>
                 <div
                   onClick={() => handleSelectedItems(incident)}
@@ -652,45 +712,26 @@ const LostFOundTable = ({
                   )}
                 </div>
               </td>
-
-              {/* No */}
               <td>{index + 1}</td>
-              {/* Incident Id */}
-              <td>{incident.original_report || incident.id} </td>
-              {/* facility */}
+              <td>{incident.original_report || incident.id}</td>
               <td>{incident.report_facility?.name || "Not provided"}</td>
-              {/* date time reported */}
               <td>
-                {(
-                  <div>
-                    <DateFormatter dateString={incident.date_reported} />
-                    ,&nbsp; {formatTime(incident.time_reported)}
-                  </div>
-                ) || "-"}
+                <div>
+                  <DateFormatter dateString={incident.date_reported} />,{" "}
+                  {formatTime(incident.time_reported)}
+                </div>{" "}
               </td>
-              {/* person reporting */}
               <td>
-                {" "}
-                {`${incident.taken_by?.last_name} ${incident.taken_by?.first_name} ` ||
+                {`${incident.taken_by?.last_name} ${incident.taken_by?.first_name}` ||
                   "Not provided"}
               </td>
-              {/* person reporting */}
               <td>
                 {incident?.reported_by?.last_name ||
                 incident?.reported_by?.first_name
                   ? `${incident?.reported_by?.last_name} ${incident?.reported_by?.first_name}`
                   : "Not provided"}
               </td>
-              {/* <td>{incident.location_found || "Not provided"}</td> */}
-
-              {/* location */}
-              {/* <td>
-                {incident.location_returned || "Not provided"}
-              </td> */}
-
-              {/* status */}
               <td>
-                {" "}
                 <p
                   className={`follow-up ${
                     incident.status === "Draft"
@@ -703,8 +744,6 @@ const LostFOundTable = ({
                   {incident.status || "Not specified"}
                 </p>
               </td>
-              {/* action */}
-
               <td
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
@@ -722,7 +761,6 @@ const LostFOundTable = ({
                       }
                     />
                   )}
-
                   <Eye
                     size={20}
                     onClick={() =>
@@ -746,6 +784,7 @@ const LostFOundTable = ({
     </table>
   );
 };
+
 const IncidentTableCard = ({
   incident,
   items,
@@ -769,11 +808,9 @@ const IncidentTableCard = ({
               <Square />
             )}
           </div>
-
           <span>ID</span>
-          <span>{incident.original_report || incident.id} </span>
+          <span>{incident.original_report || incident.id}</span>
         </div>
-
         <div
           onClick={() =>
             handleRowClick(
@@ -795,19 +832,15 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Date & Time: </label>
           <span>
-            {" "}
-            {(
-              <span>
-                <DateFormatter dateString={incident?.date_reported} />, &nbsp;{" "}
-                {incident?.time_reported}
-              </span>
-            ) || "-"}
+            <span>
+              <DateFormatter dateString={incident?.date_reported} />,{" "}
+              {incident?.time_reported}
+            </span>{" "}
           </span>
         </div>
         <div className="item">
           <label htmlFor="">Person taking report: </label>
           <span>
-            {" "}
             {`${incident.taken_by?.last_name} ${incident.taken_by?.first_name}` ||
               "Not provided"}
           </span>
@@ -815,7 +848,6 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Person reporting: </label>
           <span>
-            {" "}
             {`${incident?.reported_by?.last_name} ${incident?.reported_by?.first_name}` ||
               "Not provided"}
           </span>
@@ -846,3 +878,5 @@ const IncidentTableCard = ({
     </div>
   );
 };
+
+export default LostAndFoundList;
