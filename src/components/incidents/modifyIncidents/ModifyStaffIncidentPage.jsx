@@ -309,7 +309,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         </div>
       )}
       <div className="modify-page-header">
-        <BackToPage link={"/incident/staff/"} pageName={"Staff incident"} />
+        <BackToPage link={"/incident/staff/"} pageName={"Staff incidents"} />
         <h2 className="title">Modifying Staff Incident</h2>
         {investigation && investigation.id ? (
           <Link

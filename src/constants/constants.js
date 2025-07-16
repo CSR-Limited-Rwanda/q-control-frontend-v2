@@ -320,3 +320,84 @@ export const outComeData = {
     { name: "Permanent disability" },
   ],
 };
+
+export const contributingFactors = [
+  {
+    factor: "PRODUCT",
+    description:
+      "E.G. Unclear manufacturing labeling, “sound-alike” drug names, look-alike packaging, omission or misuse of a prefix or suffix such as “fos” phenytoin or diltiazem “CD” etc.",
+  },
+  {
+    factor: "MEDICATION USE SYSTEM",
+    description:
+      "E.G. Side-by-side storage of look-alike drugs, lack of standardization in practice, competing distractions, etc.",
+  },
+  {
+    factor: "COMMUNICATION DYNAMICS",
+    description:
+      "E.G. Lack of clear, accurate, and timely written and oral communications related to drug regimen, lack of interactions that are free of fear of intimidation, punishment, and embarrassment etc.",
+  },
+  {
+    factor: "STAFF COMPETENCY",
+    description:
+      "E.G. Inadequate training or supervision, unfamiliarity with medication or procedures, fatigue, stress, or complacency.",
+  },
+  {
+    factor: "PATIENT FACTORS",
+    description:
+      "E.G. Non-adherence to prescribed treatment, miscommunication about allergies or prior medication reactions, and medical history complexities.",
+  },
+  {
+    factor: "ENVIRONMENTAL FACTORS",
+    description:
+      "E.G. Poor lighting, high noise levels, interruptions, or limited workspace leading to errors.",
+  },
+  {
+    factor: "TECHNOLOGY FAILURE",
+    description:
+      "E.G. Malfunctioning equipment, errors in automated systems, or lack of integration between electronic medical records and pharmacy databases.",
+  },
+  {
+    factor: "POLICIES AND PROCEDURES",
+    description:
+      "E.G. Lack of clear protocols, failure to follow best practices, or outdated procedures that contribute to medication errors.",
+  },
+  {
+    factor: "LEADERSHIP",
+    description:
+      "E.G. Lack of oversight, poor communication from management, or failure to implement risk-reduction strategies.",
+  },
+];
+
+export const errorTypes = [
+  {
+    name: "PRESCRIBING",
+    description:
+      "E.G. Incomplete or unclear order, excessive quantity prescribed, wrong drug, etc.",
+  },
+  {
+    name: "TRANSCRIBING",
+    description:
+      "E.G. Order entered on wrong person, order content changed during schedule revision, incorrect verbal order, etc.",
+  },
+  {
+    name: "PROCUREMENT & STORAGE",
+    description:
+      "E.G. Lack of standardized storage locations, lack of safe drug storage and stocking practices, lack of standardization of stock drug concentrations, expired drugs, provider failed to fill prescription, etc.",
+  },
+  {
+    name: "DISPENSING",
+    description:
+      "E.G. Medication mislabeled, wrong medication stocked in satellite pharmacy, wrong medication withdrawn from satellite pharmacy, inaccurate dose calculation, etc.",
+  },
+  {
+    name: "ADMINISTERING",
+    description:
+      "E.G. Medication label misread or not read, previous dose given but not charted or charted incorrectly, person identification not verified, person not available on unit, etc.",
+  },
+  {
+    name: "MONITORING",
+    description:
+      "E.G. Inaccurate documentation of person’s weight, necessary tests or procedures not ordered, test/procedure results misinterpreted, test/procedure results not charted or charted incorrectly, lapse in profile or new order review, etc.",
+  },
+];

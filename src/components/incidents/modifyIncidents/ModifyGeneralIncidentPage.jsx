@@ -412,7 +412,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   ) : (
     <div className="modify-page-content">
       <div className="modify-page-header">
-        <BackToPage link={"/incident/general/"} pageName={"general incident"} />
+        <BackToPage link={"/incident/general/"} pageName={"General incidents"} />
         <h2 className="title">Modifying General Incident</h2>
         <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>

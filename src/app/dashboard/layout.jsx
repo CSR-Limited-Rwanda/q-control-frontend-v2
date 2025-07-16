@@ -320,7 +320,7 @@ const DashboardLayout = ({ children }) => {
                   ) : selectedForm === "employee" ? (
                     <EmployeeIncidentForm />
                   ) : selectedForm === "medicationError" ? (
-                    <MedicationErrorForm />
+                    <MedicationErrorForm togglePopup={togglePopup} />
                   ) : selectedForm === "grievance" ? (
                     <GrievanceForm togglePopup={togglePopup} />
                   ) : selectedForm === "reactionReport" ? (
