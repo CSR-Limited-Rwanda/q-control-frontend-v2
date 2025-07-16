@@ -318,13 +318,13 @@ const DashboardLayout = ({ children }) => {
                   ) : selectedForm === "lostAndFound" ? (
                     <LostAndFoundForm togglePopup={togglePopup} />
                   ) : selectedForm === "employee" ? (
-                    <EmployeeIncidentForm />
+                    <EmployeeIncidentForm togglePopup={togglePopup} />
                   ) : selectedForm === "medicationError" ? (
-                    <MedicationErrorForm />
+                    <MedicationErrorForm togglePopup={togglePopup} />
                   ) : selectedForm === "grievance" ? (
                     <GrievanceForm togglePopup={togglePopup} />
                   ) : selectedForm === "reactionReport" ? (
-                    <DrugReactionForm />
+                    <DrugReactionForm togglePopup={togglePopup} />
                   ) : selectedForm === "workPlaceViolence" ? (
                     <WorkplaceViolenceIncidentForm togglePopup={togglePopup} />
                   ) : selectedForm === "healthIncident" ? (
@@ -336,7 +336,7 @@ const DashboardLayout = ({ children }) => {
                   ) : selectedForm === "complaintForm" ? (
                     <SubmitComplaintForm
                       hasHeight={false}
-                      handleSubmitComplaint={tootlePopup}
+                      handleSubmitComplaint={togglePopup}
                     />
                   ) : (
                     ""

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-
 import api, { API_URL, exportExcel } from "@/utils/api";
-
 import {
   Eye,
   File,
@@ -45,7 +43,6 @@ const DrugReactionList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
-  const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
@@ -71,55 +68,73 @@ const DrugReactionList = () => {
   );
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  const applyFilters = () => {
-    const newFilteredData = data.filter((item) => {
-      const incidentDate = new Date(item.date_of_adverse_reaction);
-      const startDate = filters.start_date
-        ? new Date(filters.start_date)
-        : null;
-      const endDate = filters.end_date ? new Date(filters.end_date) : null;
+  const fetchFilteredData = async (appliedFilters) => {
+    try {
+      setIsFetching(true);
+      const queryParams = new URLSearchParams();
+      if (appliedFilters.start_date)
+        queryParams.append("start_date", appliedFilters.start_date);
+      if (appliedFilters.end_date)
+        queryParams.append("end_date", appliedFilters.end_date);
+      if (appliedFilters.status)
+        queryParams.append("status", appliedFilters.status);
+      if (appliedFilters.outcome_type)
+        queryParams.append("outcome_type", appliedFilters.outcome_type);
+      if (appliedFilters.patient_type)
+        queryParams.append("patient_type", appliedFilters.patient_type);
 
-      const withinDateRange =
-        (!startDate || incidentDate >= startDate) &&
-        (!endDate || incidentDate <= endDate);
-
-      return (
-        withinDateRange &&
-        (!filters.status?.toLowerCase() ||
-          item.status?.toLowerCase() === filters.status?.toLowerCase()) &&
-        (!filters.outcome_type?.toLowerCase() ||
-          item.outcome_type?.toLowerCase() ===
-            filters.outcome_type?.toLowerCase()) &&
-        (!filters.patient_type?.toLowerCase() ||
-          item.patient_type?.toLowerCase() ===
-            filters.patient_type?.toLowerCase())
+      const response = await api.get(
+        `${API_URL}/incidents/adverse-drug-reaction/?${queryParams.toString()}`
       );
-    });
-
-    if (newFilteredData.length < 1) {
-      setIsSearchingTheDatabase(true);
-      setTimeout(() => {
+      if (response && response.status === 200 && response.data) {
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          date_of_adverse_reaction: item.date_of_adverse_reaction
+            ? new Date(item.date_of_adverse_reaction)
+                .toISOString()
+                .split("T")[0]
+            : item.date_of_adverse_reaction,
+        }));
+        setDrugReactionData(formattedData);
+        setSearchResults([]);
+        setIsSearching(false);
         setIsSearchingTheDatabase(false);
-      }, 3000);
+        setCurrentPage(1);
+        setIsFetching(false);
+      } else {
+        setErrorFetching("Unexpected response format.");
+        setIsFetching(false);
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrorFetching(error.response.data.error);
+      } else {
+        setErrorFetching("An error occurred while fetching incident data.");
+      }
+      setIsFetching(false);
     }
-    setDrugReactionData(newFilteredData);
-    setIsSearching(true);
-    setCurrentPage(1); // Reset to first page when filters are applied
+  };
+
+  const applyFilters = () => {
+    fetchFilteredData(filters);
     toggleOpenFilters();
   };
 
   const clearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       start_date: "",
       end_date: "",
       status: "",
       outcome_type: "",
       patient_type: "",
-    });
-    setDrugReactionData(data);
+    };
+    setFilters(clearedFilters);
+    setSearchResults([]);
     setIsSearching(false);
-    setCurrentPage(1); // Reset to first page when filters are cleared
-    toggleOpenFilters();
+    setIsSearchingTheDatabase(false);
+    setCurrentPage(1);
+    setOpenFilters(false);
+    fetchFilteredData(clearedFilters);
   };
 
   const handleRowClick = (drugReactionId) => {
@@ -158,7 +173,7 @@ const DrugReactionList = () => {
       }, 3000);
     }
     setSearchResults(results);
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
   };
 
   const handleSelectedItems = (item) => {
@@ -187,36 +202,7 @@ const DrugReactionList = () => {
   };
 
   useEffect(() => {
-    const fetchDrugReactionData = async () => {
-      try {
-        setIsFetching(true);
-        const response = await api.get(
-          `${API_URL}/incidents/adverse-drug-reaction/`
-        );
-        if (response.status === 200) {
-          const formattedData = response.data.map((item) => ({
-            ...item,
-            date_of_adverse_reaction: item.date_of_adverse_reaction
-              ? new Date(item.date_of_adverse_reaction)
-                  .toISOString()
-                  .split("T")[0]
-              : item.date_of_adverse_reaction,
-          }));
-          setDrugReactionData(formattedData);
-          setData(formattedData);
-          setIsFetching(false);
-        }
-      } catch (error) {
-        console.error(error);
-        if (error.response?.data?.error) {
-          setErrorFetching(error.response.data.error);
-        } else {
-          setErrorFetching("An error occurred while fetching incident data.");
-        }
-        setIsFetching(false);
-      }
-    };
-    fetchDrugReactionData();
+    fetchFilteredData(filters);
   }, []);
 
   return isFetching ? (
@@ -243,14 +229,14 @@ const DrugReactionList = () => {
               {openFilters ? (
                 <div className="filters_popup">
                   <div onClick={toggleOpenFilters} className="close-icon">
-                    <X size={24} variant={"stroke"} />
+                    <X size={24} variant="stroke" />
                   </div>
 
                   <h3>Filter incident data</h3>
                   <div className="filter-buttons">
                     <CustomSelectInput
                       options={["mild", "moderate", "severe"]}
-                      placeholder={"Filter by incident outcome"}
+                      placeholder="Filter by incident outcome"
                       selected={filters.outcome_type}
                       setSelected={(value) =>
                         setFilters({ ...filters, outcome_type: value })
@@ -260,7 +246,7 @@ const DrugReactionList = () => {
                     />
                     <CustomSelectInput
                       options={["Draft", "Open", "Closed"]}
-                      placeholder={"Filter by status"}
+                      placeholder="Filter by status"
                       selected={filters.status}
                       setSelected={(value) =>
                         setFilters({ ...filters, status: value })
@@ -270,7 +256,7 @@ const DrugReactionList = () => {
                     />
                     <CustomSelectInput
                       options={["Inpatient", "Outpatient", "ED", "Visitor"]}
-                      placeholder={"Filter by care Level"}
+                      placeholder="Filter by care Level"
                       selected={filters.patient_type}
                       setSelected={(value) =>
                         setFilters({ ...filters, patient_type: value })
@@ -305,7 +291,7 @@ const DrugReactionList = () => {
 
                     <div className="pop-up-buttons">
                       <button onClick={clearFilters} className="outline-button">
-                        <X size={20} variant={"stroke"} />
+                        <X size={20} variant="stroke" />
                         Clear
                       </button>
                       <button
@@ -313,16 +299,15 @@ const DrugReactionList = () => {
                         className="secondary-button"
                       >
                         <div className="icon">
-                          <SlidersHorizontal size={20} variant={"stroke"} />
+                          <SlidersHorizontal size={20} variant="stroke" />
                         </div>
                         <span>Filter</span>
                       </button>
                     </div>
                   </div>
                 </div>
-              ) : (
-                ""
-              )}
+              ) : null}
+
               <input
                 onChange={(e) => search(e.target.value)}
                 type="search"
@@ -335,7 +320,8 @@ const DrugReactionList = () => {
                   onClick={() => exportExcel(selectedItems, "ard_list")}
                   className="secondary-button"
                 >
-                  <File /> <span>Export</span>
+                  <File />
+                  <span>Export</span>
                 </button>
               ) : (
                 <button
@@ -343,7 +329,7 @@ const DrugReactionList = () => {
                   className="date-filter-button"
                 >
                   <div className="icon">
-                    <SlidersHorizontal variant={"stroke"} />
+                    <SlidersHorizontal variant="stroke" />
                   </div>
                   <span>Filter</span>
                 </button>
@@ -364,74 +350,72 @@ const DrugReactionList = () => {
                       <span className="count">{searchResults.length}</span>{" "}
                       result(s) found
                     </div>
-                    <>
-                      <DrugReactionTable
-                        incidentData={currentSearchResults}
-                        handleNonClickableColumnClick={
-                          handleNonClickableColumnClick
-                        }
-                        setIncidentData={setSearchResults}
-                        handleRowClick={handleRowClick}
-                        navigateToModify={navigateToModify}
-                        selectedItems={selectedItems}
-                        handleSelectedItems={handleSelectedItems}
-                        handleSelectAll={handleSelectAll}
-                      />
-                      <div className="mobile-table">
+                    <DrugReactionTable
+                      incidentData={currentSearchResults}
+                      handleNonClickableColumnClick={
+                        handleNonClickableColumnClick
+                      }
+                      setIncidentData={setSearchResults}
+                      handleRowClick={handleRowClick}
+                      navigateToModify={navigateToModify}
+                      selectedItems={selectedItems}
+                      handleSelectedItems={handleSelectedItems}
+                      handleSelectAll={handleSelectAll}
+                    />
+                    <div className="mobile-table">
+                      <button
+                        onClick={() => handleSelectAll(searchResults)}
+                        type="button"
+                        className="tertiary-button"
+                      >
+                        {searchResults.every((item) =>
+                          selectedItems.some(
+                            (selected) => selected.id === item.id
+                          )
+                        ) ? (
+                          <SquareCheck />
+                        ) : (
+                          <Square />
+                        )}{" "}
+                        Select all
+                      </button>
+                      {currentSearchResults.map((incident, index) => (
+                        <IncidentTableCard
+                          key={index}
+                          incident={incident}
+                          handleRowClick={handleRowClick}
+                          selectedItems={selectedItems}
+                          handleSelectedItems={handleSelectedItems}
+                        />
+                      ))}
+                    </div>
+                    <div className="pagination-controls">
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                      >
+                        Prev
+                      </button>
+                      {pageNumbers.map((number) => (
                         <button
-                          onClick={() => handleSelectAll(searchResults)}
-                          type="button"
-                          className="tertiary-button"
+                          key={number}
+                          className={`pagination-button ${
+                            currentPage === number ? "active" : ""
+                          }`}
+                          onClick={() => handlePageChange(number)}
                         >
-                          {searchResults.every((item) =>
-                            selectedItems.some(
-                              (selected) => selected.id === item.id
-                            )
-                          ) ? (
-                            <SquareCheck />
-                          ) : (
-                            <Square />
-                          )}{" "}
-                          Select all
+                          {number}
                         </button>
-                        {currentSearchResults.map((incident, index) => (
-                          <IncidentTableCard
-                            key={index}
-                            incident={incident}
-                            handleRowClick={handleRowClick}
-                            selectedItems={selectedItems}
-                            handleSelectedItems={handleSelectedItems}
-                          />
-                        ))}
-                      </div>
-                      <div className="pagination-controls">
-                        <button
-                          className="pagination-button"
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
-                        >
-                          Prev
-                        </button>
-                        {pageNumbers.map((number) => (
-                          <button
-                            key={number}
-                            className={`pagination-button ${
-                              currentPage === number ? "active" : ""
-                            }`}
-                            onClick={() => handlePageChange(number)}
-                          >
-                            {number}
-                          </button>
-                        ))}
-                        <button
-                          className="pagination-button"
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                        >
-                          Next
-                        </button>
-                      </div>
-                    </>
+                      ))}
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="no-data-found">
@@ -560,7 +544,6 @@ const DrugReactionTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-    console.log(items);
     console.log("sorting items:", sortBy, direction, field);
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
@@ -674,7 +657,7 @@ const DrugReactionTable = ({
               <td>{data.original_report || data.id}</td>
               <td>{data?.report_facility?.name || "Not provided"}</td>
               <td>
-                {data.patient_name?.last_name || data.patient_name?.first_name
+                {data.patient_name?.last_name && data.patient_name?.first_name
                   ? `${data.patient_name?.last_name} ${data.patient_name?.first_name}`
                   : "Not provided"}
               </td>
@@ -741,7 +724,6 @@ const DrugReactionTable = ({
 
 const IncidentTableCard = ({
   incident,
-  items,
   handleRowClick,
   selectedItems,
   handleSelectedItems,
@@ -776,7 +758,6 @@ const IncidentTableCard = ({
           <span>View more</span>
         </div>
       </div>
-      {items}
       <div className="card-content-items">
         <div className="item">
           <label htmlFor="">Facility: </label>
@@ -785,8 +766,10 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Patient/Visitor Name: </label>
           <span>
-            {`${incident.patient_name?.last_name} ${incident.patient_name?.first_name}` ||
-              "Not provided"}
+            {incident.patient_name?.last_name &&
+            incident.patient_name?.first_name
+              ? `${incident.patient_name?.last_name} ${incident.patient_name?.first_name}`
+              : "Not provided"}
           </span>
         </div>
         <div className="item">
@@ -796,12 +779,10 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Date & Time: </label>
           <span>
-            <span>
-              <DateFormatter dateString={incident?.date_of_adverse_reaction} />,{" "}
-              {incident?.incident_time
-                ? formatTimeWithAMPM(incident.incident_time)
-                : "-"}
-            </span>
+            <DateFormatter dateString={incident?.date_of_adverse_reaction} />,{" "}
+            {incident?.incident_time
+              ? formatTimeWithAMPM(incident.incident_time)
+              : "-"}
           </span>
         </div>
         <div className="item">

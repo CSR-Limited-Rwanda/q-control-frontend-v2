@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-
 import api, { API_URL, exportExcel } from "@/utils/api";
-
 import {
   Eye,
   File,
@@ -24,10 +22,13 @@ import {
 } from "./StaffIncidentList";
 
 function formatDate(dateString) {
+  if (!dateString || isNaN(new Date(dateString).getTime())) {
+    return "Invalid Date";
+  }
   const date = new Date(dateString);
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
-  const year = String(date.getFullYear()).slice(0);
+  const year = String(date.getFullYear());
   return `${year}-${month}-${day}`;
 }
 
@@ -37,24 +38,18 @@ const MedicationErrorList = () => {
   const [medicationData, setMedicationData] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [filterByDate, setFilterByDate] = useState(false);
-  const [openAction, setOpenAction] = useState(false);
-  const [openActionIndex, setOpenActionIndex] = useState("");
-  const [selectedItems, setSelectedItems] = useState([]);
   const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
-
-  const router = useRouter();
-
-  const [data, setData] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
     status: "",
   });
   const [openFilters, setOpenFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
+  const router = useRouter();
 
   // Calculate pagination data
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -72,41 +67,99 @@ const MedicationErrorList = () => {
   );
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
+  const fetchFilteredData = async (appliedFilters) => {
+    try {
+      setIsFetching(true);
+      setErrorFetching("");
+      const queryParams = new URLSearchParams();
+      if (appliedFilters.start_date)
+        queryParams.append("start_date", appliedFilters.start_date);
+      if (appliedFilters.end_date)
+        queryParams.append("end_date", appliedFilters.end_date);
+      if (appliedFilters.status)
+        queryParams.append("status", appliedFilters.status);
+
+      const response = await api.get(
+        `${API_URL}/incidents/medication-error/?${queryParams.toString()}`
+      );
+      if (response && response.status === 200 && response.data) {
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          date_of_error: formatDate(item.date_of_error),
+        }));
+        setMedicationData(formattedData);
+        setSearchResults([]);
+        setIsSearching(false);
+        setIsSearchingTheDatabase(false);
+        setCurrentPage(1);
+        setIsFetching(false);
+      } else {
+        setErrorFetching("Unexpected response format.");
+        setIsFetching(false);
+      }
+    } catch (error) {
+      console.error("Medication Error API error:", error);
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrorFetching(error.response.data.error);
+      } else {
+        setErrorFetching("An error occurred while fetching incident data.");
+      }
+      setIsFetching(false);
+    }
+  };
+
+  const applyFilters = () => {
+    fetchFilteredData(filters);
+    setOpenFilters(false);
+  };
+
+  const clearFilters = () => {
+    const clearedFilters = {
+      start_date: "",
+      end_date: "",
+      status: "",
+    };
+    setFilters(clearedFilters);
+    setSearchResults([]);
+    setIsSearching(false);
+    setIsSearchingTheDatabase(false);
+    setCurrentPage(1);
+    setOpenFilters(false);
+    fetchFilteredData(clearedFilters);
+  };
+
   const toggleOpenFilters = () => {
     setOpenFilters(!openFilters);
   };
 
-  const applyFilters = () => {
-    const newFilteredData = data.filter((item) => {
-      const incidentDate = new Date(item.date_of_error);
-      const startDate = filters.start_date
-        ? new Date(filters.start_date)
-        : null;
-      const endDate = filters.end_date ? new Date(filters.end_date) : null;
-
-      const withinDateRange =
-        (!startDate || incidentDate >= startDate) &&
-        (!endDate || incidentDate <= endDate);
-
-      return (
-        withinDateRange &&
-        (!filters.status.toLowerCase() ||
-          item.status.toLowerCase() === filters.status.toLowerCase())
-      );
-    });
-    setMedicationData(newFilteredData);
-    setCurrentPage(1); // Reset to first page when filters are applied
-    toggleOpenFilters();
-  };
-
-  const clearFilters = () => {
-    setFilters({
-      start_date: "",
-      end_date: "",
-      status: "",
-    });
-    setMedicationData(data);
-    setCurrentPage(1); // Reset to first page when filters are cleared
+  const search = (string) => {
+    setIsSearching(true);
+    if (string.length < 2) {
+      setIsSearching(false);
+      setSearchResults([]);
+      return;
+    }
+    const results = medicationData.filter(
+      (item) =>
+        (item.report_facility?.name &&
+          item.report_facility.name
+            .toLowerCase()
+            .includes(string.toLowerCase())) ||
+        (item.patient?.first_name &&
+          item.patient.first_name
+            .toLowerCase()
+            .includes(string.toLowerCase())) ||
+        (item.drug_given &&
+          item.drug_given.toLowerCase().includes(string.toLowerCase()))
+    );
+    if (results.length < 1) {
+      setIsSearchingTheDatabase(true);
+      setTimeout(() => {
+        setIsSearchingTheDatabase(false);
+      }, 3000);
+    }
+    setSearchResults(results);
+    setCurrentPage(1);
   };
 
   const handleRowClick = (incidentId) => {
@@ -119,38 +172,6 @@ const MedicationErrorList = () => {
 
   const handleNonClickableColumnClick = (event) => {
     event.stopPropagation();
-  };
-
-  const toggleAction = (index) => {
-    setOpenActionIndex(index);
-    setOpenAction(!openAction);
-  };
-
-  const toggleFilterByDate = () => {
-    setFilterByDate(!filterByDate);
-  };
-
-  const search = (string) => {
-    setIsSearching(true);
-    const results = medicationData.filter(
-      (item) =>
-        (item.report_facility?.name &&
-          item.report_facility.name
-            .toLowerCase()
-            .includes(string.toLowerCase())) ||
-        (item.patient_name &&
-          item.patient_name.toLowerCase().includes(string.toLowerCase())) ||
-        (item.drug_given &&
-          item.drug_given.toLowerCase().includes(string.toLowerCase()))
-    );
-    if (results.length < 1) {
-      setIsSearchingTheDatabase(true);
-      setTimeout(() => {
-        setIsSearchingTheDatabase(false);
-      }, 3000);
-    }
-    setSearchResults(results);
-    setCurrentPage(1); // Reset to first page when searching
   };
 
   const handleSelectedItems = (item) => {
@@ -179,324 +200,278 @@ const MedicationErrorList = () => {
   };
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
   };
 
   useEffect(() => {
-    const fetchMedicationData = async () => {
-      try {
-        const response = await api.get(
-          `${API_URL}/incidents/medication-error/`
-        );
-        if (response.status === 200) {
-          const formattedData = response.data.map((item) => ({
-            ...item,
-            date_of_error: formatDate(item.date_of_error),
-          }));
-          setMedicationData(formattedData);
-          setData(formattedData);
-          setIsFetching(false);
-        }
-      } catch (error) {
-        if (error.response?.data?.error) {
-          setErrorFetching(error.response.data.error);
-        } else {
-          setErrorFetching("An error occurred while fetching incident data.");
-        }
-        setIsFetching(false);
-      }
-    };
-    fetchMedicationData();
+    fetchFilteredData(filters);
   }, []);
 
   return isFetching ? (
-    <>
-      <div className="getting-data">
-        <p>Getting data..</p>
-      </div>
-    </>
+    <ModifyPageLoader />
   ) : (
-    <>
-      <div>
-        {errorFetching ? (
-          <div className="error-message">
-            <p>{errorFetching}</p>
-          </div>
-        ) : (
-          <div className="tab-container incidents-tab">
-            <div className="tab-header">
-              <div className="title-container-action">
-                <div className="title-container">
-                  <h2 className="title">Medication Error Tracking List</h2>
-                  <p>{medicationData.length} incident(s) available</p>
-                </div>
-              </div>
-
-              <div className="filters">
-                {openFilters ? (
-                  <div className="filters_popup">
-                    <div onClick={toggleOpenFilters} className="close-icon">
-                      <X size={24} variant={"stroke"} />
-                    </div>
-
-                    <h3>Filter incident data</h3>
-                    <div className="filter-buttons">
-                      <CustomSelectInput
-                        options={["Draft", "Open", "Closed"]}
-                        placeholder={"Filter by status"}
-                        selected={filters.status}
-                        setSelected={(value) =>
-                          setFilters({ ...filters, status: value })
-                        }
-                        name="status"
-                        id="status"
-                      />
-
-                      <div className="filter-range">
-                        <span>Start date</span>
-                        <CustomDatePicker
-                          selectedDate={filters.start_date}
-                          setSelectedDate={(value) =>
-                            setFilters({ ...filters, start_date: value })
-                          }
-                          placeholderText="Select a date"
-                          dateFormat="yyyy-MM-dd"
-                        />
-                      </div>
-
-                      <div className="filter-range">
-                        <span>End date</span>
-                        <CustomDatePicker
-                          selectedDate={filters.end_date}
-                          setSelectedDate={(value) =>
-                            setFilters({ ...filters, end_date: value })
-                          }
-                          placeholderText="Select a date"
-                          dateFormat="yyyy-MM-dd"
-                        />
-                      </div>
-
-                      <div className="pop-up-buttons">
-                        <button
-                          onClick={clearFilters}
-                          className="outline-button"
-                        >
-                          <X size={20} variant={"stroke"} />
-                          Clear
-                        </button>
-                        <button
-                          onClick={applyFilters}
-                          className="secondary-button"
-                        >
-                          <div className="icon">
-                            <SlidersHorizontal size={20} variant={"stroke"} />
-                          </div>
-                          <span>Filter</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  ""
-                )}
-                <input
-                  onChange={(e) => {
-                    search(e.target.value);
-                  }}
-                  type="search"
-                  name="systemSearch"
-                  id="systemSearch"
-                  placeholder="Search the system"
-                />
-
-                {selectedItems.length > 0 ? (
-                  <button
-                    onClick={() =>
-                      exportExcel(selectedItems, "general_incident_list")
-                    }
-                    className="secondary-button"
-                  >
-                    <File /> <span>Export</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={toggleOpenFilters}
-                    className="date-filter-button"
-                  >
-                    <div className="icon">
-                      <SlidersHorizontal variant={"stroke"} />
-                    </div>
-                    <span>Filter</span>
-                  </button>
-                )}
+    <div>
+      {errorFetching ? (
+        <div className="error-message">
+          <p>{errorFetching}</p>
+        </div>
+      ) : (
+        <div className="tab-container incidents-tab">
+          <div className="tab-header">
+            <div className="title-container-action">
+              <div className="title-container">
+                <h2 className="title">Medication Error Tracking List</h2>
+                <p>{medicationData.length} incident(s) available</p>
               </div>
             </div>
 
-            <div className="incident-list">
-              {isSearching ? (
-                <div className="search-results">
-                  {isSearchingTheDatabase ? (
-                    <div className="searching-database">
-                      <p>Searching database</p>
-                    </div>
-                  ) : currentSearchResults.length > 0 ? (
-                    <div className="results-table">
-                      <div className="results-count">
-                        <span className="count">{searchResults.length}</span>{" "}
-                        result(s) found
-                      </div>
-                      <div>
-                        <MedicationErrorTable
-                          incidentData={currentSearchResults}
-                          handleNonClickableColumnClick={
-                            handleNonClickableColumnClick
-                          }
-                          setIncidentData={setSearchResults}
-                          handleRowClick={handleRowClick}
-                          navigateToModify={navigateToModify}
-                          selectedItems={selectedItems}
-                          handleSelectedItems={handleSelectedItems}
-                          handleSelectAll={handleSelectAll}
-                        />
-                        <div className="mobile-table">
-                          <button
-                            onClick={() => handleSelectAll(searchResults)}
-                            type="button"
-                            className="tertiary-button"
-                          >
-                            {searchResults.every((item) =>
-                              selectedItems.some(
-                                (selected) => selected.id === item.id
-                              )
-                            ) ? (
-                              <SquareCheck />
-                            ) : (
-                              <Square />
-                            )}{" "}
-                            Select all
-                          </button>
-                          {currentSearchResults.map((incident, index) => (
-                            <IncidentTableCard
-                              key={index}
-                              incident={incident}
-                              handleRowClick={handleRowClick}
-                              selectedItems={selectedItems}
-                              handleSelectedItems={handleSelectedItems}
-                              handleSelectAll={handleSelectAll}
-                            />
-                          ))}
-                        </div>
-                        <div className="pagination-controls">
-                          <button
-                            className="pagination-button"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                          >
-                            Prev
-                          </button>
-                          {pageNumbers.map((number) => (
-                            <button
-                              key={number}
-                              className={`pagination-button ${
-                                currentPage === number ? "active" : ""
-                              }`}
-                              onClick={() => handlePageChange(number)}
-                            >
-                              {number}
-                            </button>
-                          ))}
-                          <button
-                            className="pagination-button"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                          >
-                            Next
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="no-data-found">
-                      <p>No data found with your search</p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <MedicationErrorTable
-                    incidentData={currentMedicationData}
-                    handleNonClickableColumnClick={
-                      handleNonClickableColumnClick
-                    }
-                    handleRowClick={handleRowClick}
-                    navigateToModify={navigateToModify}
-                    selectedItems={selectedItems}
-                    handleSelectedItems={handleSelectedItems}
-                    handleSelectAll={handleSelectAll}
-                    setIncidentData={setMedicationData}
-                  />
-                  <div className="mobile-table">
-                    <button
-                      onClick={() => handleSelectAll(medicationData)}
-                      type="button"
-                      className="tertiary-button"
-                    >
-                      {medicationData.every((item) =>
-                        selectedItems.some(
-                          (selected) => selected.id === item.id
-                        )
-                      ) ? (
-                        <SquareCheck />
-                      ) : (
-                        <Square />
-                      )}{" "}
-                      Select all
-                    </button>
-                    {currentMedicationData.map((incident, index) => (
-                      <IncidentTableCard
-                        key={index}
-                        incident={incident}
-                        handleRowClick={handleRowClick}
-                        selectedItems={selectedItems}
-                        handleSelectedItems={handleSelectedItems}
-                        handleSelectAll={handleSelectAll}
+            <div className="filters">
+              {openFilters ? (
+                <div className="filters_popup">
+                  <div onClick={toggleOpenFilters} className="close-icon">
+                    <X size={24} variant="stroke" />
+                  </div>
+                  <h3>Filter incident data</h3>
+                  <div className="filter-buttons">
+                    <CustomSelectInput
+                      options={["Draft", "Open", "Closed"]}
+                      placeholder="Filter by status"
+                      selected={filters.status}
+                      setSelected={(value) =>
+                        setFilters({ ...filters, status: value })
+                      }
+                      name="status"
+                      id="status"
+                    />
+                    <div className="filter-range">
+                      <span>Start date</span>
+                      <CustomDatePicker
+                        selectedDate={filters.start_date}
+                        setSelectedDate={(value) =>
+                          setFilters({ ...filters, start_date: value })
+                        }
+                        placeholderText="Select a date"
+                        dateFormat="yyyy-MM-dd"
                       />
-                    ))}
-                  </div>
-                  <div className="pagination-controls">
-                    <button
-                      className="pagination-button"
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      Prev
-                    </button>
-                    {pageNumbers.map((number) => (
-                      <button
-                        key={number}
-                        className={`pagination-button ${
-                          currentPage === number ? "active" : ""
-                        }`}
-                        onClick={() => handlePageChange(number)}
-                      >
-                        {number}
+                    </div>
+                    <div className="filter-range">
+                      <span>End date</span>
+                      <CustomDatePicker
+                        selectedDate={filters.end_date}
+                        setSelectedDate={(value) =>
+                          setFilters({ ...filters, end_date: value })
+                        }
+                        placeholderText="Select a date"
+                        dateFormat="yyyy-MM-dd"
+                      />
+                    </div>
+                    <div className="pop-up-buttons">
+                      <button onClick={clearFilters} className="outline-button">
+                        <X size={20} variant="stroke" />
+                        Clear
                       </button>
-                    ))}
-                    <button
-                      className="pagination-button"
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                    >
-                      Next
-                    </button>
+                      <button
+                        onClick={applyFilters}
+                        className="secondary-button"
+                      >
+                        <div className="icon">
+                          <SlidersHorizontal size={20} variant="stroke" />
+                        </div>
+                        <span>Filter</span>
+                      </button>
+                    </div>
                   </div>
-                </>
+                </div>
+              ) : null}
+              <input
+                onChange={(e) => search(e.target.value)}
+                type="search"
+                name="systemSearch"
+                id="systemSearch"
+                placeholder="Search by facility, patient name, or drug given"
+              />
+              {selectedItems.length > 0 ? (
+                <button
+                  onClick={() =>
+                    exportExcel(selectedItems, "medication_error_list")
+                  }
+                  className="secondary-button"
+                >
+                  <File />
+                  <span>Export</span>
+                </button>
+              ) : (
+                <button
+                  onClick={toggleOpenFilters}
+                  className="date-filter-button"
+                >
+                  <div className="icon">
+                    <SlidersHorizontal variant="stroke" />
+                  </div>
+                  <span>Filter</span>
+                </button>
               )}
             </div>
           </div>
-        )}
-      </div>
-    </>
+
+          <div className="incident-list">
+            {isSearching ? (
+              <div className="search-results">
+                {isSearchingTheDatabase ? (
+                  <div className="searching_database">
+                    <p>Searching database</p>
+                  </div>
+                ) : currentSearchResults.length > 0 ? (
+                  <div className="results-table">
+                    <div className="results-count">
+                      <span className="count">{searchResults.length}</span>{" "}
+                      result(s) found
+                    </div>
+                    <MedicationErrorTable
+                      incidentData={currentSearchResults}
+                      handleNonClickableColumnClick={
+                        handleNonClickableColumnClick
+                      }
+                      setIncidentData={setSearchResults}
+                      handleRowClick={handleRowClick}
+                      navigateToModify={navigateToModify}
+                      selectedItems={selectedItems}
+                      handleSelectedItems={handleSelectedItems}
+                      handleSelectAll={handleSelectAll}
+                    />
+                    <div className="mobile-table">
+                      <button
+                        onClick={() => handleSelectAll(searchResults)}
+                        type="button"
+                        className="tertiary-button"
+                      >
+                        {searchResults.every((item) =>
+                          selectedItems.some(
+                            (selected) => selected.id === item.id
+                          )
+                        ) ? (
+                          <SquareCheck />
+                        ) : (
+                          <Square />
+                        )}{" "}
+                        Select all
+                      </button>
+                      {currentSearchResults.map((incident, index) => (
+                        <IncidentTableCard
+                          key={index}
+                          incident={incident}
+                          handleRowClick={handleRowClick}
+                          selectedItems={selectedItems}
+                          handleSelectedItems={handleSelectedItems}
+                        />
+                      ))}
+                    </div>
+                    <div className="pagination-controls">
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                      >
+                        Prev
+                      </button>
+                      {pageNumbers.map((number) => (
+                        <button
+                          key={number}
+                          className={`pagination-button ${
+                            currentPage === number ? "active" : ""
+                          }`}
+                          onClick={() => handlePageChange(number)}
+                        >
+                          {number}
+                        </button>
+                      ))}
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="no-data-found">
+                    <p>No data found with your search</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <MedicationErrorTable
+                  incidentData={currentMedicationData}
+                  handleNonClickableColumnClick={handleNonClickableColumnClick}
+                  handleRowClick={handleRowClick}
+                  navigateToModify={navigateToModify}
+                  selectedItems={selectedItems}
+                  handleSelectedItems={handleSelectedItems}
+                  handleSelectAll={handleSelectAll}
+                  setIncidentData={setMedicationData}
+                />
+                <div className="mobile-table">
+                  <button
+                    onClick={() => handleSelectAll(medicationData)}
+                    type="button"
+                    className="tertiary-button"
+                  >
+                    {medicationData.every((item) =>
+                      selectedItems.some((selected) => selected.id === item.id)
+                    ) ? (
+                      <SquareCheck />
+                    ) : (
+                      <Square />
+                    )}{" "}
+                    Select all
+                  </button>
+                  {currentMedicationData.map((incident, index) => (
+                    <IncidentTableCard
+                      key={index}
+                      incident={incident}
+                      handleRowClick={handleRowClick}
+                      selectedItems={selectedItems}
+                      handleSelectedItems={handleSelectedItems}
+                    />
+                  ))}
+                </div>
+                <div className="pagination-controls">
+                  <button
+                    className="pagination-button"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    Prev
+                  </button>
+                  {pageNumbers.map((number) => (
+                    <button
+                      key={number}
+                      className={`pagination-button ${
+                        currentPage === number ? "active" : ""
+                      }`}
+                      onClick={() => handlePageChange(number)}
+                    >
+                      {number}
+                    </button>
+                  ))}
+                  <button
+                    className="pagination-button"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

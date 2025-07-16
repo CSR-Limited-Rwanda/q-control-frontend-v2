@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import api, { API_URL, exportExcel } from "@/utils/api";
-
 import { useRouter } from "next/navigation";
 import DateFormatter from "@/components/DateFormatter";
 import ModifyPageLoader from "@/components/loader";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import CustomSelectInput from "@/components/CustomSelectInput";
-
 import {
   Eye,
   File,
@@ -24,7 +22,7 @@ function formatDate(dateString) {
   const date = new Date(dateString);
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
-  const year = String(date.getFullYear()).slice(0);
+  const year = String(date.getFullYear());
   return `${year}-${month}-${day}`;
 }
 
@@ -42,7 +40,6 @@ const StaffIncidentList = () => {
 
   const router = useRouter();
 
-  const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
@@ -71,47 +68,65 @@ const StaffIncidentList = () => {
     }
   };
 
-  const applyFilters = () => {
-    const newFilteredData = data.filter((item) => {
-      const incidentDate = new Date(item.date_of_injury_or_near_miss);
-      const startDate = filters.start_date
-        ? new Date(filters.start_date)
-        : null;
-      const endDate = filters.end_date ? new Date(filters.end_date) : null;
+  const fetchFilteredData = async (appliedFilters) => {
+    try {
+      setIsFetching(true);
+      const queryParams = new URLSearchParams();
+      if (appliedFilters.start_date)
+        queryParams.append("start_date", appliedFilters.start_date);
+      if (appliedFilters.end_date)
+        queryParams.append("end_date", appliedFilters.end_date);
+      if (appliedFilters.status)
+        queryParams.append("status", appliedFilters.status);
 
-      const withinDateRange =
-        (!startDate || incidentDate >= startDate) &&
-        (!endDate || incidentDate <= endDate);
-
-      return (
-        withinDateRange &&
-        (!filters.status?.toLowerCase() ||
-          item.status?.toLowerCase() === filters.status?.toLowerCase())
+      const response = await api.get(
+        `${API_URL}/incidents/staff-incident/?${queryParams.toString()}`
       );
-    });
-
-    if (newFilteredData.length === 0) {
-      setIsSearchingTheDatabase(true);
-      setTimeout(() => {
+      if (response && response.status === 200 && response.data) {
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          date_of_injury_or_near_miss: formatDate(
+            item.date_of_injury_or_near_miss
+          ),
+        }));
+        setIncidentData(formattedData);
+        setSearchResults([]);
+        setIsSearching(false);
         setIsSearchingTheDatabase(false);
-      }, 3000);
+        setCurrentPage(1);
+        setIsFetching(false);
+      } else {
+        setErrorFetching("Unexpected response format.");
+        setIsFetching(false);
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrorFetching(error.response.data.error);
+      } else {
+        setErrorFetching("An error occurred while fetching incident data.");
+      }
+      setIsFetching(false);
     }
-    setIncidentData(newFilteredData);
-    setIsSearching(true);
-    setCurrentPage(1); // Reset to first page when filters are applied
+  };
+
+  const applyFilters = () => {
+    fetchFilteredData(filters);
     toggleOpenFilters();
   };
 
   const clearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       start_date: "",
       end_date: "",
       status: "",
-    });
-    setIncidentData(data);
+    };
+    setFilters(clearedFilters);
+    setSearchResults([]);
     setIsSearching(false);
-    setCurrentPage(1); // Reset to first page when filters are cleared
-    toggleOpenFilters();
+    setIsSearchingTheDatabase(false);
+    setCurrentPage(1);
+    setOpenFilters(false);
+    fetchFilteredData(clearedFilters);
   };
 
   const handleRowClick = (incidentId) => {
@@ -153,7 +168,7 @@ const StaffIncidentList = () => {
       }, 3000);
     }
     setSearchResults(results);
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
   };
 
   const handleSelectedItems = (item) => {
@@ -182,311 +197,277 @@ const StaffIncidentList = () => {
   };
 
   useEffect(() => {
-    const fetchIncidentData = async () => {
-      try {
-        const response = await api.get(`${API_URL}/incidents/staff-incident/`);
-        if (response.status === 200) {
-          const formattedData = response.data.map((item) => ({
-            ...item,
-            date_of_injury_or_near_miss: formatDate(
-              item.date_of_injury_or_near_miss
-            ),
-          }));
-          setIncidentData(formattedData);
-          setData(formattedData);
-          setIsFetching(false);
-        }
-      } catch (error) {
-        if (error.response?.data?.error) {
-          setErrorFetching(error.response.data.error);
-        } else {
-          setErrorFetching("An error occurred while fetching incident data.");
-        }
-        setIsFetching(false);
-      }
-    };
-    fetchIncidentData();
+    fetchFilteredData(filters);
   }, []);
 
   return isFetching ? (
     <ModifyPageLoader />
   ) : (
-    <>
-      <div>
-        {errorFetching ? (
-          <div className="error-message">
-            <p>{errorFetching}</p>
-          </div>
-        ) : (
-          <div className="tab-container incidents-tab">
-            <div className="tab-header">
-              <div className="title-container-action">
-                <div className="title-container">
-                  <h2 className="title">Staff Incident Tracking List</h2>
-                  <p>{incidentData.length} incident(s) available</p>
-                </div>
-              </div>
-
-              <div className="filters">
-                {openFilters ? (
-                  <div className="filters_popup">
-                    <div onClick={toggleOpenFilters} className="close-icon">
-                      <X size={24} variant={"stroke"} />
-                    </div>
-
-                    <h3>Filter incident data</h3>
-                    <div className="filter-buttons">
-                      <CustomSelectInput
-                        options={["Draft", "Open", "Closed"]}
-                        placeholder={"Filter by status"}
-                        selected={filters.status}
-                        setSelected={(value) =>
-                          setFilters({ ...filters, status: value })
-                        }
-                        name="status"
-                        id="status"
-                      />
-
-                      <div className="filter-range">
-                        <span>Start date</span>
-                        <CustomDatePicker
-                          selectedDate={filters.start_date}
-                          setSelectedDate={(value) =>
-                            setFilters({ ...filters, start_date: value })
-                          }
-                          placeholderText="Select a date"
-                          dateFormat="yyyy-MM-dd"
-                        />
-                      </div>
-
-                      <div className="filter-range">
-                        <span>End date</span>
-                        <CustomDatePicker
-                          selectedDate={filters.end_date}
-                          setSelectedDate={(value) =>
-                            setFilters({ ...filters, end_date: value })
-                          }
-                          placeholderText="Select a date"
-                          dateFormat="yyyy-MM-dd"
-                        />
-                      </div>
-
-                      <div className="pop-up-buttons">
-                        <button
-                          onClick={clearFilters}
-                          className="outline-button"
-                        >
-                          <X size={20} variant={"stroke"} />
-                          Clear
-                        </button>
-                        <button
-                          onClick={applyFilters}
-                          className="secondary-button"
-                        >
-                          <div className="icon">
-                            <SlidersHorizontal size={20} variant={"stroke"} />
-                          </div>
-                          <span>Filter</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  ""
-                )}
-                <input
-                  onChange={(e) => search(e.target.value)}
-                  type="search"
-                  name="systemSearch"
-                  id="systemSearch"
-                  placeholder="Search by facility, staff name"
-                />
-                {selectedItems.length > 0 ? (
-                  <button
-                    onClick={() =>
-                      exportExcel(selectedItems, "staff_incident_list")
-                    }
-                    className="secondary-button"
-                  >
-                    <File /> <span>Export</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={toggleOpenFilters}
-                    className="date-filter-button"
-                  >
-                    <div className="icon">
-                      <SlidersHorizontal variant={"stroke"} />
-                    </div>
-                    <span>Filter</span>
-                  </button>
-                )}
+    <div>
+      {errorFetching ? (
+        <div className="error-message">
+          <p>{errorFetching}</p>
+        </div>
+      ) : (
+        <div className="tab-container incidents-tab">
+          <div className="tab-header">
+            <div className="title-container-action">
+              <div className="title-container">
+                <h2 className="title">Staff Incident Tracking List</h2>
+                <p>{incidentData.length} incident(s) available</p>
               </div>
             </div>
 
-            <div className="incident-list">
-              {isSearching ? (
-                <div className="search-results">
-                  {isSearchingTheDatabase ? (
-                    <div className="searching_database">
-                      <p>Searching database</p>
-                    </div>
-                  ) : currentSearchResults.length > 0 ? (
-                    <div className="results-table">
-                      <div className="results-count">
-                        <span className="count">{searchResults.length}</span>{" "}
-                        result(s) found
-                      </div>
-                      <div>
-                        <StaffTable
-                          incidentData={currentSearchResults}
-                          handleRowClick={handleRowClick}
-                          selectedItems={selectedItems}
-                          handleSelectedItems={handleSelectedItems}
-                          handleSelectAll={handleSelectAll}
-                          handleNonClickableColumnClick={
-                            handleNonClickableColumnClick
-                          }
-                          setIncidentData={setSearchResults}
-                          navigateToModify={navigateToModify}
-                        />
-                        <div className="mobile-table">
-                          <button
-                            onClick={() => handleSelectAll(searchResults)}
-                            type="button"
-                            className="tertiary-button"
-                          >
-                            {searchResults.every((item) =>
-                              selectedItems.some(
-                                (selected) => selected.id === item.id
-                              )
-                            ) ? (
-                              <SquareCheck />
-                            ) : (
-                              <Square />
-                            )}{" "}
-                            Select all
-                          </button>
-                          {currentSearchResults.map((incident, index) => (
-                            <IncidentTableCard
-                              key={index}
-                              incident={incident}
-                              handleRowClick={handleRowClick}
-                              handleSelectedItems={handleSelectedItems}
-                              selectedItems={selectedItems}
-                            />
-                          ))}
-                        </div>
-                        <div className="pagination-controls">
-                          <button
-                            className="pagination-button"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                          >
-                            Prev
-                          </button>
-                          {pageNumbers.map((number) => (
-                            <button
-                              key={number}
-                              className={`pagination-button ${
-                                currentPage === number ? "active" : ""
-                              }`}
-                              onClick={() => handlePageChange(number)}
-                            >
-                              {number}
-                            </button>
-                          ))}
-                          <button
-                            className="pagination-button"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                          >
-                            Next
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="no-data-found">
-                      <p>No data found with your search</p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <StaffTable
-                    incidentData={currentIncidentData}
-                    handleNonClickableColumnClick={
-                      handleNonClickableColumnClick
-                    }
-                    setIncidentData={setIncidentData}
-                    navigateToModify={navigateToModify}
-                    handleRowClick={handleRowClick}
-                    selectedItems={selectedItems}
-                    handleSelectAll={handleSelectAll}
-                    handleSelectedItems={handleSelectedItems}
-                  />
-                  <div className="mobile-table">
-                    <button
-                      onClick={() => handleSelectAll(incidentData)}
-                      type="button"
-                      className="tertiary-button"
-                    >
-                      {incidentData.every((item) =>
-                        selectedItems.some(
-                          (selected) => selected.id === item.id
-                        )
-                      ) ? (
-                        <SquareCheck />
-                      ) : (
-                        <Square />
-                      )}{" "}
-                      Select all
-                    </button>
-                    {currentIncidentData.map((incident, index) => (
-                      <IncidentTableCard
-                        key={index}
-                        incident={incident}
-                        handleRowClick={handleRowClick}
-                        handleSelectedItems={handleSelectedItems}
-                        selectedItems={selectedItems}
+            <div className="filters">
+              {openFilters ? (
+                <div className="filters_popup">
+                  <div onClick={toggleOpenFilters} className="close-icon">
+                    <X size={24} variant="stroke" />
+                  </div>
+
+                  <h3>Filter incident data</h3>
+                  <div className="filter-buttons">
+                    <CustomSelectInput
+                      options={["Draft", "Open", "Closed"]}
+                      placeholder="Filter by status"
+                      selected={filters.status}
+                      setSelected={(value) =>
+                        setFilters({ ...filters, status: value })
+                      }
+                      name="status"
+                      id="status"
+                    />
+
+                    <div className="filter-range">
+                      <span>Start date</span>
+                      <CustomDatePicker
+                        selectedDate={filters.start_date}
+                        setSelectedDate={(value) =>
+                          setFilters({ ...filters, start_date: value })
+                        }
+                        placeholderText="Select a date"
+                        dateFormat="yyyy-MM-dd"
                       />
-                    ))}
-                  </div>
-                  <div className="pagination-controls">
-                    <button
-                      className="pagination-button"
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      Prev
-                    </button>
-                    {pageNumbers.map((number) => (
-                      <button
-                        key={number}
-                        className={`pagination-button ${
-                          currentPage === number ? "active" : ""
-                        }`}
-                        onClick={() => handlePageChange(number)}
-                      >
-                        {number}
+                    </div>
+
+                    <div className="filter-range">
+                      <span>End date</span>
+                      <CustomDatePicker
+                        selectedDate={filters.end_date}
+                        setSelectedDate={(value) =>
+                          setFilters({ ...filters, end_date: value })
+                        }
+                        placeholderText="Select a date"
+                        dateFormat="yyyy-MM-dd"
+                      />
+                    </div>
+
+                    <div className="pop-up-buttons">
+                      <button onClick={clearFilters} className="outline-button">
+                        <X size={20} variant="stroke" />
+                        Clear
                       </button>
-                    ))}
-                    <button
-                      className="pagination-button"
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                    >
-                      Next
-                    </button>
+                      <button
+                        onClick={applyFilters}
+                        className="secondary-button"
+                      >
+                        <div className="icon">
+                          <SlidersHorizontal size={20} variant="stroke" />
+                        </div>
+                        <span>Filter</span>
+                      </button>
+                    </div>
                   </div>
-                </>
+                </div>
+              ) : null}
+
+              <input
+                onChange={(e) => search(e.target.value)}
+                type="search"
+                name="systemSearch"
+                id="systemSearch"
+                placeholder="Search by facility, staff name"
+              />
+              {selectedItems.length > 0 ? (
+                <button
+                  onClick={() =>
+                    exportExcel(selectedItems, "staff_incident_list")
+                  }
+                  className="secondary-button"
+                >
+                  <File />
+                  <span>Export</span>
+                </button>
+              ) : (
+                <button
+                  onClick={toggleOpenFilters}
+                  className="date-filter-button"
+                >
+                  <div className="icon">
+                    <SlidersHorizontal variant="stroke" />
+                  </div>
+                  <span>Filter</span>
+                </button>
               )}
             </div>
           </div>
-        )}
-      </div>
-    </>
+
+          <div className="incident-list">
+            {isSearching ? (
+              <div className="search-results">
+                {isSearchingTheDatabase ? (
+                  <div className="searching_database">
+                    <p>Searching database</p>
+                  </div>
+                ) : currentSearchResults.length > 0 ? (
+                  <div className="results-table">
+                    <div className="results-count">
+                      <span className="count">{searchResults.length}</span>{" "}
+                      result(s) found
+                    </div>
+                    <StaffTable
+                      incidentData={currentSearchResults}
+                      handleRowClick={handleRowClick}
+                      selectedItems={selectedItems}
+                      handleSelectedItems={handleSelectedItems}
+                      handleSelectAll={handleSelectAll}
+                      handleNonClickableColumnClick={
+                        handleNonClickableColumnClick
+                      }
+                      setIncidentData={setSearchResults}
+                      navigateToModify={navigateToModify}
+                    />
+                    <div className="mobile-table">
+                      <button
+                        onClick={() => handleSelectAll(searchResults)}
+                        type="button"
+                        className="tertiary-button"
+                      >
+                        {searchResults.every((item) =>
+                          selectedItems.some(
+                            (selected) => selected.id === item.id
+                          )
+                        ) ? (
+                          <SquareCheck />
+                        ) : (
+                          <Square />
+                        )}{" "}
+                        Select all
+                      </button>
+                      {currentSearchResults.map((incident, index) => (
+                        <IncidentTableCard
+                          key={index}
+                          incident={incident}
+                          handleRowClick={handleRowClick}
+                          handleSelectedItems={handleSelectedItems}
+                          selectedItems={selectedItems}
+                        />
+                      ))}
+                    </div>
+                    <div className="pagination-controls">
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                      >
+                        Prev
+                      </button>
+                      {pageNumbers.map((number) => (
+                        <button
+                          key={number}
+                          className={`pagination-button ${
+                            currentPage === number ? "active" : ""
+                          }`}
+                          onClick={() => handlePageChange(number)}
+                        >
+                          {number}
+                        </button>
+                      ))}
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="no-data-found">
+                    <p>No data found with your search</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <StaffTable
+                  incidentData={currentIncidentData}
+                  handleNonClickableColumnClick={handleNonClickableColumnClick}
+                  setIncidentData={setIncidentData}
+                  navigateToModify={navigateToModify}
+                  handleRowClick={handleRowClick}
+                  selectedItems={selectedItems}
+                  handleSelectAll={handleSelectAll}
+                  handleSelectedItems={handleSelectedItems}
+                />
+                <div className="mobile-table">
+                  <button
+                    onClick={() => handleSelectAll(incidentData)}
+                    type="button"
+                    className="tertiary-button"
+                  >
+                    {incidentData.every((item) =>
+                      selectedItems.some((selected) => selected.id === item.id)
+                    ) ? (
+                      <SquareCheck />
+                    ) : (
+                      <Square />
+                    )}{" "}
+                    Select all
+                  </button>
+                  {currentIncidentData.map((incident, index) => (
+                    <IncidentTableCard
+                      key={index}
+                      incident={incident}
+                      handleRowClick={handleRowClick}
+                      handleSelectedItems={handleSelectedItems}
+                      selectedItems={selectedItems}
+                    />
+                  ))}
+                </div>
+                <div className="pagination-controls">
+                  <button
+                    className="pagination-button"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    Prev
+                  </button>
+                  {pageNumbers.map((number) => (
+                    <button
+                      key={number}
+                      className={`pagination-button ${
+                        currentPage === number ? "active" : ""
+                      }`}
+                      onClick={() => handlePageChange(number)}
+                    >
+                      {number}
+                    </button>
+                  ))}
+                  <button
+                    className="pagination-button"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -538,7 +519,6 @@ const StaffTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-    console.log(items);
     console.log("sorting items:", sortBy, direction, field);
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
@@ -656,7 +636,7 @@ const StaffTable = ({
               <td>{employee.original_report || employee.id}</td>
               <td>{employee.report_facility?.name || "Not provided"}</td>
               <td>
-                {employee.patient_info?.last_name ||
+                {employee.patient_info?.last_name &&
                 employee.patient_info?.first_name
                   ? `${employee.patient_info?.last_name} ${employee.patient_info?.first_name}`
                   : "Not provided"}
@@ -767,7 +747,7 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Staff Name: </label>
           <span>
-            {incident.patient_info?.last_name ||
+            {incident.patient_info?.last_name &&
             incident.patient_info?.first_name
               ? `${incident.patient_info?.last_name} ${incident.patient_info?.first_name}`
               : "Not provided"}
@@ -776,12 +756,8 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Injury Date & Time: </label>
           <span>
-            <span>
-              <DateFormatter
-                dateString={incident?.date_of_injury_or_near_miss}
-              />
-              , {incident?.time_of_injury_or_near_miss || "-"}
-            </span>
+            <DateFormatter dateString={incident?.date_of_injury_or_near_miss} />
+            , {incident?.time_of_injury_or_near_miss || "-"}
           </span>
         </div>
         <div className="item">
@@ -820,14 +796,6 @@ export const SortByNumberIcon = ({ handleSortById, sortDesc, setSortDesc }) => {
 };
 
 export const SortNameIcon = ({ handleSortById, sortDesc, setSortDesc }) => {
-  return (
-    <div className="sort-icon" onClick={handleSortById}>
-      <SortIcon sort={sortDesc} />
-    </div>
-  );
-};
-
-export const SortNameIcon2 = ({ handleSortById, sortDesc, setSortDesc }) => {
   return (
     <div className="sort-icon" onClick={handleSortById}>
       <SortIcon sort={sortDesc} />
