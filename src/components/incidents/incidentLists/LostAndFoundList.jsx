@@ -137,7 +137,8 @@ const LostAndFoundList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/lost_and_found/${incidentId}/modify/`);
+    router.push(`/incident/lost-and-found/${incidentId}/update/`);
+    localStorage.setItem("lostAndFoundId", incidentId)
   };
 
   const handleNonClickableColumnClick = (event) => {
