@@ -66,6 +66,9 @@ const GrievanceForm = ({ togglePopup }) => {
   const handleAdversePatientOutcome = () => {
     setAdversePatientOutcome((prev) => !prev);
   };
+  const [departmentId, setDepartmentId] = useState(
+    localStorage.getItem("departmentId")
+  )
 
   const handleDateOfBirth = (date) => {
     const calculatedAge = calculateAge(date);
@@ -142,6 +145,7 @@ const GrievanceForm = ({ togglePopup }) => {
     const data = {
       current_step: currentStep,
       report_facility: checkCurrentAccount(),
+      department: departmentId,
       date: incidentDate,
       patient_name: {
         first_name: patientFirstName,

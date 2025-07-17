@@ -27,7 +27,7 @@ import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 
 const DrugReactionForm = ({ togglePopup }) => {
-  const [currentStep, setCurrentStep] = useState(7);
+  const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
 

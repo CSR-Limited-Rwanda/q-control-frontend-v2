@@ -122,12 +122,13 @@ const DrugReactionList = () => {
     toggleOpenFilters();
   };
 
-  const handleRowClick = (drugReactionId) => {
-    router.push(`/incident/drug-reaction/${drugReactionId}`);
+  const handleRowClick = (incidentId) => {
+    router.push(`/incident/drug-reaction/${incidentId}`);
   };
 
-  const navigateToModify = (drugReactionId) => {
-    router.push(`/incident/drug-reaction/${drugReactionId}/modify/`);
+  const navigateToModify = (incidentId) => {
+    router.push(`/incident/drug-reaction/${incidentId}/update/`);
+    localStorage.setItem("adverseDrugReactionId", incidentId)
   };
 
   const handleNonClickableColumnClick = (event) => {
