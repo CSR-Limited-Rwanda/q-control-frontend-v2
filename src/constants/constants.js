@@ -401,3 +401,17 @@ export const errorTypes = [
       "E.G. Inaccurate documentation of person’s weight, necessary tests or procedures not ordered, test/procedure results misinterpreted, test/procedure results not charted or charted incorrectly, lapse in profile or new order review, etc.",
   },
 ];
+
+export const sourcesOfInformation = [
+  {
+    label: "Patient satisfaction survey",
+    value: "Patient satisfaction survey",
+  },
+  { label: "Letter", value: "Letter" },
+  { label: "Leadership Rounds", value: "Leadership Rounds" },
+  {
+    label: "Verbal Report from patient and/or visitor",
+    value: "Verbal Report form patient and /or visitor",
+  },
+  { label: "Other", value: "Other" },
+];

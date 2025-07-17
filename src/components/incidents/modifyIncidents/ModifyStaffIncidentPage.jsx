@@ -262,7 +262,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     };
     
     // console.log(cleanedData(incidentData));
-    console.log("Submitting incident data", JSON.stringify(incidentData, null, 2));
+    // console.log("Submitting incident data", JSON.stringify(incidentData, null, 2));
 
     try {
       const response = await api.patch(
