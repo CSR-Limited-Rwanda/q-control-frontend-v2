@@ -146,7 +146,13 @@ async function getUserInfoFromToken(token) {
         "facilityId",
         JSON.stringify(serverData.facility.id)
       );
+      localStorage.setItem(
+        "departmentId",
+        JSON.stringify(serverData.department.id)
+      );
 
+
+      
       return {
         tokenUserInfo: userInfo,
         serverUserData: serverData,

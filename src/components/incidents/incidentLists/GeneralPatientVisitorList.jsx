@@ -158,7 +158,8 @@ const GeneralPatientVisitorList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/general/${incidentId}/modify/`);
+    router.push(`/incident/general/${incidentId}/update/`);
+    localStorage.setItem("generalIncidentId", incidentId)
   };
 
   const handleNonClickableColumnClick = (event) => {

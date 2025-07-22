@@ -6,7 +6,7 @@ const CustomSelectInput = ({ options, selected, setSelected, placeholder }) => {
   const [selectOption, setSelectedOption] = useState("");
   const handleSelected = (value) => {
     setSelectedOption(false);
-    setSelected(selectOption);
+    // setSelected(selectOption);
     setSelected(value);
     setShowOptions(false);
   };
@@ -17,7 +17,7 @@ const CustomSelectInput = ({ options, selected, setSelected, placeholder }) => {
   return (
     <div className="custom-select-input full-width">
       <input
-        value={selected}
+        value={selected ?? ""}
         readOnly
         onClick={toggleShowOptions}
         type="text"

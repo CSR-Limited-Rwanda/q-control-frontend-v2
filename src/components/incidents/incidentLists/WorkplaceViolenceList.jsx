@@ -146,13 +146,8 @@ const WorkplaceViolenceList = () => {
       end_date: "",
       status: "",
     };
-    setFilters(clearedFilters);
-    setSearchResults([]);
-    setIsSearching(false);
-    setIsSearchingTheDatabase(false);
-    setCurrentPage(1);
-    setOpenFilters(false);
-    fetchFilteredData(clearedFilters);
+    setIncidentData(data);
+    setCurrentPage(1); // Reset to first page when filters are cleared
   };
 
   const toggleOpenFilters = () => {
@@ -191,11 +186,12 @@ const WorkplaceViolenceList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/workplace_violence/${incidentId}`);
+    router.push(`/incident/workplace-violence/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/workplace_violence/${incidentId}/modify/`);
+    router.push(`/incident/workplace-violence/${incidentId}/update/`);
+    localStorage.setItem("workplaceViolenceId", incidentId);
   };
 
   const handleNonClickableColumnClick = (event) => {

@@ -157,6 +157,9 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   const [facilityId, setFacilityId] = useState(
     localStorage.getItem("facilityId")
   );
+  const [departmentId, setDepartmentId] = useState(
+    localStorage.getItem("departmentId")
+  );
   // Incident Location
 
   const [location, setLocation] = useState("");
@@ -470,6 +473,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       if (isValid) {
         const incidentPostData = {
           facility_id: facilityId,
+          department: departmentId,
           status: "Draft",
           current_step: currentStep,
           category: category,

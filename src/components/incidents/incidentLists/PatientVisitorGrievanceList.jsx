@@ -136,7 +136,8 @@ const PatientVisitorGrievanceList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/grievance/${incidentId}/modify/`);
+    router.push(`/incident/grievance/${incidentId}/update/`);
+    localStorage.setItem("grievanceId", incidentId);
   };
 
   const handleNonClickableColumnClick = (event) => {

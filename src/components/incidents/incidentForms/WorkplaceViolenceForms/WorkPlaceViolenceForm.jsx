@@ -15,6 +15,8 @@ import ErrorMessage from "@/components/messages/ErrorMessage";
 import DraftPopup from "@/components/DraftPopup";
 
 const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
+  const [facilityId, setFacilityId] = useState(localStorage.getItem('facilityId'))
+  const [departmentId, setDepartmentId] = useState(localStorage.getItem('departmentId'))
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [victimAlone, setVictimAlone] = useState(false);
@@ -520,6 +522,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       if (isValid) {
         const data = {
           current_step: currentStep,
+          report_facility: facilityId,
+          department: departmentId,
           reported_by: {
               first_name: reportedByFirstName,
               last_name: reportedByLastName,

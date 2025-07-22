@@ -167,7 +167,8 @@ const MedicationErrorList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/medication_error/${incidentId}/modify/`);
+    router.push(`/incident/medication-error/${incidentId}/update/`);
+    localStorage.setItem("medicationErrorIncidentId", incidentId)
   };
 
   const handleNonClickableColumnClick = (event) => {

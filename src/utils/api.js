@@ -153,13 +153,17 @@ export const cleanedData = (data) => {
 
 export const checkCurrentAccount = () => {
   const facility_id = localStorage.getItem("facilityId");
+  const department = localStorage.getItem("departmentId")
   console.log("Raw facility from localStorage:", facility_id)
 
   if (facility_id && facility_id !== undefined) {
     console.log("Facility ID:", facility_id)
     return facility_id;
+  } else if (department && department !== undefined) {
+    return department
   } else {
     console.log("No active account found in localStorage")
     return null;
   }
+  
 };

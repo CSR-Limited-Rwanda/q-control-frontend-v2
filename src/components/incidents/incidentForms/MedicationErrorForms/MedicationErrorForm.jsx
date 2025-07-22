@@ -77,6 +77,9 @@ const MedicationErrorForm = ({ togglePopup }) => {
   const [facilityId, setFacilityId] = useState(
     localStorage.getItem("facilityId")
   );
+  const [departmentId, setDepartmentId] = useState(
+    localStorage.getItem("departmentId")
+  )
 
   const handleDrugOrderedRoute = (drug) => {
     // check if the route is not in the array of routes, then add it else, remove it
@@ -278,6 +281,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
     const data = {
       // report_facility: checkCurrentAccount(),
       facility_id: facilityId,
+      department: departmentId,
       report_facility: facilityId,
       patient: {
         first_name: firstName,

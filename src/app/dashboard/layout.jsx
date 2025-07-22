@@ -328,7 +328,7 @@ const DashboardLayout = ({ children }) => {
                   ) : selectedForm === "workPlaceViolence" ? (
                     <WorkplaceViolenceIncidentForm togglePopup={togglePopup} />
                   ) : selectedForm === "healthIncident" ? (
-                    <HealthIncidentInvestigationForm />
+                    <HealthIncidentInvestigationForm togglePopup={togglePopup} />
                   ) : selectedForm === "verbalComplaint" ? (
                     <VerbalComplaintForm />
                   ) : selectedForm === "grievanceInvestigation" ? (

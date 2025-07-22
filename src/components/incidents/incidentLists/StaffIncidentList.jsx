@@ -130,11 +130,12 @@ const StaffIncidentList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/employee_incident/${incidentId}`);
+    router.push(`/incident/staff/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/employee_incident/${incidentId}/modify/`);
+    router.push(`/incident/staff/${incidentId}/update/`);
+    localStorage.setItem("staffIncidentId", incidentId);
   };
 
   const handleNonClickableColumnClick = (event) => {
