@@ -129,11 +129,12 @@ const WorkplaceViolenceList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/workplace_violence/${incidentId}`);
+    router.push(`/incident/workplace-violence/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/workplace_violence/${incidentId}/modify/`);
+    router.push(`/incident/workplace-violence/${incidentId}/update/`);
+    localStorage.setItem("workplaceViolenceId", incidentId)
   };
 
   const handleNonClickableColumnClick = (event) => {
@@ -678,6 +679,7 @@ const WorkPlaceViolenceTable = ({
 
               <td>{index + 1}</td>
               <td>{incident.original_report || incident.id} </td>
+              {/* <td>{incident.report_facility?.name || "Not provided"}</td> */}
               <td>{incident.report_facility?.name || "Not provided"}</td>
               <td>{incident.incident_type || "Not provided"}</td>
               <td>
