@@ -122,10 +122,10 @@ const ModifyLostFound = ({ data }) => {
     const fetchIncidentDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/lost_and_found/${incidentId}/documents/`
+          `/incidents/lost-found/${lostAndFoundId}/documents/`
         );
         if (response.status === 200) {
-          setUploadedFiles(response.data);
+          setUploadedFiles(response.data.results);
           console.log("documents updated successfully");
         }
       } catch (error) {
@@ -149,7 +149,7 @@ const ModifyLostFound = ({ data }) => {
       console.log([...formData]);
 
       const response = await mediaAPI.post(
-        `/incidents/lost_and_found/${incidentId}/documents/new/`,
+        `/incidents/lost-found/${lostAndFoundId}/documents/`,
         formData
       );
 

@@ -1,11 +1,11 @@
-'use client'
+"use client";
 import React, { useEffect, useState, useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 import api, {
   API_URL,
   calculateAge,
   checkCurrentAccount,
-  cleanedData
+  cleanedData,
 } from "@/utils/api";
 import RichTexField from "@/components/forms/RichTextField";
 import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
@@ -19,7 +19,7 @@ import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 
 const GrievanceForm = ({ togglePopup }) => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(3);
   const currentStepRef = useRef(currentStep);
   const [userId, setUserId] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +68,7 @@ const GrievanceForm = ({ togglePopup }) => {
   };
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
-  )
+  );
 
   const handleDateOfBirth = (date) => {
     const calculatedAge = calculateAge(date);
@@ -159,7 +159,7 @@ const GrievanceForm = ({ togglePopup }) => {
       form_initiated_by: {
         first_name: formInitiatedByFirstName,
         last_name: formInitiatedByLastName,
-        profile_type: "Staff"
+        profile_type: "Staff",
       },
 
       complaint_made_by: {
@@ -175,10 +175,10 @@ const GrievanceForm = ({ togglePopup }) => {
         selectedOption === "other"
           ? otherInput
           : selectedOption
-            ? selectedOption
-            : null,
+          ? selectedOption
+          : null,
     };
-    console.log('data:', data)
+    console.log("data:", data);
 
     try {
       const response = await api.post(
@@ -206,8 +206,8 @@ const GrievanceForm = ({ togglePopup }) => {
       if (error.response) {
         window.customToast.error(
           error.response?.data.message ||
-          error.response?.data.error ||
-          "Error while saving incident"
+            error.response?.data.error ||
+            "Error while saving incident"
         );
       } else {
         window.customToast.error("Unknown error while saving incident");
@@ -326,14 +326,14 @@ const GrievanceForm = ({ togglePopup }) => {
             patient_name: {
               first_name: patientFirstName,
               last_name: patientLastName,
-              profile_type: "Patient"
+              profile_type: "Patient",
             },
 
             // medical_record_number: medicalRecord,
             form_initiated_by: {
               first_name: formInitiatedByFirstName,
               last_name: formInitiatedByLastName,
-              profile_type: "Staff"
+              profile_type: "Staff",
             },
 
             complaint_made_by: {
@@ -351,8 +351,8 @@ const GrievanceForm = ({ togglePopup }) => {
               selectedOption === "other"
                 ? otherInput
                 : selectedOption
-                  ? selectedOption
-                  : null,
+                ? selectedOption
+                : null,
           });
           // console.log("Submitting data:", cleanedData(data));
         }
@@ -405,7 +405,7 @@ const GrievanceForm = ({ togglePopup }) => {
             administrator_notified: {
               first_name: administratorFirstName,
               last_name: administratorLastName,
-              profile_type: "Staff"
+              profile_type: "Staff",
             },
             notification_date: grivanceDate,
             notification_time: grivanceTime,
@@ -419,7 +419,7 @@ const GrievanceForm = ({ togglePopup }) => {
           administrator_notified: {
             first_name: "N/A",
             last_name: "N/A",
-            profile_type: "Staff"
+            profile_type: "Staff",
           },
           notification_date: null,
           notification_time: null,
@@ -463,11 +463,11 @@ const GrievanceForm = ({ togglePopup }) => {
       console.log([...formData]);
 
       const response = await mediaAPI.post(
-        `/incidents/grievance/${grievance_id}/documents/new/`,
+        `/incidents/grievance/${grievance_id}/documents/`,
         formData
       );
 
-      if (response.status === 200) {
+      if (response.status === 201 || response.status === 200) {
         console.log(response.data.files);
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
@@ -519,7 +519,9 @@ const GrievanceForm = ({ togglePopup }) => {
               </div>
               <div className="name">
                 <p className="step-name">Step 3/3</p>
-                <p className="step-details">Administrator details & Attachments</p>
+                <p className="step-details">
+                  Administrator details & Attachments
+                </p>
               </div>
             </div>
           </div>
