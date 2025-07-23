@@ -19,7 +19,7 @@ import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 
 const GrievanceForm = ({ togglePopup }) => {
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [userId, setUserId] = useState();
   const [isLoading, setIsLoading] = useState(false);

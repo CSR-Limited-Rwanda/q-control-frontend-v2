@@ -313,7 +313,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         <div className="grievance-investigation-form">
           <div className="form-container">
             <X className="close-popup" onClick={handleShowInvestigationForm} />
-            <GrievanceInvestigationForm incidentId={incidentId} />
+            <GrievanceInvestigationForm incidentId={grievanceId} />
           </div>
         </div>
       )}
@@ -323,30 +323,27 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
           pageName={"Grievance incident"}
         />
         <h2 className="title">Modifying grievance incident</h2>
-        {/* {investigation && investigation.id ? (
-                    <Link
-                        href={`/incident/grievance/${incidentId}`}
-                        onClick={() => {
-                            localStorage.setItem("activate_investigation_tab", true);
-                        }}
-                    >
-                        <button type="button" className="tertiary-button">
-                            <span>View investigation</span>
-                            <Eye size={18} />
-                        </button>
-                    </Link>
-                ) : permission.includes("Quality - Risk Manager") ||
-                    permission.includes("Quality/Risk Manager") ? (
-                    <button
-                        onClick={handleShowInvestigationForm}
-                        className="tertiary-button"
-                    >
-                        <span>Add investigation</span>
-                        <TextSearch size={20} />
-                    </button>
-                ) : (
-                    ""
-                )} */}
+        {investigation && investigation.id ? (
+          <Link
+            href={`/incident/grievance/${incidentId}`}
+            onClick={() => {
+              localStorage.setItem("activate_investigation_tab", true);
+            }}
+          >
+            <button type="button" className="tertiary-button">
+              <span>View investigation</span>
+              <Eye size={18} />
+            </button>
+          </Link>
+        ) : (
+          <button
+            onClick={handleShowInvestigationForm}
+            className="tertiary-button"
+          >
+            <span>Add investigation</span>
+            <TextSearch size={20} />
+          </button>
+        )}
 
         <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
