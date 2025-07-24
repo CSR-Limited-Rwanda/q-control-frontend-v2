@@ -81,7 +81,8 @@ const DrugReactionForm = ({ togglePopup }) => {
   const [otherOutcome, setOtherOutcome] = useState("");
   const [familyDate, setFamilyDate] = useState("");
   const [familyTime, setFamilyTime] = useState("");
-  const [notifiedBy, setNotifiedBy] = useState("");
+  const [notifiedByFirstName, setNotifiedByFirstName] = useState("");
+  const [notifiedByLastName, setNotifiedByLastName] = useState("");
   const [briefSummary, setBriefSummary] = useState("");
   const [immediateActionsTaken, setImmediateActionsTaken] = useState("");
   const [description, setDescription] = useState("");
@@ -96,6 +97,9 @@ const DrugReactionForm = ({ togglePopup }) => {
   const [fdaReported, setFdaReported] = useState(false);
   const [drugReactionData, setDrugReactionData] = useState();
   const [popupOpen, setPopupOpen] = useState(false);
+  const [facilityId, setFacilityId] = useState(
+    localStorage.getItem("facilityId")
+  );
 
   useEffect(() => {
     currentStepRef.current = currentStep;
@@ -360,7 +364,8 @@ const DrugReactionForm = ({ togglePopup }) => {
         drugReactionData = {
           current_step: currentStep,
           patient_type: victimType,
-          facility: checkCurrentAccount(),
+          facility: facilityId,
+          report_facility: facilityId,
           patient_name: {
             first_name: firstName,
             last_name: lastName,
@@ -577,7 +582,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         "physcian date ": physcianDate,
         "physcian time": physcianTime,
 
-        "notified by": notifiedBy,
+        "notified by": notifiedByFirstName && notifiedByLastName,
       });
 
       if (isValid) {
@@ -588,22 +593,24 @@ const DrugReactionForm = ({ togglePopup }) => {
             description: JSON.stringify(selectedDescription),
 
             name_of_physician_notified: {
-              user_data: {
-                first_name: physicianNotifiedFirstName,
-                last_name: physicianNotifiedLastName,
-              },
+              first_name: physicianNotifiedFirstName,
+              last_name: physicianNotifiedLastName,
+              profile_type: "Physician",
             },
             date_physician_was_notified: physcianDate,
             time_physician_was_notified: physcianTime,
             name_of_family_notified: {
-              user_data: {
-                first_name: familyNotifiedFirstName,
-                last_name: familyNotifiedLastName,
-              },
+              first_name: familyNotifiedFirstName,
+              last_name: familyNotifiedLastName,
+              profile_type: "Family",
             },
             date_family_was_notified: familyDate,
             time_family_was_notified: familyTime,
-            notified_by: notifiedBy,
+            notified_by: {
+              first_name: notifiedByFirstName,
+              last_name: notifiedByLastName,
+              profile_type: "Nurse",
+            },
           },
         };
 
@@ -1227,6 +1234,8 @@ const DrugReactionForm = ({ togglePopup }) => {
           </div>
         ) : currentStep === 5 ? (
           <div className="step">
+            <h4>General Classification of Reaction</h4>
+            <p>Check all that apply</p>
             <div className="grid-container">
               {incidentTypesData.incident_agreement.map((agreement, index) => (
                 <div key={index} className={`type grid-item`}>
@@ -1324,26 +1333,25 @@ const DrugReactionForm = ({ togglePopup }) => {
                   : null}
               </div>
 
-              <div className="half">
-                <div className="check-boxes-container">
-                  <h2>Anaphylaxis /ADR Outcome</h2>
-                  <div className="grid-container">
-                    {outcomeReasons &&
-                      outcomeReasons.map((el, i) => (
-                        <div className="check-box separator" key={i}>
-                          <input
-                            type="checkbox"
-                            name={el.name}
-                            id={el.name}
-                            onChange={handleOutcomeChange}
-                            value={el.name}
-                          />
-                          <label htmlFor={el.name}>{el.name}</label>
-                        </div>
-                      ))}
-                  </div>
+              <div className="check-boxes-container">
+                <h3>Anaphylaxis /ADR Outcome</h3>
+                <div className="grid-container">
+                  {outcomeReasons &&
+                    outcomeReasons.map((el, i) => (
+                      <div className="check-box separator" key={i}>
+                        <input
+                          type="checkbox"
+                          name={el.name}
+                          id={el.name}
+                          onChange={handleOutcomeChange}
+                          value={el.name}
+                        />
+                        <label htmlFor={el.name}>{el.name}</label>
+                      </div>
+                    ))}
                 </div>
               </div>
+
               <div className="check-box separator">
                 <input
                   type="checkbox"
@@ -1456,16 +1464,34 @@ const DrugReactionForm = ({ togglePopup }) => {
               </div>
             </div>
 
-            <div className="field">
-              <label htmlFor="notifiedBy">Notified by</label>
-              <input
-                onChange={(e) => setNotifiedBy(e.target.value)}
-                type="text"
-                name="notifiedBy"
-                id="notifiedBy"
-                placeholder="Enter  name"
-                value={notifiedBy}
-              />
+            <div className="half">
+              <div className="field">
+                <label htmlFor="notifiedByFirstName">
+                  Notified by First Name{" "}
+                </label>
+                <input
+                  onChange={(e) => setNotifiedByFirstName(e.target.value)}
+                  type="text"
+                  name="notifiedByFirstName"
+                  id="notifiedByFirstName"
+                  placeholder="Enter first name"
+                  value={notifiedByFirstName}
+                />
+              </div>
+
+              <div className="field">
+                <label htmlFor="notifiedByLastName">
+                  Notified by Last Name{" "}
+                </label>
+                <input
+                  onChange={(e) => setNotifiedByLastName(e.target.value)}
+                  type="text"
+                  name="notifiedByLastName"
+                  id="notifiedByLastName"
+                  placeholder="Enter last name"
+                  value={notifiedByLastName}
+                />
+              </div>
             </div>
           </div>
         ) : currentStep === 8 ? (

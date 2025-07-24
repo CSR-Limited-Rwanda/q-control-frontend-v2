@@ -39,7 +39,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
   const [dayWeek, setDayWeek] = useState("");
   const [hour, setHour] = useState("");
   const [date, setDate] = useState("");
-  const [dateNotified, setDateNotified] = useState(null);
+  const [dateNotified, setDateNotified] = useState("");
   const [time, setTime] = useState("");
   const [timeNotified, setTimeNotified] = useState("");
   const [location, setLocation] = useState("");
@@ -77,6 +77,9 @@ const MedicationErrorForm = ({ togglePopup }) => {
   const [facilityId, setFacilityId] = useState(
     localStorage.getItem("facilityId")
   );
+  const [departmentId, setDepartmentId] = useState(
+    localStorage.getItem("departmentId")
+  )
 
   const handleDrugOrderedRoute = (drug) => {
     // check if the route is not in the array of routes, then add it else, remove it
@@ -278,6 +281,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
     const data = {
       // report_facility: checkCurrentAccount(),
       facility_id: facilityId,
+      department: departmentId,
+      report_facility: facilityId,
       patient: {
         first_name: firstName,
         last_name: lastName,
@@ -457,16 +462,11 @@ const MedicationErrorForm = ({ togglePopup }) => {
             current_step: currentStep,
             report_facility: checkCurrentAccount(),
             patient: {
-              user_data: {
-                first_name: firstName,
-                last_name: lastName,
-              },
-
-              profile_data: {
-                age: age,
-                date_of_birth: dateOfBirth,
-                medical_record_number: mrn,
-              },
+              first_name: firstName,
+              last_name: lastName,
+              age: age,
+              date_of_birth: dateOfBirth,
+              medical_record_number: mrn,
             },
 
             day_of_the_week: dayWeek,

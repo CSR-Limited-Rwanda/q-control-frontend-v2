@@ -54,7 +54,6 @@ export const useAuthentication = () => {
 
           const result = await getUserInfoFromToken(token);
           if (result && result.tokenUserInfo) {
-            console.log(result);
             setUser(result.tokenUserInfo);
           }
         }
@@ -147,7 +146,13 @@ async function getUserInfoFromToken(token) {
         "facilityId",
         JSON.stringify(serverData.facility.id)
       );
+      localStorage.setItem(
+        "departmentId",
+        JSON.stringify(serverData.department.id)
+      );
 
+
+      
       return {
         tokenUserInfo: userInfo,
         serverUserData: serverData,

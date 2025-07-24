@@ -1,0 +1,294 @@
+@import "../styles/variables";
+
+.incident-modify-loader {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 86vh;
+  overflow: hidden !important;
+  gap: 24px;
+  padding: 24px;
+
+  .title {
+    height: 34px;
+    width: 30vw;
+  }
+
+  .tabs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .loader {
+      height: 34px;
+      width: 200px;
+      border: 0;
+    }
+  }
+
+  .content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    background-color: whitesmoke;
+    padding: 24px;
+    justify-content: start;
+
+    .loader {
+      flex: 1 1 300px;
+      height: 34px;
+      background-color: #ebebeb;
+    }
+
+    .button-loader {
+      width: 100%;
+
+      .button {
+        height: 45px;
+        width: 200px;
+      }
+    }
+  }
+}
+
+.modify-incident-page {
+  display: grid;
+  gap: 24px;
+
+  .tabs {
+    display: flex;
+    align-items: center;
+
+    border-radius: 0;
+
+    .tab {
+      background-color: whitesmoke;
+    }
+  }
+
+  form {
+    padding: 0;
+  }
+
+  .tabs-content {
+    .modify-incident-form {
+      display: grid;
+      gap: 24px;
+
+      .input-fields {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 24px;
+
+        .field {
+          flex: 1 1 300px;
+          display: grid;
+          height: fit-content;
+          gap: 6px;
+        }
+
+        .small-field {
+          max-width: 200px;
+        }
+
+        .full-field {
+          flex: 1 1 100%;
+        }
+
+        .button-container {
+          width: 100%;
+        }
+
+        textarea {
+          min-width: 100%;
+        }
+      }
+    }
+  }
+}
+
+.modify-forms {
+  padding: 1rem 0;
+}
+
+.inputs-group {
+  background-color: white;
+  padding: 1rem;
+  border: 2px solid #ececec;
+  border-radius: 0.5rem;
+}
+
+.modify-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+
+  .full {
+    width: 100% !important;
+    grid-column: span 3;
+  }
+
+  .field {
+    display: grid;
+    height: fit-content;
+    gap: 0.5rem;
+  }
+
+  .half {
+    padding: 0;
+  }
+}
+
+.modify-page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 2;
+  padding: 1rem 0;
+  border-bottom: 1px solid whitesmoke;
+}
+
+.modify-page-content {
+  padding: 0 1rem;
+  padding-bottom: 3rem;
+}
+
+.custom-select {
+  background-color: white;
+  padding: 1rem;
+  border: 2px solid #f6f6f6;
+  border-radius: 0.5rem;
+}
+
+.witness-fields {
+  gap: 0.625rem;
+}
+
+.witness-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.625rem;
+
+  .witness-item {
+    button {
+      span {
+        font-size: 1rem;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+.grievance-investigation-form {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .form-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-width: 800px;
+    width: 100%;
+    height: 80vh;
+    overflow: auto;
+    position: relative;
+  }
+}
+
+.close-popup {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+  z-index: 222;
+}
+
+.incident-status {
+  margin-top: 1.5rem;
+
+  span {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  .modify-inputs {
+    grid-template-columns: 1fr 1fr;
+
+    .half {
+      width: 100%;
+      grid-column: span 2;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .modify-inputs {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: 1fr !important;
+  }
+
+  .modify-incident-page {
+    .tabs-content {
+      .modify-incident-form {
+        .input-fields {
+          gap: 12px;
+
+          .small-field {
+            max-width: 100%;
+            flex: 1 1 150px;
+          }
+
+          button {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  .page-content {
+    .modify-page-content {
+      .modify-page-header {
+        .back-link {
+          display: none;
+        }
+
+        .title {
+          display: none;
+        }
+
+        .buttons {
+          justify-content: space-between;
+          width: 100%;
+
+          button {
+            span {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+  }
+}
