@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import React, { useEffect, useState, useRef } from "react";
-import api, {API_URL, cleanedData} from "@/utils/api";
+import api, { API_URL, cleanedData } from "@/utils/api";
 import mediaAPI from "@/utils/mediaApi";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import RichTexField from "@/components/forms/RichTextField";
@@ -12,7 +12,8 @@ const PartiesInvolved = ({ data, handleRemovePartyInvolved }) => {
     <div className="parties-involved-list">
       {data.map((party, index) => (
         <div key={index} className="party">
-          <span>{party.name}</span>
+          <span>{party.first_name}</span>
+          <span>{party.last_name}</span>
           <div
             onClick={() => handleRemovePartyInvolved(index)}
             className="icon"
@@ -62,7 +63,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   const [feedback, setFeedBack] = useState("");
 
   const [partiesInvolved, setPartiesInvolved] = useState([]);
-  const [newPartyName, setNewPartyName] = useState("");
+  const [newPartyFirstName, setNewPartyFirstName] = useState("");
+  const [newPartyLastName, setNewPartyLastName] = useState("");
   const [newPartyRelationship, setNewPartyNameRelationship] = useState("");
   const [partyInvolved, setPartyInvolved] = useState({});
 
@@ -77,16 +79,19 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   const [error, setError] = useState("");
 
   const handleExtensionLetter = async (event) => {
-    const incidentId = localStorage.getItem("grievanceInvestigationId");
+    const grievanceInvestigationId = localStorage.getItem(
+      "grievanceInvestigationId"
+    );
     const formData = new FormData();
     const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
       formData.append("file", files[i]);
     }
+    formData.append("type", "extension");
 
     try {
       const response = await mediaAPI.post(
-        `incidents/grievance-investigation/${incidentId}/documents/extension-letter/new/`,
+        `incidents/grievance/${incidentId}/investigation/${grievanceInvestigationId}/doc-letter/`,
         formData
       );
 
@@ -109,16 +114,18 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   };
 
   const handleResponseLetter = async (event) => {
-    const incidentId = localStorage.getItem("grievanceInvestigationId");
+    const grievanceInvestigationId = localStorage.getItem(
+      "grievanceInvestigationId"
+    );
     const formData = new FormData();
     const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
       formData.append("file", files[i]);
     }
-
+    formData.append("type", "response");
     try {
       const response = await mediaAPI.post(
-        `incidents/grievance-investigation/${incidentId}/documents/response-letter/new/`,
+        `incidents/grievance/${incidentId}/investigation/${grievanceInvestigationId}/doc-letter/`,
         formData
       );
 
@@ -140,20 +147,31 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
     }
   };
 
-  const handlePartyInvolved = (name, relationship_to_patient) => {
-    if (name === "" || relationship_to_patient === "") {
+  const handlePartyInvolved = (
+    first_name,
+    last_name,
+    relationship_to_patient
+  ) => {
+    if (
+      first_name === "" ||
+      last_name === "" ||
+      relationship_to_patient === ""
+    ) {
       window.customToast.error(
         "Please enter a valid party name and relationship"
       );
       return;
     }
     const newPartyInvolved = {
-      name,
+      first_name,
+      last_name,
+      profile_type: "Involved Party",
       relationship_to_patient,
     };
 
     setPartiesInvolved([...partiesInvolved, newPartyInvolved]);
-    setNewPartyName("");
+    setNewPartyFirstName("");
+    setNewPartyLastName("");
     setNewPartyNameRelationship("");
     setPartyInvolved([]);
   };
@@ -237,7 +255,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
     console.log("Form data: ", data);
     try {
       const response = await api.post(
-        `${API_URL}/incidents/grievance/${incidentId}/investigation/new/`,
+        `${API_URL}/incidents/grievance/${incidentId}/investigation/`,
         data
       );
       if (response.status === 201) {
@@ -245,10 +263,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
         window.customToast.success(
           "Grievance investigation saved successfully"
         );
-        localStorage.setItem(
-          "grievanceInvestigationId",
-          response.data.incident.id
-        );
+        localStorage.setItem("grievanceInvestigationId", response.data.id);
         setCurrentStep(currentStep + 1);
         setIsLoading(false);
       }
@@ -270,10 +285,12 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   const handleUpdateIncident = async (data, hasMedia) => {
     const request = hasMedia ? mediaAPI : api;
     setIsLoading(true);
-    const incidentId = localStorage.getItem("grievanceInvestigationId");
+    const grievanceInvestigationId = localStorage.getItem(
+      "grievanceInvestigationId"
+    );
     try {
-      const response = await request.patch(
-        `${API_URL}/incidents/grievance-investigation/${incidentId}/update/`,
+      const response = await request.put(
+        `${API_URL}/incidents/grievance/${incidentId}/investigation/${grievanceInvestigationId}/`,
         data
       );
       if (response.status === 200) {
@@ -312,7 +329,9 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       const data = {
         findings: content,
         conducted_by: {
-          user_data: conductedBy,
+          first_name: conductedBy.first_name,
+          last_name: conductedBy.last_name,
+          profile_type: "Staff",
         },
         start_date: startDate,
         end_date: endDate,
@@ -326,11 +345,10 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
     } else if (currentStep === 2) {
       const data = {
         feedback: feedback,
-        review: formData.review,
         action_taken: actionsTaken,
         date_of_feedback: feedback !== "" ? feedbackDate : null,
         conclusion: conclusions,
-        parties_involved: partiesInvolved.length > 0 ? partiesInvolved : null,
+        involved_parties: partiesInvolved.length > 0 ? partiesInvolved : null,
       };
 
       handleUpdateIncident(cleanedData(data));
@@ -544,38 +562,54 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
                 />
                 <div className="half">
                   <div className="field">
-                    <label htmlFor="personAtMeeting">
-                      Person at Meeting/Call
+                    <label htmlFor="personAtMeetingFirstName">
+                      Person at Meeting/Call First Name
                     </label>
                     <input
-                      onChange={(e) => setNewPartyName(e.target.value)}
-                      value={newPartyName}
+                      onChange={(e) => setNewPartyFirstName(e.target.value)}
+                      value={newPartyFirstName}
                       type="text"
-                      name="personAtMeeting"
-                      id="personAtMeeting"
-                      placeholder="Enter witness name"
+                      name="personAtMeetingFirstName"
+                      id="personAtMeetingFirstName"
+                      placeholder="Enter party first name"
                     />
                   </div>
                   <div className="field">
-                    <label htmlFor="relationship">
-                      Relationship To Patient
+                    <label htmlFor="personAtMeetingLastName">
+                      Person at Meeting/Call Last Name
                     </label>
                     <input
-                      onChange={(e) =>
-                        setNewPartyNameRelationship(e.target.value)
-                      }
-                      value={newPartyRelationship}
+                      onChange={(e) => setNewPartyLastName(e.target.value)}
+                      value={newPartyLastName}
                       type="text"
-                      name="relationship"
-                      id="relationship"
-                      placeholder="Enter Relationship"
+                      name="personAtMeetingLastName"
+                      id="personAtMeetingLastName"
+                      placeholder="Enter party last name"
                     />
                   </div>
                 </div>
 
+                <div className="field">
+                  <label htmlFor="relationship">Relationship To Patient</label>
+                  <input
+                    onChange={(e) =>
+                      setNewPartyNameRelationship(e.target.value)
+                    }
+                    value={newPartyRelationship}
+                    type="text"
+                    name="relationship"
+                    id="relationship"
+                    placeholder="Enter Relationship"
+                  />
+                </div>
+
                 <button
                   onClick={() =>
-                    handlePartyInvolved(newPartyName, newPartyRelationship)
+                    handlePartyInvolved(
+                      newPartyFirstName,
+                      newPartyLastName,
+                      newPartyRelationship
+                    )
                   }
                   type="button"
                 >

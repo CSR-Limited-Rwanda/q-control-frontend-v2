@@ -336,7 +336,7 @@ const DashboardLayout = ({ children }) => {
                   ) : selectedForm === "complaintForm" ? (
                     <SubmitComplaintForm
                       hasHeight={false}
-                      handleSubmitComplaint={tootlePopup}
+                      handleSubmitComplaint={togglePopup}
                     />
                   ) : (
                     ""

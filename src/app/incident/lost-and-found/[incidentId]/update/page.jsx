@@ -1,9 +1,9 @@
-'use client'
+"use client";
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "react-router-dom";
 import DashboardLayout from "@/app/dashboard/layout";
-import api, {API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import ModifyLostFound from "@/components/incidents/modifyIncidents/ModifyLostAndFoundPage";
 import { MoveRight } from "lucide-react";
 // import { FacilityBreadCrumbs } from "../../drugReactionIncident/modifyMedicalAdverseDrugReactionIncidentPage";
@@ -17,7 +17,7 @@ const ModifyLostFoundPageContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [lostAndFoundId, setLostAndFoundId] = useState(
     localStorage.getItem("lostAndFoundId")
-  )
+  );
 
   useEffect(() => {
     const fetchIncidentData = async () => {
@@ -72,17 +72,13 @@ const BreadCrumbs = () => {
 };
 
 const ModifyLostFoundPage = () => {
-    const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null)
+  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null);
 
-    useEffect(() => {
-      const storedValue = localStorage.getItem("changeBreadCrumbs")
-      setChangeBreadCrumbs(storedValue);
-    }, [])
-  return (
-    <DashboardLayout
-      children={<ModifyLostFoundPageContent />}
-    />
-  );
+  useEffect(() => {
+    const storedValue = localStorage.getItem("changeBreadCrumbs");
+    setChangeBreadCrumbs(storedValue);
+  }, []);
+  return <DashboardLayout children={<ModifyLostFoundPageContent />} />;
 };
 
 export default ModifyLostFoundPage;

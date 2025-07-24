@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-
 import api, { API_URL, exportExcel } from "@/utils/api";
-
 import {
   Eye,
   File,
-  FileEdit,
   Pencil,
   SlidersHorizontal,
   Square,
@@ -25,53 +22,60 @@ import {
   SortNameIcon,
 } from "./StaffIncidentList";
 
-const handleSearch = (items, searchString) => {
-  if (searchString.length > 2) {
-    const results = items.filter((item) => {
-      return (
-        (item.patient_visitor_name &&
-          item.patient_visitor_name
-            .toLowerCase()
-            .includes(searchString.toLowerCase())) ||
-        (item.incident_type &&
-          item.incident_type
-            .toLowerCase()
-            .includes(searchString.toLowerCase())) ||
-        (item.follow_up &&
-          item.follow_up.toLowerCase().includes(searchString.toLowerCase()))
-      );
-    });
-    return results;
-  }
+// Debugging check for imported components
+if (
+  !SortByNumberIcon ||
+  !SortDateIcon ||
+  !SortNameIcon ||
+  !DateFormatter ||
+  !SliceText
+) {
+  console.error("One or more imported components are undefined:", {
+    SortByNumberIcon: !!SortByNumberIcon,
+    SortDateIcon: !!SortDateIcon,
+    SortNameIcon: !!SortNameIcon,
+    DateFormatter: !!DateFormatter,
+    SliceText: !!SliceText,
+  });
+}
 
-  return [];
-};
+function formatDate(dateString) {
+  if (!dateString || isNaN(new Date(dateString).getTime())) {
+    return "Invalid Date";
+  }
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = String(date.getFullYear());
+  return `${year}-${month}-${day}`;
+}
+
+function formatTime(timeString) {
+  if (!timeString || !timeString.includes(":")) {
+    return "Invalid Time";
+  }
+  const [hours, minutes, seconds] = timeString.split(":");
+  return `${hours}:${minutes}:${seconds.split(".")[0] || "00"}`;
+}
 
 const WorkplaceViolenceList = () => {
   const [errorFetching, setErrorFetching] = useState("");
   const [isFetching, setIsFetching] = useState(true);
   const [incidentData, setIncidentData] = useState([]);
-  const [searchResults, setSearchResults] = useState("");
-  const [resultsFound, setResultsFound] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [filterByDate, setFilterByDate] = useState(false);
-  const [openFilters, setOpenFilters] = useState(false);
-  const [openAction, setOpenAction] = useState(false);
-  const [openActionIndex, setOpenActionIndex] = useState("");
-  const [selectedItems, setSelectedItems] = useState([]);
   const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
-
-  const router = useRouter();
-
-  const [data, setData] = useState([]); // To hold the table data
+  const [selectedItems, setSelectedItems] = useState([]);
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
     status: "",
   });
+  const [openFilters, setOpenFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
+  const router = useRouter();
 
   // Calculate pagination data
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -80,77 +84,95 @@ const WorkplaceViolenceList = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
-  const currentSearchResults = searchResults
-    ? searchResults.slice(indexOfFirstItem, indexOfLastItem)
-    : [];
+  const currentSearchResults = searchResults.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(
     (isSearching ? searchResults.length : incidentData.length) / itemsPerPage
   );
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  // Handle filter application
-  const applyFilters = () => {
-    const newFilteredData = data.filter((item) => {
-      const incidentDate = new Date(item.date_of_incident);
-      const startDate = filters.start_date
-        ? new Date(filters.start_date)
-        : null;
-      const endDate = filters.end_date ? new Date(filters.end_date) : null;
+  const fetchFilteredData = async (appliedFilters) => {
+    try {
+      setIsFetching(true);
+      setErrorFetching("");
+      const queryParams = new URLSearchParams();
+      if (appliedFilters.start_date)
+        queryParams.append("start_date", appliedFilters.start_date);
+      if (appliedFilters.end_date)
+        queryParams.append("end_date", appliedFilters.end_date);
+      if (appliedFilters.status)
+        queryParams.append("status", appliedFilters.status);
 
-      const withinDateRange =
-        (!startDate || incidentDate >= startDate) &&
-        (!endDate || incidentDate <= endDate);
-
-      return (
-        withinDateRange &&
-        (!filters.status.toLowerCase() ||
-          item.status.toLowerCase() === filters.status.toLowerCase())
+      const response = await api.get(
+        `${API_URL}/incidents/workplace-violence/?${queryParams.toString()}`
       );
-    });
-    setIncidentData(newFilteredData);
-    setCurrentPage(1); // Reset to first page when filters are applied
+      console.log("Workplace Violence API response:", response);
+      if (response && response.status === 200 && response.data) {
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          date_of_incident: formatDate(item.date_of_incident),
+        }));
+        setIncidentData(formattedData);
+        setSearchResults([]);
+        setIsSearching(false);
+        setIsSearchingTheDatabase(false);
+        setCurrentPage(1);
+        setIsFetching(false);
+      } else {
+        setErrorFetching("Unexpected response format.");
+        setIsFetching(false);
+      }
+    } catch (error) {
+      console.error("Workplace Violence API error:", error);
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrorFetching(error.response.data.error);
+      } else {
+        setErrorFetching("An error occurred while fetching incident data.");
+      }
+      setIsFetching(false);
+    }
+  };
+
+  const applyFilters = () => {
+    fetchFilteredData(filters);
     toggleOpenFilters();
   };
 
-  // Clear filters
   const clearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       start_date: "",
       end_date: "",
       status: "",
-    });
+    };
     setIncidentData(data);
     setCurrentPage(1); // Reset to first page when filters are cleared
   };
 
-  const toggleAction = (index) => {
-    setOpenActionIndex(index);
-    setOpenAction(!openAction);
-  };
-
-  const handleRowClick = (incidentId) => {
-    router.push(`/incident/workplace-violence/${incidentId}`);
-  };
-
-  const navigateToModify = (incidentId) => {
-    router.push(`/incident/workplace-violence/${incidentId}/update/`);
-    localStorage.setItem("workplaceViolenceId", incidentId)
-  };
-
-  const handleNonClickableColumnClick = (event) => {
-    event.stopPropagation();
+  const toggleOpenFilters = () => {
+    setOpenFilters(!openFilters);
   };
 
   const search = (string) => {
     setIsSearching(true);
+    if (string.length < 2) {
+      setIsSearching(false);
+      setSearchResults([]);
+      return;
+    }
     const results = incidentData.filter(
       (item) =>
-        (item.report_facility &&
-          item.report_facility?.name
+        (item.patient_visitor_name &&
+          item.patient_visitor_name
             .toLowerCase()
             .includes(string.toLowerCase())) ||
         (item.incident_type &&
-          item.incident_type.toLowerCase().includes(string.toLowerCase()))
+          item.incident_type.toLowerCase().includes(string.toLowerCase())) ||
+        (item.report_facility?.name &&
+          item.report_facility.name
+            .toLowerCase()
+            .includes(string.toLowerCase()))
     );
 
     if (results.length < 1) {
@@ -159,22 +181,22 @@ const WorkplaceViolenceList = () => {
         setIsSearchingTheDatabase(false);
       }, 3000);
     }
-
     setSearchResults(results);
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
   };
 
-  const toggleOpenFilters = () => {
-    setOpenFilters(!openFilters);
+  const handleRowClick = (incidentId) => {
+    router.push(`/incident/workplace-violence/${incidentId}`);
   };
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const year = String(date.getFullYear()).slice(0);
-    return `${year}-${month}-${day}`;
-  }
+  const navigateToModify = (incidentId) => {
+    router.push(`/incident/workplace-violence/${incidentId}/update/`);
+    localStorage.setItem("workplaceViolenceId", incidentId);
+  };
+
+  const handleNonClickableColumnClick = (event) => {
+    event.stopPropagation();
+  };
 
   const handleSelectedItems = (item) => {
     if (!selectedItems.includes(item)) {
@@ -202,42 +224,17 @@ const WorkplaceViolenceList = () => {
   };
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
   };
 
   useEffect(() => {
-    const fetchIncidentData = async () => {
-      try {
-        const response = await api.get(
-          `${API_URL}/incidents/workplace-violence/`
-        );
-        if (response.status === 200) {
-          const formattedData = response.data.map((item) => ({
-            ...item,
-            date_of_incident: formatDate(item.date_of_incident),
-          }));
-          setIncidentData(formattedData);
-          setData(formattedData);
-          setIsFetching(false);
-        }
-      } catch (error) {
-        if (error.response) {
-          setErrorFetching(error.response.data.error);
-          setIsFetching(false);
-        } else {
-          setErrorFetching("An error occurred while fetching incident data.");
-          setIsFetching(false);
-        }
-      }
-    };
-    fetchIncidentData();
-    setIsFetching(false);
+    fetchFilteredData(filters);
   }, []);
 
   return isFetching ? (
-    <div className="getting-data">
-      <p>Getting data..</p>
-    </div>
+    <ModifyPageLoader />
   ) : (
     <div>
       {errorFetching ? (
@@ -250,7 +247,7 @@ const WorkplaceViolenceList = () => {
             <div className="title-container-action">
               <div className="title-container">
                 <h2 className="title">Workplace Violence Tracking List</h2>
-                <p>{incidentData.length} incident(s) available </p>
+                <p>{incidentData.length} incident(s) available</p>
               </div>
             </div>
 
@@ -258,14 +255,13 @@ const WorkplaceViolenceList = () => {
               {openFilters ? (
                 <div className="filters_popup">
                   <div onClick={toggleOpenFilters} className="close-icon">
-                    <X size={24} variant={"stroke"} />
+                    <X size={24} variant="stroke" />
                   </div>
-
                   <h3>Filter incident data</h3>
                   <div className="filter-buttons">
                     <CustomSelectInput
                       options={["Draft", "Open", "Closed"]}
-                      placeholder={"Filter by status"}
+                      placeholder="Filter by status"
                       selected={filters.status}
                       setSelected={(value) =>
                         setFilters({ ...filters, status: value })
@@ -273,7 +269,6 @@ const WorkplaceViolenceList = () => {
                       name="status"
                       id="status"
                     />
-
                     <div className="filter-range">
                       <span>Start date</span>
                       <CustomDatePicker
@@ -285,7 +280,6 @@ const WorkplaceViolenceList = () => {
                         dateFormat="yyyy-MM-dd"
                       />
                     </div>
-
                     <div className="filter-range">
                       <span>End date</span>
                       <CustomDatePicker
@@ -297,10 +291,9 @@ const WorkplaceViolenceList = () => {
                         dateFormat="yyyy-MM-dd"
                       />
                     </div>
-
                     <div className="pop-up-buttons">
                       <button onClick={clearFilters} className="outline-button">
-                        <X size={20} variant={"stroke"} />
+                        <X size={20} variant="stroke" />
                         Clear
                       </button>
                       <button
@@ -308,32 +301,28 @@ const WorkplaceViolenceList = () => {
                         className="secondary-button"
                       >
                         <div className="icon">
-                          <SlidersHorizontal size={20} variant={"stroke"} />
+                          <SlidersHorizontal size={20} variant="stroke" />
                         </div>
                         <span>Filter</span>
                       </button>
                     </div>
                   </div>
                 </div>
-              ) : (
-                ""
-              )}
+              ) : null}
               <input
-                onChange={(e) => {
-                  search(e.target.value);
-                }}
+                onChange={(e) => search(e.target.value)}
                 type="search"
                 name="systemSearch"
                 id="systemSearch"
-                placeholder="Search the system"
+                placeholder="Search by patient/visitor, incident type, or facility"
               />
-
               {selectedItems.length > 0 ? (
                 <button
                   onClick={() => exportExcel(selectedItems, "wp_incident_list")}
                   className="secondary-button"
                 >
-                  <File /> <span>Export</span>
+                  <File />
+                  <span>Export</span>
                 </button>
               ) : (
                 <button
@@ -341,7 +330,7 @@ const WorkplaceViolenceList = () => {
                   className="date-filter-button"
                 >
                   <div className="icon">
-                    <SlidersHorizontal variant={"stroke"} />
+                    <SlidersHorizontal variant="stroke" />
                   </div>
                   <span>Filter</span>
                 </button>
@@ -356,92 +345,88 @@ const WorkplaceViolenceList = () => {
                   <div className="searching_database">
                     <p>Searching database</p>
                   </div>
-                ) : currentSearchResults && currentSearchResults.length > 0 ? (
+                ) : currentSearchResults.length > 0 ? (
                   <div className="results-table">
                     <div className="results-count">
                       <span className="count">{searchResults.length}</span>{" "}
                       result(s) found
                     </div>
-                    <>
-                      <WorkPlaceViolenceTable
-                        incidentData={currentSearchResults}
-                        handleSelectAll={handleSelectAll}
-                        selectedItems={selectedItems}
-                        handleSelectedItems={handleSelectedItems}
-                        handleNonClickableColumnClick={
-                          handleNonClickableColumnClick
-                        }
-                        navigateToModify={navigateToModify}
-                        handleRowClick={handleRowClick}
-                        setIncidentData={setSearchResults}
-                      />
-                      <div className="mobile-table">
+                    <WorkplaceViolenceTable
+                      incidentData={currentSearchResults}
+                      handleSelectAll={handleSelectAll}
+                      selectedItems={selectedItems}
+                      handleSelectedItems={handleSelectedItems}
+                      handleNonClickableColumnClick={
+                        handleNonClickableColumnClick
+                      }
+                      navigateToModify={navigateToModify}
+                      handleRowClick={handleRowClick}
+                      setIncidentData={setSearchResults}
+                    />
+                    <div className="mobile-table">
+                      <button
+                        onClick={() => handleSelectAll(searchResults)}
+                        type="button"
+                        className="tertiary-button"
+                      >
+                        {searchResults.every((item) =>
+                          selectedItems.some(
+                            (selected) => selected.id === item.id
+                          )
+                        ) ? (
+                          <SquareCheck />
+                        ) : (
+                          <Square />
+                        )}{" "}
+                        Select all
+                      </button>
+                      {currentSearchResults.map((incident, index) => (
+                        <IncidentTableCard
+                          key={index}
+                          incident={incident}
+                          handleRowClick={handleRowClick}
+                          selectedItems={selectedItems}
+                          handleSelectedItems={handleSelectedItems}
+                        />
+                      ))}
+                    </div>
+                    <div className="pagination-controls">
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                      >
+                        Prev
+                      </button>
+                      {pageNumbers.map((number) => (
                         <button
-                          onClick={() => handleSelectAll(searchResults)}
-                          type="button"
-                          className="tertiary-button"
+                          key={number}
+                          className={`pagination-button ${
+                            currentPage === number ? "active" : ""
+                          }`}
+                          onClick={() => handlePageChange(number)}
                         >
-                          {searchResults.every((item) =>
-                            selectedItems.some(
-                              (selected) => selected.id === item.id
-                            )
-                          ) ? (
-                            <SquareCheck />
-                          ) : (
-                            <Square />
-                          )}{" "}
-                          Select all
+                          {number}
                         </button>
-
-                        {currentSearchResults &&
-                          currentSearchResults.map((incident, index) => (
-                            <IncidentTableCard
-                              key={index}
-                              incident={incident}
-                              handleRowClick={handleRowClick}
-                              selectedItems={selectedItems}
-                              handleSelectedItems={handleSelectedItems}
-                            />
-                          ))}
-                      </div>
-                      <div className="pagination-controls">
-                        <button
-                          className="pagination-button"
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
-                        >
-                          Prev
-                        </button>
-                        {pageNumbers.map((number) => (
-                          <button
-                            key={number}
-                            className={`pagination-button ${
-                              currentPage === number ? "active" : ""
-                            }`}
-                            onClick={() => handlePageChange(number)}
-                          >
-                            {number}
-                          </button>
-                        ))}
-                        <button
-                          className="pagination-button"
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                        >
-                          Next
-                        </button>
-                      </div>
-                    </>
+                      ))}
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="no-data-found">
-                    <p>No data found with your search found</p>
+                    <p>No data found with your search</p>
                   </div>
                 )}
               </div>
             ) : (
               <>
-                <WorkPlaceViolenceTable
+                <WorkplaceViolenceTable
                   incidentData={currentIncidentData}
                   handleSelectAll={handleSelectAll}
                   selectedItems={selectedItems}
@@ -466,17 +451,15 @@ const WorkplaceViolenceList = () => {
                     )}{" "}
                     Select all
                   </button>
-
-                  {currentIncidentData &&
-                    currentIncidentData.map((incident, index) => (
-                      <IncidentTableCard
-                        key={index}
-                        incident={incident}
-                        handleRowClick={handleRowClick}
-                        selectedItems={selectedItems}
-                        handleSelectedItems={handleSelectedItems}
-                      />
-                    ))}
+                  {currentIncidentData.map((incident, index) => (
+                    <IncidentTableCard
+                      key={index}
+                      incident={incident}
+                      handleRowClick={handleRowClick}
+                      selectedItems={selectedItems}
+                      handleSelectedItems={handleSelectedItems}
+                    />
+                  ))}
                 </div>
                 <div className="pagination-controls">
                   <button
@@ -514,7 +497,7 @@ const WorkplaceViolenceList = () => {
   );
 };
 
-const WorkPlaceViolenceTable = ({
+const WorkplaceViolenceTable = ({
   incidentData,
   handleNonClickableColumnClick,
   handleRowClick,
@@ -562,15 +545,13 @@ const WorkPlaceViolenceTable = ({
   };
 
   const handleSorting = (items, sortBy, direction, field) => {
-    console.log(items);
     console.log("sorting items:", sortBy, direction, field);
-    const sortByNumber = (field, direction) => {
+    const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const aValue = a.original_report ? a.original_report : a.id;
         const bValue = b.original_report ? b.original_report : b.id;
-
         const result = aValue - bValue;
-        return direction && direction === "asc" ? result : -result;
+        return direction === "asc" ? result : -result;
       });
     };
 
@@ -619,30 +600,38 @@ const WorkPlaceViolenceTable = ({
               )}
             </div>
           </th>
-
           <th>No</th>
-          <th className="sort-cell">
-            ID
-            <SortByNumberIcon
-              setSortDesc={setSortDesc}
-              handleSortById={handleSortById}
-              sortDesc={sortDesc}
-            />{" "}
+          <th>
+            <div className="sort-cell">
+              ID
+              {SortByNumberIcon ? (
+                <SortByNumberIcon
+                  setSortDesc={setSortDesc}
+                  handleSortById={handleSortById}
+                  sortDesc={sortDesc}
+                />
+              ) : (
+                <span>Sort</span>
+              )}
+            </div>
           </th>
           <th>Facility</th>
           <th>Type of incident</th>
+          <th>Physical injury description</th>
           <th>
-            Physical injury <br /> description
+            <div className="sort-cell">
+              Incident date & time
+              {SortDateIcon ? (
+                <SortDateIcon
+                  setSortDesc={setDateRecent}
+                  handleSortById={handleFilterByDate}
+                  sortDesc={dateRecent}
+                />
+              ) : (
+                <span>Sort</span>
+              )}
+            </div>
           </th>
-          <th className="sort-cell">
-            Incident data & time
-            <SortDateIcon
-              setSortDesc={setDateRecent}
-              handleSortById={handleFilterByDate}
-              sortDesc={dateRecent}
-            />
-          </th>
-
           <th>Severity</th>
           <th>Status</th>
           <th className="action-col">Action</th>
@@ -676,28 +665,31 @@ const WorkPlaceViolenceTable = ({
                   )}
                 </div>
               </td>
-
               <td>{index + 1}</td>
-              <td>{incident.original_report || incident.id} </td>
-              {/* <td>{incident.report_facility?.name || "Not provided"}</td> */}
+              <td>{incident.original_report || incident.id}</td>
               <td>{incident.report_facility?.name || "Not provided"}</td>
               <td>{incident.incident_type || "Not provided"}</td>
               <td>
-                <SliceText
-                  text={incident.physical_injury_description || "Not provided"}
-                  maxLength={20}
-                />
+                {SliceText ? (
+                  <SliceText
+                    text={
+                      incident.physical_injury_description || "Not provided"
+                    }
+                    maxLength={20}
+                  />
+                ) : (
+                  incident.physical_injury_description || "Not provided"
+                )}
               </td>
               <td>
-                {(
-                  <div>
-                    <DateFormatter dateString={incident.date_of_incident} />,{" "}
-                    {incident.time_of_incident || "Time not provided"}
-                  </div>
-                ) || "-"}
+                {DateFormatter ? (
+                  <DateFormatter dateString={incident.date_of_incident} />
+                ) : (
+                  incident.date_of_incident
+                )}
+                , {formatTime(incident.time_of_incident) || "Time not provided"}
               </td>
-
-              <td>{incident.severity_level || "Not Provided"}</td>
+              <td>{incident.severity_level || "Not provided"}</td>
               <td>
                 <p
                   className={`follow-up ${
@@ -728,7 +720,6 @@ const WorkPlaceViolenceTable = ({
                       }
                     />
                   )}
-
                   <Eye
                     size={20}
                     onClick={() =>
@@ -745,7 +736,7 @@ const WorkPlaceViolenceTable = ({
           ))
         ) : (
           <tr>
-            <td>No data found</td>
+            <td colSpan="10">No data found</td>
           </tr>
         )}
       </tbody>
@@ -755,7 +746,6 @@ const WorkPlaceViolenceTable = ({
 
 const IncidentTableCard = ({
   incident,
-  items,
   handleRowClick,
   selectedItems,
   handleSelectedItems,
@@ -775,11 +765,9 @@ const IncidentTableCard = ({
               <Square />
             )}
           </div>
-
           <span>ID</span>
-          <span>{incident.original_report || incident.id} </span>
+          <span>{incident.original_report || incident.id}</span>
         </div>
-
         <div
           onClick={() =>
             handleRowClick(
@@ -792,35 +780,33 @@ const IncidentTableCard = ({
           <span>View more</span>
         </div>
       </div>
-      {items}
       <div className="card-content-items">
         <div className="item">
           <label htmlFor="">Facility: </label>
-          <span>{incident?.report_facility?.name || "Not provided"}</span>
+          <span>{incident.report_facility?.name || "Not provided"}</span>
         </div>
         <div className="item">
           <label htmlFor="">Incident Type: </label>
-          <span>{incident?.incident_type || "Not provided"}</span>
+          <span>{incident.incident_type || "Not provided"}</span>
         </div>
         <div className="item">
           <label htmlFor="">Physical injury description: </label>
-          <span>{incident?.physical_injury_description}</span>
+          <span>{incident.physical_injury_description || "Not provided"}</span>
         </div>
         <div className="item">
           <label htmlFor="">Incident Date & Time: </label>
           <span>
-            {(
-              <span>
-                <DateFormatter dateString={incident?.date_of_incident} />,
-                {incident.time_of_incident || "Time not provided"}
-              </span>
-            ) || "-"}
+            {DateFormatter ? (
+              <DateFormatter dateString={incident.date_of_incident} />
+            ) : (
+              incident.date_of_incident
+            )}
+            , {formatTime(incident.time_of_incident) || "Time not provided"}
           </span>
         </div>
-
         <div className="item">
           <label htmlFor="">Severity: </label>
-          <span>{incident?.severity_rating || "Not provided"}</span>
+          <span>{incident.severity_level || "Not provided"}</span>
         </div>
         <div className="item">
           <label htmlFor="">Status: </label>
@@ -833,7 +819,7 @@ const IncidentTableCard = ({
                 : "Open"
             }`}
           >
-            {incident?.status || "Not specified"}
+            {incident.status || "Not specified"}
           </span>
         </div>
       </div>
