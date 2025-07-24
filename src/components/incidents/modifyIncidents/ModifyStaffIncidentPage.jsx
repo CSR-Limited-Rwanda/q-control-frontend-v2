@@ -11,7 +11,7 @@ import CustomSelectInput from "@/components/CustomSelectInput";
 import BackToPage from "@/components/BackToPage";
 import postDocumentHistory from "@/components/incidents/documentHistory/postDocumentHistory";
 import EmployeeIncidentForm from "../incidentForms/EmployeeIncidentForms/EmployeeIncidentForm";
-// import HealthIncidentInvestigationForm from "../healthIncidentForm";
+import HealthIncidentInvestigationForm from "../incidentForms/EmployeeIncidentForms/HealthInvestigationForm";
 import FilesList from "@/components/incidents/documentHistory/FilesList";
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
@@ -97,8 +97,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [newWitness, setNewWitness] = useState(
     data.witnesses.map((el) => {
       return {
-        first_name: el.first_name,
-        last_name: el.last_name,
+        first_name: el.first_name ?? "",
+        last_name: el.last_name ?? "",
         // profile_type: "Witness"
       };
     })
