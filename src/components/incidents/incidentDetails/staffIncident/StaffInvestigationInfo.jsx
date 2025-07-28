@@ -139,8 +139,8 @@ const StaffInvestigationInfo = ({ data, incidentStatuses }) => {
         <div className="phone-number">
           <label htmlFor="city">Doctor name</label>
           <h4>
-            {data.doctor_info?.user?.last_name || "Not provided"}{" "}
-            {data.doctor_info?.user?.first_name || "Not provided"}
+            {data.doctor_info?.last_name || "Not provided"}{" "}
+            {data.doctor_info?.first_name || "Not provided"}
           </h4>
         </div>
         <div className="phone-number">
@@ -165,10 +165,10 @@ const StaffInvestigationInfo = ({ data, incidentStatuses }) => {
           </h4>
         </div>
 
-        <div className="field small-field">
+        {/* <div className="field small-field">
           <label htmlFor="city">Employee report</label>
           <h4>{data.employee_report || "Not provided"}</h4>
-        </div>
+        </div> */}
       </div>
     </div>
   ) : (
