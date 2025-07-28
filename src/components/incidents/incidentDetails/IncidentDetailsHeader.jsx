@@ -184,14 +184,14 @@ const IncidentDetailsHeader = ({
               <House color="gray" />
               <span>Facility:</span>
             </div>
-            <span>{data.incident.report_facility?.name || "No facility"}</span>
+            <span>{data?.incident?.report_facility?.name || "No facility"}</span>
           </div>
           <div className="department">
             <div className="department-name">
               <Warehouse color="gray" />
               <span>Department:</span>
             </div>
-            <span>{data.incident?.department || "No department"}</span>
+            <span>{data.incident.department?.name || "No department"}</span>
           </div>
 
           <CustomModifiedSelectInput
@@ -239,57 +239,36 @@ const IncidentDetailsHeader = ({
                     " "
                   )} */}
 
-                  {permissions &&
-                    (permissions.includes("Super User") ||
-                      permissions.includes("Admin") ||
-                      (showClosedManager && permissions.includes("Manager"))) ? (
-                    <div
-                      onClick={toggleShowMarkResolvedPopup}
-                      className="action"
-                    >
-                      <div className="icon">
-                        <FileCheck2 size={20} variant={"stroke"} />
-                      </div>
-                      <span>Mark as closed</span>
+                  <div
+                    onClick={toggleShowMarkResolvedPopup}
+                    className="action"
+                  >
+                    <div className="icon">
+                      <FileCheck2 size={20} variant={"stroke"} />
                     </div>
-                  ) : (
-                    " "
-                  )}
+                    <span>Mark as closed</span>
+                  </div>
                 </>
 
-                {(permissions.includes("Super User") ||
-                  permissions.includes("Admin") ||
-                  permissions.includes("Quality - Risk Manager") ||
-                  permissions.includes("Manager") ||
-                  canViewDraft) && (
-                    <Link
-                      href={"modify/"}
-                      onClick={() => {
-                        localStorage.setItem("canModifyDraft", true);
-                      }}
-                      className="action"
-                    >
-                      <div className="icon">
-                        <Pencil size={20} variant={"stroke"} />
-                      </div>
-                      <span>Modify</span>
-                    </Link>
-                  )}
-
-                {permissions &&
-                  (permissions.includes("Admin") ||
-                    permissions.includes("Quality - Risk Manager") ||
-                    permissions.includes("Super Admin") ||
-                    permissions.includes("Manager")) ? (
-                  <div onClick={toggleShowReviewForm} className="action">
-                    <div className="icon">
-                      <MessageCirclePlus size={20} variant={"stroke"} />
-                    </div>
-                    <span>Add a comment</span>
+                <Link
+                  href={"modify/"}
+                  onClick={() => {
+                    localStorage.setItem("canModifyDraft", true);
+                  }}
+                  className="action"
+                >
+                  <div className="icon">
+                    <Pencil size={20} variant={"stroke"} />
                   </div>
-                ) : (
-                  " "
-                )}
+                  <span>Modify</span>
+                </Link>
+
+                <div onClick={toggleShowReviewForm} className="action">
+                  <div className="icon">
+                    <MessageCirclePlus size={20} variant={"stroke"} />
+                  </div>
+                  <span>Add a comment</span>
+                </div>
                 {/* {permissions &&
                 (permissions.includes("Admin") ||
                   permissions.includes("Quality - Risk Manager") ||

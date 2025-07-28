@@ -133,7 +133,7 @@ const LostAndFoundList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/lost_and_found/${incidentId}`);
+    router.push(`/incident/lost-and-found/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {
