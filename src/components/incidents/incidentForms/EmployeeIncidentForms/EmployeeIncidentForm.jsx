@@ -67,6 +67,9 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const [facilityId, setFacilityId] = useState(
     localStorage.getItem("facilityId")
   );
+  const [departmentId, setDepartmentId] = useState(
+    localStorage.getItem("departmentId")
+  )
 
   useEffect(() => {
     currentStepRef.current = currentStep;
@@ -175,6 +178,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     }));
     const incidentData = {
       facility_id: facilityId,
+      department: departmentId,
       current_step: currentStep,
       incident_status: statusType,
       report_facility: checkCurrentAccount(),
@@ -571,7 +575,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             </div>
             <div className="half">
               <div className="field name">
-                <label htmlFor="employeeFirstName">First name</label>
+                <label htmlFor="employeeFirstName">Patient First name</label>
                 <input
                   onChange={(e) => setFirstName(e.target.value)}
                   value={firstName}
@@ -582,7 +586,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
                 />
               </div>
               <div className="field name">
-                <label htmlFor="employeeLastName">Last name</label>
+                <label htmlFor="employeeLastName">Patient Last name</label>
                 <input
                   onChange={(e) => setLastName(e.target.value)}
                   value={lastName}
