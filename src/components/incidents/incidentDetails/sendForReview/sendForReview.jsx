@@ -243,9 +243,9 @@ const SendForReview = ({ path, incidentID, handleClose }) => {
                         }
                         {error && <p className="error message">{error}</p>}
                         <div className="buttons">
-                            <button onClick={currentStep < 2 ? handleClose : handleBackButton}>
+                            <button className='btn-gray' onClick={currentStep < 2 ? handleClose : handleBackButton}>
                                 {
-                                    currentStep < 2 ? <>Close <X /></> : <><ArrowLeft /> Back</>
+                                    currentStep < 2 ? 'Cancel' : <><ArrowLeft /> Back</>
                                 }
                             </button>
                             <Button
@@ -257,6 +257,8 @@ const SendForReview = ({ path, incidentID, handleClose }) => {
                                         : 'Continue'
                                 }
                                 isLoading={isSending}
+                                hasIcon={true}
+                                icon={<ArrowRight />}
                             />
                         </div>
                     </div>
