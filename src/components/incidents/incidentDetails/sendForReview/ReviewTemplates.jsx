@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import { TemplateDetails } from "./TemplateDetails";
 import { fetchReviewTemplates } from "@/hooks/fetchReviewTemplates";
+import { set } from "date-fns";
+import Link from "next/link";
+import { PlusCircle } from "lucide-react";
 
-export const ReviewTemplates = ({ selectedTemplate, setSelectedTemplate }) => {
+export const ReviewTemplates = ({ setCurrentStep, selectedTemplate, setSelectedTemplate }) => {
     const [templates, setTemplates] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     // Simulate fetching templates
+
+    const handleNext = (template) => {
+        setSelectedTemplate(template);
+        setCurrentStep(2);
+    }
     useEffect(() => {
         const fetchTemplates = async () => {
             const response = await fetchReviewTemplates('page_size=10');
@@ -34,10 +42,16 @@ export const ReviewTemplates = ({ selectedTemplate, setSelectedTemplate }) => {
                         ) : (
                             <>
                                 {templates.map((template) => (
-                                    <div className='template' key={template.id} onClick={() => setSelectedTemplate(template)}>
+                                    <div className='template' key={template.id} onClick={() => handleNext(template)}>
                                         {template.name}
                                     </div>
-                                ))}</>
+                                ))}
+
+                                <Link className="btn btn-outline" href={'/review-templates/new'}>
+                                    <PlusCircle />
+                                    New template
+                                </Link>
+                            </>
                         )}
                     </div>
             }
