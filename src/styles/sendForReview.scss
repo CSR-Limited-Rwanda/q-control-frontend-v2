@@ -1,0 +1,132 @@
+.send-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .choice {
+        padding: 1rem;
+        background-color: whitesmoke;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        text-align: center;
+
+        &:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+    }
+}
+
+.review-templates-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .templates-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .template {
+            text-align: center;
+            padding: 1rem;
+            background-color: whitesmoke;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: var(--primary);
+                color: white;
+            }
+        }
+    }
+
+}
+
+.template-details-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: whitesmoke;
+    padding: 1rem;
+    border-radius: 0.5rem;
+
+
+    .template-tasks {
+        height: 100%;
+        max-height: 40vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem;
+
+        .template-task {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            .name-days {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: var(--secondary);
+
+                .number-of-groups {
+                    font-weight: bold;
+                    color: var(--primary) !important;
+                }
+            }
+
+            .template-assigned-group {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .template-review-groups,
+                .task-details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+
+                .template-review-group {
+                    padding: 0.5rem;
+                    background-color: whitesmoke;
+                    border-radius: 0.5rem;
+                }
+            }
+
+            .approval {
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+                background-color: whitesmoke;
+            }
+        }
+    }
+}
+
+.users-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .user-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+    }
+}
