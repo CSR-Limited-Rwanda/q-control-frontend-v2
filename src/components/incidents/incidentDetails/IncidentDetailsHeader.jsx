@@ -46,6 +46,7 @@ const IncidentDetailsHeader = ({
   const [showPreviewForm, setShowPreviewForm] = useState(false);
   const canModifyDraft = localStorage.getItem("canModifyDraft");
   const canViewDraft = localStorage.getItem("canViewDraft");
+  
   // Helper to format dates
   const formatDate = (dateString) => {
     const date = new Date(dateString);

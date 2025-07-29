@@ -24,33 +24,33 @@ const GeneralIncidentGeneralInformation = ({ data, incidentStatuses }) => {
             {data.incident?.patient_status_prior}
           </div>
         </div>
-      ) : data.incident_type === "Equipment malfunction" ? (
+      ) : data.incident?.incident_type === "Equipment malfunction" ? (
         <div className="equipment-type-incident">
           <h3>Equipment related incident</h3>
           <div className="equipment-incident-data">
             <div className="equipment-incident">
               <small>Removed from services ?</small>
-              <h4>{data.removed_from_service || "Not provided"}</h4>
+              <h4>{data.incident?.removed_from_service || "Not provided"}</h4>
             </div>
             <div className="equipment-type">
               <small>Equipment type</small>
-              <h4>{data.equipment_type || "Not provided"}</h4>
+              <h4>{data.incident?.equipment_type || "Not provided"}</h4>
             </div>
             <div className="manufacturer">
               <small>Manufacturer</small>
-              <h4>{data.equipment_manufacturer || "Not provided"}</h4>
+              <h4>{data.incident?.equipment_manufacturer || "Not provided"}</h4>
             </div>
             <div className="serial-number">
               <small>Serial number</small>
-              <h4>{data.equipment_serial_number || "Not provided"}</h4>
+              <h4>{data.incident?.equipment_serial_number || "Not provided"}</h4>
             </div>
             <div className="model">
               <small>Model</small>
-              <h4>{data.equipment_model || "Not provided"}</h4>
+              <h4>{data.incident?.equipment_model || "Not provided"}</h4>
             </div>
             <div className="lot-number">
               <small>Lot/Control number</small>
-              <h4>{data.equipment_lot_number || "Not provided"}</h4>
+              <h4>{data.incident.equipment_lot_number || "Not provided"}</h4>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@ const GeneralIncidentGeneralInformation = ({ data, incidentStatuses }) => {
             </div>
           </div>
         </div>
-      ) : data.incident.incident_type === "Other" ? (
+      ) : data.incident?.incident_type === "Others" ? (
         <div className="other-type-incident">
           <h3>Other related incident</h3>
           <div className="other-incident-data">
