@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useRef, useState, useEffect } from "react";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import CustomSelectInput from "@/components/CustomSelectInput";
@@ -10,11 +10,11 @@ import {
   drugRoutes,
   severityCategories,
   contributingFactors,
-  errorTypes
+  errorTypes,
 } from "@/constants/constants";
 import { SquareCheck, SaveAll, LoaderCircle, Square } from "lucide-react";
 import BackToPage from "../../backToPage";
-import "../../../styles/_modifyincident.scss"
+import "../../../styles/_modifyincident.scss";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
 import CustomTimeInput from "@/components/CustomTimeInput";
@@ -37,9 +37,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
   const [physicianLastName, setPhysicianLastName] = useState(
     incident?.provider_info?.last_name
   );
-  const [firstName, setFirstName] = useState(
-    incident?.patient?.first_name
-  );
+  const [firstName, setFirstName] = useState(incident?.patient?.first_name);
   const [lastName, setLastName] = useState(incident?.patient?.last_name);
   const [severityRating, setSeverityRating] = useState(
     incident?.severity_rating ?? ""
@@ -102,7 +100,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
   const [selectedCategory, setSelectedCategory] = useState(category);
   const [medicationErrorIncidentId, setMedicationErrorIncidentId] = useState(
     localStorage.getItem("medicationErrorIncidentId")
-  )
+  );
 
   const handleDrugOrderedRoute = (drug) => {
     // check if the route is not in the array of routes, then add it else, remove it
@@ -179,12 +177,12 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
         medical_record_number: mrn,
         age: age,
         date_of_birth: dateOfBirth,
-        profile_type: "Patient"
+        profile_type: "Patient",
       },
       provider_info: {
         first_name: physicianFirstName || "",
         last_name: physicianLastName || "",
-        profile_type: "Physician"
+        profile_type: "Physician",
       },
       day_of_the_week: dayWeek,
       date_of_error: date,
@@ -236,8 +234,8 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while updating the incident"
+            error.response.data.error ||
+            "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -289,10 +287,10 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
     const fetchIncidentDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/medication_error/${incidentId}/documents/`
+          `/incidents/medication-error/${medicationErrorIncidentId}/documents/`
         );
         if (response.status === 200) {
-          setUploadedFiles(response.data);
+          setUploadedFiles(response.data.results);
           console.log("documents updated successfully");
         }
       } catch (error) {
@@ -316,7 +314,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       console.log([...formData]);
 
       const response = await mediaAPI.post(
-        `/incidents/medication_error/${medicationErrorIncidentId}/documents/new/`,
+        `/incidents/medication-error/${medicationErrorIncidentId}/documents/`,
         formData
       );
 
@@ -377,12 +375,13 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${status === "Draft"
-                ? "in-progress"
-                : status === "Closed"
+              className={`follow-up ${
+                status === "Draft"
+                  ? "in-progress"
+                  : status === "Closed"
                   ? "closed"
                   : "Open"
-                }`}
+              }`}
             >
               {status}
             </span>
@@ -593,7 +592,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                     key={index}
                   >
                     {drugOrderedRoutes &&
-                      drugOrderedRoutes.includes(route.value) ? (
+                    drugOrderedRoutes.includes(route.value) ? (
                       <SquareCheck color="#F87C47" />
                     ) : (
                       <Square />
@@ -643,7 +642,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                     key={index}
                   >
                     {drugGivenRoutes &&
-                      drugGivenRoutes.includes(route.value) ? (
+                    drugGivenRoutes.includes(route.value) ? (
                       <SquareCheck color="#F87C47" />
                     ) : (
                       <Square />
@@ -731,8 +730,9 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 {errorTypes.map((error, index) => (
                   <div
                     key={index}
-                    className={`type full full-width-type ${descriptionError === error.name ? "selected" : ""
-                      }`}
+                    className={`type full full-width-type ${
+                      descriptionError === error.name ? "selected" : ""
+                    }`}
                     onClick={() => handleTypeSelection(error.name)}
                   >
                     <h5>{error.name}</h5>
@@ -755,8 +755,9 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 </h2>
                 {contributingFactors.map((item, index) => (
                   <div
-                    className={`type full full-width-type ${contributingfactors === item.factor ? "selected" : ""
-                      }`}
+                    className={`type full full-width-type ${
+                      contributingfactors === item.factor ? "selected" : ""
+                    }`}
                     onClick={() => handleContributingFactor(item.factor)}
                     key={index}
                   >
@@ -778,10 +779,11 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 {severityCategories.map((category, index) => (
                   <div
                     key={index}
-                    className={`type full full-width-type ${selectedCategory.value === category.value
-                      ? "selected"
-                      : ""
-                      }`}
+                    className={`type full full-width-type ${
+                      selectedCategory.value === category.value
+                        ? "selected"
+                        : ""
+                    }`}
                     onClick={() =>
                       handleSelectedCategory({
                         category: category.category,

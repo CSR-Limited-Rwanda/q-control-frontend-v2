@@ -1439,6 +1439,60 @@ input[type="checkbox"] {
   }
 }
 
+.documents-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  background-color: whitesmoke;
+
+  .document {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background-color: white;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    position: relative;
+
+    .icon {
+      max-width: 2rem;
+    }
+
+    .download-icon {
+      border: 1px solid rgb(229, 229, 229);
+      height: 2.2rem;
+      width: 2.2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $secondary-color;
+    }
+
+    .delete-document {
+      position: absolute;
+      top: -1rem;
+      right: -1rem;
+      background-color: red;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: white;
+      padding: 0.2rem;
+    }
+  }
+
+  .document-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+}
+
 .auth-pages {
   height: 100vh;
   width: 100vw;

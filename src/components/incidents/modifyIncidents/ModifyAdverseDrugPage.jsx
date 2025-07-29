@@ -1,20 +1,25 @@
-'use client'
+"use client";
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import api, { cleanedData } from "@/utils/api";
 import BackToPage from "../../backToPage";
-import { SquareCheck, SaveAll, LoaderCircle, Square } from 'lucide-react';
+import { SquareCheck, SaveAll, LoaderCircle, Square } from "lucide-react";
 import CustomSelectInput from "@/components/CustomSelectInput";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import CustomTimeInput from "@/components/CustomTimeInput";
 import RichTexField from "@/components/forms/RichTextField";
-import { drugRoutes, outComeData, outcomeReasons, incidentTypesData } from "@/constants/constants";
+import {
+  drugRoutes,
+  outComeData,
+  outcomeReasons,
+  incidentTypesData,
+} from "@/constants/constants";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
 import mediaAPI from "@/utils/mediaApi";
 import { usePermission, useDepartments } from "@/context/PermissionsContext";
-import "../../../styles/_modifyincident.scss"
+import "../../../styles/_modifyincident.scss";
 import CantModify from "@/components/CantModify";
 const ModifyAdverseDruReactionForm = ({ data }) => {
   const [savingDraft, setSavingDraft] = useState(false);
@@ -26,16 +31,14 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [adverseDrugReactionId, setAdverseDrugReactionId] = useState(
     localStorage.getItem("adverseDrugReactionId")
-  )
+  );
 
   // form
   const [outComeType, setOutComeType] = useState("mild");
   const [firstName, setFirstName] = useState(
     incident?.patient_name?.first_name
   );
-  const [lastName, setLastName] = useState(
-    incident?.patient_name?.last_name
-  );
+  const [lastName, setLastName] = useState(incident?.patient_name?.last_name);
   const [sex, setSex] = useState(incident?.patient_name?.gender);
   const [incidentDate, setIncidentDate] = useState(incident?.incident_date);
   const [incidentTime, setIncidentTime] = useState(incident?.incident_time);
@@ -180,11 +183,12 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
     const fetchIncidentDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/adverse_drug_reaction/${incidentId}/documents/`
+          `/incidents/adverse-drug-reaction/${adverseDrugReactionId}/documents/`
         );
         if (response.status === 200) {
-          setUploadedFiles(response.data);
-          console.log("documents updated successfully");
+          setUploadedFiles(response.data.results);
+          console.log("documents fetched successfully");
+          console.log(response.data);
         }
       } catch (error) {
         console.log(error);
@@ -207,7 +211,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       console.log([...formData]);
 
       const response = await mediaAPI.post(
-        `/incidents/adverse_drug_reaction/${incidentId}/documents/new/`,
+        `/incidents/adverse-drug-reaction/${adverseDrugReactionId}/documents/`,
         formData
       );
 
@@ -290,7 +294,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         city: city,
         phone_number: phoneNumber,
         medical_record_number: incidentMr,
-        profile_type: "Patient"
+        profile_type: "Patient",
       },
       incident_date: incidentDate,
       incident_time: incidentTime,
@@ -304,7 +308,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         address: address,
         city: city,
         state: state,
-        gender: sex
+        gender: sex,
       },
       time_of_report: timeOfReport,
       date_of_report: dateOfReport,
@@ -338,14 +342,14 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       name_of_physician_notified: {
         first_name: physicianNotifiedFirstName,
         last_name: physicianNotifiedLastName,
-        profile_type: "Staff"
+        profile_type: "Staff",
       },
       date_physician_was_notified: physcianDate,
       time_physician_was_notified: physcianTime,
       name_of_family_notified: {
         first_name: familyNotifiedFirstName,
         last_name: familyNotifiedLastName,
-        profile_type: "Patient"
+        profile_type: "Patient",
       },
       date_family_was_notified: familyDate,
       time_family_was_notified: familyTime,
@@ -361,7 +365,10 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
     };
 
     console.log(selectedAgreements);
-    console.log("Submitting incident data", JSON.stringify(incidentData, null, 2))
+    console.log(
+      "Submitting incident data",
+      JSON.stringify(incidentData, null, 2)
+    );
     try {
       console.log("request data: ", incidentData);
       const response = await api.patch(
@@ -381,8 +388,8 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         console.log(error);
         window.customToast.error(
           error.response.data.error ||
-          error.response.data.message ||
-          "Error updating incident"
+            error.response.data.message ||
+            "Error updating incident"
         );
       } else {
         window.customToast.error("Unknown error updating incident");
@@ -410,7 +417,10 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   return (
     <div className="modify-page-content">
       <div className="modify-page-header">
-        <BackToPage link={"/incident/drug-reaction"} pageName={"ADR incidents"} />
+        <BackToPage
+          link={"/incident/drug-reaction"}
+          pageName={"ADR incidents"}
+        />
         <h2 className="title">Modifying Adverse Drug Incident</h2>
         <div className="btns">
           <button className="tertiary-button" onClick={handleSaveDraft}>
@@ -446,12 +456,13 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${status === "Draft"
-                ? "in-progress"
-                : status === "Closed"
+              className={`follow-up ${
+                status === "Draft"
+                  ? "in-progress"
+                  : status === "Closed"
                   ? "closed"
                   : "Open"
-                }`}
+              }`}
             >
               {status}
             </span>
@@ -860,20 +871,22 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
           <div className="inputs-group modify-inputs">
             <h3 className="full">Incident type agreement</h3>
             <div className="grid-container full">
-              {(incidentTypesData.incident_agreement || []).map((agreement, index) => (
-                <div
-                  onClick={() => handleSelection(agreement.name)}
-                  key={index}
-                  className={`type grid-item`}
-                >
-                  {selectedAgreements.includes(agreement.name) ? (
-                    <SquareCheck />
-                  ) : (
-                    <Square />
-                  )}
-                  <span>{agreement.name}</span>
-                </div>
-              ))}
+              {(incidentTypesData.incident_agreement || []).map(
+                (agreement, index) => (
+                  <div
+                    onClick={() => handleSelection(agreement.name)}
+                    key={index}
+                    className={`type grid-item`}
+                  >
+                    {selectedAgreements.includes(agreement.name) ? (
+                      <SquareCheck />
+                    ) : (
+                      <Square />
+                    )}
+                    <span>{agreement.name}</span>
+                  </div>
+                )
+              )}
             </div>
             {selectedAgreements.includes("other (describe)") ? (
               <div className="field full">
@@ -913,18 +926,18 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
               <div>
                 {outcomeType === "Moderate"
                   ? outComeData.Moderate.map((el, i) => (
-                    <div key={i} className="outcome-data check-box">
-                      <input
-                        type="checkbox"
-                        name="moderateOutcome"
-                        id={el.name}
-                        value={el.name}
-                        onChange={handleOutcomeDescription}
-                        checked={selectedDescription.includes(el.name)}
-                      />
-                      <label htmlFor={el.name}>{el.name}</label>
-                    </div>
-                  ))
+                      <div key={i} className="outcome-data check-box">
+                        <input
+                          type="checkbox"
+                          name="moderateOutcome"
+                          id={el.name}
+                          value={el.name}
+                          onChange={handleOutcomeDescription}
+                          checked={selectedDescription.includes(el.name)}
+                        />
+                        <label htmlFor={el.name}>{el.name}</label>
+                      </div>
+                    ))
                   : null}
               </div>
 
@@ -941,18 +954,18 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
               <div>
                 {outcomeType === "Severe"
                   ? outComeData.Severe.map((el, i) => (
-                    <div key={i} className="outcome-data check-box">
-                      <input
-                        type="checkbox"
-                        name="severeOutcome"
-                        id={el.name}
-                        value={el.name}
-                        onChange={handleOutcomeDescription}
-                        checked={selectedDescription.includes(el.name)}
-                      />
-                      <label htmlFor={el.name}>{el.name}</label>
-                    </div>
-                  ))
+                      <div key={i} className="outcome-data check-box">
+                        <input
+                          type="checkbox"
+                          name="severeOutcome"
+                          id={el.name}
+                          value={el.name}
+                          onChange={handleOutcomeDescription}
+                          checked={selectedDescription.includes(el.name)}
+                        />
+                        <label htmlFor={el.name}>{el.name}</label>
+                      </div>
+                    ))
                   : null}
               </div>
 
