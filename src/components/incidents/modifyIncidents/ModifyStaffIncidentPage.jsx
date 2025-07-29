@@ -224,12 +224,12 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       incident_status: statusType || "Open",
       patient_info: firstName && lastName
         ? {
-            first_name: firstName,
-            last_name: lastName,
-            age: age,
-            date_of_birth: dateBirth,
-            profile_type: "Patient"
-          }
+          first_name: firstName,
+          last_name: lastName,
+          age: age,
+          date_of_birth: dateBirth,
+          profile_type: "Patient"
+        }
         : null,
       job_title: jobTitle,
       supervisor: {
@@ -250,17 +250,17 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       doctor_consulted_time: timeSeenDoctor || null,
       doctor_consulted_info: doctorFirstName && doctorLastName
         ? {
-            first_name: doctorFirstName,
-            last_name: doctorLastName,
-            phone_number: doctorPhone || "",
-            profile_type: "Physician"
-          }
+          first_name: doctorFirstName,
+          last_name: doctorLastName,
+          phone_number: doctorPhone || "",
+          profile_type: "Physician"
+        }
         : null,
       previous_injury: injuredBody,
       previous_injury_date: whenInjured || null,
       status: incidentStatus
     };
-    
+
     // console.log(cleanedData(incidentData));
     // console.log("Submitting incident data", JSON.stringify(incidentData, null, 2));
 
@@ -334,7 +334,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
         )}
 
-        <div className="buttons">
+        <div className="btns">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
@@ -370,10 +370,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
               Status :{" "}
               <span
                 className={`follow-up ${status === "Draft"
-                    ? "in-progress"
-                    : status === "Closed"
-                      ? "closed"
-                      : "Open"
+                  ? "in-progress"
+                  : status === "Closed"
+                    ? "closed"
+                    : "Open"
                   }`}
               >
                 {status}

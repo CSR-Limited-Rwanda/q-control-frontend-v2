@@ -24,7 +24,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   const [status, setStatus] = useState(incident?.status);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
-  const [adverseDrugReactionId, setAdverseDrugReactionId] = useState (
+  const [adverseDrugReactionId, setAdverseDrugReactionId] = useState(
     localStorage.getItem("adverseDrugReactionId")
   )
 
@@ -412,7 +412,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       <div className="modify-page-header">
         <BackToPage link={"/incident/drug-reaction"} pageName={"ADR incidents"} />
         <h2 className="title">Modifying Adverse Drug Incident</h2>
-        <div className="buttons">
+        <div className="btns">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>

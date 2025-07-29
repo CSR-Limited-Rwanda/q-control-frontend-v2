@@ -243,7 +243,7 @@ const SendForReview = ({ path, incidentID, handleClose }) => {
                         }
                         {error && <p className="error message">{error}</p>}
                         <div className="buttons">
-                            <button className='btn-gray' onClick={currentStep < 2 ? handleClose : handleBackButton}>
+                            <button className='gray' onClick={currentStep < 2 ? handleClose : handleBackButton}>
                                 {
                                     currentStep < 2 ? 'Cancel' : <><ArrowLeft /> Back</>
                                 }

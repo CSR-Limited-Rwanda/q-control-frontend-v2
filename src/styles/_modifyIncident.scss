@@ -119,7 +119,7 @@
   background-color: white;
   padding: 1rem;
   border: 2px solid #ececec;
-  border-radius: 0.5rem;
+  border-radius: var(--base-border-radius);
 }
 
 .modify-inputs {
@@ -166,7 +166,7 @@
   background-color: white;
   padding: 1rem;
   border: 2px solid #f6f6f6;
-  border-radius: 0.5rem;
+  border-radius: var(--base-border-radius);
 }
 
 .witness-fields {
@@ -203,7 +203,7 @@
   .form-container {
     background-color: white;
     padding: 2rem;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     max-width: 800px;
     width: 100%;
     height: 80vh;
@@ -226,7 +226,7 @@
   span {
     font-size: 1rem;
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
   }
 }
 

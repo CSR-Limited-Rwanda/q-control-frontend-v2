@@ -4,7 +4,7 @@ import RichTexField from "@/components/forms/RichTextField";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import { incidentTypesData, statusesPrionToIncident } from "@/constants/constants";
 import CustomSelectInput from "@/components/CustomSelectInput";
-import api, {checkCurrentAccount, cleanedData} from "@/utils/api";
+import api, { checkCurrentAccount, cleanedData } from "@/utils/api";
 import { SquareCheck, SaveAll, LoaderCircle, Square } from 'lucide-react';
 import BackToPage from "../../backToPage";
 import mediaAPI from "@/utils/mediaApi";
@@ -18,7 +18,7 @@ import CantModify from "@/components/CantModify";
 // We need to resolve the issue with status prio to
 const ModifyGeneralIncidentForm = ({ data }) => {
   const { incidentId } = useParams();
-//   const permission = usePermission();
+  //   const permission = usePermission();
   const [incident, setIncident] = useState(data);
   const [restraintOn, setRestraintOn] = useState(
     incident.fall_type_agreement || []
@@ -170,7 +170,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   const [agreement, setAgreement] = useState(
     (incident.fall_type_agreement &&
       incident.fall_type_agreement.split(", ")) ||
-      []
+    []
   );
   const [treatmentRelated, setTreatmentRelated] = useState(null);
   const [equipmentMalfunction, setEquipmentMalfunction] = useState(null);
@@ -375,8 +375,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error updating the incident"
+          error.response.data.error ||
+          "Error updating the incident"
         );
       } else {
         alert("Unknown error updating the incident");
@@ -414,7 +414,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       <div className="modify-page-header">
         <BackToPage link={"/incident/general/"} pageName={"General incidents"} />
         <h2 className="title">Modifying General Incident</h2>
-        <div className="buttons">
+        <div className="btns">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
@@ -449,13 +449,12 @@ const ModifyGeneralIncidentForm = ({ data }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${
-                  status === "Draft"
+                className={`follow-up ${status === "Draft"
                     ? "in-progress"
                     : status === "Closed"
-                    ? "closed"
-                    : "Open"
-                }`}
+                      ? "closed"
+                      : "Open"
+                  }`}
               >
                 {status}
               </span>
@@ -676,8 +675,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                 </label>
                 <div
                   className="check-boxes check-boxes-row"
-                  //  onChange={(e) => setRoute(e.target.value)}
-                  //  value={route}
+                //  onChange={(e) => setRoute(e.target.value)}
+                //  value={route}
                 >
                   {statusesPrionToIncident.map((status, index) => (
                     <div
@@ -1249,7 +1248,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                           style={{
                             display:
                               specialTypes.includes(type.name) &&
-                              otherTypes !== "Specimen"
+                                otherTypes !== "Specimen"
                                 ? "none"
                                 : "block",
                           }}
@@ -1636,16 +1635,16 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                   </div>
                 )} */}
                 <div className="field">
-                    <label htmlFor="severityRating">Severity rating</label>
-                    <input
-                      value={severityRating}
-                      onChange={(e) => setSeverityRating(e.target.value)}
-                      type="text"
-                      name="severityRating"
-                      id="severityRating"
-                      placeholder="Severity rating"
-                    />
-                  </div>
+                  <label htmlFor="severityRating">Severity rating</label>
+                  <input
+                    value={severityRating}
+                    onChange={(e) => setSeverityRating(e.target.value)}
+                    type="text"
+                    name="severityRating"
+                    id="severityRating"
+                    placeholder="Severity rating"
+                  />
+                </div>
               </div>
               <div className="half full">
                 <div className="field half-field">

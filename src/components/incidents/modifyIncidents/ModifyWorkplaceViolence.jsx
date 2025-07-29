@@ -728,7 +728,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
                     pageName={"Workplace violence incident"}
                 />
                 <h2 className="title">Modifying Workplace Violence Incident</h2>
-                <div className="buttons">
+                <div className="btns">
                     <button className="tertiary-button" onClick={handleSaveDraft}>
                         {savingDraft ? (
                             <>

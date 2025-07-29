@@ -1912,7 +1912,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="buttons">
+      <div className="btns">
         {currentStep > 1 && currentStep < 7 ? (
           <button
             onClick={handlePreviousStep}

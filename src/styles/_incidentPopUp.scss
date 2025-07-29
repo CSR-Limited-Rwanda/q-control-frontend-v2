@@ -21,7 +21,7 @@
       position: relative;
       animation: openPopup 0.3s forwards;
       border-left: 1px solid #eaeaea;
-      border-radius: 0.8rem;
+      border-radius: var(--base-border-radius);
   
       .close {
         animation: closePopup 0.3s forwards;

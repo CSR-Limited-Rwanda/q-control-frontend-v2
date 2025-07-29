@@ -16,7 +16,7 @@
   
     .user-card {
       padding: 1rem;
-      border-radius: 0.5rem;
+      border-radius: var(--base-border-radius);
       background-color: whitesmoke;
       display: grid;
       height: fit-content;
@@ -27,15 +27,15 @@
   .form-tabs {
     display: flex;
     align-items: center;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     justify-content: space-between;
   
     & > :first-child {
-      border-radius: 0.5rem 0 0 0.5rem;
+      border-radius: var(--base-border-radius) 0 0 0.5rem;
     }
   
     & > :last-child {
-      border-radius: 0 0.5rem 0.5rem 0;
+      border-radius: 0 var(--base-border-radius) var(--base-border-radius) 0;
     }
   
     .tab {
@@ -68,7 +68,7 @@
       cursor: pointer;
       background-color: whitesmoke;
       padding: 0.8rem;
-      border-radius: 0.5rem;
+      border-radius: var(--base-border-radius);
       color: rgb(74, 74, 74);
   
       &:hover {

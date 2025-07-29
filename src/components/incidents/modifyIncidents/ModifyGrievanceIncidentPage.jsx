@@ -341,7 +341,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
                     ""
                 )} */}
 
-                <div className="buttons">
+                <div className="btns">
                     <button className="tertiary-button" onClick={handleSaveDraft}>
                         {savingDraft ? (
                             <>

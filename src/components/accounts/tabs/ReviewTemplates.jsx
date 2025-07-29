@@ -260,7 +260,7 @@ export const ReviewTemplates = () => {
           <button
             type="button"
             onClick={handleShowNewUserForm}
-            className="button tertiary-button new-user-button"
+            className="btn tertiary-button new-user-button"
           >
             <CirclePlus size={20} />
             <span>Add New Template</span>

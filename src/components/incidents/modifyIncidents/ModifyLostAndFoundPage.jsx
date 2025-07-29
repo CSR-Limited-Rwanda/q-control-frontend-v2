@@ -83,7 +83,7 @@ const ModifyLostFound = ({ data }) => {
 
     const [lostAndFoundId, setLostAndFoundId] = useState(
         localStorage.getItem("lostAndFoundId")
-      )
+    )
 
     const handleShowInvestigationForm = () => {
         setShowInvestigationFrom(!showInvestigationFrom);
@@ -261,7 +261,7 @@ const ModifyLostFound = ({ data }) => {
                     pageName={"Lost and Found incidents"}
                 />
                 <h2 className="title">Modifying Lost and Found incident</h2>
-                <div className="buttons">
+                <div className="btns">
                     <button className="tertiary-button" onClick={handleSaveDraft}>
                         {savingDraft ? (
                             <>

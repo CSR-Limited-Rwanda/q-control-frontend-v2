@@ -185,12 +185,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       patient_info:
         firstName && lastName
           ? {
-              first_name: firstName,
-              last_name: lastName,
-              profile_type: "Patient",
-              age: age,
-              date_of_birth: dateBirth,
-            }
+            first_name: firstName,
+            last_name: lastName,
+            profile_type: "Patient",
+            age: age,
+            date_of_birth: dateBirth,
+          }
           : null,
       job_title: jobTitle,
 
@@ -306,10 +306,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           doctor_consulted_info:
             doctorFirstName && doctorLastName
               ? {
-                  first_name: doctorFirstName,
-                  last_name: doctorLastName,
-                  profile_type: "Physician",
-                }
+                first_name: doctorFirstName,
+                last_name: doctorLastName,
+                profile_type: "Physician",
+              }
               : null,
 
           previous_injury: injuredBody,
@@ -448,12 +448,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               patient_info:
                 firstName && lastName
                   ? {
-                      first_name: firstName,
-                      last_name: lastName,
-                      profile_type: "Patient",
-                      age: age,
-                      date_of_birth: dateBirth,
-                    }
+                    first_name: firstName,
+                    last_name: lastName,
+                    profile_type: "Patient",
+                    age: age,
+                    date_of_birth: dateBirth,
+                  }
                   : null,
               job_title: jobTitle,
 
@@ -925,7 +925,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="buttons">
+      <div className="btns">
         {currentStep > 1 && currentStep < 5 ? (
           <button
             onClick={handlePreviousStep}
