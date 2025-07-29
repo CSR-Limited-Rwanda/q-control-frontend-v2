@@ -87,7 +87,7 @@ export const fetchTaskById = async (taskId) => {
 
 export const completeTask = async (taskId) => {
     try {
-        const response = await api.post(`/tasks/${taskId}/`, { status: "complete" });
+        const response = await api.patch(`/tasks/${taskId}/`, { "action": "complete" });
         console.log(response);
         if (response.status === 200) {
             return {
@@ -104,7 +104,7 @@ export const completeTask = async (taskId) => {
         console.log(error);
         let errorMessage = "An error occurred while completing the task.";
         if (error.response && error.response.data) {
-            errorMessage = error.response.data.error || errorMessage;
+            errorMessage = error.response.data.error || error.response.data.message || errorMessage;
         }
         return {
             success: false,
@@ -115,7 +115,7 @@ export const completeTask = async (taskId) => {
 
 export const submitTask = async (taskId) => {
     try {
-        const response = await api.post(`/tasks/${taskId}/`, { status: "submit" });
+        const response = await api.patch(`/tasks/${taskId}/`, { status: "submit" });
         console.log(response);
         if (response.status === 200) {
             return {
@@ -132,7 +132,7 @@ export const submitTask = async (taskId) => {
         console.log(error);
         let errorMessage = "An error occurred while submitting the task.";
         if (error.response && error.response.data) {
-            errorMessage = error.response.data.error || errorMessage;
+            errorMessage = error.response.data.error || error.response.data.message || errorMessage;
         }
         return {
             success: false,
@@ -144,7 +144,7 @@ export const submitTask = async (taskId) => {
 
 export const approveTask = async (taskId) => {
     try {
-        const response = await api.post(`/tasks/${taskId}/`, { status: "approve" });
+        const response = await api.patch(`/tasks/${taskId}/`, { status: "approve" });
         console.log(response);
         if (response.status === 200) {
             return {
@@ -161,7 +161,7 @@ export const approveTask = async (taskId) => {
         console.log(error);
         let errorMessage = "An error occurred while approving the task.";
         if (error.response && error.response.data) {
-            errorMessage = error.response.data.error || errorMessage;
+            errorMessage = error.response.data.error || error.response.data.message || errorMessage;
         }
         return {
             success: false,

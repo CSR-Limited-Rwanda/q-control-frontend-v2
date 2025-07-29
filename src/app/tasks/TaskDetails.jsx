@@ -1,8 +1,10 @@
-import { fetchTaskById } from "@/hooks/fetchTasks"
+import Button from "@/components/forms/Button"
+import { completeTask, fetchTaskById } from "@/hooks/fetchTasks"
 import { Calendar, Eye, FileText, Flag, X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
 export const TaskDetails = ({ taskId, handleClose }) => {
+
     const [userPermissions, setUserPermissions] = useState({
         can_edit: false,
         can_delete: false,
@@ -11,8 +13,27 @@ export const TaskDetails = ({ taskId, handleClose }) => {
         can_complete: true
     })
     const [isLoading, setIsLoading] = useState(true)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [error, setError] = useState(null)
+    const [successMessage, setSuccessMessage] = useState(null)
     const [taskDetails, setTaskDetails] = useState(null)
     const popupRef = useRef(null)
+
+
+    const handleCompleteTask = async () => {
+        setIsSubmitting(true)
+        const response = await completeTask(taskId)
+        if (response.success) {
+            setSuccessMessage(response.message)
+            setTimeout(() => {
+                setSuccessMessage(null)
+                handleClose()
+            }, 1000);
+        } else {
+            setError(response.message)
+        }
+        setIsSubmitting(false)
+    }
 
     useEffect(() => {
         const fetchTaskDetails = async () => {
@@ -98,32 +119,25 @@ export const TaskDetails = ({ taskId, handleClose }) => {
                                 }
                             </div>
                         </div>
+                        {
+                            error && <p className='message error'>Error: {error}</p>
+                        }
 
                         <div className="buttons">
                             {userPermissions.can_edit && (
-                                <button type="button" className="primary">
-                                    Edit Task
-                                </button>
+                                <Button text={'Edit Task'} className="gray" />
                             )}
                             {userPermissions.can_delete && (
-                                <button type="button" className="danger">
-                                    Delete Task
-                                </button>
+                                <Button text={'Delete Task'} className="danger" />
                             )}
                             {userPermissions.can_submit && (
-                                <button type="button" className="success">
-                                    Submit Task
-                                </button>
+                                <Button text={'Submit Task'} className="success" />
                             )}
                             {userPermissions.can_complete && (
-                                <button type="button" className="light">
-                                    Mark complete
-                                </button>
+                                <Button onClick={handleCompleteTask} isLoading={isSubmitting} text={'Mark complete'} className="light" />
                             )}
 
-                            <button className="gray" onClick={handleClose}>
-                                Back to tasks
-                            </button>
+                            <Button text={'Back to tasks'} className="gray" onClick={handleClose} />
                         </div>
                     </div>
 
