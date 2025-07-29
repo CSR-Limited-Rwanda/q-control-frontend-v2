@@ -96,7 +96,6 @@ body {
   background-color: $body-background-color;
   font-family: "Plus Jakarta Sans", sans-serif;
   font-size: 14px;
-  font-weight: 600;
   color: #4f4f4f;
 }
 
@@ -262,8 +261,7 @@ button,
 }
 
 // appea animatin for a button
-@keyframes appear {
-}
+@keyframes appear {}
 
 .incidents-tab {
   display: flex;
@@ -282,6 +280,7 @@ button,
     }
   }
 }
+
 .documentation-link {
   display: flex;
   align-items: center;
@@ -495,7 +494,7 @@ table {
     flex: 1 0 0%;
     max-width: 500px;
 
-    > span,
+    >span,
     p {
       color: $gray-color;
     }
@@ -849,6 +848,7 @@ table {
         align-items: center;
 
         th {
+
           &:nth-child(1),
           &:nth-child(2),
           &:last-child {
@@ -873,6 +873,7 @@ table {
         }
 
         td {
+
           &:nth-child(1),
           &:nth-child(2),
           &:last-child {
@@ -1693,6 +1694,7 @@ input[type="checkbox"] {
   }
 
   &:hover {
+
     > :nth-child(2),
     > :nth-child(3),
     > :nth-child(4) {

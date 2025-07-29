@@ -15,7 +15,7 @@
   --success: #22c55e;
   --error: #ef4444;
   --warning: #f59e0b;
-  --gray-color: #F2F2F2
+  --gray-color: #F2F2F2;
 
   /* Layout variables */
   --sidebar-width: 260px;
@@ -37,7 +37,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 1rem;
-  font-weight: 600;
 }
 
 * {

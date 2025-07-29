@@ -513,7 +513,6 @@ table {
       td {
         padding: 12px;
         word-wrap: break-word;
-        font-weight: 700;
         color: #666666;
         font-size: 14px;
       }
@@ -940,14 +939,6 @@ table {
           display: flex;
           justify-content: space-between;
           padding: 10px;
-
-          // &:before {
-          // 	content: attr(data-label);
-          // 	font-weight: bold;
-          // 	flex: 1;
-          // 	text-align: left;
-          // 	margin-right: 10px;
-          // }
         }
       }
     }
