@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import api, { API_URL, calculateAge, cleanedData } from "@/utils/api";
-import { X, Eye, SaveAll, LoaderCircle, TextSearch } from 'lucide-react';
+import { X, Eye, SaveAll, LoaderCircle, TextSearch } from "lucide-react";
 import Link from "next/link";
 import RichTexField from "@/components/forms/RichTextField";
 import mediaAPI from "@/utils/mediaApi";
@@ -18,7 +18,7 @@ import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "../../CantModify";
 import CustomDatePicker from "../../CustomDatePicker";
 
-import "@/styles/_modifyIncident.scss"
+import "@/styles/_modifyIncident.scss";
 
 const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const permission = usePermission();
@@ -30,9 +30,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
   const [statusType, setStatusType] = useState(data.incident_status);
   const [status, setStatus] = useState(incident?.status);
-  const [firstName, setFirstName] = useState(
-    data.patient_info?.first_name
-  );
+  const [firstName, setFirstName] = useState(data.patient_info?.first_name);
   const [lastName, setLastName] = useState(data.patient_info?.last_name);
   const [description, setDescription] = useState("");
   const [jobTitle, setJobTitle] = useState(data.job_title);
@@ -52,8 +50,12 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     data.time_of_injury_or_near_miss
   );
 
-  const [supervisorFirstName, setSupervisorFirstName] = useState(data.supervisor.first_name);
-  const [supervisorLastName, setSupervisorLastName] = useState(data.supervisor.last_name);
+  const [supervisorFirstName, setSupervisorFirstName] = useState(
+    data.supervisor.first_name
+  );
+  const [supervisorLastName, setSupervisorLastName] = useState(
+    data.supervisor.last_name
+  );
 
   const [doctorFirstName, setDoctorFirstName] = useState(
     data.doctor_consulted_info?.first_name
@@ -78,8 +80,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     data.witnesses.map((witness) => ({
       first_name: witness?.first_name || "",
       last_name: witness?.last_name || "",
-      profile_type: "Witness"
-
+      profile_type: "Witness",
     }))
   );
   const [success, setSuccess] = useState("false");
@@ -88,7 +89,9 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [showInvestigationFrom, setShowInvestigationFrom] = useState(false);
   const [dateBirth, setdateBirth] = useState(data.patient_info?.date_of_birth);
   const [age, setAge] = useState(data.patient_info?.age || "");
-  const [staffIncidentId, setStaffIncidentId] = useState(localStorage.getItem("staffIncidentId"))
+  const [staffIncidentId, setStaffIncidentId] = useState(
+    localStorage.getItem("staffIncidentId")
+  );
 
   console.log(data);
   const [newWitness, setNewWitness] = useState(
@@ -105,10 +108,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   };
 
   const handleAddWitness = () => {
-    if (
-      newWitness.first_name.trim() &&
-      newWitness.last_name.trim() !== ""
-    ) {
+    if (newWitness.first_name.trim() && newWitness.last_name.trim() !== "") {
       setWitnesses([...witnesses, newWitness]);
       setNewWitness({
         first_name: "",
@@ -141,7 +141,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
           `/incidents/staff-incident/${staffIncidentId}/documents/`
         );
         if (response.status === 200) {
-          setUploadedFiles(response.data);
+          setUploadedFiles(response.data.results);
           console.log("documents updated successfully");
         }
       } catch (error) {
@@ -215,27 +215,27 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     const witnessesList = witnesses.map((el) => ({
       first_name: el.first_name,
       last_name: el.last_name,
-      profile_type: "Witness"
-
+      profile_type: "Witness",
     }));
     console.log(witnessesList);
     const incidentData = {
       action: "modify",
       incident_status: statusType || "Open",
-      patient_info: firstName && lastName
-        ? {
-            first_name: firstName,
-            last_name: lastName,
-            age: age,
-            date_of_birth: dateBirth,
-            profile_type: "Patient"
-          }
-        : null,
+      patient_info:
+        firstName && lastName
+          ? {
+              first_name: firstName,
+              last_name: lastName,
+              age: age,
+              date_of_birth: dateBirth,
+              profile_type: "Patient",
+            }
+          : null,
       job_title: jobTitle,
       supervisor: {
         first_name: supervisorFirstName,
         last_name: supervisorLastName,
-        profile_type: "Supervisor"
+        profile_type: "Supervisor",
       },
       date_of_injury_or_near_miss: dateOfInjury || null,
       time_of_injury_or_near_miss: timeOfInjury || null,
@@ -248,19 +248,20 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       doctor_consulted: seenDoctor,
       doctor_consulted_dated: dateSeenDoctor || null,
       doctor_consulted_time: timeSeenDoctor || null,
-      doctor_consulted_info: doctorFirstName && doctorLastName
-        ? {
-            first_name: doctorFirstName,
-            last_name: doctorLastName,
-            phone_number: doctorPhone || "",
-            profile_type: "Physician"
-          }
-        : null,
+      doctor_consulted_info:
+        doctorFirstName && doctorLastName
+          ? {
+              first_name: doctorFirstName,
+              last_name: doctorLastName,
+              phone_number: doctorPhone || "",
+              profile_type: "Physician",
+            }
+          : null,
       previous_injury: injuredBody,
       previous_injury_date: whenInjured || null,
-      status: incidentStatus
+      status: incidentStatus,
     };
-    
+
     // console.log(cleanedData(incidentData));
     // console.log("Submitting incident data", JSON.stringify(incidentData, null, 2));
 
@@ -284,8 +285,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while updating the incident"
+            error.response.data.error ||
+            "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -300,10 +301,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       {showInvestigationFrom && (
         <div className="grievance-investigation-form">
           <div className="form-container">
-            <X
-              className="close-popup"
-              onClick={handleShowInvestigationForm}
-            />
+            <X className="close-popup" onClick={handleShowInvestigationForm} />
             <HealthIncidentInvestigationForm investigationId={incidentId} />
           </div>
         </div>
@@ -331,7 +329,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
             <span>Add investigation</span>
             <TextSearch />
           </button>
-
         )}
 
         <div className="buttons">
@@ -369,12 +366,13 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${status === "Draft"
+                className={`follow-up ${
+                  status === "Draft"
                     ? "in-progress"
                     : status === "Closed"
-                      ? "closed"
-                      : "Open"
-                  }`}
+                    ? "closed"
+                    : "Open"
+                }`}
               >
                 {status}
               </span>
@@ -514,10 +512,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
                   <span>
                     {witness.first_name} {witness.last_name}
                   </span>
-                  <X
-                    size={18}
-                    onClick={() => handleRemoveWitness(witness)}
-                  />
+                  <X size={18} onClick={() => handleRemoveWitness(witness)} />
                 </div>
               ))}
             </div>
@@ -533,7 +528,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
                       ...newWitness,
                       first_name: e.target.value,
-
                     })
                   }
                   value={newWitness?.first_name}
@@ -547,7 +541,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
                       ...newWitness,
                       last_name: e.target.value,
-
                     })
                   }
                   value={newWitness?.last_name}
@@ -708,7 +701,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
                 />
               </div>
             )}
-
 
             <div className="field">
               <label htmlFor="severityRating">Severity rating</label>

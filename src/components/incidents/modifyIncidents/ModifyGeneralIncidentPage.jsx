@@ -1,11 +1,14 @@
-'use client'
+"use client";
 import React, { useState, useRef, useEffect } from "react";
 import RichTexField from "@/components/forms/RichTextField";
 import CustomDatePicker from "@/components/CustomDatePicker";
-import { incidentTypesData, statusesPrionToIncident } from "@/constants/constants";
+import {
+  incidentTypesData,
+  statusesPrionToIncident,
+} from "@/constants/constants";
 import CustomSelectInput from "@/components/CustomSelectInput";
-import api, {checkCurrentAccount, cleanedData} from "@/utils/api";
-import { SquareCheck, SaveAll, LoaderCircle, Square } from 'lucide-react';
+import api, { checkCurrentAccount, cleanedData } from "@/utils/api";
+import { SquareCheck, SaveAll, LoaderCircle, Square } from "lucide-react";
 import BackToPage from "../../backToPage";
 import mediaAPI from "@/utils/mediaApi";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
@@ -18,7 +21,7 @@ import CantModify from "@/components/CantModify";
 // We need to resolve the issue with status prio to
 const ModifyGeneralIncidentForm = ({ data }) => {
   const { incidentId } = useParams();
-//   const permission = usePermission();
+  //   const permission = usePermission();
   const [incident, setIncident] = useState(data);
   const [restraintOn, setRestraintOn] = useState(
     incident.fall_type_agreement || []
@@ -40,7 +43,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   const [uploadingDocuments, setUploadingDocuments] = useState(false);
   const [generalIncidentId, setGeneralIncidentId] = useState(
     localStorage.getItem("generalIncidentId")
-  )
+  );
 
   const handleFileChange = async (event) => {
     const formData = new FormData();
@@ -55,7 +58,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       console.log([...formData]);
 
       const response = await mediaAPI.post(
-        `/incidents/general/${generalIncidentId}/documents/new/`,
+        `/incidents/general-visitor/${generalIncidentId}/documents/`,
         formData
       );
 
@@ -298,7 +301,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
         zip_code: zipCode,
         city: city,
         medical_record_number: medicalRecoredNumber,
-        profile_type: "Patient"
+        profile_type: "Patient",
       },
       incident_date: incidentDate,
       incident_time: incidentTime,
@@ -323,7 +326,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       physician_notified: {
         first_name: physicianNotifiedFirstName,
         last_name: physicianNotifiedLastName,
-        profile_type: "Physician"
+        profile_type: "Physician",
       },
 
       date_physician_notified: physcianDate,
@@ -333,7 +336,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
         first_name: familyNotifiedFirstName,
         last_name: familyNotifiedLastName,
         patient_id: parseInt(localStorage.getItem("patientId")),
-        profile_type: "Family"
+        profile_type: "Family",
       },
 
       date_family_notified: familyDate,
@@ -342,7 +345,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       notified_by: {
         first_name: notifiedByFirstName,
         last_name: notifiedByLastName,
-        profile_type: "Nurse"
+        profile_type: "Nurse",
       },
 
       outcome: selectedOutcome,
@@ -355,7 +358,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
     };
 
     // console.log(cleanedData(incidentData));
-    console.log("Submitting incident data", JSON.stringify(incidentData))
+    console.log("Submitting incident data", JSON.stringify(incidentData));
 
     try {
       console.log(cleanedData(incidentData));
@@ -393,10 +396,10 @@ const ModifyGeneralIncidentForm = ({ data }) => {
     const fetchIncidentDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/general/${incidentId}/documents/`
+          `/incidents/general-visitor/${generalIncidentId}/documents/`
         );
         if (response.status === 200) {
-          setUploadedFiles(response.data);
+          setUploadedFiles(response.data.results);
           console.log("documents updated successfully");
         }
       } catch (error) {
@@ -412,7 +415,10 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   ) : (
     <div className="modify-page-content">
       <div className="modify-page-header">
-        <BackToPage link={"/incident/general/"} pageName={"General incidents"} />
+        <BackToPage
+          link={"/incident/general/"}
+          pageName={"General incidents"}
+        />
         <h2 className="title">Modifying General Incident</h2>
         <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
@@ -1636,16 +1642,16 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                   </div>
                 )} */}
                 <div className="field">
-                    <label htmlFor="severityRating">Severity rating</label>
-                    <input
-                      value={severityRating}
-                      onChange={(e) => setSeverityRating(e.target.value)}
-                      type="text"
-                      name="severityRating"
-                      id="severityRating"
-                      placeholder="Severity rating"
-                    />
-                  </div>
+                  <label htmlFor="severityRating">Severity rating</label>
+                  <input
+                    value={severityRating}
+                    onChange={(e) => setSeverityRating(e.target.value)}
+                    type="text"
+                    name="severityRating"
+                    id="severityRating"
+                    placeholder="Severity rating"
+                  />
+                </div>
               </div>
               <div className="half full">
                 <div className="field half-field">

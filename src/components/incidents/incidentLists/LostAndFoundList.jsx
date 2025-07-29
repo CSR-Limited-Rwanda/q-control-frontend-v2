@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-
 import api, { API_URL, exportExcel } from "@/utils/api";
-
 import {
   Eye,
   File,
@@ -24,25 +22,41 @@ import {
   SortNameIcon2,
 } from "./StaffIncidentList";
 
-const handleSearch = (items, searchString) => {
-  if (searchString.length > 2) {
-    const results = items.filter((item) => {
-      return (
-        item.person_taking_report &&
-        item.person_taking_report
-          .toLowerCase()
-          .includes(searchString.toLowerCase())
-      );
-    });
-    return results;
-  }
-  return [];
-};
+// Debugging check for imported components
+// if (
+//   !SortByNumberIcon ||
+//   !SortDateIcon ||
+//   !SortNameIcon ||
+//   !SortNameIcon2 ||
+//   !DateFormatter
+// ) {
+//   console.error("One or more imported components are undefined:", {
+//     SortByNumberIcon: !!SortByNumberIcon,
+//     SortDateIcon: !!SortDateIcon,
+//     SortNameIcon: !!SortNameIcon,
+//     SortNameIcon2: !!SortNameIcon2,
+//     DateFormatter: !!DateFormatter,
+//   });
+// }
 
-const formatTime = (timeString) => {
+function formatDate(dateString) {
+  if (!dateString || isNaN(new Date(dateString).getTime())) {
+    return "Invalid Date";
+  }
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = String(date.getFullYear());
+  return `${year}-${month}-${day}`;
+}
+
+function formatTime(timeString) {
+  if (!timeString || !timeString.includes(":")) {
+    return "Invalid Time";
+  }
   const [hours, minutes, seconds] = timeString.split(":");
-  return `${hours}:${minutes}:${seconds.split(".")[0]}`;
-};
+  return `${hours}:${minutes}:${seconds.split(".")[0] || "00"}`;
+}
 
 const LostAndFoundList = () => {
   const [errorFetching, setErrorFetching] = useState("");
@@ -50,26 +64,18 @@ const LostAndFoundList = () => {
   const [incidentData, setIncidentData] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [openAction, setOpenAction] = useState(false);
-  const [openActionIndex, setOpenActionIndex] = useState("");
-  const [selectedItems, setSelectedItems] = useState([]);
   const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
-  const [filterByType, setFilterByType] = useState("");
-  const [filterByStatus, setFilterByStatus] = useState("");
-  const [filterByCareLevel, setFilterByCareLevel] = useState("");
-  const [filterByDate, setFilterByDate] = useState();
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
-
-  const router = useRouter();
-
-  const [data, setData] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
     status: "",
   });
   const [openFilters, setOpenFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
+  const router = useRouter();
 
   // Calculate pagination data
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -87,66 +93,79 @@ const LostAndFoundList = () => {
   );
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  const toggleOpenFilters = () => {
-    setOpenFilters(!openFilters);
+  const fetchFilteredData = async (appliedFilters) => {
+    try {
+      setIsFetching(true);
+      setErrorFetching("");
+      const queryParams = new URLSearchParams();
+      if (appliedFilters.start_date)
+        queryParams.append("start_date", appliedFilters.start_date);
+      if (appliedFilters.end_date)
+        queryParams.append("end_date", appliedFilters.end_date);
+      if (appliedFilters.status)
+        queryParams.append("status", appliedFilters.status);
+
+      const response = await api.get(
+        `${API_URL}/incidents/lost-found/?${queryParams.toString()}`
+      );
+      console.log("Lost and Found API response:", response);
+      if (response && response.status === 200 && response.data) {
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          date_reported: formatDate(item.date_reported),
+        }));
+        setIncidentData(formattedData);
+        setSearchResults([]);
+        setIsSearching(false);
+        setIsSearchingTheDatabase(false);
+        setCurrentPage(1);
+        setIsFetching(false);
+      } else {
+        setErrorFetching("Unexpected response format.");
+        setIsFetching(false);
+      }
+    } catch (error) {
+      console.error("Lost and Found API error:", error);
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrorFetching(error.response.data.error);
+      } else {
+        setErrorFetching("An error occurred while fetching incident data.");
+      }
+      setIsFetching(false);
+    }
   };
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const year = String(date.getFullYear()).slice(0);
-    return `${year}-${month}-${day}`;
-  }
-
   const applyFilters = () => {
-    const newFilteredData = data.filter((item) => {
-      const incidentDate = new Date(item.date_reported);
-      const startDate = filters.start_date
-        ? new Date(filters.start_date)
-        : null;
-      const endDate = filters.end_date ? new Date(filters.end_date) : null;
-
-      const withinDateRange =
-        (!startDate || incidentDate >= startDate) &&
-        (!endDate || incidentDate <= endDate);
-
-      return (
-        withinDateRange &&
-        (!filters.status.toLowerCase() ||
-          item.status.toLowerCase() === filters.status.toLowerCase())
-      );
-    });
-    setIncidentData(newFilteredData);
-    setCurrentPage(1); // Reset to first page when filters are applied
+    fetchFilteredData(filters);
     toggleOpenFilters();
   };
 
   const clearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       start_date: "",
       end_date: "",
       status: "",
-    });
-    setIncidentData(data);
-    setCurrentPage(1); // Reset to first page when filters are cleared
+    };
+    setFilters(clearedFilters);
+    setSearchResults([]);
+    setIsSearching(false);
+    setIsSearchingTheDatabase(false);
+    setCurrentPage(1);
+    setOpenFilters(false);
+    fetchFilteredData(clearedFilters);
   };
 
-  const handleRowClick = (incidentId) => {
-    router.push(`/incident/lost-and-found/${incidentId}`);
-  };
-
-  const navigateToModify = (incidentId) => {
-    router.push(`/incident/lost-and-found/${incidentId}/update/`);
-    localStorage.setItem("lostAndFoundId", incidentId)
-  };
-
-  const handleNonClickableColumnClick = (event) => {
-    event.stopPropagation();
+  const toggleOpenFilters = () => {
+    setOpenFilters(!openFilters);
   };
 
   const search = (string) => {
     setIsSearching(true);
+    if (string.length < 2) {
+      setIsSearching(false);
+      setSearchResults([]);
+      return;
+    }
     const results = incidentData.filter(
       (item) =>
         (item.person_taking_report &&
@@ -154,7 +173,7 @@ const LostAndFoundList = () => {
             .toLowerCase()
             .includes(string.toLowerCase())) ||
         (item.report_facility?.name &&
-          item.report_facility?.name
+          item.report_facility.name
             .toLowerCase()
             .includes(string.toLowerCase())) ||
         (item.name_of_person_reporting_loss &&
@@ -170,7 +189,19 @@ const LostAndFoundList = () => {
       }, 3000);
     }
     setSearchResults(results);
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
+  };
+
+  const handleRowClick = (incidentId) => {
+    router.push(`/incident/lost-and-found/${incidentId}`);
+  };
+
+  const navigateToModify = (incidentId) => {
+    router.push(`/incident/lost-and-found/${incidentId}/update/`);
+  };
+
+  const handleNonClickableColumnClick = (event) => {
+    event.stopPropagation();
   };
 
   const handleSelectedItems = (item) => {
@@ -199,41 +230,17 @@ const LostAndFoundList = () => {
   };
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
   };
 
   useEffect(() => {
-    const fetchIncidentData = async () => {
-      try {
-        const response = await api.get(`${API_URL}/incidents/lost-found/`);
-        if (response.status === 200) {
-          const formattedData = response.data.map((item) => ({
-            ...item,
-            date_reported: formatDate(item.date_reported),
-          }));
-          setIncidentData(formattedData);
-          setData(formattedData);
-        } else {
-          setErrorFetching(`Error fetching data: ${response.status}`);
-        }
-      } catch (error) {
-        console.error("Error fetching incident data:", error);
-        if (error.response && error.response.data.error) {
-          setErrorFetching(error.response.data.error);
-        } else {
-          setErrorFetching("An error occurred while fetching incident data.");
-        }
-      } finally {
-        setIsFetching(false);
-      }
-    };
-    fetchIncidentData();
+    fetchFilteredData(filters);
   }, []);
 
   return isFetching ? (
-    <div className="getting-data">
-      <p>Getting data...</p>
-    </div>
+    <ModifyPageLoader />
   ) : (
     <div>
       {errorFetching ? (
@@ -254,14 +261,13 @@ const LostAndFoundList = () => {
               {openFilters ? (
                 <div className="filters_popup">
                   <div onClick={toggleOpenFilters} className="close-icon">
-                    <X size={24} variant={"stroke"} />
+                    <X size={24} variant="stroke" />
                   </div>
-
                   <h3>Filter incident data</h3>
                   <div className="filter-buttons">
                     <CustomSelectInput
                       options={["Draft", "Open", "Closed"]}
-                      placeholder={"Filter by status"}
+                      placeholder="Filter by status"
                       selected={filters.status}
                       setSelected={(value) =>
                         setFilters({ ...filters, status: value })
@@ -269,7 +275,6 @@ const LostAndFoundList = () => {
                       name="status"
                       id="status"
                     />
-
                     <div className="filter-range">
                       <span>Start date</span>
                       <CustomDatePicker
@@ -281,7 +286,6 @@ const LostAndFoundList = () => {
                         dateFormat="yyyy-MM-dd"
                       />
                     </div>
-
                     <div className="filter-range">
                       <span>End date</span>
                       <CustomDatePicker
@@ -293,10 +297,9 @@ const LostAndFoundList = () => {
                         dateFormat="yyyy-MM-dd"
                       />
                     </div>
-
                     <div className="pop-up-buttons">
                       <button onClick={clearFilters} className="outline-button">
-                        <X size={20} variant={"stroke"} />
+                        <X size={20} variant="stroke" />
                         Clear
                       </button>
                       <button
@@ -304,26 +307,21 @@ const LostAndFoundList = () => {
                         className="secondary-button"
                       >
                         <div className="icon">
-                          <SlidersHorizontal size={20} variant={"stroke"} />
+                          <SlidersHorizontal size={20} variant="stroke" />
                         </div>
                         <span>Filter</span>
                       </button>
                     </div>
                   </div>
                 </div>
-              ) : (
-                ""
-              )}
+              ) : null}
               <input
-                onChange={(e) => {
-                  search(e.target.value);
-                }}
+                onChange={(e) => search(e.target.value)}
                 type="search"
                 name="systemSearch"
                 id="systemSearch"
-                placeholder="Search the system"
+                placeholder="Search by person taking report, facility, or person reporting"
               />
-
               {selectedItems.length > 0 ? (
                 <button
                   onClick={() =>
@@ -331,7 +329,8 @@ const LostAndFoundList = () => {
                   }
                   className="secondary-button"
                 >
-                  <File /> <span>Export</span>
+                  <File />
+                  <span>Export</span>
                 </button>
               ) : (
                 <button
@@ -339,7 +338,7 @@ const LostAndFoundList = () => {
                   className="date-filter-button"
                 >
                   <div className="icon">
-                    <SlidersHorizontal variant={"stroke"} />
+                    <SlidersHorizontal variant="stroke" />
                   </div>
                   <span>Filter</span>
                 </button>
@@ -359,85 +358,82 @@ const LostAndFoundList = () => {
                         <span className="count">{searchResults.length}</span>{" "}
                         result(s) found
                       </div>
-                      <>
-                        <LostFOundTable
-                          incidentData={currentSearchResults}
-                          handleNonClickableColumnClick={
-                            handleNonClickableColumnClick
-                          }
-                          setIncidentData={setSearchResults}
-                          navigateToModify={navigateToModify}
-                          handleRowClick={handleRowClick}
-                          handleSelectedItems={handleSelectedItems}
-                          selectedItems={selectedItems}
-                          handleSelectAll={handleSelectAll}
-                        />
-                        <div className="mobile-table">
+                      <LostFoundTable
+                        incidentData={currentSearchResults}
+                        handleNonClickableColumnClick={
+                          handleNonClickableColumnClick
+                        }
+                        setIncidentData={setSearchResults}
+                        navigateToModify={navigateToModify}
+                        handleRowClick={handleRowClick}
+                        handleSelectedItems={handleSelectedItems}
+                        selectedItems={selectedItems}
+                        handleSelectAll={handleSelectAll}
+                      />
+                      <div className="mobile-table">
+                        <button
+                          onClick={() => handleSelectAll(searchResults)}
+                          type="button"
+                          className="tertiary-button"
+                        >
+                          {searchResults.every((item) =>
+                            selectedItems.some(
+                              (selected) => selected.id === item.id
+                            )
+                          ) ? (
+                            <SquareCheck />
+                          ) : (
+                            <Square />
+                          )}{" "}
+                          Select all
+                        </button>
+                        {currentSearchResults.map((incident, index) => (
+                          <IncidentTableCard
+                            key={index}
+                            incident={incident}
+                            handleRowClick={handleRowClick}
+                            selectedItems={selectedItems}
+                            handleSelectedItems={handleSelectedItems}
+                          />
+                        ))}
+                      </div>
+                      <div className="pagination-controls">
+                        <button
+                          className="pagination-button"
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                        >
+                          Prev
+                        </button>
+                        {pageNumbers.map((number) => (
                           <button
-                            onClick={() => handleSelectAll(searchResults)}
-                            type="button"
-                            className="tertiary-button"
+                            key={number}
+                            className={`pagination-button ${
+                              currentPage === number ? "active" : ""
+                            }`}
+                            onClick={() => handlePageChange(number)}
                           >
-                            {searchResults.every((item) =>
-                              selectedItems.some(
-                                (selected) => selected.id === item.id
-                              )
-                            ) ? (
-                              <SquareCheck />
-                            ) : (
-                              <Square />
-                            )}{" "}
-                            Select all
+                            {number}
                           </button>
-                          {currentSearchResults.map((incident, index) => (
-                            <IncidentTableCard
-                              key={index}
-                              incident={incident}
-                              handleRowClick={handleRowClick}
-                              selectedItems={selectedItems}
-                              handleSelectedItems={handleSelectedItems}
-                              handleSelectAll={handleSelectAll}
-                            />
-                          ))}
-                        </div>
-                        <div className="pagination-controls">
-                          <button
-                            className="pagination-button"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                          >
-                            Prev
-                          </button>
-                          {pageNumbers.map((number) => (
-                            <button
-                              key={number}
-                              className={`pagination-button ${
-                                currentPage === number ? "active" : ""
-                              }`}
-                              onClick={() => handlePageChange(number)}
-                            >
-                              {number}
-                            </button>
-                          ))}
-                          <button
-                            className="pagination-button"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                          >
-                            Next
-                          </button>
-                        </div>
-                      </>
+                        ))}
+                        <button
+                          className="pagination-button"
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                        >
+                          Next
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div className="no-data-found">
-                      <p>No data found with your search</p>
+                      <p>No data found</p>
                     </div>
                   )}
                 </div>
               ) : (
                 <>
-                  <LostFOundTable
+                  <LostFoundTable
                     incidentData={currentIncidentData}
                     handleNonClickableColumnClick={
                       handleNonClickableColumnClick
@@ -473,7 +469,6 @@ const LostAndFoundList = () => {
                         handleRowClick={handleRowClick}
                         selectedItems={selectedItems}
                         handleSelectedItems={handleSelectedItems}
-                        handleSelectAll={handleSelectAll}
                       />
                     ))}
                   </div>
@@ -514,7 +509,7 @@ const LostAndFoundList = () => {
   );
 };
 
-const LostFOundTable = ({
+const LostFoundTable = ({
   incidentData,
   handleNonClickableColumnClick,
   navigateToModify,
@@ -574,7 +569,6 @@ const LostFOundTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-    console.log(items);
     console.log("sorting items:", sortBy, direction, field);
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
@@ -643,44 +637,61 @@ const LostFOundTable = ({
           <th>
             <div className="sort-cell">
               ID
-              <SortByNumberIcon
-                setSortDesc={setSortDesc}
-                handleSortById={handleSortById}
-                sortDesc={sortDesc}
-              />
+              {SortByNumberIcon ? (
+                <SortByNumberIcon
+                  setSortDesc={setSortDesc}
+                  handleSortById={handleSortById}
+                  sortDesc={sortDesc}
+                />
+              ) : (
+                <span>Sort</span>
+              )}
             </div>
           </th>
           <th>Facility</th>
           <th>
             <div className="sort-cell">
               Date & Time Reported
-              <SortDateIcon
-                setSortDesc={setDateRecent}
-                handleSortById={handleFilterByDate}
-                sortDesc={dateRecent}
-              />
+              {SortDateIcon ? (
+                <SortDateIcon
+                  setSortDesc={setDateRecent}
+                  handleSortById={handleFilterByDate}
+                  sortDesc={dateRecent}
+                />
+              ) : (
+                <span>Sort</span>
+              )}
             </div>
           </th>
           <th>
             <div className="sort-cell">
               Person taking report
-              <SortNameIcon
-                handleSortById={handleSortByName}
-                sortDesc={nameAZ}
-                setSortDesc={setNameAZ}
-              />
+              {SortNameIcon ? (
+                <SortNameIcon
+                  handleSortById={handleSortByName}
+                  sortDesc={nameAZ}
+                  setSortDesc={setNameAZ}
+                />
+              ) : (
+                <span>Sort</span>
+              )}
             </div>
           </th>
           <th>
             <div className="sort-cell">
               Person reporting
-              <SortNameIcon2
-                handleSortById={handleSortByName2}
-                sortDesc={nameAZ2}
-                setSortDesc={setNameAZ2}
-              />
+              {SortNameIcon2 ? (
+                <SortNameIcon2
+                  handleSortById={handleSortByName2}
+                  sortDesc={nameAZ2}
+                  setSortDesc={setNameAZ2}
+                />
+              ) : (
+                <span>Sort</span>
+              )}
             </div>
           </th>
+
           <th>Status</th>
           <th className="action-col">Action</th>
         </tr>
@@ -717,19 +728,22 @@ const LostFOundTable = ({
               <td>{incident.original_report || incident.id}</td>
               <td>{incident.report_facility?.name || "Not provided"}</td>
               <td>
-                <div>
-                  <DateFormatter dateString={incident.date_reported} />,{" "}
-                  {formatTime(incident.time_reported)}
-                </div>{" "}
+                {DateFormatter ? (
+                  <DateFormatter dateString={incident.date_reported} />
+                ) : (
+                  incident.date_reported
+                )}
+                , {formatTime(incident.time_reported)}
               </td>
               <td>
-                {`${incident.taken_by?.last_name} ${incident.taken_by?.first_name}` ||
-                  "Not provided"}
+                {incident.taken_by?.last_name && incident.taken_by?.first_name
+                  ? `${incident.taken_by.last_name} ${incident.taken_by.first_name}`
+                  : "Not provided"}
               </td>
               <td>
-                {incident?.reported_by?.last_name ||
-                incident?.reported_by?.first_name
-                  ? `${incident?.reported_by?.last_name} ${incident?.reported_by?.first_name}`
+                {incident.reported_by?.last_name &&
+                incident.reported_by?.first_name
+                  ? `${incident.reported_by.last_name} ${incident.reported_by.first_name}`
                   : "Not provided"}
               </td>
               <td>
@@ -778,7 +792,7 @@ const LostFOundTable = ({
           ))
         ) : (
           <tr>
-            <td colSpan="10">No data found</td>
+            <td colSpan="9">No data found</td>
           </tr>
         )}
       </tbody>
@@ -788,11 +802,9 @@ const LostFOundTable = ({
 
 const IncidentTableCard = ({
   incident,
-  items,
   handleRowClick,
   selectedItems,
   handleSelectedItems,
-  handleSelectAll,
 }) => {
   return (
     <div
@@ -824,42 +836,45 @@ const IncidentTableCard = ({
           <span>View more</span>
         </div>
       </div>
-      {items}
       <div className="card-content-items">
         <div className="item">
           <label htmlFor="">Facility: </label>
-          <span>{incident?.report_facility?.name || "Not provided"}</span>
+          <span>{incident.report_facility?.name || "Not provided"}</span>
         </div>
         <div className="item">
           <label htmlFor="">Date & Time: </label>
           <span>
-            <span>
-              <DateFormatter dateString={incident?.date_reported} />,{" "}
-              {incident?.time_reported}
-            </span>{" "}
+            {DateFormatter ? (
+              <DateFormatter dateString={incident.date_reported} />
+            ) : (
+              incident.date_reported
+            )}
+            , {formatTime(incident.time_reported)}
           </span>
         </div>
         <div className="item">
           <label htmlFor="">Person taking report: </label>
           <span>
-            {`${incident.taken_by?.last_name} ${incident.taken_by?.first_name}` ||
-              "Not provided"}
+            {incident.taken_by?.last_name && incident.taken_by?.first_name
+              ? `${incident.taken_by.last_name} ${incident.taken_by.first_name}`
+              : "Not provided"}
           </span>
         </div>
         <div className="item">
           <label htmlFor="">Person reporting: </label>
           <span>
-            {`${incident?.reported_by?.last_name} ${incident?.reported_by?.first_name}` ||
-              "Not provided"}
+            {incident.reported_by?.last_name && incident.reported_by?.first_name
+              ? `${incident.reported_by.last_name} ${incident.reported_by.first_name}`
+              : "Not provided"}
           </span>
         </div>
         <div className="item">
           <label htmlFor="">Location found: </label>
-          <span>{incident?.location_found || "Not provided"}</span>
+          <span>{incident.location_found || "Not provided"}</span>
         </div>
         <div className="item">
           <label htmlFor="">Location disposed: </label>
-          <span>{incident?.location_returned || "Not provided"}</span>
+          <span>{incident.location_returned || "Not provided"}</span>
         </div>
         <div className="item">
           <label htmlFor="">Status: </label>
@@ -872,7 +887,7 @@ const IncidentTableCard = ({
                 : "Open"
             }`}
           >
-            {incident?.status || "Not specified"}
+            {incident.status || "Not specified"}
           </span>
         </div>
       </div>

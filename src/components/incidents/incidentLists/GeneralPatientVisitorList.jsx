@@ -36,7 +36,6 @@ const GeneralPatientVisitorList = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [incidentData, setIncidentData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [isSearchingTheDatabase, setIsSearchingTheDatabase] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [openFilters, setOpenFilters] = useState(false);
@@ -45,7 +44,6 @@ const GeneralPatientVisitorList = () => {
 
   const router = useRouter();
 
-  const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
@@ -69,6 +67,12 @@ const GeneralPatientVisitorList = () => {
     (isSearching ? searchResults.length : incidentData.length) / itemsPerPage
   );
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
   const handleSelectedItems = (item) => {
     if (!selectedItems.includes(item)) {
@@ -95,40 +99,43 @@ const GeneralPatientVisitorList = () => {
     }
   };
 
-  const applyFilters = () => {
-    const newFilteredData = data.filter((item) => {
-      const incidentDate = new Date(item.incident_date);
-      const startDate = filters.start_date
-        ? new Date(filters.start_date)
-        : null;
-      const endDate = filters.end_date ? new Date(filters.end_date) : null;
+  const fetchFilteredData = async () => {
+    try {
+      setIsFetching(true);
+      const queryParams = new URLSearchParams();
+      if (filters.start_date)
+        queryParams.append("start_date", filters.start_date);
+      if (filters.end_date) queryParams.append("end_date", filters.end_date);
+      if (filters.status) queryParams.append("status", filters.status);
+      if (filters.incident_type)
+        queryParams.append("incident_type", filters.incident_type);
+      if (filters.category) queryParams.append("category", filters.category);
 
-      const withinDateRange =
-        (!startDate || incidentDate >= startDate) &&
-        (!endDate || incidentDate <= endDate);
-
-      return (
-        withinDateRange &&
-        (!filters?.status?.toLowerCase() ||
-          item?.status?.toLowerCase() === filters?.status?.toLowerCase()) &&
-        (!filters?.incident_type?.toLowerCase() ||
-          item?.incident_type?.toLowerCase() ===
-            filters?.incident_type?.toLowerCase()) &&
-        (!filters?.category?.toLowerCase() ||
-          item?.category?.toLowerCase() === filters?.category?.toLowerCase())
+      const response = await api.get(
+        `${API_URL}/incidents/general-visitor/?${queryParams.toString()}`
       );
-    });
-
-    if (newFilteredData.length < 1) {
-      setIsSearchingTheDatabase(true);
-      setTimeout(() => {
-        setIsSearchingTheDatabase(false);
-      }, 3000);
+      if (response && response.status === 200 && response.data) {
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          incident_date: formatDate(item.incident_date),
+        }));
+        setIncidentData(formattedData);
+        setSearchResults([]);
+        setIsSearching(false);
+        setCurrentPage(1);
+        setIsFetching(false);
+      } else {
+        setErrorFetching("Unexpected response format.");
+        setIsFetching(false);
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrorFetching(error.response.data.error);
+      } else {
+        setErrorFetching("An error occurred while fetching incident data.");
+      }
+      setIsFetching(false);
     }
-    setIncidentData(newFilteredData);
-    setIsSearching(true);
-    setCurrentPage(1); // Reset to first page when filters are applied
-    toggleOpenFilters();
   };
 
   const clearFilters = () => {
@@ -139,9 +146,11 @@ const GeneralPatientVisitorList = () => {
       incident_type: "",
       category: "",
     });
-    setIncidentData(data);
+    setSearchResults([]);
     setIsSearching(false);
-    setCurrentPage(1); // Reset to first page when filters are cleared
+    setCurrentPage(1);
+    setOpenFilters(false);
+    fetchFilteredData();
   };
 
   const handleRowClick = (incidentId) => {
@@ -184,46 +193,12 @@ const GeneralPatientVisitorList = () => {
         (item.id &&
           item.id.toString().toLowerCase().includes(string.toLowerCase()))
     );
-    if (results.length < 1) {
-      setIsSearchingTheDatabase(true);
-      setTimeout(() => {
-        setIsSearchingTheDatabase(false);
-      }, 3000);
-    }
     setSearchResults(results);
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
   };
 
   useEffect(() => {
-    const fetchIncidentData = async () => {
-      try {
-        const response = await api.get(`${API_URL}/incidents/general-visitor/`);
-        if (response && response.status === 200 && response.data) {
-          const formattedData = response.data.map((item) => ({
-            ...item,
-            incident_date: formatDate(item.incident_date),
-          }));
-          setData(formattedData);
-          setIncidentData(formattedData);
-          setIsFetching(false);
-        } else {
-          setErrorFetching("Unexpected response format.");
-          setIsFetching(false);
-        }
-      } catch (error) {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.error
-        ) {
-          setErrorFetching(error.response.data.error);
-        } else {
-          setErrorFetching("An error occurred while fetching incident data.");
-        }
-        setIsFetching(false);
-      }
-    };
-    fetchIncidentData();
+    fetchFilteredData();
   }, []);
 
   return isFetching ? (
@@ -329,7 +304,10 @@ const GeneralPatientVisitorList = () => {
                           Clear
                         </button>
                         <button
-                          onClick={applyFilters}
+                          onClick={() => {
+                            fetchFilteredData();
+                            toggleOpenFilters();
+                          }}
                           className="secondary-button"
                         >
                           <div className="icon">
@@ -345,9 +323,7 @@ const GeneralPatientVisitorList = () => {
                 )}
 
                 <input
-                  onChange={(e) => {
-                    search(e.target.value);
-                  }}
+                  onChange={(e) => search(e.target.value)}
                   type="search"
                   name="systemSearch"
                   id="systemSearch"
@@ -379,11 +355,7 @@ const GeneralPatientVisitorList = () => {
             <div className="incident-list">
               {isSearching ? (
                 <div className="search-results">
-                  {isSearchingTheDatabase ? (
-                    <div className="searching_database">
-                      <p>Searching database</p>
-                    </div>
-                  ) : currentSearchResults.length > 0 ? (
+                  {currentSearchResults.length > 0 ? (
                     <div className="results-table">
                       <div className="results-count">
                         <span className="count">{searchResults.length}</span>{" "}
@@ -592,7 +564,6 @@ const GeneralIncidentTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-    console.log(items);
     console.log("sorting items:", sortBy, direction, field);
 
     const sortByNumber = (field) => {
@@ -728,8 +699,8 @@ const GeneralIncidentTable = ({
               <td>
                 <div>
                   <DateFormatter dateString={incident.incident_date} />,{" "}
-                  {incident.incident_time}
-                </div>{" "}
+                  {incident.incident_time || "-"}
+                </div>
               </td>
               <td>{incident.severity_rating || "Not provided"}</td>
               <td>{incident.category || "Not provided"}</td>
@@ -789,7 +760,6 @@ const GeneralIncidentTable = ({
 
 const IncidentTableCard = ({
   incident,
-  items,
   selectedItems,
   handleSelectedItems,
   navigateToModify,
@@ -831,6 +801,15 @@ const IncidentTableCard = ({
           <span>{incident.report_facility?.name || "Not provided"}</span>
         </div>
         <div className="item">
+          <label htmlFor="">Name: </label>
+          <span>
+            {incident.patient_visitor?.last_name &&
+            incident.patient_visitor?.first_name
+              ? `${incident.patient_visitor?.last_name} ${incident.patient_visitor?.first_name}`
+              : "Not provided"}
+          </span>
+        </div>
+        <div className="item">
           <label htmlFor="">Type of incident: </label>
           <span>{incident.incident_type || "Not provided"}</span>
         </div>
@@ -839,9 +818,17 @@ const IncidentTableCard = ({
           <span>
             <span>
               <DateFormatter dateString={incident?.incident_date} />,{" "}
-              {incident?.incident_time}
-            </span>{" "}
+              {incident?.incident_time || "-"}
+            </span>
           </span>
+        </div>
+        <div className="item">
+          <label htmlFor="">Severity: </label>
+          <span>{incident?.severity_rating || "Not provided"}</span>
+        </div>
+        <div className="item">
+          <label htmlFor="">Care level: </label>
+          <span>{incident?.category || "Not provided"}</span>
         </div>
         <div className="item">
           <label htmlFor="">Status: </label>
