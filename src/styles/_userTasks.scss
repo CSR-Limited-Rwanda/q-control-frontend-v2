@@ -83,3 +83,38 @@
     }
 
 }
+
+.table-card {
+    gap: 1rem !important;
+
+    .status-priority {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        justify-content: space-between;
+    }
+
+    .meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+}
+
+.sort-options {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+
+    .sort-option {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.select-all {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
