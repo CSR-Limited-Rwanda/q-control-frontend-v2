@@ -4,9 +4,14 @@ import React, { useEffect, useState, useRef } from 'react'
 import DashboardLayout from '../dashboard/layout'
 import { fetchTaskById, fetchTasks, fetchUserTasks } from '@/hooks/fetchTasks'
 import { createUrlParams } from '@/utils/api'
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, Calendar, Eye, FileText, Flag, Square, SquareCheck, Users, X } from 'lucide-react'
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, Calendar, Eye, FileText, Filter, Flag, PlusCircle, Printer, SlidersHorizontal, Square, SquareCheck, Users, X } from 'lucide-react'
+import { TaskDetails } from './TaskDetails'
+import { Filters } from './TaskFilters'
+import TasksTable from './TasksTable'
+import TasksMobileCard from './TasksMobileCard'
 
 const TasksPage = () => {
+    const [totalTasks, setTotalTasks] = useState(null)
     const [userInfo, setUserInfo] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [isSearching, setIsSearching] = useState(false)
@@ -28,12 +33,14 @@ const TasksPage = () => {
         sort_order: 'asc'
     })
 
+
     const loadTasks = async (userId) => {
 
         const queryParams = createUrlParams(parameters)
         const response = await fetchUserTasks(userId, queryParams)
         if (response.success) {
-            setTasks(response.data)
+            setTasks(response.data.results)
+            setTotalTasks(response.data.count)
         } else {
             setError(response.message)
         }
@@ -134,190 +141,31 @@ const TasksPage = () => {
             {isLoading && <p>Loading tasks...</p>}
             {error && <p className='message error'>Error: {error}</p>}
             <div className="filters-container">
-                <input
-                    type="text"
-                    placeholder="Search tasks..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                />
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            <div onClick={handleSelectAllTasks} className='select-all'>
-                                {
-                                    tasks.length > 0 && selectedTasks.length === tasks.length ? <SquareCheck /> : <Square />
-                                }
-                            </div>
-                        </th>
-                        <th className='sort-cell'>
-                            Task Name
-                            <div className="sort-icon" onClick={() => handleSortTasks('name', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
-                                {
-                                    parameters.sort_by === 'name' && parameters.sort_order === 'asc' ?
-                                        <ArrowDownNarrowWide />
-                                        : parameters.sort_by === 'name' && parameters.sort_order === 'desc' ?
-                                            <ArrowUpNarrowWide />
-                                            : <ArrowDownNarrowWide />
-                                }
-                            </div>
-                        </th>
-                        <th>Description</th>
-                        <th className='sort-cell'>
-                            Deadline
-                            <div className="sort-icon" onClick={() => handleSortTasks('deadline', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
-                                {
-                                    parameters.sort_by === 'deadline' && parameters.sort_order === 'asc' ?
-                                        <ArrowDownNarrowWide />
-                                        : parameters.sort_by === 'deadline' && parameters.sort_order === 'desc' ?
-                                            <ArrowUpNarrowWide />
-                                            : <ArrowDownNarrowWide />
-                                }
-                            </div>
-                        </th>
-                        <th>Incident</th>
-                        <th className='sort-cell' >
-                            Status
-                            <div className="sort-icon" onClick={() => handleSortTasks('status', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
-                                {
-                                    parameters.sort_by === 'status' && parameters.sort_order === 'asc' ?
-                                        <ArrowDownNarrowWide />
-                                        : parameters.sort_by === 'status' && parameters.sort_order === 'desc' ?
-                                            <ArrowUpNarrowWide />
-                                            : <ArrowDownNarrowWide />
-                                }
-                            </div>
-                        </th>
-                        <th>Priority</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {tasks.map((task) => (
-                        <tr className={`task-row ${selectedTasks.includes(task.id) ? 'selected' : ''} ${isSearching ? 'is-searching' : ''}`} key={task.id} onClick={(e) => handleOpenTaskDetails(e, task.id)}>
-                            <td>
-                                <div onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleSelectTask(task.id);
-                                }} className='select-task'>
-                                    {selectedTasks.includes(task.id) ? <SquareCheck /> : <Square />}
-                                </div>
-                            </td>
-                            <td>{task.name}</td>
-                            <td>{task.description}</td>
-                            <td>{task.deadline}</td>
-                            <td>{task.incident}</td>
-                            <td>{task.status}</td>
-                            <td>{
-                                task.task_priority === 1 ?
-                                    <div className="high priority-value">
-                                        <small>High</small>
-                                    </div>
-                                    : task.task_priority === 2 ?
-                                        <div className="medium priority-value">
-                                            <small>Medium</small>
-                                        </div>
-                                        : <div className="low priority-value">
-                                            <small>Low</small>
-                                        </div>}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <div className="mobile-table">
-                <div onClick={handleSelectAllTasks} className='select-all'>
+                <div className="header-search">
+                    <div className="headers">
+                        <h2>Tasks</h2>
+                        <small>{totalTasks} Available</small>
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search tasks..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                    />
+                </div>
+                <div className="actions">
                     {
-                        tasks.length > 0 && selectedTasks.length === tasks.length ? <> <SquareCheck /> unSelect all</> : <> <Square /> Select all</>
-
+                        selectedTasks.length > 0 && <>
+                            <button className='primary'> <PlusCircle /><span> Create Task</span></button>
+                            <button className='secondary'><Printer /><span> Export Tasks</span></button>
+                        </>
                     }
+                    <Filters filters={[parameters]} setFilters={setParameters} handleFilterChange={() => loadTasks(userInfo?.id)} />
                 </div>
-                <div className="sort-options">
-                    <div className="sort-option">
-                        Task Name
-                        <div className="sort-icon" onClick={() => handleSortTasks('name', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
-                            {
-                                parameters.sort_by === 'name' && parameters.sort_order === 'asc' ?
-                                    <ArrowDownNarrowWide />
-                                    : parameters.sort_by === 'name' && parameters.sort_order === 'desc' ?
-                                        <ArrowUpNarrowWide />
-                                        : <ArrowDownNarrowWide />
-                            }
-                        </div>
-                    </div>
-                    <div className="sort-option">
-                        Deadline
-                        <div className="sort-icon" onClick={() => handleSortTasks('deadline', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
-                            {
-                                parameters.sort_by === 'deadline' && parameters.sort_order === 'asc' ?
-                                    <ArrowDownNarrowWide />
-                                    : parameters.sort_by === 'deadline' && parameters.sort_order === 'desc' ?
-                                        <ArrowUpNarrowWide />
-                                        : <ArrowDownNarrowWide />
-                            }
-                        </div>
-                    </div>
-
-                    <div className="sort-option">
-                        Status
-                        <div className="sort-icon" onClick={() => handleSortTasks('status', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
-                            {
-                                parameters.sort_by === 'status' && parameters.sort_order === 'asc' ?
-                                    <ArrowDownNarrowWide />
-                                    : parameters.sort_by === 'status' && parameters.sort_order === 'desc' ?
-                                        <ArrowUpNarrowWide />
-                                        : <ArrowDownNarrowWide />
-                            }
-                        </div>
-                    </div>
-                </div>
-                {
-                    tasks.map((task) => (
-                        <div className="table-card" key={task.id} onClick={(e) => handleOpenTaskDetails(e, task.id)}>
-                            <div className="card-header">
-                                <div className="id-number">
-                                    <h3>{task.name}</h3>
-                                    <div className="icons">
-                                        <div onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleSelectTask(task.id);
-                                        }} className='select-task'>
-                                            {selectedTasks.includes(task.id) ? <SquareCheck /> : <Square />}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="meta">
-                                <small>Deadline: </small>
-                                <p>{task.deadline}</p>
-                            </div>
-                            <div className="meta">
-                                <small>Status: </small>
-                                <p>{task.status}</p>
-                            </div>
-                            <div className="meta">
-                                <small>Priority: </small>
-                                {
-                                    task.task_priority === 1 ?
-                                        <div className="high priority-value">
-                                            <small>High</small>
-                                        </div>
-                                        : task.task_priority === 2 ?
-                                            <div className="medium priority-value">
-                                                <small>Medium</small>
-                                            </div>
-                                            : <div className="low priority-value">
-                                                <small>Low</small>
-                                            </div>
-                                }
-                            </div>
-
-                        </div>
-                    ))
-                }
             </div>
+
+            <TasksTable handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
+            <TasksMobileCard handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
 
             {
                 showTaskDetails && selectedTask && (
@@ -330,143 +178,3 @@ const TasksPage = () => {
 
 export default TasksPage
 
-
-export const TaskDetails = ({ taskId, handleClose }) => {
-    const [userPermissions, setUserPermissions] = useState({
-        can_edit: false,
-        can_delete: false,
-        can_view: true,
-        can_submit: false,
-        can_complete: true
-    })
-    const [isLoading, setIsLoading] = useState(true)
-    const [taskDetails, setTaskDetails] = useState(null)
-    const popupRef = useRef(null)
-
-    useEffect(() => {
-        const fetchTaskDetails = async () => {
-            const response = await fetchTaskById(taskId)
-            if (response.success) {
-                setTaskDetails(response.data)
-            } else {
-                console.error(response.message)
-            }
-            setIsLoading(false)
-        }
-        fetchTaskDetails()
-    }, [taskId])
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (popupRef.current && !popupRef.current.contains(event.target)) {
-                handleClose()
-            }
-        }
-
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [handleClose])
-
-    return (
-        <div className='popup'>
-            <div className="popup-content" ref={popupRef}>
-                <div className="close-icon" onClick={handleClose}>
-                    <X />
-                </div>
-                <h2>Task Details</h2>
-                {isLoading && <p>Loading task details...</p>}
-                {taskDetails && (
-                    <div className='task-details'>
-                        {/* <p><strong>Name:</strong> {taskDetails.name}</p>
-                        <p><strong>Description:</strong> {taskDetails.description}</p>
-                        <p><strong>Deadline:</strong> {taskDetails.deadline}</p>
-                        <p><strong>Incident:</strong> {taskDetails.incident}</p>
-                        <p><strong>Status:</strong> {taskDetails.status}</p>
-                        <p><strong>Priority:</strong> {taskDetails.task_priority === 1 ? 'High' : taskDetails.task_priority === 2 ? 'Medium' : 'Low'}</p> */}
-
-                        <h3 className="task-title">{taskDetails.name}</h3>
-                        <p>{taskDetails.description}</p>
-
-                        <div className="priority">
-                            <div className='priority-icon'>
-                                <Flag color='gray' />
-                                <small>Priority</small>
-                            </div>
-
-                            <div className={`priority-value ${taskDetails.task_priority === 1 ? 'high' : taskDetails.task_priority === 2 ? 'medium' : 'low'}`}>
-                                {taskDetails.task_priority === 1 ? 'High' : taskDetails.task_priority === 2 ? 'Medium' : 'Low'}
-                            </div>
-                        </div>
-
-                        <div className="deadline">
-                            <div className="deadline-icon">
-                                <Calendar color='gray' />
-                                <small>Deadline</small>
-                            </div>
-                            <p>{taskDetails.deadline}</p>
-                        </div>
-
-                        {/* <div className="assigned-to">
-                            <div className="assigned-to-icon">
-                                <Users />
-                                <small>Assigned To</small>
-                            </div>
-                            <p>{taskDetails.assigned_to}</p>
-                        </div> */}
-
-                        <div className="incident">
-                            <div className="incident-icon">
-                                <FileText color='gray' />
-                                <small>Incident</small>
-                            </div>
-                            <div className="incident-container">
-                                <p>{taskDetails.incident || 'No incident reported'}</p>
-                                {
-                                    taskDetails.incident && (
-                                        <button type="button" className="light">
-                                            <Eye color='gray' />
-                                            View Incident
-                                        </button>
-                                    )
-                                }
-                            </div>
-                        </div>
-
-                        <div className="buttons">
-                            {userPermissions.can_edit && (
-                                <button type="button" className="primary">
-                                    Edit Task
-                                </button>
-                            )}
-                            {userPermissions.can_delete && (
-                                <button type="button" className="danger">
-                                    Delete Task
-                                </button>
-                            )}
-                            {userPermissions.can_submit && (
-                                <button type="button" className="success">
-                                    Submit Task
-                                </button>
-                            )}
-                            {userPermissions.can_complete && (
-                                <button type="button" className="light">
-                                    Mark complete
-                                </button>
-                            )}
-
-                            <button className="gray" onClick={handleClose}>
-                                Back to tasks
-                            </button>
-                        </div>
-                    </div>
-
-
-                )}
-
-
-            </div>
-        </div>
-    )
-}
