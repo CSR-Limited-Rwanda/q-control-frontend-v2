@@ -100,6 +100,9 @@ const DrugReactionForm = ({ togglePopup }) => {
   const [facilityId, setFacilityId] = useState(
     localStorage.getItem("facilityId")
   );
+  const [departmentId, setDepartmentId] = useState(
+    localStorage.getItem("departmentId")
+  )
 
   useEffect(() => {
     currentStepRef.current = currentStep;
@@ -366,6 +369,7 @@ const DrugReactionForm = ({ togglePopup }) => {
           patient_type: victimType,
           facility: facilityId,
           report_facility: facilityId,
+          department: departmentId,
           patient_name: {
             first_name: firstName,
             last_name: lastName,
@@ -588,7 +592,7 @@ const DrugReactionForm = ({ togglePopup }) => {
       if (isValid) {
         drugReactionData = {
           current_step: currentStep,
-          incident_type_outcome: {
+   
             outcome_type: outcomeType,
             description: JSON.stringify(selectedDescription),
 
@@ -611,7 +615,7 @@ const DrugReactionForm = ({ togglePopup }) => {
               last_name: notifiedByLastName,
               profile_type: "Nurse",
             },
-          },
+          
         };
 
         updateDrugAdverseReaction(drugReactionData);
