@@ -13,7 +13,7 @@
 //     height: fit-content;
 //     border: 1px solid #f1f1f1;
 //     padding: 14px 12px;
-//     border-radius: 12px;
+//     border-radius: var(--base-border-radius);
 
 //     .step {
 //       display: flex;
@@ -78,7 +78,7 @@
     position: relative;
     animation: openPopup 0.3s forwards;
     border-left: 1px solid #eaeaea;
-    border-radius: 0.8rem;
+    border-radius: var(--base-border-radius);
 
     .close {
       animation: closePopup 0.3s forwards;
@@ -126,7 +126,7 @@
   // width: fit-content;
   padding: 1rem;
   border: 1px solid lighten($color: $primary-color, $amount: 30);
-  border-radius: 0.8rem;
+  border-radius: var(--base-border-radius);
 
   .facility {
     color: gray;
@@ -145,7 +145,7 @@
     gap: 0.4rem;
     background-color: lighten($color: $primary-color, $amount: 50);
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     border: 1px solid lighten($color: $primary-color, $amount: 30);
 
     .delete-witness {

@@ -224,12 +224,12 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       patient_info:
         firstName && lastName
           ? {
-              first_name: firstName,
-              last_name: lastName,
-              age: age,
-              date_of_birth: dateBirth,
-              profile_type: "Patient",
-            }
+            first_name: firstName,
+            last_name: lastName,
+            age: age,
+            date_of_birth: dateBirth,
+            profile_type: "Patient",
+          }
           : null,
       job_title: jobTitle,
       supervisor: {
@@ -251,11 +251,11 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       doctor_consulted_info:
         doctorFirstName && doctorLastName
           ? {
-              first_name: doctorFirstName,
-              last_name: doctorLastName,
-              phone_number: doctorPhone || "",
-              profile_type: "Physician",
-            }
+            first_name: doctorFirstName,
+            last_name: doctorLastName,
+            phone_number: doctorPhone || "",
+            profile_type: "Physician",
+          }
           : null,
       previous_injury: injuredBody,
       previous_injury_date: whenInjured || null,
@@ -285,8 +285,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error while updating the incident"
+          error.response.data.error ||
+          "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -331,7 +331,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
           </button>
         )}
 
-        <div className="buttons">
+        <div className="btns">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
@@ -366,13 +366,12 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${
-                  status === "Draft"
+                className={`follow-up ${status === "Draft"
                     ? "in-progress"
                     : status === "Closed"
-                    ? "closed"
-                    : "Open"
-                }`}
+                      ? "closed"
+                      : "Open"
+                  }`}
               >
                 {status}
               </span>

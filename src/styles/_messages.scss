@@ -3,7 +3,7 @@
 .success-message,
 .note-message {
   padding: 1rem;
-  border-radius: 0.5rem;
+  border-radius: var(--base-border-radius);
   animation: messages ease 1s forwards;
   display: flex;
   align-items: center;

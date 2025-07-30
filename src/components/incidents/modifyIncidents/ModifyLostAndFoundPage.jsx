@@ -301,13 +301,12 @@ const ModifyLostFound = ({ data }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${
-                status === "Draft"
+              className={`follow-up ${status === "Draft"
                   ? "in-progress"
                   : status === "Closed"
-                  ? "closed"
-                  : "Open"
-              }`}
+                    ? "closed"
+                    : "Open"
+                }`}
             >
               {status}
             </span>

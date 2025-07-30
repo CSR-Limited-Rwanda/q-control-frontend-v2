@@ -18,6 +18,8 @@ import {
   LogOut,
   Dumbbell,
   CirclePlus,
+  ListCheck,
+  LayoutList,
 } from "lucide-react";
 import { splitName } from "@/utils/text";
 import LoginPopup from "@/components/auth/Login";
@@ -76,6 +78,12 @@ const DashboardLayout = ({ children }) => {
       label: "Incident Tracking",
       href: "/incidents",
       matchPaths: ["/incident", "/incidents"],
+    },
+    {
+      icon: <LayoutList size={24} />,
+      label: "Tasks",
+      href: "/tasks",
+      matchPaths: ["/tasks"],
     },
     // {
     //     icon: <Boxes size={20} />,
@@ -198,9 +206,8 @@ const DashboardLayout = ({ children }) => {
               {hasDropdown && (
                 <ChevronDown
                   size={16}
-                  className={`menu-item-arrow ${
-                    isDropdownOpen ? "rotate" : ""
-                  }`}
+                  className={`menu-item-arrow ${isDropdownOpen ? "rotate" : ""
+                    }`}
                 />
               )}
             </>
@@ -215,9 +222,8 @@ const DashboardLayout = ({ children }) => {
                 <a
                   key={subIndex}
                   href={subItem.href}
-                  className={`menu-dropdown-item ${
-                    isSubActive ? "active" : ""
-                  }`}
+                  className={`menu-dropdown-item ${isSubActive ? "active" : ""
+                    }`}
                 >
                   {subItem.label}
                 </a>
@@ -233,9 +239,8 @@ const DashboardLayout = ({ children }) => {
     <div className="dashboard">
       {/* Sidebar */}
       <aside
-        className={`dashboard__sidebar ${
-          isSidebarCollapsed ? "collapsed" : ""
-        } ${showMobileMenu ? "mobile-open" : ""}`}
+        className={`dashboard__sidebar ${isSidebarCollapsed ? "collapsed" : ""
+          } ${showMobileMenu ? "mobile-open" : ""}`}
       >
         <div className="dashboard__logo">
           <Image src={"/logo.svg"} width={52} height={32} alt="logo" />
@@ -251,9 +256,8 @@ const DashboardLayout = ({ children }) => {
 
       {/* Main Content Area */}
       <main
-        className={`dashboard__main ${
-          isSidebarCollapsed ? "sidebar-collapsed" : ""
-        }`}
+        className={`dashboard__main ${isSidebarCollapsed ? "sidebar-collapsed" : ""
+          }`}
       >
         {/* Header */}
         <header className="dashboard__header">

@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import api, {API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import { LoaderCircle } from "lucide-react";
 
 const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
@@ -57,7 +57,7 @@ const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
         }}
       /> */}
 
-      <div className="buttons">
+      <div className="btns">
         <button
           disabled={submittingReview}
           onClick={handleNewReview}

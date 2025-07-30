@@ -24,7 +24,7 @@
   .department-item {
     border: 1px solid #ddd;
     padding: 2rem;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -40,7 +40,7 @@
       width: 3rem;
       height: 3rem;
       padding: 8px;
-      border-radius: 0.5rem;
+      border-radius: var(--base-border-radius);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -55,7 +55,7 @@
       width: 3rem;
       height: 3rem;
       padding: 8px;
-      border-radius: 0.5rem;
+      border-radius: var(--base-border-radius);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -110,7 +110,7 @@
   display: flex;
   border: 1px solid whitesmoke;
   padding: 0.5rem;
-  border-radius: 0.5rem;
+  border-radius: var(--base-border-radius);
   width: fit-content;
 
   .tab {
@@ -120,7 +120,7 @@
     align-items: center;
     font-weight: bold;
     color: rgb(96, 96, 96);
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -143,7 +143,7 @@
 
 .reports-card {
   .no-data-found {
-    border-radius: 0px;
+    border-radius: 0;
     border-bottom-left-radius: 7px;
     border-bottom-right-radius: 7px;
   }
@@ -161,7 +161,7 @@
 .reports-card,
 .content-card {
   border: 1px solid lighten($color: $primary-color, $amount: 40);
-  border-radius: 0.5rem;
+  border-radius: var(--base-border-radius);
 
   .status {
     padding: 1rem;
@@ -267,7 +267,7 @@
       .icon {
         height: 3rem;
         width: 3rem;
-        border-radius: 0.5rem;
+        border-radius: var(--base-border-radius);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -285,7 +285,7 @@
         max-width: 160px;
         background-color: whitesmoke;
         padding: 0.5rem 2rem;
-        border-radius: 0.5rem;
+        border-radius: var(--base-border-radius);
 
         small {
           text-wrap: nowrap;
@@ -298,7 +298,7 @@
 .facility-department-details-header {
   background-color: #fff;
   padding: 24px;
-  border-radius: 8px;
+  border-radius: var(--base-border-radius);
 
   .facility-department-details-row {
     display: flex;
@@ -313,7 +313,7 @@
       .icon-container {
         background-color: #FFF0E8;
         padding: 20px;
-        border-radius: 8px;
+        border-radius: var(--base-border-radius);
       }
 
       .facility-title {
@@ -343,7 +343,7 @@
         padding: 8px 16px;
         width: 150px;
         max-width: 150px;
-        border-radius: 6px;
+        border-radius: var(--base-border-radius);
         display: flex;
         flex-direction: column;
         gap: 8px;

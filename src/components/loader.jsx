@@ -25,7 +25,7 @@ const ModifyPageLoader = () => {
         <div className="loader form-field"></div>
         <div className="loader form-field"></div>
         <div className="loader form-field"></div>
-        <div className="button-loader">
+        <div className="btn-loader">
           <div className="loader button"></div>
         </div>
       </div>

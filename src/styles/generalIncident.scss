@@ -23,7 +23,7 @@
     position: relative;
     animation: openPopup 0.3s forwards;
     border-left: 1px solid #eaeaea;
-    border-radius: 0.8rem;
+    border-radius: var(--base-border-radius);
 
     .forms-container {
       background-color: white;
@@ -39,7 +39,7 @@
   .name-input {
     border: 1px solid #f1f1f1;
     background: transparent;
-    border-radius: 10px;
+    border-radius: var(--base-border-radius);
     padding: 14px 16px;
   }
 }
@@ -97,7 +97,7 @@ input[type="radio"]:checked::before {
   .status {
     flex: 49%;
     padding: 12px;
-    border-radius: 12px;
+    border-radius: var(--base-border-radius);
     cursor: pointer;
     background-color: $gray-color-shade;
   }

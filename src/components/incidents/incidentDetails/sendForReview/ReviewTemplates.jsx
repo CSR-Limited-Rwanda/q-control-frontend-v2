@@ -47,7 +47,7 @@ export const ReviewTemplates = ({ setCurrentStep, selectedTemplate, setSelectedT
                                     </div>
                                 ))}
 
-                                <Link className="btn btn-outline" href={'/review-templates/new'}>
+                                <Link className="btn light" href={'/review-templates/new'}>
                                     <PlusCircle />
                                     New template
                                 </Link>

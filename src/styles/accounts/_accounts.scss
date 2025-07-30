@@ -7,7 +7,7 @@
 .users-container {
   background-color: white;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: var(--base-border-radius);
 }
 
 .filters {
@@ -20,7 +20,7 @@
     max-width: 600px;
     width: 100%;
     border: 1px solid #F5F5F7;
-    border-radius: 10px;
+    border-radius: var(--base-border-radius);
   }
 
   .filters-popup {
@@ -58,7 +58,7 @@
         flex: 1;
         padding: 0.5rem 1rem;
         background-color: var(--border);
-        border-radius: 4px;
+        border-radius: var(--base-border-radius);
         text-wrap: nowrap;
       }
     }
@@ -95,7 +95,7 @@
     justify-content: space-between;
     background-color: var(--shade);
     padding: 1rem;
-    border-radius: 4px;
+    border-radius: var(--base-border-radius);
 
     .action {
       height: 32px;
@@ -104,7 +104,7 @@
       align-items: center;
       justify-content: center;
       border: 1px solid var(--foreground);
-      border-radius: 4px;
+      border-radius: var(--base-border-radius);
 
       &.danger {
         color: var(--error);
@@ -119,7 +119,7 @@
     max-height: 48px;
     overflow: hidden;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: var(--base-border-radius);
     padding: 0.5rem;
     padding: 12px 1rem;
     display: flex;
@@ -167,7 +167,7 @@
     align-items: center;
     background-color: #fafafa;
     padding: 0.5rem 1rem;
-    border-radius: 0.3rem;
+    border-radius: var(--base-border-radius);
     justify-content: space-between;
 
     .content {
