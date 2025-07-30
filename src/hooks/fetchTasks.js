@@ -7,7 +7,7 @@ export const fetchTasks = async (params) => {
         if (response.status === 200) {
             return {
                 success: true,
-                data: response.data.results,
+                data: response.data,
             };
         } else {
             return {
@@ -115,7 +115,7 @@ export const completeTask = async (taskId) => {
 
 export const submitTask = async (taskId) => {
     try {
-        const response = await api.patch(`/tasks/${taskId}/`, { status: "submit" });
+        const response = await api.patch(`/tasks/${taskId}/`, { action: "submit" });
         console.log(response);
         if (response.status === 200) {
             return {
@@ -144,7 +144,7 @@ export const submitTask = async (taskId) => {
 
 export const approveTask = async (taskId) => {
     try {
-        const response = await api.patch(`/tasks/${taskId}/`, { status: "approve" });
+        const response = await api.patch(`/tasks/${taskId}/`, { action: "approve" });
         console.log(response);
         if (response.status === 200) {
             return {

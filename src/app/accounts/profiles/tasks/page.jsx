@@ -1,18 +1,16 @@
 'use client'
 import '@/styles/_userTasks.scss'
-import React, { useEffect, useState, useRef } from 'react'
-import DashboardLayout from '../dashboard/layout'
-import { fetchTaskById, fetchTasks, fetchUserTasks } from '@/hooks/fetchTasks'
+import DashboardLayout from '@/app/dashboard/layout'
+import { TaskDetails } from '@/app/tasks/TaskDetails'
+import { Filters } from '@/app/tasks/TaskFilters'
+import TasksMobileCard from '@/app/tasks/TasksMobileCard'
+import TasksTable from '@/app/tasks/TasksTable'
+import { fetchUserTasks } from '@/hooks/fetchTasks'
 import { createUrlParams } from '@/utils/api'
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, Calendar, ChevronFirst, ChevronLast, Eye, FileText, Filter, Flag, PlusCircle, Printer, SlidersHorizontal, Square, SquareCheck, Users, X } from 'lucide-react'
-import { TaskDetails } from './TaskDetails'
-import { Filters } from './TaskFilters'
-import TasksTable from './TasksTable'
-import TasksMobileCard from './TasksMobileCard'
-import { set } from 'date-fns'
-import Pagination from './Pagination'
+import { PlusCircle, Printer } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
 
-const TasksPage = () => {
+const UserTasks = () => {
     const [totalTasks, setTotalTasks] = useState(null)
     const [userInfo, setUserInfo] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -27,22 +25,22 @@ const TasksPage = () => {
     const [pageSize, setPageSize] = useState(10)
     const [showTaskDetails, setShowTaskDetails] = useState(false)
     const [parameters, setParameters] = useState({
-        page: 1,
-        page_size: 10,
-        q: '',
-        status: null,
+        page: page,
+        page_size: pageSize,
+        q: searchQuery,
+        status: status,
         sort_by: 'created_at',
         sort_order: 'asc'
     })
 
 
-    const loadTasks = async (userId, customParams = null) => {
-        const queryParams = createUrlParams(customParams || parameters)
-        console.log('Query Params:', queryParams)
-        const response = await fetchTasks(queryParams)
+    const loadTasks = async (userId) => {
+
+        const queryParams = createUrlParams(parameters)
+        const response = await fetchUserTasks(userId, queryParams)
         if (response.success) {
             setTasks(response.data.results)
-            setTotalTasks(response.data.total_count)
+            setTotalTasks(response.data.count)
         } else {
             setError(response.message)
         }
@@ -81,69 +79,47 @@ const TasksPage = () => {
         setShowTaskDetails(true)
     }
 
+
     // handle search query change
     const handleSearchChange = async (e) => {
         setIsSearching(true)
         const query = e.target.value
         setSearchQuery(query)
-        setParameters(prev => ({
-            ...prev,
+        setParameters({
+            ...parameters,
             q: query,
             page: 1
-        }))
+        })
         setPage(1)
+
+        await loadTasks(userInfo?.id)
         setIsSearching(false)
+
     }
 
     // handle sorting tasks
     const handleSortTasks = (sortBy, sortOrder) => {
-        setParameters(prev => ({
-            ...prev,
+        setParameters({
+            ...parameters,
             sort_by: sortBy,
             sort_order: sortOrder
-        }))
-    }
+        })
 
-    // handle page size change
-    const handlePageSizeChange = (e) => {
-        const newSize = e.target.value
-        setPageSize(newSize)
-        setParameters(prev => ({
-            ...prev,
-            page_size: newSize,
-            page: 1
-        }))
-        localStorage.setItem('tasksPageSize', newSize)
-        setPage(1)
+        // sort tasks based on the selected field and order
+        const sortedTasks = [...tasks].sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return a[sortBy] > b[sortBy] ? 1 : -1
+            } else {
+                return a[sortBy] < b[sortBy] ? 1 : -1
+            }
+        })
+        setTasks(sortedTasks)
     }
-
-    // handle page change
-    const handlePageChange = (newPage) => {
-        const totalPages = Math.ceil(totalTasks / pageSize)
-        if (newPage >= 1 && newPage <= totalPages) {
-            // Update state
-            setPage(newPage)
-            setParameters(prev => ({
-                ...prev,
-                page: newPage
-            }))
-            localStorage.setItem('tasksPage', newPage)
-        }
-    }
-
     useEffect(() => {
         // Initialize localStorage values on client side
         if (typeof window !== 'undefined') {
-            const storedPageSize = localStorage.getItem('tasksPageSize') || 10
-            const storedPage = localStorage.getItem('tasksPage') || 1
-
-            setPageSize(storedPageSize)
-            setPage(storedPage)
-            setParameters(prev => ({
-                ...prev,
-                page_size: storedPageSize,
-                page: 1
-            }))
+            setPage(localStorage.getItem('tasksPage') || 1)
+            setPageSize(localStorage.getItem('tasksPageSize') || 10)
         }
 
         const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('loggedInUserInfo') || 'null') : null
@@ -153,14 +129,10 @@ const TasksPage = () => {
         }
         setUserInfo(user)
         console.log('User Info:', user)
-    }, [])
-
-    // Separate useEffect to load tasks when userInfo and parameters are ready
-    useEffect(() => {
-        if (userInfo?.id && parameters.page_size) {
-            loadTasks(userInfo.id)
+        if (user?.id) {
+            loadTasks(user.id)
         }
-    }, [userInfo, parameters])
+    }, [])
 
 
     return (
@@ -188,31 +160,13 @@ const TasksPage = () => {
                             <button className='secondary'><Printer /><span> Export Tasks</span></button>
                         </>
                     }
-                    <div className="page-size-number">
-                        <p>Showing</p>
-                        <input type="number" name="pageSize" id="pageSize" value={pageSize} onChange={handlePageSizeChange} />
-                        <p>of</p> {totalTasks} <p>tasks</p>
-                    </div>
                     <Filters filters={[parameters]} setFilters={setParameters} handleFilterChange={() => loadTasks(userInfo?.id)} />
                 </div>
             </div>
 
-            <TasksTable
-                handleSelectAllTasks={handleSelectAllTasks}
-                isSearching={isSearching}
-                parameters={parameters}
-                tasks={tasks}
-                selectedTasks={selectedTasks}
-                handleSelectTask={handleSelectTask}
-                handleOpenTaskDetails={handleOpenTaskDetails}
-                handleSortTasks={handleSortTasks}
-                //  pagination related props
-                page={page}
-                totalTasks={totalTasks}
-                pageSize={pageSize}
-                handlePageChange={handlePageChange}
-            />
+            <TasksTable handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
             <TasksMobileCard handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
+
             {
                 showTaskDetails && selectedTask && (
                     <TaskDetails taskId={selectedTask} handleClose={() => setShowTaskDetails(false)} />
@@ -222,5 +176,4 @@ const TasksPage = () => {
     )
 }
 
-export default TasksPage
-
+export default UserTasks
