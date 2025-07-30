@@ -648,7 +648,7 @@ table {
     transition: all 0.3s ease-in-out;
     text-wrap: nowrap;
     cursor: pointer;
-    color: #A5A3A9;
+    color: #a5a3a9;
   }
 
   & > :first-child {
@@ -656,11 +656,18 @@ table {
   }
 
   .active {
-    background-color: #F3F8FF;
-    color: #145C9E;
+    background-color: #fff1eb;
+    color: #f87c47;
     border-radius: 12px;
     padding: 14px;
   }
+}
+
+.profile-tab {
+  border-bottom: 1px solid var(--border);
+  background-color: transparent;
+  border-radius: 0;
+  padding: 12px 18px;
 }
 
 .actions-dropdown {
@@ -836,9 +843,9 @@ table {
       cursor: pointer;
 
       &:hover {
-        background-color: #FFF1EB;
-        border: 1px solid #F87C47;
-        color: #F87C47;
+        background-color: #fff1eb;
+        border: 1px solid #f87c47;
+        color: #f87c47;
       }
 
       .icon {
@@ -884,7 +891,7 @@ table {
     justify-items: center;
 
     .icon {
-      background-color: #F87C47;
+      background-color: #f87c47;
       height: 100px;
       width: 100px;
       border-radius: 50%;
@@ -904,10 +911,10 @@ table {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: lighten($color: #145C9E, $amount: 60);
+  background-color: lighten($color: #145c9e, $amount: 60);
   // width: fit-content;
   padding: 1rem;
-  border: 1px solid lighten($color: #145C9E, $amount: 30);
+  border: 1px solid lighten($color: #145c9e, $amount: 30);
   border-radius: 0.8rem;
 
   .facility {

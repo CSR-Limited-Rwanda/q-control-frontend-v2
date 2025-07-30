@@ -1,0 +1,198 @@
+@import "../styles/variables";
+
+.user-complaints {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  .user-complaint {
+    padding: 20px;
+    padding-right: 40px;
+    border-radius: 12px;
+    border: 1px solid rgb(231, 231, 231);
+    position: relative;
+    .complaint-content {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      .col {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        small {
+          font-size: 12px;
+        }
+
+        .name-mr {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+
+          .icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            background-color: #ebf5ff;
+            color: $primary-color;
+            border-radius: 50%;
+          }
+
+          .name {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            h5 {
+              font-weight: 600;
+            }
+          }
+        }
+
+        .department {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+
+          > span {
+            font-size: 12px;
+          }
+        }
+
+        .date {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+
+          > span {
+            font-size: 12px;
+          }
+        }
+
+        .resolved-by-staff {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+
+          > span {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+
+    .action {
+      position: absolute;
+      right: 5px;
+      top: 10px;
+      cursor: pointer;
+    }
+
+    .popup-menu {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      min-width: 200px;
+      padding: 8px 0;
+    }
+
+    .popup-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+
+      &:hover {
+        background: #f3f4f6;
+      }
+
+      span {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.delete-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.delete-confirm-popup {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 400px;
+  max-width: 90vw;
+  padding: 24px;
+}
+
+.delete-confirm-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    color: #4b5563;
+  }
+
+  .delete-confirm-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 16px;
+
+    .cancel-button {
+      padding: 10px 20px;
+      background: #f3f4f6;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #374151;
+      font-weight: 500;
+
+      &:hover {
+        background: #e5e7eb;
+      }
+    }
+
+    .delete-button {
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+
+      &:hover {
+        background: #eb5426;
+      }
+    }
+  }
+}
