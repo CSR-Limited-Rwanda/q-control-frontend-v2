@@ -1,0 +1,13 @@
+.incident-type-data {
+    .general-col {
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+  
+      .general-sub-col {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  }

@@ -311,7 +311,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         <h2 className="title">Modifying Staff Incident</h2>
         {investigation && investigation.id ? (
           <Link
-            to={`/incident/employee_incident/${incidentId}`}
+            href={`/incident/staff-incident/${staffIncidentId}`}
             onClick={() => {
               localStorage.setItem("activate_investigation_tab", true);
             }}

@@ -1,0 +1,75 @@
+.report,
+.property_found,
+.outcomes {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 12px;
+  border-bottom: 1px solid whitesmoke;
+
+  .reporting_relationship{
+    display: flex;
+    flex-wrap: wrap;
+    // align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+
+    .reporting, .relationship{
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+ 
+
+  .person_report{
+    display: flex;
+    flex-direction: column;
+  }
+
+  & > div {
+    // flex: 1 1 150px;
+    display: grid;
+    gap: 8px;
+    height: fit-content;
+  }
+}
+
+.property_found{
+  .returned{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+
+    .property_returned, 
+    .date_time_returned{
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+
+  }
+
+  .found{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    .location,  
+    .date_time_found{
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+   
+  }
+
+  .property_found_by{
+    display: flex;
+    flex-direction: column;
+  }
+}
