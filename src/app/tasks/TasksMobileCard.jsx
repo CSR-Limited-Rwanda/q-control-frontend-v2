@@ -1,7 +1,7 @@
 import { ArrowDownNarrowWide, ArrowUpNarrowWide, Square, SquareCheck } from 'lucide-react';
 import React from 'react'
 
-const TasksMobileCard = ({ tasks, selectedTasks, handleSelectAllTasks, handleSortTasks, parameters, handleOpenTaskDetails, handleSelectTask, isSearching }) => {
+const TasksMobileCard = ({ tasks, selectedTasks, handleSelectAllTasks, handleSortTasks, parameters, handleOpenTaskDetails, handleSelectTask, userID }) => {
     return (
         <div className="mobile-table">
             <div onClick={handleSelectAllTasks} className='select-all'>
@@ -87,6 +87,25 @@ const TasksMobileCard = ({ tasks, selectedTasks, handleSelectAllTasks, handleSor
                                         : <div className="low priority-value">
                                             <small>Low</small>
                                         </div>
+                            }
+                        </div>
+                        <div className="meta assigned-to">
+                            {
+                                task?.reviewers?.length > 0 ?
+                                    <>
+                                        {task.reviewers.slice(0, 2).map((reviewer, index) => (
+                                            <span className='assigned-user' key={index}>{userID && userID === reviewer.id ? 'You' : reviewer.name}</span>
+                                        ))}
+                                        {task.reviewers.length > 2 && <span className='more-users'>+{task.reviewers.length - 2}</span>}
+                                    </>
+                                    : task?.review_groups?.length > 0 ?
+                                        <>
+                                            {task.review_groups.slice(0, 2).map((group, index) => (
+                                                <span className='assigned-group' key={index}>{group.name}</span>
+                                            ))}
+                                            {task.review_groups.length > 2 && <span className='more-groups'>+{task.review_groups.length - 2}</span>}
+                                        </>
+                                        : <span className='unassigned'>Unassigned</span>
                             }
                         </div>
 

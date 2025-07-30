@@ -285,28 +285,26 @@
 
 }
 
-table {
-    .assigned-to {
-        display: flex;
-        gap: 0.5rem;
-        font-size: 12px;
+.assigned-to {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 12px;
 
-        span {
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--base-border-radius);
-            white-space: nowrap;
-            background-color: var(--gray-color);
-            width: fit-content;
-        }
+    span {
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--base-border-radius);
+        white-space: nowrap;
+        background-color: var(--gray-color);
+        width: fit-content;
+    }
 
-        .assigned-user {
-            background-color: var(--primary-light);
-            color: var(--primary);
-        }
+    .assigned-user {
+        background-color: var(--primary-light);
+        color: var(--primary);
+    }
 
-        .assigned-group {
-            background-color: var(--secondary-light);
-            color: white;
-        }
+    .assigned-group {
+        background-color: var(--secondary-light);
+        color: white;
     }
 }

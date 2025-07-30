@@ -11,6 +11,7 @@ const TasksTable = ({
     handleOpenTaskDetails,
     handleSelectTask,
     isSearching,
+    userID,
     // pagination related props
     page,
     totalTasks,
@@ -90,7 +91,7 @@ const TasksTable = ({
                                     task?.reviewers?.length > 0 ?
                                         <>
                                             {task.reviewers.slice(0, 2).map((reviewer, index) => (
-                                                <span className='assigned-user' key={index}>{reviewer.name}</span>
+                                                <span className='assigned-user' key={index}>{userID && userID === reviewer.id ? 'You' : reviewer.name}</span>
                                             ))}
                                             {task.reviewers.length > 2 && <span className='more-users'>+{task.reviewers.length - 2}</span>}
                                         </>

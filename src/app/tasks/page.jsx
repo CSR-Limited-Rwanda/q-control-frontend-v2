@@ -206,16 +206,17 @@ const TasksPage = () => {
                 handleSelectTask={handleSelectTask}
                 handleOpenTaskDetails={handleOpenTaskDetails}
                 handleSortTasks={handleSortTasks}
+                userID={userInfo?.id}
                 //  pagination related props
                 page={page}
                 totalTasks={totalTasks}
                 pageSize={pageSize}
                 handlePageChange={handlePageChange}
             />
-            <TasksMobileCard handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
+            <TasksMobileCard userID={userInfo?.id} handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
             {
                 showTaskDetails && selectedTask && (
-                    <TaskDetails taskId={selectedTask} handleClose={() => setShowTaskDetails(false)} />
+                    <TaskDetails userID={userInfo?.id} taskId={selectedTask} handleClose={() => setShowTaskDetails(false)} />
                 )
             }
         </DashboardLayout>

@@ -1,9 +1,9 @@
 import Button from "@/components/forms/Button"
 import { completeTask, fetchTaskById, submitTask, approveTask } from "@/hooks/fetchTasks"
-import { Calendar, Eye, FileText, Flag, X } from "lucide-react"
+import { Calendar, Eye, FileText, Flag, Users, X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
-export const TaskDetails = ({ taskId, handleClose }) => {
+export const TaskDetails = ({ userID, taskId, handleClose }) => {
 
     const [userPermissions, setUserPermissions] = useState({
         can_edit: false,
@@ -127,13 +127,31 @@ export const TaskDetails = ({ taskId, handleClose }) => {
                             <p>{taskDetails.deadline}</p>
                         </div>
 
-                        {/* <div className="assigned-to">
+                        <div className="assigned-to">
                             <div className="assigned-to-icon">
                                 <Users />
                                 <small>Assigned To</small>
                             </div>
-                            <p>{taskDetails.assigned_to}</p>
-                        </div> */}
+                            <div className="assigned-to">
+                                {
+                                    taskDetails?.reviewers?.length > 0 ?
+                                        <>
+                                            {taskDetails.reviewers.slice(0, 2).map((reviewer, index) => (
+                                                <span className='assigned-user' key={index}>{userID && userID === reviewer.id ? 'You' : reviewer.name}</span>
+                                            ))}
+                                            {taskDetails.reviewers.length > 2 && <span className='more-users'>+{taskDetails.reviewers.length - 2}</span>}
+                                        </>
+                                        : taskDetails?.review_groups?.length > 0 ?
+                                            <>
+                                                {taskDetails.review_groups.slice(0, 2).map((group, index) => (
+                                                    <span className='assigned-group' key={index}>{group.name}</span>
+                                                ))}
+                                                {taskDetails.review_groups.length > 2 && <span className='more-groups'>+{taskDetails.review_groups.length - 2}</span>}
+                                            </>
+                                            : <span className='unassigned'>Unassigned</span>
+                                }
+                            </div>
+                        </div>
 
                         <div className="incident">
                             <div className="incident-icon">
