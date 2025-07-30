@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import { Check, LoaderCircle, X } from 'lucide-react';
-import api, {API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 
 function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
@@ -50,7 +50,7 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
         ) : (
           <p>Are you sure you want to mark this incident as closed?</p>
         )}
-        <div className="buttons">
+        <div className="btns">
           {resolved ? (
             ""
           ) : (

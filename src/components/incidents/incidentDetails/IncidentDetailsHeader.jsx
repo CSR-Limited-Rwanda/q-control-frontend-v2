@@ -10,7 +10,11 @@ import {
   House,
   Warehouse,
   Pencil,
-  MessageCirclePlus
+  MessageCirclePlus,
+  Send,
+  SendHorizonal,
+  SendHorizontal,
+  ArrowRight
 } from 'lucide-react';
 
 // import SendToDepartmentForm from "../../../../components/incidents/forms/sendToDepartmentForm";
@@ -19,6 +23,7 @@ import api, { API_URL } from "@/utils/api";
 import { usePermission } from "@/context/PermissionsContext";
 import ReviewForm from "../incidentForms/ReviewForm";
 import Link from "next/link";
+import SendForReview from "./sendForReview/sendForReview";
 // import GenerateReport from "../../../../components/general/popups/generateReport";
 
 const IncidentDetailsHeader = ({
@@ -46,7 +51,7 @@ const IncidentDetailsHeader = ({
   const [showPreviewForm, setShowPreviewForm] = useState(false);
   const canModifyDraft = localStorage.getItem("canModifyDraft");
   const canViewDraft = localStorage.getItem("canViewDraft");
-  
+
   // Helper to format dates
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -212,34 +217,24 @@ const IncidentDetailsHeader = ({
               onClick={toggleActions}
               className={`actions ${showActions ? "show-actions" : ""}`}
             >
-              <button type="button" className="primary-button">
+              <button type="button" className="primary">
                 <span>Actions</span>
-                <div className="icon">
-                  {showActions ? (
-                    <ArrowDown variant={"stroke"} />
-                  ) : (
-                    <MoveRight variant={"stroke"} />
-                  )}
-                </div>
+                {/* TODO: Instead of adding two icons, use one and rotate it if actions are open */}
+                {showActions ? (
+                  <ArrowDown variant={"stroke"} />
+                ) : (
+                  <ArrowRight variant={"stroke"} />
+                )}
               </button>
               <div className="actions-popup">
                 <>
-                  {/* {(permissions && permissions.includes("Super User")) ||
-                  permissions.includes("Admin") ||
-                  permissions.includes("Quality - Risk Manager") ? (
-                    <div
-                      onClick={toggleShowSendToDepartmentForm}
-                      className="action"
-                    >
-                      <div className="icon">
-                        <MailSend02Icon size={20} variant={"stroke"} />
-                      </div>
-                      <span>Send to department</span>
-                    </div>
-                  ) : (
-                    " "
-                  )} */}
 
+                  <div className="action" onClick={toggleShowSendToDepartmentForm}>
+                    <div className="icon">
+                      <SendHorizontal />
+                    </div>
+                    <span>Send for review</span>
+                  </div>
                   <div
                     onClick={toggleShowMarkResolvedPopup}
                     className="action"
@@ -328,13 +323,7 @@ const IncidentDetailsHeader = ({
         ""
       )}
       {showSendToDepartmentForm ? (
-        <SendToDepartmentForm
-          closeForm={toggleShowSendToDepartmentForm}
-          incidentId={incidentDetailsId}
-          apiLink={apiLink}
-          sendTo={sendTo}
-          incident={data.incident}
-        />
+        <SendForReview path={apiLink} incidentID={incidentDetailsId} handleClose={toggleShowSendToDepartmentForm} />
       ) : (
         ""
       )}

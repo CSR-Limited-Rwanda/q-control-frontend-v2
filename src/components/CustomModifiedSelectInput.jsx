@@ -54,12 +54,12 @@ const CustomModifiedSelectInput = ({
           placeholder={placeholder || "Option"}
           type="text"
         />
-        <ArrowDown
-          size={24}
-          color={"#000000"}
-          variant={"stroke"}
-          className={`angle-down ${showOptions ? "rotate-angle" : ""}`}
-        />
+        {/* TODO: Take care go the background on this div. If it is transparent, text can be seen behind it, and it looks ugly */}
+        <div className={`angle-down ${showOptions ? "rotate-angle" : ""}`} >
+          <ArrowDown
+            size={24}
+          />
+        </div>
       </div>
 
       {showOptions && (
@@ -72,9 +72,8 @@ const CustomModifiedSelectInput = ({
               <span
                 key={index}
                 onClick={() => handleSelected(option.value)}
-                className={`option ${
-                  selectOption === option.value ? "selected" : ""
-                }`}
+                className={`option ${selectOption === option.value ? "selected" : ""
+                  }`}
                 id="option"
                 dangerouslySetInnerHTML={{ __html: option.label }}
               />

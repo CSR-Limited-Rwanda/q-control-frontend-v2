@@ -121,7 +121,7 @@ const UsersCard = ({ setUsersNumber }) => {
         <SearchInput label={"Search users in this group"} />
         {selectedUsers && selectedUsers.length > 0 ? (
           <button
-            className="button"
+            className="btn"
             onClick={handleRemoveUsers}
             style={{
               backgroundColor: "tomato",

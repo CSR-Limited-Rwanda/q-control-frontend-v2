@@ -287,7 +287,7 @@ const DrugReactionForm = ({ togglePopup }) => {
       if (error?.response?.data.data) {
         window.customToast.error(
           error.response.data.message ||
-            "Error while creating new incident, please try again"
+          "Error while creating new incident, please try again"
         );
       } else {
         window.customToast.error("Something went wrong");
@@ -332,7 +332,7 @@ const DrugReactionForm = ({ togglePopup }) => {
       if (error.response.data) {
         window.customToast.error(
           error.response.data.message ||
-            "Failed to update the data. Please try again."
+          "Failed to update the data. Please try again."
         );
       } else {
         window.customToast.error("Something went wrong");
@@ -542,10 +542,10 @@ const DrugReactionForm = ({ togglePopup }) => {
             "other (describe)"
           )
             ? selectedAgreements
-                .filter((el) => el !== "other (describe)")
-                .join(", ") +
-              ", " +
-              agreementDescription
+              .filter((el) => el !== "other (describe)")
+              .join(", ") +
+            ", " +
+            agreementDescription
             : selectedAgreements.join(", "),
         };
         updateDrugAdverseReaction(drugReactionData);
@@ -1296,17 +1296,17 @@ const DrugReactionForm = ({ togglePopup }) => {
               <div>
                 {outcomeType === "Moderate"
                   ? outComeData.Moderate.map((el, i) => (
-                      <div key={i} className="outcome-data check-box">
-                        <input
-                          type="checkbox"
-                          name="moderateOutcome"
-                          id={el.name}
-                          value={el.name}
-                          onChange={handleOutcomeDescription}
-                        />
-                        <label htmlFor={el.name}>{el.name}</label>
-                      </div>
-                    ))
+                    <div key={i} className="outcome-data check-box">
+                      <input
+                        type="checkbox"
+                        name="moderateOutcome"
+                        id={el.name}
+                        value={el.name}
+                        onChange={handleOutcomeDescription}
+                      />
+                      <label htmlFor={el.name}>{el.name}</label>
+                    </div>
+                  ))
                   : null}
               </div>
 
@@ -1323,17 +1323,17 @@ const DrugReactionForm = ({ togglePopup }) => {
               <div>
                 {outcomeType === "Severe"
                   ? outComeData.Severe.map((el, i) => (
-                      <div key={i} className="outcome-data check-box">
-                        <input
-                          type="checkbox"
-                          name="severeOutcome"
-                          id={el.name}
-                          value={el.name}
-                          onChange={handleOutcomeDescription}
-                        />
-                        <label htmlFor={el.name}>{el.name}</label>
-                      </div>
-                    ))
+                    <div key={i} className="outcome-data check-box">
+                      <input
+                        type="checkbox"
+                        name="severeOutcome"
+                        id={el.name}
+                        value={el.name}
+                        onChange={handleOutcomeDescription}
+                      />
+                      <label htmlFor={el.name}>{el.name}</label>
+                    </div>
+                  ))
                   : null}
               </div>
 
@@ -1527,7 +1527,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="buttons">
+      <div className="btns">
         {currentStep > 1 && currentStep < 8 ? (
           <button
             onClick={handlePreviousStep}
