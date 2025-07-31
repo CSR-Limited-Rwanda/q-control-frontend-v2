@@ -87,7 +87,9 @@ export const DraftCategory = ({
         setSelectedItems([]);
       }
     } else {
-      window.customToast.error("No drafts selected");
+      window.customToast.error(
+        "No draft(s) selected, select draft(s) to be deleted"
+      );
       setSelectedItems([]);
     }
     setShowDeleteModal(false);
@@ -97,7 +99,9 @@ export const DraftCategory = ({
     if (selectedItems.length > 0) {
       setShowDeleteModal(true);
     } else {
-      window.customToast.error("No drafts selected");
+      window.customToast.error(
+        "No draft(s) selected, select draft(s) to be deleted"
+      );
     }
   };
 
