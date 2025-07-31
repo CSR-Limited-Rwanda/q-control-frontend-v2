@@ -49,8 +49,8 @@ const ReviewGroupsDetailsContent = () => {
       } catch (error) {
         setErrorMessage(
           error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get review group"
+          error.response.data?.error ||
+          "Failed to get review group"
         );
       }
     };
@@ -79,8 +79,8 @@ const ReviewGroupsDetailsContent = () => {
         if (error.response) {
           setErrorMessage(
             error.response.data?.message ||
-              error.response.data?.error ||
-              "Failed to get review group members"
+            error.response.data?.error ||
+            "Failed to get review group members"
           );
         } else if (error.request) {
           setErrorMessage("No response from server");
@@ -120,8 +120,8 @@ const ReviewGroupsDetailsContent = () => {
       console.error("Delete error:", error);
       setDeleteError(
         error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Error deleting department"
+        error.response?.data?.error ||
+        "Error deleting department"
       );
     } finally {
       setIsDeleting(false);
@@ -274,7 +274,7 @@ const ReviewGroupsDetailsContent = () => {
           </div>
           <button
             type="button"
-            className="button tertiary-button new-user-button"
+            className="btn tertiary-button new-user-button"
             onClick={() => setShowAddMembersForm(true)}
           >
             <Plus size={20} />
@@ -307,8 +307,8 @@ const ReviewGroupsDetailsContent = () => {
                     <td>
                       {member?.access_to_department?.length > 0
                         ? member.access_to_department
-                            .map((dept) => dept.name)
-                            .join(", ")
+                          .map((dept) => dept.name)
+                          .join(", ")
                         : "No department"}
                     </td>
                   </tr>

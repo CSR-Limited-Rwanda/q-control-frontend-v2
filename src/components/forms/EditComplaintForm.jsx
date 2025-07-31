@@ -10,6 +10,7 @@ import {
   Save,
   Square,
   SquareCheck,
+  X,
 } from "lucide-react";
 
 const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
@@ -139,6 +140,7 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
     <div className="user-complain-form">
       <div className="form">
         <h3>Edit your complaint</h3>
+        <X className="close-popup" onClick={handleSubmitComplaint} />
         <form action="">
           <div className="field">
             <label htmlFor="">Patient's name</label>

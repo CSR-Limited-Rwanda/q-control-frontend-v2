@@ -67,6 +67,9 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const [facilityId, setFacilityId] = useState(
     localStorage.getItem("facilityId")
   );
+  const [departmentId, setDepartmentId] = useState(
+    localStorage.getItem("departmentId")
+  )
 
   useEffect(() => {
     currentStepRef.current = currentStep;
@@ -175,18 +178,19 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     }));
     const incidentData = {
       facility_id: facilityId,
+      department: departmentId,
       current_step: currentStep,
       incident_status: statusType,
       report_facility: checkCurrentAccount(),
       patient_info:
         firstName && lastName
           ? {
-              first_name: firstName,
-              last_name: lastName,
-              profile_type: "Patient",
-              age: age,
-              date_of_birth: dateBirth,
-            }
+            first_name: firstName,
+            last_name: lastName,
+            profile_type: "Patient",
+            age: age,
+            date_of_birth: dateBirth,
+          }
           : null,
       job_title: jobTitle,
 
@@ -302,10 +306,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           doctor_consulted_info:
             doctorFirstName && doctorLastName
               ? {
-                  first_name: doctorFirstName,
-                  last_name: doctorLastName,
-                  profile_type: "Physician",
-                }
+                first_name: doctorFirstName,
+                last_name: doctorLastName,
+                profile_type: "Physician",
+              }
               : null,
 
           previous_injury: injuredBody,
@@ -444,12 +448,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               patient_info:
                 firstName && lastName
                   ? {
-                      first_name: firstName,
-                      last_name: lastName,
-                      profile_type: "Patient",
-                      age: age,
-                      date_of_birth: dateBirth,
-                    }
+                    first_name: firstName,
+                    last_name: lastName,
+                    profile_type: "Patient",
+                    age: age,
+                    date_of_birth: dateBirth,
+                  }
                   : null,
               job_title: jobTitle,
 
@@ -571,7 +575,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             </div>
             <div className="half">
               <div className="field name">
-                <label htmlFor="employeeFirstName">First name</label>
+                <label htmlFor="employeeFirstName">Patient First name</label>
                 <input
                   onChange={(e) => setFirstName(e.target.value)}
                   value={firstName}
@@ -582,7 +586,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
                 />
               </div>
               <div className="field name">
-                <label htmlFor="employeeLastName">Last name</label>
+                <label htmlFor="employeeLastName">Patient Last name</label>
                 <input
                   onChange={(e) => setLastName(e.target.value)}
                   value={lastName}
@@ -921,7 +925,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="buttons">
+      <div className="btns">
         {currentStep > 1 && currentStep < 5 ? (
           <button
             onClick={handlePreviousStep}

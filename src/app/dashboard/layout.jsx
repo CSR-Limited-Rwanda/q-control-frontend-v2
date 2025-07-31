@@ -18,6 +18,8 @@ import {
   LogOut,
   Dumbbell,
   CirclePlus,
+  ListCheck,
+  LayoutList,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { splitName } from "@/utils/text";
@@ -77,6 +79,12 @@ const DashboardLayout = ({ children }) => {
       label: "Incident Tracking",
       href: "/incidents",
       matchPaths: ["/incident", "/incidents"],
+    },
+    {
+      icon: <LayoutList size={24} />,
+      label: "Tasks",
+      href: "/tasks",
+      matchPaths: ["/tasks"],
     },
     // {
     //     icon: <Boxes size={20} />,
@@ -338,7 +346,7 @@ const DashboardLayout = ({ children }) => {
                     <GrievanceInvestigationForm />
                   ) : selectedForm === "complaintForm" ? (
                     <SubmitComplaintForm
-                      hasHeight={false}
+                      hasHeight={true}
                       handleSubmitComplaint={togglePopup}
                     />
                   ) : (

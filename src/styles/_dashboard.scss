@@ -101,7 +101,7 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: var(--base-border-radius);
   border: 1px solid var(--border);
   background: var(--card);
   color: var(--foreground);
@@ -209,7 +209,7 @@
 .header-content {
   position: absolute;
   top: calc(100% + 0.6rem);
-  width: 300px;
+  max-width: 500px;
   right: 0;
   background-color: var(--background);
   border: 1px solid var(--border);

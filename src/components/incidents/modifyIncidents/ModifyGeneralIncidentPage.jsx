@@ -140,18 +140,18 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   const [patientVisitorLastName, setPatientVisitorLastName] = useState(
     incident.patient_visitor?.last_name || " "
   );
-  const [incidentDate, setIncidentDate] = useState(incident.incident_date);
-  const [incidentTime, setIncidentTime] = useState(incident.incident_time);
+  const [incidentDate, setIncidentDate] = useState(incident.incident_date ?? "");
+  const [incidentTime, setIncidentTime] = useState(incident.incident_time ?? "");
   const [medicalRecoredNumber, setMedicalRecordNumber] = useState(
     incident.patient_visitor?.medical_record_number
   );
-  const [address, setAddress] = useState(incident.patient_visitor?.address);
-  const [state, setState] = useState(incident.patient_visitor?.state);
-  const [zipCode, setZipCode] = useState(incident.patient_visitor?.zip_code);
+  const [address, setAddress] = useState(incident.patient_visitor?.address ?? "");
+  const [state, setState] = useState(incident.patient_visitor?.state ?? "");
+  const [zipCode, setZipCode] = useState(incident.patient_visitor?.zip_code ?? "");
   const [phoneNumber, setPhoneNumber] = useState(
-    incident.patient_visitor?.phone_number
+    incident.patient_visitor?.phone_number ?? ""
   );
-  const [sex, setSex] = useState(incident.patient_visitor?.gender);
+  const [sex, setSex] = useState(incident.patient_visitor?.gender ?? "");
   const [dateOfBirth, setDateOfBirth] = useState(
     incident.patient_visitor?.date_of_birth
   );
@@ -159,27 +159,27 @@ const ModifyGeneralIncidentForm = ({ data }) => {
 
   // Incident Location
 
-  const [location, setLocation] = useState(incident.location);
-  const [status, setStatus] = useState(incident.status);
+  const [location, setLocation] = useState(incident.location ?? "");
+  const [status, setStatus] = useState(incident.status ?? "");
   const [contributingDiagnosis, setContributingDiagnosis] = useState(
-    incident.consulting_diagnosis
+    incident.consulting_diagnosis ?? ""
   );
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const [otherStatus, setOtherStatus] = useState(incident.other_status);
-  const [incidentType, setIncidentType] = useState(incident.incident_type);
-  const [fallType, setFallType] = useState(incident.fall_related_type);
+  const [otherStatus, setOtherStatus] = useState(incident.other_status ?? "");
+  const [incidentType, setIncidentType] = useState(incident.incident_type ?? "");
+  const [fallType, setFallType] = useState(incident.fall_related_type ?? "");
   const [fellOffOf, setFellOffOf] = useState(null);
-  const [selectedTreatment, setSelectedTreatment] = useState(null);
+  const [selectedTreatment, setSelectedTreatment] = useState(incident.treatment_type ?? "");
   const [agreement, setAgreement] = useState(
     (incident.fall_type_agreement &&
       incident.fall_type_agreement.split(", ")) ||
-      []
+    []
   );
   const [treatmentRelated, setTreatmentRelated] = useState(null);
   const [equipmentMalfunction, setEquipmentMalfunction] = useState(null);
-  const [outCome, setOutCome] = useState(incident.outcome);
+  const [outCome, setOutCome] = useState(incident.outcome ?? "");
   const [actionsTaken, setActionsTaken] = useState(
-    incident.outcome_actions_taken
+    incident.outcome_actions_taken ?? ""
   );
   const [adverseDrugReaction, setAdverseDrugReaction] = useState(null);
   const [otherTypes, setOtherTypes] = useState(null);
@@ -196,7 +196,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
     incident.morse_fall_score || ""
   );
   const [others, setOthers] = useState([]);
-  const [selectedOutcome, setSelectedOutcome] = useState(incident.outcome);
+  const [selectedOutcome, setSelectedOutcome] = useState(incident.outcome ?? "");
   const [immediateActionsTaken, setImmediateActionsTaken] = useState(
     incident.immediate_action_taken
   );
@@ -224,8 +224,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
     incident.family_notified?.last_name || ""
   );
   const [otherOutcome, setOtherOutcome] = useState(null);
-  const [familyDate, setFamilyDate] = useState(incident.date_family_notified);
-  const [familyTime, setFamilyTime] = useState(incident.time_family_notified);
+  const [familyDate, setFamilyDate] = useState(incident.date_family_notified ?? "");
+  const [familyTime, setFamilyTime] = useState(incident.time_family_notified ?? "");
 
   const [notifiedByFirstName, setNotifiedByFirstName] = useState(
     incident.notified_by?.first_name || ""
@@ -233,11 +233,11 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   const [notifiedByLastName, setNotifiedByLastName] = useState(
     incident.notified_by?.last_name || ""
   );
-  const [city, setCity] = useState(incident.patient_visitor?.city);
+  const [city, setCity] = useState(incident.patient_visitor?.city ?? "");
   const [selectedOthers, setSelectedOthers] = useState(null);
   const [specialChecked, setSpecialChecked] = useState({});
   const [errors, setErrors] = useState({});
-  const [fallFromDetails, setFallFromDetails] = useState(incident.fell_from);
+  const [fallFromDetails, setFallFromDetails] = useState(incident.fell_from ?? "");
   const [fallRelated, setFallRelated] = useState("");
   const [otherTreatment, setOtherTreatment] = useState("");
   const [fallTypeOther, setFallTypeOther] = useState("");
@@ -355,6 +355,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       brief_summary_of_incident: briefSummary,
       status: "Open",
       severity_rating: severityRating,
+      treatment_type: selectedTreatment
     };
 
     // console.log(cleanedData(incidentData));
@@ -378,8 +379,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error updating the incident"
+          error.response.data.error ||
+          "Error updating the incident"
         );
       } else {
         alert("Unknown error updating the incident");
@@ -420,7 +421,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
           pageName={"General incidents"}
         />
         <h2 className="title">Modifying General Incident</h2>
-        <div className="buttons">
+        <div className="btns">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
@@ -455,13 +456,12 @@ const ModifyGeneralIncidentForm = ({ data }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${
-                  status === "Draft"
-                    ? "in-progress"
-                    : status === "Closed"
+                className={`follow-up ${status === "Draft"
+                  ? "in-progress"
+                  : status === "Closed"
                     ? "closed"
                     : "Open"
-                }`}
+                  }`}
               >
                 {status}
               </span>
@@ -682,8 +682,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                 </label>
                 <div
                   className="check-boxes check-boxes-row"
-                  //  onChange={(e) => setRoute(e.target.value)}
-                  //  value={route}
+                //  onChange={(e) => setRoute(e.target.value)}
+                //  value={route}
                 >
                   {statusesPrionToIncident.map((status, index) => (
                     <div
@@ -1255,7 +1255,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                           style={{
                             display:
                               specialTypes.includes(type.name) &&
-                              otherTypes !== "Specimen"
+                                otherTypes !== "Specimen"
                                 ? "none"
                                 : "block",
                           }}

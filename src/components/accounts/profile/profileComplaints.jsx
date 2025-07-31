@@ -318,10 +318,11 @@ export const ComplainDetails = ({ complaint, handleShowComplainDetails }) => {
             onClick={handleShowComplainDetails}
           />
 
-          <div className="buttons">
+          <div className="btns">
+            {/* <button type="button" className="tertiary-button"><PrinterIcon size={19} /> <span>Print</span></button> */}
             <div
               onClick={handleShowActions}
-              className="button primary-button actions-button"
+              className="btn primary-button actions-button"
             >
               {showActions ? (
                 <>

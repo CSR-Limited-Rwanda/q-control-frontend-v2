@@ -42,7 +42,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
   const [status, setStatus] = useState(incident?.status);
   const [selfInjury, setSelfInjury] = useState(
     incident?.type_of_incident &&
-      JSON.parse(incident.type_of_incident).incidents.includes("Other Types")
+    JSON.parse(incident.type_of_incident).incidents.includes("Other Types")
   );
   const [otherType, setOtherType] = useState(false);
   const [otherExplain, setOtherExplain] = useState(false);
@@ -77,7 +77,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
   );
   const [explainselfinjury, setExplainSelfInjury] = useState(
     incident?.type_of_incident &&
-      JSON.parse(incident?.type_of_incident).explanation
+    JSON.parse(incident?.type_of_incident).explanation
   );
   const [otherinjury, setOtherInjury] = useState("");
   const [background, setBackground] = useState("");
@@ -86,13 +86,13 @@ const ModifyWorkplaceIncident = ({ data }) => {
   const [selectedInjuries, setSelectedInjuries] = useState(
     (incident?.physical_injury_description &&
       incident?.physical_injury_description.split(", ")) ||
-      []
+    []
   );
   const [selectedRelationship, setSelectedRelationship] = useState("");
   const [selectedBackground, setSelectedBackground] = useState(
     (incident?.type_of_incident &&
       JSON.parse(incident?.type_of_incident).incidents) ||
-      []
+    []
   );
   const [weapons, setWeapons] = useState(data.weapons_were_involved);
   const [previousContact, setPreviousContact] = useState(
@@ -649,19 +649,19 @@ const ModifyWorkplaceIncident = ({ data }) => {
       persons_injured:
         injuryCheck === "Yes"
           ? injuries.map((injury) => ({
-              first_name: injury.first_name,
-              last_name: injury.last_name,
-              injury_description: injury.injury_description,
-              profile_type: "Victim",
-            }))
+            first_name: injury.first_name,
+            last_name: injury.last_name,
+            injury_description: injury.injury_description,
+            profile_type: "Victim",
+          }))
           : [
-              {
-                first_name: "N/A",
-                last_name: "N/A",
-                injury_description: "N/A",
-                profile_type: "Victim",
-              },
-            ],
+            {
+              first_name: "N/A",
+              last_name: "N/A",
+              injury_description: "N/A",
+              profile_type: "Victim",
+            },
+          ],
       notification: securityalert,
       incident_witnesses: witnesses.map((witness) => ({
         id: witness?.id ?? null,
@@ -677,10 +677,10 @@ const ModifyWorkplaceIncident = ({ data }) => {
       name_of_supervisor:
         firstName && lastName
           ? {
-              first_name: firstName,
-              last_name: lastName,
-              profile_type: "Supervisor",
-            }
+            first_name: firstName,
+            last_name: lastName,
+            profile_type: "Supervisor",
+          }
           : null,
       title_of_supervisor: title,
       date_notified: date,
@@ -690,10 +690,10 @@ const ModifyWorkplaceIncident = ({ data }) => {
       reported_by:
         reportedByFirstName && reportedByLastName
           ? {
-              first_name: reportedByFirstName,
-              last_name: reportedByLastName,
-              profile_type: "Reporter",
-            }
+            first_name: reportedByFirstName,
+            last_name: reportedByLastName,
+            profile_type: "Reporter",
+          }
           : null,
       reported_by_title: reportedTitle,
       date_reported: dateReported,
@@ -732,8 +732,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data?.message ||
-            error.response.data?.error ||
-            "Error while updating the incident"
+          error.response.data?.error ||
+          "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -785,13 +785,12 @@ const ModifyWorkplaceIncident = ({ data }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${
-                  status === "Draft"
+                className={`follow-up ${status === "Draft"
                     ? "in-progress"
                     : status === "Closed"
-                    ? "closed"
-                    : "Open"
-                }`}
+                      ? "closed"
+                      : "Open"
+                  }`}
               >
                 {status}
               </span>
@@ -912,9 +911,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
               {injuresTypes.map((injury) => (
                 <div
                   key={injury}
-                  className={`type ${
-                    selectedInjuries.includes(injury) ? "selected" : ""
-                  }`}
+                  className={`type ${selectedInjuries.includes(injury) ? "selected" : ""
+                    }`}
                   onClick={() => handleTypeSelection(injury)}
                 >
                   <p>{injury}</p>
@@ -945,9 +943,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
             <h4>Select Incident type</h4>
             <div className="types checkbox-grid">
               <div
-                className={`type full-width-type ${
-                  selectedType === "Type 1" ? "selected" : ""
-                }`}
+                className={`type full-width-type ${selectedType === "Type 1" ? "selected" : ""
+                  }`}
                 onClick={() => handleSelection("Type 1")}
               >
                 <h5>Type 1 (Criminal Intent/External)</h5>
@@ -956,9 +953,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
               </div>
 
               <div
-                className={`type full-width-type ${
-                  selectedType === "Type 2" ? "selected" : ""
-                }`}
+                className={`type full-width-type ${selectedType === "Type 2" ? "selected" : ""
+                  }`}
                 onClick={() => handleSelection("Type 2")}
               >
                 <h5>Type 2 (Patient/Family/Guest)</h5>
@@ -967,9 +963,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
               </div>
 
               <div
-                className={`type full-width-type ${
-                  selectedType === "Type 3" ? "selected" : ""
-                }`}
+                className={`type full-width-type ${selectedType === "Type 3" ? "selected" : ""
+                  }`}
                 onClick={() => handleSelection("Type 3")}
               >
                 <h5>Type 3 (Worker on Worker)</h5>
@@ -978,9 +973,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
               </div>
 
               <div
-                className={`type full-width-type ${
-                  selectedType === "Type 4" ? "selected" : ""
-                }`}
+                className={`type full-width-type ${selectedType === "Type 4" ? "selected" : ""
+                  }`}
                 onClick={() => handleSelection("Type 4")}
               >
                 <h5>Type 4 (Domestic/Intimate Parter)</h5>
@@ -990,9 +984,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
               </div>
 
               <div
-                className={`type full-width-type ${
-                  selectedType === "Type 5" ? "selected" : ""
-                }`}
+                className={`type full-width-type ${selectedType === "Type 5" ? "selected" : ""
+                  }`}
                 onClick={() => handleSelection("Type 5")}
               >
                 <h5>Type 5 (ideological)</h5>
@@ -1558,15 +1551,15 @@ const ModifyWorkplaceIncident = ({ data }) => {
                 >
                   {injuries.length > 0
                     ? injuries.map((injury, index) => (
-                        <button
-                          key={index}
-                          className="new-party"
-                          onClick={() => handleRemoveInjury(index)}
-                        >
-                          {injury?.first_name} {injury?.last_name}{" "}
-                          <CircleMinus />
-                        </button>
-                      ))
+                      <button
+                        key={index}
+                        className="new-party"
+                        onClick={() => handleRemoveInjury(index)}
+                      >
+                        {injury?.first_name} {injury?.last_name}{" "}
+                        <CircleMinus />
+                      </button>
+                    ))
                     : null}
                 </div>
                 <label htmlFor="personInjured">Who was injured</label>
@@ -1647,15 +1640,15 @@ const ModifyWorkplaceIncident = ({ data }) => {
                 >
                   {witnesses.length > 0
                     ? witnesses.map((witness, index) => (
-                        <button
-                          key={index}
-                          className="new-party"
-                          onClick={() => handleRemoveWitness(witness)}
-                        >
-                          {witness?.first_name} {witness?.last_name}{" "}
-                          <CircleMinus />
-                        </button>
-                      ))
+                      <button
+                        key={index}
+                        className="new-party"
+                        onClick={() => handleRemoveWitness(witness)}
+                      >
+                        {witness?.first_name} {witness?.last_name}{" "}
+                        <CircleMinus />
+                      </button>
+                    ))
                     : null}
                 </div>
                 <label htmlFor="witnessName">Witness</label>

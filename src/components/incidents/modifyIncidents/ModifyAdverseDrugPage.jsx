@@ -30,7 +30,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
   const [adverseDrugReactionId, setAdverseDrugReactionId] = useState(
-    localStorage.getItem("adverseDrugReactionId")
+    localStorage.getItem("drugReactionId")
   );
 
   // form
@@ -422,7 +422,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
           pageName={"ADR incidents"}
         />
         <h2 className="title">Modifying Adverse Drug Incident</h2>
-        <div className="buttons">
+        <div className="btns">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>

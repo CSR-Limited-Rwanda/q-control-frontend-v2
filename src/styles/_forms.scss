@@ -8,7 +8,7 @@ textarea {
   border: 1px solid #ced4da;
   padding: 10px 15px;
   font-size: inherit;
-  border-radius: 4px;
+  border-radius: var(--base-border-radius);
   border: 1px solid #f1f1f1;
   font-size: 16px;
   color: rgb(57, 57, 57);
@@ -36,7 +36,7 @@ textarea {
   display: flex;
   align-items: center;
   border: 1px solid #f1f1f1;
-  border-radius: 10px;
+  border-radius: var(--base-border-radius);
   padding: 14px 16px;
 
   input {
@@ -104,7 +104,7 @@ input[type="number"]:focus {
   justify-content: space-around;
   border: 1px solid #f1f1f1;
   padding: 0 18px;
-  border-radius: 10px;
+  border-radius: var(--base-border-radius);
 
   input {
     flex: 1;
@@ -137,7 +137,7 @@ input[type="number"]:focus {
     height: fit-content;
     gap: 2rem;
     border: 1px solid gray;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
 
     .drop-downs {
       display: flex;
@@ -181,7 +181,7 @@ input[type="number"]:focus {
     height: fit-content;
     border: 1px solid #f1f1f1;
     padding: 14px 12px;
-    border-radius: 12px;
+    border-radius: var(--base-border-radius);
 
     .name {
       display: flex;
@@ -294,7 +294,7 @@ input[type="number"]:focus {
   gap: 6px;
   width: -moz-fit-content;
   width: fit-content;
-  border-radius: 6px;
+  border-radius: var(--base-border-radius);
   cursor: pointer;
 
   input[type="checkbox"] {
@@ -310,7 +310,7 @@ input[type="number"]:focus {
     cursor: pointer;
     display: block;
     padding: 12px 26px;
-    border-radius: 5px;
+    border-radius: var(--base-border-radius);
     background-color: #f3f3f3;
 
     &:hover {
@@ -404,7 +404,7 @@ form {
       gap: 6px;
       width: fit-content;
       padding: 12px 26px;
-      border-radius: 6px;
+      border-radius: var(--base-border-radius);
       cursor: pointer;
       background-color: #f9f9f9;
 
@@ -538,7 +538,7 @@ form {
       height: 20px;
       width: 20px;
       border: 1px solid $primary-color;
-      border-radius: 12px;
+      border-radius: var(--base-border-radius);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -554,13 +554,13 @@ form {
   justify-content: center;
   gap: 24px;
   padding: 24px;
-  border-radius: 12px;
+  border-radius: var(--base-border-radius);
   border: 1px dashed gray;
 
   .icon {
     width: 50px;
     height: 40px;
-    border-radius: 6px;
+    border-radius: var(--base-border-radius);
     background-color: whitesmoke;
     display: flex;
     align-items: center;
@@ -587,7 +587,7 @@ form {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  border-radius: 32px;
+  border-radius: var(--base-border-radius);
   align-items: center;
   justify-content: center;
   padding: 48px;
@@ -867,13 +867,13 @@ form {
   flex-wrap: wrap;
   gap: 12px;
   padding: 6px;
-  border-radius: 6px;
+  border-radius: var(--base-border-radius);
   border: 1px solid whitesmoke;
 
   .party {
     padding: 6px 12px;
     background-color: whitesmoke;
-    border-radius: 6px;
+    border-radius: var(--base-border-radius);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -939,7 +939,7 @@ form {
     background-color: whitesmoke;
     width: 100%;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: var(--base-border-radius);
     position: absolute;
     top: 0;
     right: 0;
@@ -1034,7 +1034,7 @@ form {
   position: relative;
 
   input {
-    border-radius: 0.5rem 0.5rem 0 0;
+    border-radius: var(--base-border-radius) 0.5rem 0 0;
     border-bottom: none !important;
   }
 
@@ -1046,7 +1046,7 @@ form {
     width: 100%;
     left: 0;
     top: 5rem;
-    border-radius: 0 0 0.5rem 0.5rem;
+    border-radius: 0 0 var(--base-border-radius) var(--base-border-radius);
     box-shadow: 0 0 0 1pt #f87c47;
     z-index: 100;
 
@@ -1077,7 +1077,7 @@ form {
       height: fit-content;
       gap: 0.2rem;
       padding: 1rem;
-      border-radius: 0.5rem;
+      border-radius: var(--base-border-radius);
     }
 
     small {
@@ -1105,7 +1105,7 @@ form {
 
       .icon-container {
         background-color: #fffadd;
-        border-radius: 8px;
+        border-radius: var(--base-border-radius);
         border: 1px solid #f87c4734;
         padding: 8px;
         display: flex;
@@ -1137,7 +1137,7 @@ form {
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 8px;
+        border-radius: var(--base-border-radius);
         padding: 6px 15px;
         gap: 10px;
         background-color: #fffadd;
@@ -1219,7 +1219,7 @@ form {
         width: 100%;
         padding: 14px 32px;
         border: 1px solid #ccc;
-        border-radius: 10px;
+        border-radius: var(--base-border-radius);
       }
     }
     .selected-members {
@@ -1326,7 +1326,7 @@ form {
         button {
           padding: 16px 48px;
           border: none;
-          border-radius: 6px;
+          border-radius: var(--base-border-radius);
           font-weight: 500;
           cursor: pointer;
           text-align: center;
@@ -1417,7 +1417,7 @@ form {
     flex: 1;
     background-color: #fbfbfb;
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: var(--base-border-radius);
     display: flex;
     align-items: center;
     gap: 10px;

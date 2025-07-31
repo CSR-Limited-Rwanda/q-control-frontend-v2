@@ -225,32 +225,32 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       patient_name:
         patientFirstName && patientLastName
           ? {
-              first_name: patientFirstName,
-              last_name: patientLastName,
-              age: age,
-              date_of_birth: dateBirth,
-              medical_record_number: medicalRecord,
-              profile_type: "Patient",
-            }
+            first_name: patientFirstName,
+            last_name: patientLastName,
+            age: age,
+            date_of_birth: dateBirth,
+            medical_record_number: medicalRecord,
+            profile_type: "Patient",
+          }
           : null,
 
       form_initiated_by:
         formInitiatedByFirstName && formInitiatedByLastName
           ? {
-              first_name: formInitiatedByFirstName,
-              last_name: formInitiatedByLastName,
-              profile_type: "Staff",
-            }
+            first_name: formInitiatedByFirstName,
+            last_name: formInitiatedByLastName,
+            profile_type: "Staff",
+          }
           : null,
       title: formInitiatedByTitle,
       complaint_made_by:
         complaintByFirstName && complaintByLastName
           ? {
-              first_name: complaintByFirstName,
-              last_name: complaintByLastName,
-              phone_number: phoneNumber,
-              profile_type: "Patient",
-            }
+            first_name: complaintByFirstName,
+            last_name: complaintByLastName,
+            phone_number: phoneNumber,
+            profile_type: "Patient",
+          }
           : null,
       relationship_to_patient: patientRelationship,
       source_of_information: sourceOfInformation,
@@ -261,10 +261,10 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       administrator_notified:
         administratorFirstName && administratorLastName
           ? {
-              first_name: administratorFirstName,
-              last_name: administratorLastName,
-              profile_type: "Staff",
-            }
+            first_name: administratorFirstName,
+            last_name: administratorLastName,
+            profile_type: "Staff",
+          }
           : null,
       notification_date: grivanceDate,
       notification_time: grivanceTime,
@@ -294,8 +294,8 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error while updating the incident"
+          error.response.data.error ||
+          "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -379,13 +379,12 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${
-                status === "Draft"
+              className={`follow-up ${status === "Draft"
                   ? "in-progress"
                   : status === "Closed"
-                  ? "closed"
-                  : "Open"
-              }`}
+                    ? "closed"
+                    : "Open"
+                }`}
             >
               {status}
             </span>

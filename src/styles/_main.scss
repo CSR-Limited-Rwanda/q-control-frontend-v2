@@ -82,7 +82,7 @@
 .support-link {
   background-color: rgba(0, 68, 255, 0.3);
   padding: 1rem;
-  border-radius: 0.5rem;
+  border-radius: var(--base-border-radius);
   width: fit-content;
 
   position: fixed;
@@ -96,7 +96,6 @@ body {
   background-color: $body-background-color;
   font-family: "Plus Jakarta Sans", sans-serif;
   font-size: 14px;
-  font-weight: 600;
   color: #4f4f4f;
 }
 
@@ -121,7 +120,7 @@ img {
   padding: 24px;
   background-color: #ff8181;
   color: black;
-  border-radius: 12px;
+  border-radius: var(--base-border-radius);
 }
 
 .theme-switcher {
@@ -130,7 +129,7 @@ img {
   bottom: 24px;
   right: 24px;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: var(--base-border-radius);
 
   display: flex;
   align-items: center;
@@ -142,7 +141,7 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: var(--base-border-radius);
 
     i {
       font-size: 22px;
@@ -229,28 +228,6 @@ small {
   word-break: break-all;
 }
 
-button,
-.button {
-  padding: 12px 26px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  border-radius: 6px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  outline: none;
-  text-wrap: nowrap;
-  transition: all 0.3s linear;
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-}
-
 .select-placeholder {
   border: 1px solid $gray-color;
   display: flex;
@@ -258,12 +235,11 @@ button,
   gap: 8px;
   justify-content: space-between;
   padding: 16px;
-  border-radius: 6px;
+  border-radius: var(--base-border-radius);
 }
 
 // appea animatin for a button
-@keyframes appear {
-}
+@keyframes appear {}
 
 .incidents-tab {
   display: flex;
@@ -282,6 +258,7 @@ button,
     }
   }
 }
+
 .documentation-link {
   display: flex;
   align-items: center;
@@ -293,7 +270,7 @@ button,
     color: $primary-color;
     background-color: lighten($color: $primary-color, $amount: 60);
     padding: 0.2rem 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     border: 1px solid lighten($color: $primary-color, $amount: 50);
     margin-left: 0.5rem;
   }
@@ -324,7 +301,7 @@ textarea {
     padding: 0.2rem 0.5rem;
     background-color: $primary-color;
     color: white;
-    border-radius: 0.2rem;
+    border-radius: var(--base-border-radius);
     margin-right: 0.5rem;
   }
 }
@@ -336,7 +313,7 @@ textarea {
 .no-data-found {
   padding: 1rem;
   background-color: lighten($color: $secondary-color, $amount: 30);
-  border-radius: 0.8rem;
+  border-radius: var(--base-border-radius);
 }
 
 .results-count {
@@ -355,7 +332,7 @@ textarea {
     gap: 20px;
 
     .users-results-count {
-      border-radius: 8px;
+      border-radius: var(--base-border-radius);
       display: flex;
       flex-direction: row;
       gap: 10px;
@@ -367,7 +344,7 @@ textarea {
         background-color: $dark-secondary-color;
         color: #ffffff;
         padding: 5px 12px;
-        border-radius: 8px;
+        border-radius: var(--base-border-radius);
       }
 
       span:nth-child(2) {
@@ -418,7 +395,7 @@ table {
       background-color: lighten($color: $secondary-color, $amount: 30);
       color: $secondary-color;
       padding: 4px;
-      border-radius: 4px;
+      border-radius: var(--base-border-radius);
       // font-size: 12px;
     }
   }
@@ -463,11 +440,11 @@ table {
       display: grid;
       gap: 16px;
       background-color: whitesmoke;
-      border-radius: 12px;
+      border-radius: var(--base-border-radius);
       z-index: 2;
       background: #ffffff;
       box-shadow: 8px 8px 36px 2px rgba(0, 0, 0, 0.25);
-      border-radius: 12px;
+      border-radius: var(--base-border-radius);
 
       .action {
         display: flex;
@@ -483,7 +460,7 @@ table {
 .template-actions {
   background-color: $body-background-color;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--base-border-radius);
 }
 
 .templates-list {
@@ -495,7 +472,7 @@ table {
     flex: 1 0 0%;
     max-width: 500px;
 
-    > span,
+    >span,
     p {
       color: $gray-color;
     }
@@ -513,7 +490,7 @@ table {
         display: flex;
         justify-content: center;
         align-items: center;
-        border-radius: 8px;
+        border-radius: var(--base-border-radius);
       }
 
       .delete-btn {
@@ -535,7 +512,7 @@ table {
         gap: 10px;
         padding: 10px 24px;
         border: 1.5px solid #fcefea;
-        border-radius: 8px;
+        border-radius: var(--base-border-radius);
         cursor: pointer;
       }
     }
@@ -545,7 +522,7 @@ table {
 .follow-up {
   background-color: whitesmoke;
   padding: 6px;
-  border-radius: 6px;
+  border-radius: var(--base-border-radius);
   text-align: center;
   height: fit-content;
 }
@@ -577,7 +554,7 @@ table {
     gap: 0.4rem;
     background-color: lighten($color: $primary-color, $amount: 50);
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     border: 1px solid lighten($color: $primary-color, $amount: 30);
   }
 }
@@ -602,7 +579,7 @@ table {
   background-color: white;
   padding: 24px;
   box-shadow: 8px 8px 36px 2px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
+  border-radius: var(--base-border-radius);
   display: grid;
   height: fit-content;
   gap: 24px;
@@ -646,7 +623,7 @@ table {
 .custom-datepicker {
   width: 100%;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: var(--base-border-radius);
   border: 1px solid inherit;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -658,7 +635,7 @@ table {
 .react-datepicker__input-container input {
   width: 100%;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: var(--base-border-radius);
   border: 1px solid #ccc;
   font-size: 16px;
 }
@@ -771,14 +748,6 @@ table {
     }
   }
 
-  button {
-    padding: 14px;
-
-    span {
-      display: none;
-    }
-  }
-
   .filters_popup {
     left: 0;
   }
@@ -788,15 +757,10 @@ table {
     height: fit-content;
     gap: 1rem;
 
-    button {
-      width: fit-content;
-      padding: 14px;
-    }
-
     .table-card {
       padding: 1rem;
       border: 1px solid #e3e3e3;
-      border-radius: 0.5rem;
+      border-radius: var(--base-border-radius);
       display: grid;
       height: fit-content;
       gap: 2rem;
@@ -849,6 +813,7 @@ table {
         align-items: center;
 
         th {
+
           &:nth-child(1),
           &:nth-child(2),
           &:last-child {
@@ -873,6 +838,7 @@ table {
         }
 
         td {
+
           &:nth-child(1),
           &:nth-child(2),
           &:last-child {
@@ -924,7 +890,7 @@ button,
     bottom: -1;
     right: 0;
     padding: 12px;
-    border-radius: 6px;
+    border-radius: var(--base-border-radius);
     display: grid;
     height: fit-content;
     gap: 12px;
@@ -954,7 +920,7 @@ button,
 .mark-resolved {
   background-color: white;
   padding: 1rem;
-  border-radius: 0.5rem;
+  border-radius: var(--base-border-radius);
   display: grid;
   height: fit-content;
   gap: 1rem;
@@ -983,7 +949,7 @@ button,
     position: relative;
     animation: openPopup 0.3s forwards;
     border-left: 1px solid #eaeaea;
-    border-radius: 0.8rem;
+    border-radius: var(--base-border-radius);
 
     .close {
       animation: closePopup 0.3s forwards;
@@ -1031,7 +997,7 @@ button,
     background-color: #fafafa;
     width: fit-content;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: var(--base-border-radius);
 
     .document-icon {
       height: 30px;
@@ -1169,7 +1135,7 @@ input[type="checkbox"] {
     z-index: 10;
 
     max-width: 550px;
-    border-radius: 12px;
+    border-radius: var(--base-border-radius);
     padding: 24px;
 
     color: gray;
@@ -1185,7 +1151,7 @@ input[type="checkbox"] {
       max-width: 250px;
       background-color: whitesmoke;
       padding: 12px;
-      border-radius: 6px;
+      border-radius: var(--base-border-radius);
       display: flex;
       align-items: center;
       gap: 12px;
@@ -1364,7 +1330,7 @@ input[type="checkbox"] {
 }
 
 .form-complete-message {
-  border-radius: 12px;
+  border-radius: var(--base-border-radius);
   width: 80%;
   margin: auto;
   display: flex;
@@ -1384,7 +1350,7 @@ input[type="checkbox"] {
     display: grid;
     height: fit-content;
     gap: 24px;
-    border-radius: 12px;
+    border-radius: var(--base-border-radius);
     text-align: center;
     justify-items: center;
 
@@ -1419,7 +1385,7 @@ input[type="checkbox"] {
     justify-content: center;
     background-color: whitesmoke;
     border: 1px solid rgb(238, 236, 236);
-    border-radius: 4px;
+    border-radius: var(--base-border-radius);
   }
 
   p {
@@ -1439,7 +1405,7 @@ input[type="checkbox"] {
     gap: 1rem;
     background-color: #fafafa;
     padding: 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
 
     .image-content {
       display: grid;
@@ -1550,7 +1516,7 @@ input[type="checkbox"] {
     max-width: 500px;
     padding: 2rem;
     border: 1px solid #eee;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     display: grid;
     height: fit-content;
     gap: 1rem;
@@ -1568,7 +1534,7 @@ input[type="checkbox"] {
 .success-message,
 .note-message {
   padding: 1rem;
-  // border-radius: 0.5rem;
+  // border-radius: var(--base-border-radius);
   animation: messages ease 1s forwards;
   display: flex;
   align-items: center;
@@ -1630,7 +1596,7 @@ input[type="checkbox"] {
       background-color: $secondary-color;
       color: white;
       padding: 10px 20px;
-      border-radius: 8px;
+      border-radius: var(--base-border-radius);
       font-size: 18px;
       font-weight: 500;
       cursor: pointer;
@@ -1699,7 +1665,7 @@ input[type="checkbox"] {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      border-radius: 0.5rem;
+      border-radius: var(--base-border-radius);
       font-weight: bold;
     }
 
@@ -1757,6 +1723,7 @@ input[type="checkbox"] {
   }
 
   &:hover {
+
     > :nth-child(2),
     > :nth-child(3),
     > :nth-child(4) {
@@ -1784,7 +1751,7 @@ input[type="checkbox"] {
       height: fit-content;
       gap: 1rem;
       padding: 2rem;
-      border-radius: 8px;
+      border-radius: var(--base-border-radius);
       top: 2rem;
       background-color: rgb(245, 245, 245);
       border: 1px solid whitesmoke;
@@ -1837,7 +1804,7 @@ input[type="checkbox"] {
     display: flex;
     align-items: center;
     padding: 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     cursor: pointer;
   }
 
@@ -1850,7 +1817,7 @@ input[type="checkbox"] {
   .role {
     background-color: whitesmoke;
     padding: 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--base-border-radius);
     display: grid;
     height: fit-content;
     gap: 0.5rem;
@@ -1963,7 +1930,7 @@ input[type="checkbox"] {
   padding: 1rem;
   background-color: whitesmoke;
   border: 1px solid rgb(218, 218, 218);
-  border-radius: 0.5rem;
+  border-radius: var(--base-border-radius);
 
   .half {
     display: flex;
@@ -1985,7 +1952,7 @@ input[type="checkbox"] {
 .review-popup-content {
   display: grid;
   padding: 2rem;
-  border-radius: 1rem;
+  border-radius: var(--base-border-radius);
   gap: 0.5rem;
   background-color: white;
 }
@@ -2055,7 +2022,7 @@ input[type="checkbox"] {
   padding: 10px 15px;
   background-color: #f8f9fa;
   border: 1px solid #ced4da;
-  border-radius: 4px;
+  border-radius: var(--base-border-radius);
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -2107,7 +2074,7 @@ input[type="checkbox"] {
   right: 0;
   background-color: #fff;
   border: 1px solid #ced4da;
-  border-radius: 4px;
+  border-radius: var(--base-border-radius);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   max-height: 200px;
   overflow-y: auto;
@@ -2144,7 +2111,7 @@ input[type="checkbox"] {
 
 .dropdown .content::-webkit-scrollbar-thumb {
   background: #888;
-  border-radius: 4px;
+  border-radius: var(--base-border-radius);
 }
 
 .dropdown .content::-webkit-scrollbar-thumb:hover {
