@@ -136,10 +136,11 @@ const IncidentDetailsHeader = ({
 
   // Update options and fetch data when selected version changes
   useEffect(() => {
-    setUpdatedOptions(getUpdatedOptions);
+    const newOptions = getUpdatedOptions();
+    setUpdatedOptions(newOptions);
 
     const fetchIncidentData = async () => {
-      const selectedOption = updatedOptions.find(
+      const selectedOption = newOptions.find(
         (option) => option.value === selectedVersion
       );
 
@@ -161,7 +162,7 @@ const IncidentDetailsHeader = ({
     };
 
     fetchIncidentData();
-  }, [selectedVersion, incidentDetailsId, setCurrentIncidentData]);
+  }, [selectedVersion, incidentDetailsId, setCurrentIncidentData, apiLink]);
 
   const toggleShowMarkResolvedPopup = () =>
     setShowMarkResolvedPopup(!showMarkResolvedPopup);

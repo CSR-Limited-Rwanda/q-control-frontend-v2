@@ -80,14 +80,13 @@ const IncidentTabs = ({
         >
           <p>Other info</p>
         </div>
-        {/* TODO: Uncomment review if endpoint is ready */}
-        {/* <div
+        <div
           onClick={() => toggleActiveTab("reviews")}
           className={`tab reviews ${activeTab === "reviews" ? "active" : ""}`}
         >
           <p>Reviews</p>
           <div className="counter">{incidentReviewsCount}</div>
-        </div> */}
+        </div>
         <div
           onClick={() => toggleActiveTab("document-history")}
           className={`tab document-history ${activeTab === "document-history" ? "active" : ""

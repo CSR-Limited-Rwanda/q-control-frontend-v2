@@ -20,6 +20,7 @@ import SendForReview from "../sendForReview/sendForReview";
 
 // css
 import '../../../../styles/_generalIncidentDetailsPage.scss'
+import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 
 const GeneralIncidentDetailsContent = () => {
     const { incidentId } = useParams();
@@ -122,7 +123,7 @@ const GeneralIncidentDetailsContent = () => {
                             otherInformation={
                                 <GeneralIncidentOtherInformation data={currentIncidentData} />
                             }
-                            reviews={<GeneralIncidentReviews />}
+                            reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"general-visitor"} />}
                             documentHistory={
                                 <GeneralIncidentDocumentHistory incidentId={incidentId} />
                             }
