@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "react-router-dom";
@@ -17,7 +17,7 @@ const ModifyGrievanceIncidentPageContent = () => {
   const [isError, setIsError] = useState(false);
   const [grievanceId, setGrievanceId] = useState(
     localStorage.getItem("grievanceId")
-)
+  );
 
   useEffect(() => {
     const fetchIncidentData = async () => {
@@ -25,10 +25,10 @@ const ModifyGrievanceIncidentPageContent = () => {
         const response = await api.get(`/incidents/grievance/${grievanceId}/`);
 
         if (response.status === 200) {
-          setInvestigation(response.data.investigation);
+          setInvestigation(response.data.has_investigation);
           setIncident(response.data.incident);
           setIsLoading(false);
-          console.log(response.data.incident);
+          console.log(response.data);
           console.log("weeeee");
         }
       } catch (error) {
@@ -61,9 +61,10 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <MoveRight />
       <Link href={"/incidents/"}>Incidents</Link> <MoveRight />
-      <Link href={"/incident/grievance/"}>Grievance List</Link>{" "}
-      <MoveRight />
-      <Link href={`/incident/grievance/${incidentId}/`}>#{incidentId}</Link>{" "}
+      <Link href={"/incident/grievance/"}>Grievance List</Link> <MoveRight />
+      <Link href={`/incident/grievance/${incidentId}/`}>
+        #{incidentId}
+      </Link>{" "}
       <MoveRight />
       <Link className="current-page"> Modify</Link>
     </div>
@@ -71,12 +72,12 @@ const BreadCrumbs = () => {
 };
 
 const ModifyGrievanceIncidentPage = () => {
-    const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null)
+  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null);
 
-    useEffect(() => {
-      const storedValue = localStorage.getItem("changeBreadCrumbs")
-      setChangeBreadCrumbs(storedValue);
-    }, [])
+  useEffect(() => {
+    const storedValue = localStorage.getItem("changeBreadCrumbs");
+    setChangeBreadCrumbs(storedValue);
+  }, []);
 
   return (
     <DashboardLayout

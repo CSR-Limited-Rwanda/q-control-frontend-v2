@@ -4,7 +4,6 @@ import { X, ArrowDownToLine, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import SliceText from "@/components/SliceText";
 import api from "@/utils/api";
-import "@/styles/_main.scss";
 
 const FilesList = ({
   setDocuments,
@@ -15,22 +14,29 @@ const FilesList = ({
   incidentId,
 }) => {
   const [deletingFile, setDeletingFile] = useState(false);
-  const [files, setFiles] = useState(documents);
-  const [fileToDelete, setFilesToDelete] = useState({});
-  const [, setSelectedFile] = useState({});
+  const [fileToDelete, setFileToDelete] = useState({});
+  const [selectedFile, setSelectedFile] = useState({});
   const [showFilePreview, setShowFilePreview] = useState(false);
-
+  const [currentPage, setCurrentPage] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const documentsPerPage = 5;
 
   const handleSelectFile = (file) => {
     setSelectedFile(file);
     setShowFilePreview(true);
   };
 
+  const getTextAfterFirstUnderscore = (str) => {
+    if (typeof str !== "string" || !str.includes("_")) {
+      return str;
+    }
+    return str.split("_").slice(1).join("_");
+  };
+
   const handleDeleteFile = async (file) => {
     setDeletingFile(true);
-    setFilesToDelete(file);
+    setFileToDelete(file);
     try {
       const response = await api.delete(
         `/incidents/${apiLink}/${incidentId}/documents/${file.id}/delete/`
@@ -42,6 +48,15 @@ const FilesList = ({
           prevFiles.filter((prevFile) => prevFile.id !== file.id)
         );
         console.log(response.data);
+        const totalDocsAfterDelete = documents.filter(
+          (prevFile) => prevFile.id !== file.id
+        ).length;
+        const totalPagesAfterDelete = Math.ceil(
+          totalDocsAfterDelete / documentsPerPage
+        );
+        if (currentPage > totalPagesAfterDelete && totalPagesAfterDelete > 0) {
+          setCurrentPage(totalPagesAfterDelete);
+        }
       }
     } catch (error) {
       if (error.response) {
@@ -50,73 +65,156 @@ const FilesList = ({
             error.response.data.error ||
             "Error deleting file"
         );
+      } else {
+        setErrorMessage("Unknown error deleting file");
       }
       console.log(error);
       setDeletingFile(false);
-      console.log(error);
     }
   };
+
+  const indexOfLastDocument = currentPage * documentsPerPage;
+  const indexOfFirstDocument = indexOfLastDocument - documentsPerPage;
+  const currentDocuments = documents
+    ? documents.slice(indexOfFirstDocument, indexOfLastDocument)
+    : [];
+
+  const totalDocuments = documents ? documents.length : 0;
+  const totalPages = Math.ceil(totalDocuments / documentsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
   return (
-    <>
+    <div className="files-list-wrapper">
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       {successMessage && (
         <div className="success-message">{successMessage}</div>
       )}
       <div className="documents-list">
-        {documents && documents.length > 0
-          ? documents.map((doc, index) => (
-              <div
-                key={index}
-                onClick={() => handleSelectFile(doc)}
-                className="document"
-              >
-                <div className="document-container">
-                  <div className="icon">
-                    <img
-                      src={
-                        doc.file_type === ".pdf"
-                          ? "/images/file_types/pdf2-svgrepo-com 1.svg"
-                          : doc.file_type === ".xlsx"
-                          ? "/images/file_types/excel2-svgrepo-com 1.svg"
-                          : doc.file_type === ".doc"
-                          ? "/images/file_types/word2-svgrepo-com 1.svg"
-                          : "/images/file_types/file-link-stroke-rounded.svg"
-                      }
-                      alt=""
-                    />
-                  </div>
-                  <div className="text-content">
-                    <h4 className="file-name">
-                      <SliceText text={doc.name} maxLength={20} />
-                    </h4>
-                  </div>
+        {currentDocuments && currentDocuments.length > 0 ? (
+          currentDocuments.map((doc, index) => (
+            <div
+              key={index}
+              onClick={() => handleSelectFile(doc)}
+              className="document"
+            >
+              <div className="document-container">
+                <div className="icon">
+                  <img
+                    src={
+                      doc.type === ".pdf"
+                        ? "/images/file_types/pdf2-svgrepo-com 1.svg"
+                        : doc.type === ".xlsx"
+                        ? "/images/file_types/excel2-svgrepo-com 1.svg"
+                        : doc.type === ".doc" || doc.type === ".docx"
+                        ? "/images/file_types/word2-svgrepo-com 1.svg"
+                        : "/images/file_types/file-link-stroke-rounded.svg"
+                    }
+                    alt=""
+                  />
                 </div>
-                {showDownload ? (
-                  <Link
-                    href={doc.url}
-                    target="_black"
-                    className="download-icon"
-                  >
-                    <ArrowDownToLine size={20} />
-                  </Link>
-                ) : (
-                  ""
-                )}
-                {!doc.delete && (
-                  <div className="delete-document">
-                    {deletingFile && fileToDelete === doc ? (
-                      <LoaderCircle size={18} className="loading-icon" />
-                    ) : (
-                      <X size={18} onClick={() => handleDeleteFile(doc)} />
-                    )}
-                  </div>
-                )}
+                <div className="text-content">
+                  <h4 className="file-name">
+                    <SliceText
+                      text={getTextAfterFirstUnderscore(doc.name)}
+                      maxLength={16}
+                    />
+                  </h4>
+                </div>
               </div>
-            ))
-          : "No documents found"}
-        <div className="files-list"></div>
+              {showDownload ? (
+                <Link href={doc.url} target="_blank" className="download-icon">
+                  <ArrowDownToLine size={20} />
+                </Link>
+              ) : (
+                ""
+              )}
+              {canDelete && (
+                <div className="delete-document">
+                  {deletingFile && fileToDelete === doc ? (
+                    <LoaderCircle size={18} className="loading-icon" />
+                  ) : (
+                    <X size={18} onClick={() => handleDeleteFile(doc)} />
+                  )}
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="no-documents">No documents found</div>
+        )}
+
+        {totalDocuments > documentsPerPage && (
+          <div
+            className="pagination"
+            style={{
+              marginTop: "20px",
+              display: "flex",
+              gap: "5px",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              style={{
+                padding: "8px 12px",
+                cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                background: currentPage === 1 ? "#EBF5FF" : "#145C9E",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+              }}
+            >
+              Previous
+            </button>
+
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                style={{
+                  padding: "8px 12px",
+                  cursor: "pointer",
+                  background: currentPage === index + 1 ? "#145C9E" : "#fff",
+                  color: currentPage === index + 1 ? "white" : "black",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              style={{
+                padding: "8px 12px",
+                cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                background: currentPage === totalPages ? "#EBF5FF" : "#145C9E",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+              }}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

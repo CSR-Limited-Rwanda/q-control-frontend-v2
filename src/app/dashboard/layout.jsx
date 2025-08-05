@@ -21,6 +21,7 @@ import {
   ListCheck,
   LayoutList,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { splitName } from "@/utils/text";
 import LoginPopup from "@/components/auth/Login";
 import { useAuthentication } from "@/context/authContext";
@@ -206,8 +207,9 @@ const DashboardLayout = ({ children }) => {
               {hasDropdown && (
                 <ChevronDown
                   size={16}
-                  className={`menu-item-arrow ${isDropdownOpen ? "rotate" : ""
-                    }`}
+                  className={`menu-item-arrow ${
+                    isDropdownOpen ? "rotate" : ""
+                  }`}
                 />
               )}
             </>
@@ -222,8 +224,9 @@ const DashboardLayout = ({ children }) => {
                 <a
                   key={subIndex}
                   href={subItem.href}
-                  className={`menu-dropdown-item ${isSubActive ? "active" : ""
-                    }`}
+                  className={`menu-dropdown-item ${
+                    isSubActive ? "active" : ""
+                  }`}
                 >
                   {subItem.label}
                 </a>
@@ -239,8 +242,9 @@ const DashboardLayout = ({ children }) => {
     <div className="dashboard">
       {/* Sidebar */}
       <aside
-        className={`dashboard__sidebar ${isSidebarCollapsed ? "collapsed" : ""
-          } ${showMobileMenu ? "mobile-open" : ""}`}
+        className={`dashboard__sidebar ${
+          isSidebarCollapsed ? "collapsed" : ""
+        } ${showMobileMenu ? "mobile-open" : ""}`}
       >
         <div className="dashboard__logo">
           <Image src={"/logo.svg"} width={52} height={32} alt="logo" />
@@ -256,8 +260,9 @@ const DashboardLayout = ({ children }) => {
 
       {/* Main Content Area */}
       <main
-        className={`dashboard__main ${isSidebarCollapsed ? "sidebar-collapsed" : ""
-          }`}
+        className={`dashboard__main ${
+          isSidebarCollapsed ? "sidebar-collapsed" : ""
+        }`}
       >
         {/* Header */}
         <header className="dashboard__header">
@@ -332,7 +337,9 @@ const DashboardLayout = ({ children }) => {
                   ) : selectedForm === "workPlaceViolence" ? (
                     <WorkplaceViolenceIncidentForm togglePopup={togglePopup} />
                   ) : selectedForm === "healthIncident" ? (
-                    <HealthIncidentInvestigationForm togglePopup={togglePopup} />
+                    <HealthIncidentInvestigationForm
+                      togglePopup={togglePopup}
+                    />
                   ) : selectedForm === "verbalComplaint" ? (
                     <VerbalComplaintForm />
                   ) : selectedForm === "grievanceInvestigation" ? (
@@ -372,7 +379,11 @@ export default DashboardLayout;
 export const ProfileContainer = () => {
   const [showProfile, setShowProfile] = useState(false);
   const { isAuth, logout, user } = useAuthentication();
+  const router = useRouter();
 
+  const goToProfile = () => {
+    router.push("/accounts/profile/");
+  };
   const handleShowProfile = () => {
     setShowProfile(!showProfile);
   };
@@ -389,13 +400,13 @@ export const ProfileContainer = () => {
           <div className="dropdown__item">
             <div className="card">
               <UserCard
-                firstName={user.firstName}
-                lastName={user.lastName}
-                label={user.email}
+                firstName={user?.firstName}
+                lastName={user?.lastName}
+                label={user?.email}
               />
             </div>
           </div>
-          <div className="dropdown__item">
+          <div onClick={goToProfile} className="dropdown__item">
             <User size={18} />
             <span>My Account</span>
           </div>

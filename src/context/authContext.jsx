@@ -151,8 +151,6 @@ async function getUserInfoFromToken(token) {
         JSON.stringify(serverData.department.id)
       );
 
-
-      
       return {
         tokenUserInfo: userInfo,
         serverUserData: serverData,
