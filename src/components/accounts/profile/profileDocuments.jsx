@@ -11,6 +11,7 @@ const ProfileDocuments = () => {
     // fetch documents
     const fetchDocuments = async () => {
       try {
+        setIsLoading(true);
         const response = await api.get(`/accounts/profile/documents/`);
         if (response.status === 200) {
           setDocuments(response.data.documents);

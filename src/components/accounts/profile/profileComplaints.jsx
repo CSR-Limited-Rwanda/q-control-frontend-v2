@@ -2,16 +2,23 @@
 import DateFormatter from "@/components/DateFormatter";
 import api from "@/utils/api";
 import {
+  ArrowRight,
+  ChevronDown,
+  ChevronRight,
   ClipboardPen,
   EllipsisVertical,
   FileText,
+  NotebookPen,
   Pencil,
-  SendHorizonal,
+  Printer,
+  SendHorizontal,
   Trash,
+  X,
 } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import "@/styles/_userComplaints.scss";
 import EditComplaintForm from "@/components/forms/EditComplaintForm";
+import SubmitComplaintForm from "@/components/forms/SubmitComplaintForm";
 
 const UserComplaints = () => {
   const [complaints, setComplaints] = useState();
@@ -106,6 +113,7 @@ const UserComplaints = () => {
         <ComplainDetails
           handleShowComplainDetails={() => handleShowComplainDetails({})}
           complaint={selectedComplain}
+          isDeleting={isDeleting}
         />
       )}
 
@@ -207,7 +215,7 @@ const UserComplaints = () => {
                           setShowPopup(null);
                         }}
                       >
-                        <SendHorizonal size={16} />
+                        <SendHorizontal size={16} />
                         <span>Send to Department</span>
                       </div>
                       <div
@@ -231,31 +239,12 @@ const UserComplaints = () => {
         </div>
       )}
       {showDeleteConfirm && (
-        <div className="delete-confirm-overlay">
-          <div className="delete-confirm-popup">
-            <div className="delete-confirm-content">
-              <h4>Confirm Delete</h4>
-              <p>
-                Are you sure you want to delete this complaint? This action
-                cannot be undone.
-              </p>
-              <div className="delete-confirm-buttons">
-                <button
-                  className="cancel-button"
-                  onClick={() => setShowDeleteConfirm(null)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="delete-button"
-                  onClick={() => handleDeleteComplaint(showDeleteConfirm)}
-                >
-                  {isDeleting ? "Deleting..." : "Delete"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DeleteComplaintForm
+          setShowDeleteConfirm={setShowDeleteConfirm}
+          handleDeleteComplaint={handleDeleteComplaint}
+          showDeleteConfirm={showDeleteConfirm}
+          isDeleting={isDeleting}
+        />
       )}
     </div>
   );
@@ -263,7 +252,46 @@ const UserComplaints = () => {
 
 export default UserComplaints;
 
-export const ComplainDetails = ({ complaint, handleShowComplainDetails }) => {
+export const DeleteComplaintForm = ({
+  setShowDeleteConfirm,
+  handleDeleteComplaint,
+  showDeleteConfirm,
+  isDeleting,
+}) => {
+  return (
+    <div className="delete-confirm-overlay">
+      <div className="delete-confirm-popup">
+        <div className="delete-confirm-content">
+          <h4>Confirm Delete</h4>
+          <p>
+            Are you sure you want to delete this complaint? This action cannot
+            be undone.
+          </p>
+          <div className="delete-confirm-buttons">
+            <button
+              className="cancel-button"
+              onClick={() => setShowDeleteConfirm(null)}
+            >
+              Cancel
+            </button>
+            <button
+              className="delete-button"
+              onClick={() => handleDeleteComplaint(showDeleteConfirm)}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const ComplainDetails = ({
+  complaint,
+  handleShowComplainDetails,
+  isDeleting,
+}) => {
   const [showActions, setActions] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showSendToDepartmentForm, setShowSendToDepartmentForm] =
@@ -288,12 +316,10 @@ export const ComplainDetails = ({ complaint, handleShowComplainDetails }) => {
   return (
     <div className="complain-details-popup">
       {showEditForm ? (
-        <div className="complaint-details">
-          <EditComplaintForm
-            complaint={complaint}
-            handleSubmitComplaint={handleShowEditForm}
-          />
-        </div>
+        <EditComplaintForm
+          complaint={complaint}
+          handleSubmitComplaint={handleShowEditForm}
+        />
       ) : showSendToDepartmentForm ? (
         <div className="complaint-details">
           <SendToDepartmentForm
@@ -303,95 +329,97 @@ export const ComplainDetails = ({ complaint, handleShowComplainDetails }) => {
           />
         </div>
       ) : showDeletePopup ? (
-        <div className="complaint-details">
-          <DeleteComplaint
-            closeForm={handleShowDeletePopup}
-            id={complaint.id}
-            name={"complaint"}
-          />
-        </div>
+        <DeleteComplaintForm
+          setShowDeleteConfirm={setShowDeletePopup}
+          showDeleteConfirm={showDeletePopup}
+          handleDeleteComplaint={handleShowDeletePopup}
+          isDeleting={isDeleting}
+        />
       ) : (
         <div className="complaint-details">
           <h4>Complaint details</h4>
-          <Cancel01Icon
-            className="close-icon"
-            onClick={handleShowComplainDetails}
-          />
+          <X className="close-icon" onClick={handleShowComplainDetails} />
 
           <div className="btns">
-            {/* <button type="button" className="tertiary-button"><PrinterIcon size={19} /> <span>Print</span></button> */}
-            <div
-              onClick={handleShowActions}
-              className="btn primary-button actions-button"
-            >
-              {showActions ? (
+            <button type="button" className="tertiary-button">
+              <Printer size={19} /> <span>Print</span>
+            </button>
+            <div className="action-btn-container">
+              <div
+                onClick={handleShowActions}
+                className="btn primary-button actions-button"
+              >
                 <>
-                  {" "}
-                  <span>Hide actions</span> <ArrowRight01Icon size={20} />
+                  <span> {showActions ? "Hide actions" : "Actions"} </span>{" "}
+                  <ChevronDown
+                    size={20}
+                    className={`chevron ${showActions && "action-active"}`}
+                  />
                 </>
-              ) : (
-                <>
-                  <span>Actions</span> <ArrowRight01Icon size={20} />
-                </>
-              )}
+              </div>
               {showActions && (
                 <div className="actions">
                   <div onClick={handleShowEditForm} className="action">
-                    <PencilEdit02Icon /> <span>Edit complaint</span>
+                    <Pencil size={16} /> <span>Edit complaint</span>
                   </div>
 
                   <div onClick={handleShowSendToDepartment} className="action">
-                    <Navigation03Icon /> <span>Send to department</span>
+                    <SendHorizontal size={16} /> <span>Send to department</span>
                   </div>
 
                   <div onClick={handleShowDeletePopup} className="action">
-                    <Delete01Icon /> <span>Delete complaint</span>
+                    <Trash size={16} /> <span>Delete complaint</span>
                   </div>
                 </div>
               )}
             </div>
           </div>
           <div className="items-group">
-            <div className="item">
-              <p>{complaint.patient_name}</p>
-              <p>{complaint.medical_record_number}</p>
+            <div className="item row">
+              <div className="icon">
+                <NotebookPen />
+              </div>
+              <div className="col">
+                <p>{complaint.patient_name}</p>
+                <p>{complaint.medical_record_number}</p>
+              </div>
             </div>
-            <div className="item">
+            <div className="item col">
               <small>Date for complaint</small>
               <p>{complaint.date_of_complaint}</p>
             </div>
-            <div className="item">
+            <div className="item phone-number col">
               <small>Phone number</small>
               <p>{complaint.phone_number}</p>
             </div>
 
-            <div className="item">
+            <div className="item col">
               <small>Resolved by staff</small>
               <p>{complaint.resolved_by_staff ? "Yes" : "No"}</p>
             </div>
           </div>
 
           <div className="items-group">
-            <div className="item">
+            <div className="item col">
               <small>Nature of complaint</small>
               <p>{complaint.complaint_nature}</p>
             </div>
-            <div className="item">
+            <div className="item col">
               <small>Complaint type</small>
               <p>{complaint.complaint_type}</p>
             </div>
-            <div className="item">
+            <div className="item col">
               <small>Department</small>
               <p>{complaint.department}</p>
             </div>
-            <div className="item">
+            <div className="item col">
               <small>How was the complaint received?</small>
               <p>{complaint.how_complaint_was_taken}</p>
             </div>
 
-            <div className="item">
+            <div className="item col">
               <small>Person assigned to follow up</small>
-              <p>
+              <div>
                 {complaint.assigned_to ? (
                   <div className="assignees">
                     {complaint.assigned_to.map((assignee, index) => (
@@ -401,9 +429,10 @@ export const ComplainDetails = ({ complaint, handleShowComplainDetails }) => {
                 ) : (
                   ""
                 )}
-              </p>
+              </div>
             </div>
-            <div className="full">
+            <div className="full col item">
+              <small>Details</small>
               <p>{complaint.details}</p>
             </div>
           </div>

@@ -99,6 +99,7 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
         setTimeout(() => {
           handleSubmitComplaint();
         }, 3000);
+        window.location.reload();
       }
     } catch (error) {
       if (error.response) {
@@ -140,7 +141,7 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
     <div className="user-complain-form">
       <div className="form">
         <h3>Edit your complaint</h3>
-        <X className="close-popup" onClick={handleSubmitComplaint} />
+        <X className="close-popup close-icon" onClick={handleSubmitComplaint} />
         <form action="">
           <div className="field">
             <label htmlFor="">Patient's name</label>

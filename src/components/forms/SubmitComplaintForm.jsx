@@ -26,6 +26,9 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
   const [complaintDetails, setComplaintDetails] = useState("");
   const [staffList, setStaffList] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
+  const [facilityId, setFacilityId] = useState(
+    localStorage.getItem("facilityId")
+  );
 
   const handleResolvedStaff = () => {
     setResolvedByStaff(!resolvedByStaff);
@@ -58,6 +61,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
     //Who resolved the complaint?
     setIsLoading(true);
     const complaintData = {
+      facility: parseInt(facilityId),
       date_of_complaint: dateOfComplaint,
       patient_name: patientName,
       medical_record_number: medicalRecordNumber,
@@ -71,7 +75,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
       details: complaintDetails,
     };
     try {
-      const response = await api.post("complaints/new/", complaintData);
+      const response = await api.post("complaints/", complaintData);
       if (response.status === 201) {
         setSuccessMessage("Complaint submitted successfully");
         setIsLoading(false);
