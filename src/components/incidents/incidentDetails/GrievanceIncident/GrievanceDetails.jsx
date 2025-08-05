@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 import DashboardLayout from "@/app/dashboard/layout";
 import IncidentDetailsHeader from "../IncidentDetailsHeader";
 import IncidentDetails from "../generalIncidents/IncidentDetails";
@@ -19,6 +19,7 @@ import { ChevronRight } from 'lucide-react';
 import "../../../../styles/_generalIncidentDetailsPage.scss"
 
 const GrievanceDetailsContent = () => {
+  const {incidentId} = useParams()
   const [isFetching, setIsFetching] = useState(true);
   const [incidentDetails, setIncidentDetails] = useState({});
   const [investigationDetails, setInvestigationDetails] = useState({});
@@ -26,9 +27,9 @@ const GrievanceDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [grievanceId, setGrievanceId] = useState(
-    localStorage.getItem("grievanceId")
-  );
+  // const [grievanceId, setGrievanceId] = useState(
+  //   localStorage.getItem("grievanceId")
+  // );
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -37,7 +38,7 @@ const GrievanceDetailsContent = () => {
       // Fetch the original version of the incident
       if (useOriginalVersion) {
         response = await api.get(
-          `${API_URL}/incidents/grievance/${grievanceId}/`
+          `${API_URL}/incidents/grievance/${incidentId}/`
         );
         setIncidentDetails(response.data); // Store the original data
         setCurrentIncidentData(response.data); // Set current data for UI
@@ -46,7 +47,7 @@ const GrievanceDetailsContent = () => {
       } else {
         // Fetch the latest modified version of the incident
         const res = await api.get(
-          `${API_URL}/incidents/grievance/${grievanceId}/`
+          `${API_URL}/incidents/grievance/${incidentId}/`
         );
         const latestIncident = res.data.modifications.versions.find((mod) => {
           return mod.latest === true;
@@ -54,7 +55,7 @@ const GrievanceDetailsContent = () => {
 
         if (latestIncident) {
           response = await api.get(
-            `${API_URL}/incidents/grievance/${grievanceId}/versions/${latestIncident.id}/`
+            `${API_URL}/incidents/grievance/${incidentId}/versions/${latestIncident.id}/`
           );
           console.log(response.data);
           console.log(latestIncident);
@@ -92,13 +93,13 @@ const GrievanceDetailsContent = () => {
   // UseEffect to fetch data when either the incidentId or useOriginalVersion changes
   useEffect(() => {
     fetchIncidentDetails(); // Fetch incident data when version toggles or incidentId changes
-  }, [grievanceId, useOriginalVersion]);
+  }, [incidentId, useOriginalVersion]);
 
   useEffect(() => {
     const getIncidentReviews = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/incidents/grievance/${grievanceId}/reviews/`
+          `${API_URL}/incidents/grievance/${incidentId}/reviews/`
         );
         if (response.status === 200) {
           localStorage.setItem("incidentReviewsCount", response.data.length);
@@ -118,7 +119,7 @@ const GrievanceDetailsContent = () => {
     const getDocumentHistory = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/activities/list/${grievanceId}/`
+          `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
           localStorage.setItem("documentHistoryCount", response.data.length);
@@ -148,7 +149,7 @@ const GrievanceDetailsContent = () => {
                   ? incidentDetails?.modifications 
                   : latestIncidentDetails?.modifications
               }}
-              incidentDetailsId={grievanceId}
+              incidentDetailsId={incidentId}
               apiLink={"grievance"}
               sendTo={"send-to-department"}
               managerAccess={false}
@@ -192,10 +193,10 @@ const GrievanceDetailsContent = () => {
                 "No other information"
               }
               documentHistory={
-                <GrivanceDocumentHistory incidentId={grievanceId} />
+                <GrivanceDocumentHistory incidentId={incidentId} />
               }
-              reviews={<GrievanceReview incidentId={grievanceId} />}
-              documents={<IncidentDocuments incidentId={grievanceId} />}
+              reviews={<GrievanceReview incidentId={incidentId} />}
+              documents={<IncidentDocuments incidentId={incidentId} />}
               investigation={
                 <GrievanceInvestigationInfo data={investigationDetails} />
               }

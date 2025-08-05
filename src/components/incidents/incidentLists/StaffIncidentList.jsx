@@ -131,6 +131,8 @@ const StaffIncidentList = () => {
 
   const handleRowClick = (incidentId) => {
     router.push(`/incident/staff/${incidentId}`);
+    localStorage.setItem("staffIncidentId", incidentId)
+    localStorage.setItem("employee_investigation_id", incidentId)
   };
 
   const navigateToModify = (incidentId) => {

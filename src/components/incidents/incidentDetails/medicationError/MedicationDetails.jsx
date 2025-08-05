@@ -1,11 +1,11 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 import DashboardLayout from "@/app/dashboard/layout";
 import IncidentDetailsHeader from "../IncidentDetailsHeader";
 import IncidentDetails from "../generalIncidents/IncidentDetails";
 import IncidentTabs from "../IncidentTabs";
-import api, {API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import MedicationDetailsContentTab from "./MedicationDetailsContentTab";
 import MedicationGeneralInfo from "./MedicationGeneralInfo";
 import MedicationOtherInformation from "./MedicationOtherInformation";
@@ -25,9 +25,7 @@ const MedicationDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [medicationId, setMedicationId] = useState(
-    localStorage.getItem("medicationErrorIncidentId")
-  );
+  const { incidentId } = useParams()
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -37,7 +35,7 @@ const MedicationDetailsContent = () => {
       // Fetch the original version of the incident
       if (useOriginalVersion) {
         response = await api.get(
-          `${API_URL}/incidents/medication-error/${medicationId}/`
+          `${API_URL}/incidents/medication-error/${incidentId}/`
         );
         setIncidentDetails(response.data); // Store the original data
         setCurrentIncidentData(response.data); // Set current data for UI
@@ -45,7 +43,7 @@ const MedicationDetailsContent = () => {
       } else {
         // Fetch the latest modified version of the incident
         const res = await api.get(
-          `${API_URL}/incidents/medication-error/${medicationId}/`
+          `${API_URL}/incidents/medication-error/${incidentId}/`
         );
         const latestIncident = res.data.modifications.versions.find((mod) => {
           return mod.latest === true;
@@ -53,7 +51,7 @@ const MedicationDetailsContent = () => {
 
         if (latestIncident) {
           response = await api.get(
-            `${API_URL}/incidents/medication-error/${medicationId}/versions/${latestIncident.id}/`
+            `${API_URL}/incidents/medication-error/${incidentId}/versions/${latestIncident.id}/`
           );
           console.log(response.data);
           console.log(latestIncident);
@@ -74,13 +72,13 @@ const MedicationDetailsContent = () => {
 
   useEffect(() => {
     fetchIncidentDetails(); // Fetch incident data when version toggles or incidentId changes
-  }, [medicationId, useOriginalVersion]);
+  }, [incidentId, useOriginalVersion]);
 
   useEffect(() => {
     const getIncidentReviews = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/incidents/medication-error/${medicationId}/reviews/`
+          `${API_URL}/incidents/medication-error/${incidentId}/reviews/`
         );
         if (response.status === 200) {
           localStorage.setItem("incidentReviewsCount", response.data.length);
@@ -100,7 +98,7 @@ const MedicationDetailsContent = () => {
     const getDocumentHistory = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/activities/list/${medicationId}/`
+          `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
           localStorage.setItem("documentHistoryCount", response.data.length);
@@ -126,11 +124,11 @@ const MedicationDetailsContent = () => {
             <IncidentDetailsHeader
               data={{
                 incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
-                modifications: useOriginalVersion 
-                  ? incidentDetails?.modifications 
+                modifications: useOriginalVersion
+                  ? incidentDetails?.modifications
                   : latestIncidentDetails?.modifications
               }}
-              incidentDetailsId={medicationId}
+              incidentDetailsId={incidentId}
               apiLink={"medication-error"}
               sendTo={"send-to-department"}
               managerAccess={false}
@@ -172,10 +170,10 @@ const MedicationDetailsContent = () => {
                 <MedicationOtherInformation data={currentIncidentData} />
               }
               documentHistory={
-                <MedicationDocumentHistory incidentId={medicationId} />
+                <MedicationDocumentHistory incidentId={incidentId} />
               }
-              reviews={<MedicationReviews incidentId={medicationId} />}
-              documents={<IncidentDocuments incidentId={medicationId} />}
+              reviews={<MedicationReviews incidentId={incidentId} />}
+              documents={<IncidentDocuments incidentId={incidentId} />}
             />
           </div>
         </div>
@@ -208,14 +206,14 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
   return <FilesList documents={documents} showDownload={true} />;
 };
 const BreadCrumbs = () => {
-  const { medicationId } = useParams();
+  const { incidentId } = useParams();
   return (
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <ChevronRight />
       <Link href={"/incidents/"}>Incidents</Link> <ChevronRight />
       <Link href={"/incident/medication-error/"}>Medication Error List</Link>{" "}
       <ChevronRight />
-      <Link className="current-page">#{medicationId}</Link>
+      <Link className="current-page">#{incidentId}</Link>
     </div>
   );
 };

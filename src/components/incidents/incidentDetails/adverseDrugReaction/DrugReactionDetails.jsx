@@ -71,9 +71,7 @@ function DrugReactionDetailsContent() {
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [hasAccess, setHasAccess] = useState(true);
   //   const [incidentStatus, setIncidentStatus] = useState({});
-  const [drugReactionId, setDrugReactionId] = useState(
-    localStorage.getItem("drugReactionId")
-  );
+  const {incidentId} = useParams()
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -83,7 +81,7 @@ function DrugReactionDetailsContent() {
       // Fetch the original version of the incident
       if (useOriginalVersion) {
         response = await api.get(
-          `${API_URL}/incidents/adverse-drug-reaction/${drugReactionId}/`
+          `${API_URL}/incidents/adverse-drug-reaction/${incidentId}/`
         );
         setIncidentDetails(response.data.incident); // Store the original data
         setCurrentIncidentData(response.data.incident); // Set current data for UI
@@ -91,7 +89,7 @@ function DrugReactionDetailsContent() {
       } else {
         // Fetch the latest modified version of the incident
         const res = await api.get(
-          `${API_URL}/incidents/adverse-drug-reaction/${drugReactionId}/`
+          `${API_URL}/incidents/adverse-drug-reaction/${incidentId}/`
         );
         const latestIncident = res.data.modifications.versions.find((mod) => {
           return mod.latest === true;
@@ -102,7 +100,7 @@ function DrugReactionDetailsContent() {
 
         if (latestIncident) {
           response = await api.get(
-            `${API_URL}/incidents/adverse-drug-reaction/${drugReactionId}/versions/${latestIncident.id}/`
+            `${API_URL}/incidents/adverse-drug-reaction/${incidentId}/versions/${latestIncident.id}/`
           );
           console.log(response.data);
           console.log(latestIncident);
@@ -127,13 +125,13 @@ function DrugReactionDetailsContent() {
   useEffect(() => {
     fetchIncidentDetails();
     console.log("currentincidentdata: ", currentIncidentData); // Fetch incident data when version toggles or incidentId changes
-  }, [drugReactionId, useOriginalVersion]);
+  }, [incidentId, useOriginalVersion]);
 
   useEffect(() => {
     const getIncidentReviews = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/incidents/adverse_drug_reaction/${drugReactionId}/reviews/`
+          `${API_URL}/incidents/adverse_drug_reaction/${incidentId}/reviews/`
         );
         if (response.status === 200) {
           localStorage.setItem("incidentReviewsCount", response.data.length);
@@ -153,7 +151,7 @@ function DrugReactionDetailsContent() {
     const getDocumentHistory = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/activities/list/${drugReactionId}/`
+          `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
           localStorage.setItem("documentHistoryCount", response.data.length);
@@ -180,7 +178,7 @@ function DrugReactionDetailsContent() {
               data={
                 useOriginalVersion ? incidentDetails : latestIncidentDetails
               }
-              incidentDetailsId={drugReactionId}
+              incidentDetailsId={incidentId}
               apiLink={"adverse_drug_reaction"}
               sendTo={"send-to-department"}
               managerAccess={false}
@@ -219,10 +217,10 @@ function DrugReactionDetailsContent() {
                 }} />
               }
               documentHistory={
-                <DrugReactionDocumentHistory incidentId={drugReactionId} />
+                <DrugReactionDocumentHistory incidentId={incidentId} />
               }
-            //   reviews={<DrugReactionReviews incidentId={drugReactionId} />}
-              documents={<IncidentDocuments incidentId={drugReactionId} />} //Add a form to upload a document on this incident
+              reviews={<DrugReactionReviews incidentId={incidentId} />}
+              documents={<IncidentDocuments incidentId={incidentId} />} //Add a form to upload a document on this incident
             />
           </div>
         </div>

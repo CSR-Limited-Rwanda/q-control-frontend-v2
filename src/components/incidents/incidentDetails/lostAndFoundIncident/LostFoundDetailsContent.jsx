@@ -1,11 +1,11 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 import DashboardLayout from "@/app/dashboard/layout";
 import IncidentDetailsHeader from "../IncidentDetailsHeader";
 import IncidentTabs from "../IncidentTabs";
-import api, {API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import LostFoundDetailsContentTab from "./LostFoundDetailsContentTab";
 import LostFoundGeneralInfo from "./LostFoundGeneralInfo";
 import LostDetails from "./LostAndFoundDetails";
@@ -25,25 +25,23 @@ const LostFoundDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [lostAndFoundId, setLostAndFoundId] = useState(
-    localStorage.getItem("lostAndFoundId")
-  )
+  const { incidentId } = useParams()
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
     try {
       let response;
       if (useOriginalVersion) {
-        response = await api.get(`${API_URL}/incidents/lost-found/${lostAndFoundId}/`);
+        response = await api.get(`${API_URL}/incidents/lost-found/${incidentId}/`);
         setIncidentDetails(response.data); // <-- Don't destructure here
         setCurrentIncidentData(response.data.incident);
       } else {
-        const res = await api.get(`${API_URL}/incidents/lost-found/${lostAndFoundId}/`);
+        const res = await api.get(`${API_URL}/incidents/lost-found/${incidentId}/`);
         const latestIncident = res.data.modifications.versions.find((mod) => mod.latest === true);
-      
+
         if (latestIncident) {
           response = await api.get(
-            `${API_URL}/incidents/lost-found/${lostAndFoundId}/versions/${latestIncident.id}/`
+            `${API_URL}/incidents/lost-found/${incidentId}/versions/${latestIncident.id}/`
           );
           setLatestIncidentDetails(response.data); // <-- Don't destructure here
           setCurrentIncidentData(response.data.incident);
@@ -52,7 +50,7 @@ const LostFoundDetailsContent = () => {
           setCurrentIncidentData(res.data.incident);
         }
       }
-      
+
       setIsFetching(false);
     } catch (error) {
       console.error("Error fetching incident details:", error);
@@ -64,32 +62,32 @@ const LostFoundDetailsContent = () => {
   useEffect(() => {
     fetchIncidentDetails();
     console.log("currentincidentdata: ", currentIncidentData); // Fetch incident data when version toggles or incidentId changes
-  }, [lostAndFoundId, useOriginalVersion]); // Dependencies trigger re-fetch
-//   useEffect(() => {
-//     const getIncidentReviews = async () => {
-//       try {
-//         const response = await api.get(
-//           `${API_URL}/incidents/lost-and-found/${lostAndFoundId}/reviews/`
-//         );
-//         if (response.status === 200) {
-//           localStorage.setItem("incidentReviewsCount", response.data.length);
-//         }
-//       } catch (error) {
-//         if (error.response && error.response.status === 403) {
-//           window.customToast.error("Authentication error");
-//         } else {
-//           window.customToast.error("Failed to fetch incident reviews");
-//           console.error(error);
-//         }
-//       }
-//     };
-//     getIncidentReviews();
-//   }, []);
+  }, [incidentId, useOriginalVersion]); // Dependencies trigger re-fetch
+  //   useEffect(() => {
+  //     const getIncidentReviews = async () => {
+  //       try {
+  //         const response = await api.get(
+  //           `${API_URL}/incidents/lost-and-found/${incidentId}/reviews/`
+  //         );
+  //         if (response.status === 200) {
+  //           localStorage.setItem("incidentReviewsCount", response.data.length);
+  //         }
+  //       } catch (error) {
+  //         if (error.response && error.response.status === 403) {
+  //           window.customToast.error("Authentication error");
+  //         } else {
+  //           window.customToast.error("Failed to fetch incident reviews");
+  //           console.error(error);
+  //         }
+  //       }
+  //     };
+  //     getIncidentReviews();
+  //   }, []);
   useEffect(() => {
     const getDocumentHistory = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/activities/list/${lostAndFoundId}/`
+          `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
           localStorage.setItem("documentHistoryCount", response.data.length);
@@ -114,12 +112,12 @@ const LostFoundDetailsContent = () => {
         <div className="incident-details">
           <IncidentDetailsHeader
             data={{
-                incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
-                modifications: useOriginalVersion 
-                  ? incidentDetails?.modifications 
-                  : latestIncidentDetails?.modifications
-              }}
-            incidentDetailsId={lostAndFoundId}
+              incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
+              modifications: useOriginalVersion
+                ? incidentDetails?.modifications
+                : latestIncidentDetails?.modifications
+            }}
+            incidentDetailsId={incidentId}
             apiLink={"lost-and-found"}
             sendTo={"send-to-department"}
             managerAccess={false}
@@ -138,7 +136,7 @@ const LostFoundDetailsContent = () => {
               //   LocationFound={incidentDetails.data.location_found}
               incidentDetails={
                 <LostFoundDetailsContentTab data={{
-                    incident: currentIncidentData
+                  incident: currentIncidentData
                 }} />
               }
             />
@@ -153,14 +151,14 @@ const LostFoundDetailsContent = () => {
                   incidentStatuses={incidentStatus}
                 />
               }
-            //   otherInformation={
-            //     <LostFoundDetailsOtherInformation data={currentIncidentData} />
-            //   }
+              //   otherInformation={
+              //     <LostFoundDetailsOtherInformation data={currentIncidentData} />
+              //   }
               documentHistory={
-                <LostAndfoundDocumentHistory incidentId={lostAndFoundId} />
+                <LostAndfoundDocumentHistory incidentId={incidentId} />
               }
-              reviews={<LostAndFoundReviews incidentId={lostAndFoundId} />}
-              documents={<IncidentDocuments incidentId={lostAndFoundId} />}
+              reviews={<LostAndFoundReviews incidentId={incidentId} />}
+              documents={<IncidentDocuments incidentId={incidentId} />}
             />
           </div>
         </div>
@@ -202,7 +200,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 };
 
 const BreadCrumbs = () => {
-  const { lostAndFoundId } = useParams();
+  const { incidentId } = useParams();
   return (
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <ArrowRight />
@@ -211,30 +209,30 @@ const BreadCrumbs = () => {
         Lost & Found Property report
       </Link>{" "}
       <ArrowRight />
-      <Link className="current-page"> #{lostAndFoundId}</Link>
+      <Link className="current-page"> #{incidentId}</Link>
     </div>
   );
 };
 
 const LostFoundDetails = () => {
-    const { incidentId } = useParams();
-    const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null);
-  
-    useEffect(() => {
-      const storedValue = localStorage.getItem("changeBreadCrumbs");
-      setChangeBreadCrumbs(storedValue);
-    }, []);
+  const { incidentId } = useParams();
+  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null);
+
+  useEffect(() => {
+    const storedValue = localStorage.getItem("changeBreadCrumbs");
+    setChangeBreadCrumbs(storedValue);
+  }, []);
   return (
     <div>
       <DashboardLayout
         children={<LostFoundDetailsContent />}
-        // breadCrumbs={
-        //   changeBreadCrumbs ? (
-        //     <FacilityDetailsBreadCrumbs incidentID={lostAndFoundId} />
-        //   ) : (
-        //     <BreadCrumbs />
-        //   )
-        // }
+      // breadCrumbs={
+      //   changeBreadCrumbs ? (
+      //     <FacilityDetailsBreadCrumbs incidentID={incidentId} />
+      //   ) : (
+      //     <BreadCrumbs />
+      //   )
+      // }
       />
     </div>
   );
