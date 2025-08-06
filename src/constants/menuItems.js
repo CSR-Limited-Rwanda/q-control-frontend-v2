@@ -4,7 +4,7 @@ export const menuItems = [
     {
         icon: <LayoutDashboard size={20} />,
         label: 'Dashboard',
-        href: '#'
+        href: '/'
     },
 
     {
@@ -13,6 +13,7 @@ export const menuItems = [
         href: "/incidents",
         matchPaths: ["/incident", "/incidents"],
         items: [
+            { label: "Overview", href: "/incidents/" },
             { label: "General Incident", href: "/incidents/general" },
             { label: "Employee Incident", href: "/incidents/employee" },
             { label: "Lost and Found", href: "/incidents/lost-and-found" },
