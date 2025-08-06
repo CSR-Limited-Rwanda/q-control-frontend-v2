@@ -180,7 +180,7 @@ async function getUserInfoFromToken(token) {
       id: userId,
       firstName: decodedToken.first_name,
       lastName: decodedToken.last_name,
-      email: decodedToken.email,
+      email: decodedToken.email, 
     };
 
     if (!userId) {
