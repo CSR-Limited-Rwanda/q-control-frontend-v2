@@ -1,34 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "@/styles/_dashboard.scss";
 import "@/styles/_components.scss";
 import {
-  Search,
-  Bell,
-  Mail,
   Menu,
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
   X,
-  Users,
-  ShoppingCart,
-  User,
-  Lock,
-  Settings,
-  LogOut,
-  Dumbbell,
   CirclePlus,
-  ListCheck,
-  LayoutList,
   LoaderCircle,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { splitName } from "@/utils/text";
 import LoginPopup from "@/components/auth/Login";
 import { useAuthentication } from "@/context/authContext";
 import Image from "next/image";
-import UserCard from "@/components/UserCard";
-import { usePathname } from "next/navigation";
 import FormChoicesPopup from "@/components/forms/FormChoices";
 import GeneralIncidentForm from "@/components/incidents/incidentForms/GeneralIncidentForms/GeneralIncidentForm";
 import PopUp from "@/components/incidents/PopUp";
@@ -39,78 +22,26 @@ import MedicationErrorForm from "@/components/incidents/incidentForms/Medication
 import DrugReactionForm from "@/components/incidents/incidentForms/DrugReactionForms/DrugReactionForm";
 import WorkplaceViolenceIncidentForm from "@/components/incidents/incidentForms/WorkplaceViolenceForms/WorkPlaceViolenceForm";
 import SubmitComplaintForm from "@/components/forms/SubmitComplaintForm";
+import { menuItems } from "@/constants/menuItems";
+import { ProfileContainer } from "@/components/accounts/ProfileContainer";
+import { ProfileMessages } from "@/components/accounts/ProfileMessages";
+import { ProfileNotification } from "@/components/accounts/ProfileNotification";
+import { MenuItem } from "./MenuItem";
 
 const DashboardLayout = ({ children }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [isFormChoicesOpen, setIsFormCHoicesOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { isAuth, logout, loading } = useAuthentication();
-  const pathname = usePathname();
+  const { isAuth, loading } = useAuthentication();
 
   const handleMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
   };
-  const menuItems = [
-    // {
-    //     icon: <LayoutDashboard size={20} />,
-    //     label: 'Dashboard',
-    //     href: '#'
-    // },
-    // {
-    //     icon: <ShoppingCart size={20} />,
-    //     label: 'E-commerce',
-    //     items: [
-    //         { label: 'Products', href: '#' },
-    //         { label: 'Orders', href: '#' },
-    //         { label: 'Customers', href: '#' }
-    //     ]
-    // },
-    {
-      icon: <Users size={24} />,
-      label: "Account Management",
-      href: "/accounts",
-      matchPaths: ["/accounts"],
-    },
-    {
-      icon: <Dumbbell size={24} />,
-      label: "Incident Tracking",
-      href: "/incidents",
-      matchPaths: ["/incident", "/incidents"],
-    },
-    {
-      icon: <LayoutList size={24} />,
-      label: "Tasks",
-      href: "/tasks",
-      matchPaths: ["/tasks"],
-    },
-    // {
-    //     icon: <Boxes size={20} />,
-    //     label: 'Inventory',
-    //     items: [
-    //         { label: 'Stock', href: '#' },
-    //         { label: 'Categories', href: '#' },
-    //         { label: 'Suppliers', href: '#' }
-    //     ]
-    // },
-    // {
-    //     icon: <BadgePercent size={20} />,
-    //     label: 'Sales',
-    //     href: '#'
-    // },
-    // {
-    //     icon: <Settings size={20} />,
-    //     label: 'Settings',
-    //     href: '#'
-    // },
-  ];
 
-  const toggleDropdown = (index) => {
-    setActiveDropdown(activeDropdown === index ? null : index);
-  };
+
+
 
   const toggleFormChoicesOpen = () => {
     setIsFormCHoicesOpen(!isFormChoicesOpen);
@@ -118,123 +49,6 @@ const DashboardLayout = ({ children }) => {
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
-  };
-
-  // const MenuItem = ({ item, index }) => {
-  //   const hasDropdown = item.items?.length > 0;
-  //   const isActive = pathname === item.href || activeDropdown === index;
-
-  //   return (
-  //     <div className="menu-item-container">
-  //       <a
-  //         href={!hasDropdown ? item.href : "#"}
-  //         className={`menu-item ${isActive ? "active" : ""}`}
-  //         // className="menu-item active"
-  //         onClick={(e) => {
-  //           if (hasDropdown) {
-  //             e.preventDefault();
-  //             toggleDropdown(index);
-  //           }
-  //         }}
-  //       >
-  //         <span className="menu-item-icon">{item.icon}</span>
-  //         {!isSidebarCollapsed && (
-  //           <>
-  //             <span className="menu-item-label">{item.label}</span>
-  //             {hasDropdown && (
-  //               <ChevronDown
-  //                 size={16}
-  //                 className={`menu-item-arrow ${isActive ? "rotate" : ""}`}
-  //               />
-  //             )}
-  //           </>
-  //         )}
-  //       </a>
-  //       {hasDropdown && !isSidebarCollapsed && isActive && (
-  //         <div className="menu-dropdown">
-  //           {item.items.map((subItem, subIndex) => (
-  //             <a
-  //               key={subIndex}
-  //               href={subItem.href}
-  //               className="menu-dropdown-item"
-  //             >
-  //               {subItem.label}
-  //             </a>
-  //           ))}
-  //         </div>
-  //       )}
-  //     </div>
-  //   );
-  // };
-
-  // useEffect(() => {});
-
-  const MenuItem = ({ item }) => {
-    const hasDropdown = item.items?.length > 0;
-
-    const normalizePath = (path) => path.replace(/\/+$/, "");
-    const currentPath = normalizePath(pathname);
-
-    // Use matchPaths if defined, otherwise fall back to href
-    const matchPaths = item.matchPaths || [item.href];
-
-    const isActive = matchPaths.some(
-      (matchPath) =>
-        currentPath === normalizePath(matchPath) ||
-        currentPath.startsWith(`${normalizePath(matchPath)}/`)
-    );
-
-    const isDropdownOpen =
-      hasDropdown &&
-      item.items.some((subItem) =>
-        currentPath.startsWith(normalizePath(subItem.href))
-      );
-
-    return (
-      <div className="menu-item-container">
-        <a
-          href={!hasDropdown ? item.href : "#"}
-          className={`menu-item ${isActive ? "active" : ""}`}
-          onClick={(e) => {
-            if (hasDropdown) {
-              e.preventDefault();
-            }
-          }}
-        >
-          <span className="menu-item-icon">{item.icon}</span>
-          {!isSidebarCollapsed && (
-            <>
-              <span className="menu-item-label">{item.label}</span>
-              {hasDropdown && (
-                <ChevronDown
-                  size={16}
-                  className={`menu-item-arrow ${isDropdownOpen ? "rotate" : ""
-                    }`}
-                />
-              )}
-            </>
-          )}
-        </a>
-
-        {hasDropdown && !isSidebarCollapsed && isDropdownOpen && (
-          <div className="menu-dropdown">
-            {item.items.map((subItem, subIndex) => {
-              const isSubActive = currentPath === normalizePath(subItem.href);
-              return (
-                <a
-                  key={subIndex}
-                  href={subItem.href}
-                  className={`menu-dropdown-item ${isSubActive ? "active" : ""
-                    }`}
-                >
-                  {subItem.label}
-                </a>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    );
   };
 
   if (loading) {
@@ -294,14 +108,7 @@ const DashboardLayout = ({ children }) => {
                 className="mobile-menu"
               />
 
-              {/* <div className="input__wrapper dashboard__header-search">
-                                    <Search className="input__icon input__icon--left" />
-                                    <input
-                                        type="text"
-                                        placeholder="Search..."
-                                        className="input__field"
-                                    />
-                                </div> */}
+
             </div>
 
             <div className="dashboard__header-actions">
@@ -320,8 +127,8 @@ const DashboardLayout = ({ children }) => {
                   ""
                 )}
               </button>
-              {/* <ProfileMessages /> */}
-              {/* <ProfileNotification /> */}
+              <ProfileMessages />
+              <ProfileNotification />
               <ProfileContainer />
             </div>
           </div>
@@ -383,131 +190,4 @@ const DashboardLayout = ({ children }) => {
 
 export default DashboardLayout;
 
-export const ProfileContainer = () => {
-  const [showProfile, setShowProfile] = useState(false);
-  const { isAuth, logout, user } = useAuthentication();
-  const router = useRouter();
-  const [userProfile, setUserProfile] = useState({});
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedProfile = localStorage.getItem("loggedInUserInfo");
-      if (storedProfile) {
-        setUserProfile(JSON.parse(storedProfile));
-      }
-    }
-  }, []);
-
-  const goToProfile = () => {
-    router.push("/accounts/profile/");
-  };
-
-  const handleShowProfile = () => {
-    setShowProfile(!showProfile);
-  };
-
-  const handleLogout = () => {
-    logout();
-    router.push("/"); // Redirect to home or login page
-  };
-
-  return (
-    <div className="header-popup">
-      <div onClick={handleShowProfile} className="header-trigger">
-        <div className="name-initials avatar">
-          <span>
-            {splitName(
-              `${userProfile?.user?.first_name} ${userProfile?.user?.last_name}`
-            )}
-          </span>
-        </div>
-      </div>
-      {showProfile && (
-        <div className="header-content">
-          <div className="dropdown__item">
-            <div className="card">
-              <UserCard
-                firstName={userProfile?.user?.first_name}
-                lastName={userProfile?.user?.last_name}
-                label={userProfile?.user?.email}
-              />
-            </div>
-          </div>
-          <div onClick={goToProfile} className="dropdown__item">
-            <User size={18} />
-            <span>My Account</span>
-          </div>
-          <hr />
-          <div className="dropdown__item">
-            <Lock size={18} />
-            <span>Admin</span>
-          </div>
-          <hr />
-          <div className="dropdown__item">
-            <Settings size={18} />
-            <span>Settings</span>
-          </div>
-          <hr />
-          <div onClick={handleLogout} className="dropdown__item">
-            <LogOut size={18} />
-            <span>Logout</span>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-export const ProfileNotification = () => {
-  const [showProfile, setShowProfile] = useState(false);
-
-  const handleShowProfile = () => {
-    setShowProfile(!showProfile);
-  };
-
-  return (
-    <div className="header-popup">
-      <div onClick={handleShowProfile} className="header-trigger">
-        <div className="name-initials avatar">
-          <Bell />
-        </div>
-      </div>
-      {showProfile && (
-        <div className="header-content">
-          <div className="dropdown__label">Notifications</div>
-          <button className="dropdown__item">Profile</button>
-          <button className="dropdown__item">Settings</button>
-          <button onClick={handleLogout} className="dropdown__item">
-            Logout
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-export const ProfileMessages = () => {
-  const [showProfile, setShowProfile] = useState(false);
-
-  const handleShowProfile = () => {
-    setShowProfile(!showProfile);
-  };
-
-  return (
-    <div className="header-popup">
-      <div onClick={handleShowProfile} className="header-trigger">
-        <div className="name-initials avatar">
-          <Mail />
-        </div>
-      </div>
-      {showProfile && (
-        <div className="header-content">
-          <div className="dropdown__label">Messages</div>
-          <button className="dropdown__item">Profile</button>
-          <button className="dropdown__item">Settings</button>
-          <button onClick={handleLogout} className="dropdown__item">
-            Logout
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};

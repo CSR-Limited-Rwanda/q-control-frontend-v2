@@ -10,6 +10,7 @@ const authService = {
 
             if (response.status === 200) {
                 const { access, refresh } = response.data;
+                localStorage.setItem('loggedInUserInfo', JSON.stringify(response.data.user_info));
                 return {
                     success: true,
                     accessToken: access,
