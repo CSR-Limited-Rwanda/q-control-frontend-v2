@@ -98,18 +98,65 @@ const ProfileReports = ({ userId }) => {
     }
   };
 
-  // Handle click on action icon to show popup
-  const handleActionClick = (index, event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const popupWidth = 120; // Approximate popup width in pixels
-    setPopupPosition({
-      top: rect.top + window.scrollY,
-      left: rect.left + window.scrollX - popupWidth - 10, // Position to the left with 10px offset
-    });
-    setShowPopup(showPopup === index ? null : index); // Toggle popup
+  const handleRowClick = (incidentId, reportName) => {
+    if (!reportName) {
+      console.warn(
+        "reportName is undefined, defaulting to General Patient Visitor"
+      );
+      router.push(`/incident/general/${incidentId}/`);
+      localStorage.setItem("generalIncidentId", incidentId);
+      return;
+    }
+
+    switch (reportName) {
+      case "General Patient Visitor":
+        router.push(`/incident/general/${incidentId}/`);
+        localStorage.setItem("generalIncidentId", incidentId);
+        break;
+      case "Adverse Drug Reaction":
+        router.push(`/incident/drug-reaction/${incidentId}/`);
+        localStorage.setItem("adverseDrugReactionId", incidentId);
+        break;
+      case "Lost and Found":
+        router.push(`/incident/lost-and-found/${incidentId}/`);
+        localStorage.setItem("lostAndFoundId", incidentId);
+        break;
+      case "Medication Error":
+        router.push(`/incident/medication-error/${incidentId}/`);
+        localStorage.setItem("medicationErrorIncidentId", incidentId);
+        break;
+      case "Staff Incident Report":
+        router.push(`/incident/staff/${incidentId}/`);
+        localStorage.setItem("staffIncidentId", incidentId);
+        break;
+      case "workplace violence":
+        router.push(`/incident/workplace-violence/${incidentId}/`);
+        localStorage.setItem("workplaceViolenceId", incidentId);
+        break;
+      case "Grievance":
+        router.push(`/incident/grievance/${incidentId}/`);
+        localStorage.setItem("grievanceId", incidentId);
+        break;
+      default:
+        console.warn(
+          `Unknown reportName: ${reportName}, defaulting to General Patient Visitor`
+        );
+        router.push(`/incident/general/${incidentId}/`);
+        localStorage.setItem("generalIncidentId", incidentId);
+        break;
+    }
   };
 
-  // Close popup when clicking outside
+  const handleActionClick = (index, event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const popupWidth = 120;
+    setPopupPosition({
+      top: rect.top + window.scrollY,
+      left: rect.left + window.scrollX - popupWidth - 10,
+    });
+    setShowPopup(showPopup === index ? null : index);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -242,6 +289,7 @@ const ProfileReports = ({ userId }) => {
                       className="link"
                       onClick={() => {
                         setShowPopup(null);
+                        handleRowClick(incident.id, incident.reportName);
                       }}
                     >
                       <Eye className="icon" />

@@ -136,7 +136,15 @@ export const cleanedData = (data) => {
 
   return Object.entries(data).reduce(
     (acc, [key, value]) => {
-      if (value !== null && value !== undefined && value !== "") {
+      if (
+        value !== null &&
+        value !== undefined &&
+        value !== "" &&
+        value.first_name !== "" &&
+        value.first_name !== null &&
+        value.last_name !== "" &&
+        value.last_name !== null
+      ) {
         acc[key] = value;
       }
       return acc;
@@ -153,17 +161,16 @@ export const cleanedData = (data) => {
 
 export const checkCurrentAccount = () => {
   const facility_id = localStorage.getItem("facilityId");
-  const department = localStorage.getItem("departmentId")
-  console.log("Raw facility from localStorage:", facility_id)
+  const department = localStorage.getItem("departmentId");
+  console.log("Raw facility from localStorage:", facility_id);
 
   if (facility_id && facility_id !== undefined) {
-    console.log("Facility ID:", facility_id)
+    console.log("Facility ID:", facility_id);
     return facility_id;
   } else if (department && department !== undefined) {
-    return department
+    return department;
   } else {
-    console.log("No active account found in localStorage")
+    console.log("No active account found in localStorage");
     return null;
   }
-  
 };

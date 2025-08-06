@@ -178,6 +178,22 @@ img {
   }
 }
 
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 .categories {
   .row {
     display: flex;
@@ -239,7 +255,8 @@ small {
 }
 
 // appea animatin for a button
-@keyframes appear {}
+@keyframes appear {
+}
 
 .incidents-tab {
   display: flex;
@@ -472,7 +489,7 @@ table {
     flex: 1 0 0%;
     max-width: 500px;
 
-    >span,
+    > span,
     p {
       color: $gray-color;
     }
@@ -813,7 +830,6 @@ table {
         align-items: center;
 
         th {
-
           &:nth-child(1),
           &:nth-child(2),
           &:last-child {
@@ -838,7 +854,6 @@ table {
         }
 
         td {
-
           &:nth-child(1),
           &:nth-child(2),
           &:last-child {
@@ -1723,7 +1738,6 @@ input[type="checkbox"] {
   }
 
   &:hover {
-
     > :nth-child(2),
     > :nth-child(3),
     > :nth-child(4) {

@@ -1,7 +1,7 @@
-'use client'
-import React, { useState, useEffect } from "react"
-import CustomModifiedSelectInput from "@/components/CustomModifiedSelectInput"
-import "../../../styles/_generalIncidentDetailsPage.scss"
+"use client";
+import React, { useState, useEffect } from "react";
+import CustomModifiedSelectInput from "@/components/CustomModifiedSelectInput";
+import "../../../styles/_generalIncidentDetailsPage.scss";
 import {
   MoveRight,
   ArrowDown,
@@ -14,8 +14,8 @@ import {
   Send,
   SendHorizonal,
   SendHorizontal,
-  ArrowRight
-} from 'lucide-react';
+  ArrowRight,
+} from "lucide-react";
 
 // import SendToDepartmentForm from "../../../../components/incidents/forms/sendToDepartmentForm";
 import MarkResolvedForm from "../incidentForms/MarkIncidentResolvedForm";
@@ -69,25 +69,25 @@ const IncidentDetailsHeader = ({
   const sortedVersions = data?.modifications?.versions?.map((mod, index) =>
     mod.original === true // Define the original version
       ? {
-        label: `<span style="font-weight: bold; margin-right: 10px;">Original</span> <span style="color: gray;">${formatDate(
-          mod.date
-        )}</span>`,
-        value: "Original Version",
-        id: incidentDetailsId,
-        isOriginal: true,
-        isMostRecent: mod.latest,
-        date: mod.date,
-      }
+          label: `<span style="font-weight: bold; margin-right: 10px;">Original</span> <span style="color: gray;">${formatDate(
+            mod.date
+          )}</span>`,
+          value: "Original Version",
+          id: incidentDetailsId,
+          isOriginal: true,
+          isMostRecent: mod.latest,
+          date: mod.date,
+        }
       : {
-        label: `<span style="font-weight: bold; margin-right: 10px;">Modified</span> <span style="color: gray;">${formatDate(
-          mod.date
-        )}</span>`,
-        value: `Modified Version ${index}`,
-        id: mod.id,
-        date: mod.date,
-        isOriginal: false,
-        isMostRecent: mod.latest,
-      }
+          label: `<span style="font-weight: bold; margin-right: 10px;">Modified</span> <span style="color: gray;">${formatDate(
+            mod.date
+          )}</span>`,
+          value: `Modified Version ${index}`,
+          id: mod.id,
+          date: mod.date,
+          isOriginal: false,
+          isMostRecent: mod.latest,
+        }
   );
 
   // Identify the most recent version
@@ -147,13 +147,16 @@ const IncidentDetailsHeader = ({
       if (!selectedOption) return;
 
       const url = selectedOption.isOriginal
-        ? `/incidents/${apiLink}/${incidentDetailsId}/versions/original/`
+        ? `/incidents/${apiLink}/${incidentDetailsId}/`
         : `/incidents/${apiLink}/${incidentDetailsId}/versions/${selectedOption.id}/`;
 
       try {
         const response = await api.get(`${API_URL}${url}`);
+        console.log(response.data);
         setCurrentIncidentData(
-          selectedOption.isOriginal ? response.data : response.data
+          selectedOption.isOriginal
+            ? response?.data?.original_incident
+            : response.data
         );
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -190,7 +193,9 @@ const IncidentDetailsHeader = ({
               <House color="gray" />
               <span>Facility:</span>
             </div>
-            <span>{data?.incident?.report_facility?.name || "No facility"}</span>
+            <span>
+              {data?.incident?.report_facility?.name || "No facility"}
+            </span>
           </div>
           <div className="department">
             <div className="department-name">
@@ -228,17 +233,16 @@ const IncidentDetailsHeader = ({
               </button>
               <div className="actions-popup">
                 <>
-
-                  <div className="action" onClick={toggleShowSendToDepartmentForm}>
+                  <div
+                    className="action"
+                    onClick={toggleShowSendToDepartmentForm}
+                  >
                     <div className="icon">
                       <SendHorizontal />
                     </div>
                     <span>Send for review</span>
                   </div>
-                  <div
-                    onClick={toggleShowMarkResolvedPopup}
-                    className="action"
-                  >
+                  <div onClick={toggleShowMarkResolvedPopup} className="action">
                     <div className="icon">
                       <FileCheck2 size={20} variant={"stroke"} />
                     </div>
@@ -315,15 +319,19 @@ const IncidentDetailsHeader = ({
 
       {showPreviewForm ? (
         <h2>Generate report</h2>
+      ) : (
         // <div className="incident-popup">
         //   {" "}
         //   <GenerateReport />{" "}
         // </div>
-      ) : (
         ""
       )}
       {showSendToDepartmentForm ? (
-        <SendForReview path={apiLink} incidentID={incidentDetailsId} handleClose={toggleShowSendToDepartmentForm} />
+        <SendForReview
+          path={apiLink}
+          incidentID={incidentDetailsId}
+          handleClose={toggleShowSendToDepartmentForm}
+        />
       ) : (
         ""
       )}

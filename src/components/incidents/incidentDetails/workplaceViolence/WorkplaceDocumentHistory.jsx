@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import api, { API_URL } from "@/utils/api";
 import DateFormatter from "@/components/DateFormatter";
@@ -14,9 +14,9 @@ const WorkplaceDocumentHistory = ({ incidentId }) => {
           `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
-          setDocumentHistory(response.data);
-          console.log(response.data);
-          localStorage.setItem("documentHistoryCount", response.data.length);
+          setDocumentHistory(response.data.data);
+          console.log(response.data.data);
+          localStorage.setItem("documentHistoryCount", response.data.count);
           setGettingDocumentHistory(false);
         }
       } catch (error) {

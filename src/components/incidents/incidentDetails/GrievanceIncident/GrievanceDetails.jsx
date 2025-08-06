@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -6,7 +6,7 @@ import DashboardLayout from "@/app/dashboard/layout";
 import IncidentDetailsHeader from "../IncidentDetailsHeader";
 import IncidentDetails from "../generalIncidents/IncidentDetails";
 import IncidentTabs from "../IncidentTabs";
-import api,{API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import GrievanceDetailsContentTab from "./GrievanceDetailsContentTab";
 import GrievanceIncidentGeneralInfo from "./GrievanceIncidentGeneralInfo";
 import GrivanceDocumentHistory from "./GrievanceDocumentHistory";
@@ -14,12 +14,12 @@ import GrievanceReview from "./GrievanceReview";
 import GrievanceInvestigationInfo from "./GrievanceInvestigationInfo";
 import FilesList from "../../documentHistory/FilesList";
 import NoResources from "@/components/NoResources";
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight } from "lucide-react";
 // css
-import "../../../../styles/_generalIncidentDetailsPage.scss"
+import "../../../../styles/_generalIncidentDetailsPage.scss";
 
 const GrievanceDetailsContent = () => {
-  const {incidentId} = useParams()
+  const { incidentId } = useParams();
   const [isFetching, setIsFetching] = useState(true);
   const [incidentDetails, setIncidentDetails] = useState({});
   const [investigationDetails, setInvestigationDetails] = useState({});
@@ -144,10 +144,12 @@ const GrievanceDetailsContent = () => {
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
               data={{
-                incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
-                modifications: useOriginalVersion 
-                  ? incidentDetails?.modifications 
-                  : latestIncidentDetails?.modifications
+                incident: useOriginalVersion
+                  ? incidentDetails
+                  : latestIncidentDetails,
+                modifications: useOriginalVersion
+                  ? incidentDetails?.modifications
+                  : latestIncidentDetails?.modifications,
               }}
               incidentDetailsId={incidentId}
               apiLink={"grievance"}
@@ -186,12 +188,10 @@ const GrievanceDetailsContent = () => {
               generalInformation={
                 <GrievanceIncidentGeneralInfo
                   data={currentIncidentData}
-                    incidentStatuses={incidentStatus}
+                  incidentStatuses={incidentStatus}
                 />
               }
-              otherInformation={
-                "No other information"
-              }
+              otherInformation={"No other information"}
               documentHistory={
                 <GrivanceDocumentHistory incidentId={incidentId} />
               }
@@ -238,8 +238,7 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link to={"/"}>Overview</Link> <ChevronRight />
       <Link to={"/incidents/"}>Incidents</Link> <ChevronRight />
-      <Link to={"/incident/grievance/"}>Grievance List</Link>{" "}
-      <ChevronRight />
+      <Link to={"/incident/grievance/"}>Grievance List</Link> <ChevronRight />
       <Link className="current-page"> #{grievanceId}</Link>
     </div>
   );
