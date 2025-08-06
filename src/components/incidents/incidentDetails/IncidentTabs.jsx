@@ -12,6 +12,7 @@ const IncidentTabs = ({
   documents,
   investigation,
   showInvestigationTab,
+  reviewsCount,
 }) => {
   const [activeTab, setActiveTab] = useState("incidentType");
   const [incidentReviewsCount, setIncidentReviewsCount] = useState(0);
@@ -80,13 +81,12 @@ const IncidentTabs = ({
         >
           <p>Other info</p>
         </div>
-        {/* TODO: Uncomment review if endpoint is ready */}
         <div
           onClick={() => toggleActiveTab("reviews")}
           className={`tab reviews ${activeTab === "reviews" ? "active" : ""}`}
         >
           <p>Reviews</p>
-          <div className="counter">{incidentReviewsCount}</div>
+          <div className="counter">{reviewsCount}</div>
         </div>
         <div
           onClick={() => toggleActiveTab("document-history")}

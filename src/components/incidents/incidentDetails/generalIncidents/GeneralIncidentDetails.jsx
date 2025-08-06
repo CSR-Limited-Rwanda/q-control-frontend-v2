@@ -20,6 +20,7 @@ import SendForReview from "../sendForReview/sendForReview";
 
 // css
 import '../../../../styles/_generalIncidentDetailsPage.scss'
+import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 
 const GeneralIncidentDetailsContent = () => {
     const { incidentId } = useParams();
@@ -28,6 +29,7 @@ const GeneralIncidentDetailsContent = () => {
     const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
     const [useOriginalVersion, setUseOriginalVersion] = useState(true);
     const [currentIncidentData, setCurrentIncidentData] = useState({});
+    const [reviewsCount, setReviewsCount] = useState();
 
     // Fetch incident details based on the selected version
     const fetchIncidentDetails = async () => {
@@ -122,11 +124,12 @@ const GeneralIncidentDetailsContent = () => {
                             otherInformation={
                                 <GeneralIncidentOtherInformation data={currentIncidentData} />
                             }
-                            reviews={<GeneralIncidentReviews />}
+                            reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"general-visitor"} setCount={setReviewsCount} />}
                             documentHistory={
                                 <GeneralIncidentDocumentHistory incidentId={incidentId} />
                             }
                             documents={<IncidentDocuments incidentId={incidentId} />}
+                            reviewsCount={reviewsCount}
                         />
                     </div>
                 </div>
