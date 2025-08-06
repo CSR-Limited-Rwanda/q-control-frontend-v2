@@ -234,8 +234,8 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error while updating the incident"
+          error.response.data.error ||
+          "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -340,7 +340,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
           pageName={"Medication Error incidents"}
         />
         <h2 className="title">Modifying Medication Error</h2>
-        <div className="btns">
+        <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
@@ -375,13 +375,12 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${
-                status === "Draft"
+              className={`follow-up ${status === "Draft"
                   ? "in-progress"
                   : status === "Closed"
-                  ? "closed"
-                  : "Open"
-              }`}
+                    ? "closed"
+                    : "Open"
+                }`}
             >
               {status}
             </span>
@@ -592,7 +591,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                     key={index}
                   >
                     {drugOrderedRoutes &&
-                    drugOrderedRoutes.includes(route.value) ? (
+                      drugOrderedRoutes.includes(route.value) ? (
                       <SquareCheck color="#F87C47" />
                     ) : (
                       <Square />
@@ -642,7 +641,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                     key={index}
                   >
                     {drugGivenRoutes &&
-                    drugGivenRoutes.includes(route.value) ? (
+                      drugGivenRoutes.includes(route.value) ? (
                       <SquareCheck color="#F87C47" />
                     ) : (
                       <Square />
@@ -730,9 +729,8 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 {errorTypes.map((error, index) => (
                   <div
                     key={index}
-                    className={`type full full-width-type ${
-                      descriptionError === error.name ? "selected" : ""
-                    }`}
+                    className={`type full full-width-type ${descriptionError === error.name ? "selected" : ""
+                      }`}
                     onClick={() => handleTypeSelection(error.name)}
                   >
                     <h5>{error.name}</h5>
@@ -755,9 +753,8 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 </h2>
                 {contributingFactors.map((item, index) => (
                   <div
-                    className={`type full full-width-type ${
-                      contributingfactors === item.factor ? "selected" : ""
-                    }`}
+                    className={`type full full-width-type ${contributingfactors === item.factor ? "selected" : ""
+                      }`}
                     onClick={() => handleContributingFactor(item.factor)}
                     key={index}
                   >
@@ -779,11 +776,10 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 {severityCategories.map((category, index) => (
                   <div
                     key={index}
-                    className={`type full full-width-type ${
-                      selectedCategory.value === category.value
+                    className={`type full full-width-type ${selectedCategory.value === category.value
                         ? "selected"
                         : ""
-                    }`}
+                      }`}
                     onClick={() =>
                       handleSelectedCategory({
                         category: category.category,

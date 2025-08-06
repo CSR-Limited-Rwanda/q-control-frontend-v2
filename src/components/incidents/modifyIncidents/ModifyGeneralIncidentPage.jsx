@@ -185,7 +185,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   const [agreement, setAgreement] = useState(
     (incident.fall_type_agreement &&
       incident.fall_type_agreement.split(", ")) ||
-      []
+    []
   );
   const [treatmentRelated, setTreatmentRelated] = useState(null);
   const [equipmentMalfunction, setEquipmentMalfunction] = useState(null);
@@ -404,8 +404,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error updating the incident"
+          error.response.data.error ||
+          "Error updating the incident"
         );
       } else {
         alert("Unknown error updating the incident");
@@ -446,7 +446,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
           pageName={"General incidents"}
         />
         <h2 className="title">Modifying General Incident</h2>
-        <div className="btns">
+        <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
@@ -481,13 +481,12 @@ const ModifyGeneralIncidentForm = ({ data }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${
-                  status === "Draft"
+                className={`follow-up ${status === "Draft"
                     ? "in-progress"
                     : status === "Closed"
-                    ? "closed"
-                    : "Open"
-                }`}
+                      ? "closed"
+                      : "Open"
+                  }`}
               >
                 {status}
               </span>
@@ -708,8 +707,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                 </label>
                 <div
                   className="check-boxes check-boxes-row"
-                  //  onChange={(e) => setRoute(e.target.value)}
-                  //  value={route}
+                //  onChange={(e) => setRoute(e.target.value)}
+                //  value={route}
                 >
                   {statusesPrionToIncident.map((status, index) => (
                     <div
@@ -1281,7 +1280,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                           style={{
                             display:
                               specialTypes.includes(type.name) &&
-                              otherTypes !== "Specimen"
+                                otherTypes !== "Specimen"
                                 ? "none"
                                 : "block",
                           }}

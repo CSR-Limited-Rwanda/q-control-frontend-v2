@@ -369,7 +369,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         // setErrorFetching(error?.response?.data?.error);
         window.customToast.error(
           error?.response?.data?.message ||
-            "Error while creating new incident, please try again"
+          "Error while creating new incident, please try again"
         );
         return;
       } else {
@@ -993,9 +993,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
             <div className="form-half">
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor first name</label>
                 <input
@@ -1010,9 +1009,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                 />
               </div>
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor last name</label>
                 <input
@@ -1184,8 +1182,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </label>
               <div
                 className="check-boxes check-boxes-row"
-                //  onChange={(e) => setRoute(e.target.value)}
-                //  value={route}
+              //  onChange={(e) => setRoute(e.target.value)}
+              //  value={route}
               >
                 {statusesPrionToIncident.map((status, index) => (
                   <div
@@ -1691,7 +1689,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                         style={{
                           display:
                             specialTypes.includes(type.name) &&
-                            otherTypes !== "Specimen"
+                              otherTypes !== "Specimen"
                               ? "none"
                               : "block",
                         }}
@@ -1927,7 +1925,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="btns">
+      <div className="buttons">
         {currentStep > 1 && currentStep < 7 ? (
           <button
             onClick={handlePreviousStep}
@@ -1950,9 +1948,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           >
             <span>{isLoading ? "Saving..." : "Save Incident"}</span>
             <i
-              className={`fa-solid fa-arrow-right ${
-                isLoading ? "loading" : ""
-              }`}
+              className={`fa-solid fa-arrow-right ${isLoading ? "loading" : ""
+                }`}
             ></i>
           </button>
         ) : currentStep < 7 ? (

@@ -57,7 +57,7 @@ const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
         }}
       /> */}
 
-      <div className="btns">
+      <div className="buttons">
         <button
           disabled={submittingReview}
           onClick={handleNewReview}

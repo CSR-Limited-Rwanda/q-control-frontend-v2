@@ -183,7 +183,7 @@ const NewUserForm = ({
               </div>
             )}
 
-            <div className="btns">
+            <div className="buttons">
               {currentStep > 1 && (
                 <SecondaryButton
                   span={"Back"}

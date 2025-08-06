@@ -331,7 +331,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
           </button>
         )}
 
-        <div className="btns">
+        <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
@@ -367,10 +367,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
               Status :{" "}
               <span
                 className={`follow-up ${status === "Draft"
-                    ? "in-progress"
-                    : status === "Closed"
-                      ? "closed"
-                      : "Open"
+                  ? "in-progress"
+                  : status === "Closed"
+                    ? "closed"
+                    : "Open"
                   }`}
               >
                 {status}

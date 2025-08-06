@@ -388,8 +388,8 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         console.log(error);
         window.customToast.error(
           error.response.data.error ||
-            error.response.data.message ||
-            "Error updating incident"
+          error.response.data.message ||
+          "Error updating incident"
         );
       } else {
         window.customToast.error("Unknown error updating incident");
@@ -422,7 +422,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
           pageName={"ADR incidents"}
         />
         <h2 className="title">Modifying Adverse Drug Incident</h2>
-        <div className="btns">
+        <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
@@ -456,13 +456,12 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${
-                status === "Draft"
+              className={`follow-up ${status === "Draft"
                   ? "in-progress"
                   : status === "Closed"
-                  ? "closed"
-                  : "Open"
-              }`}
+                    ? "closed"
+                    : "Open"
+                }`}
             >
               {status}
             </span>
@@ -926,18 +925,18 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
               <div>
                 {outcomeType === "Moderate"
                   ? outComeData.Moderate.map((el, i) => (
-                      <div key={i} className="outcome-data check-box">
-                        <input
-                          type="checkbox"
-                          name="moderateOutcome"
-                          id={el.name}
-                          value={el.name}
-                          onChange={handleOutcomeDescription}
-                          checked={selectedDescription.includes(el.name)}
-                        />
-                        <label htmlFor={el.name}>{el.name}</label>
-                      </div>
-                    ))
+                    <div key={i} className="outcome-data check-box">
+                      <input
+                        type="checkbox"
+                        name="moderateOutcome"
+                        id={el.name}
+                        value={el.name}
+                        onChange={handleOutcomeDescription}
+                        checked={selectedDescription.includes(el.name)}
+                      />
+                      <label htmlFor={el.name}>{el.name}</label>
+                    </div>
+                  ))
                   : null}
               </div>
 
@@ -954,18 +953,18 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
               <div>
                 {outcomeType === "Severe"
                   ? outComeData.Severe.map((el, i) => (
-                      <div key={i} className="outcome-data check-box">
-                        <input
-                          type="checkbox"
-                          name="severeOutcome"
-                          id={el.name}
-                          value={el.name}
-                          onChange={handleOutcomeDescription}
-                          checked={selectedDescription.includes(el.name)}
-                        />
-                        <label htmlFor={el.name}>{el.name}</label>
-                      </div>
-                    ))
+                    <div key={i} className="outcome-data check-box">
+                      <input
+                        type="checkbox"
+                        name="severeOutcome"
+                        id={el.name}
+                        value={el.name}
+                        onChange={handleOutcomeDescription}
+                        checked={selectedDescription.includes(el.name)}
+                      />
+                      <label htmlFor={el.name}>{el.name}</label>
+                    </div>
+                  ))
                   : null}
               </div>
 

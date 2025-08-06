@@ -925,7 +925,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="btns">
+      <div className="buttons">
         {currentStep > 1 && currentStep < 5 ? (
           <button
             onClick={handlePreviousStep}

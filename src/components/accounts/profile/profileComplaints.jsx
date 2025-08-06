@@ -71,8 +71,8 @@ const UserComplaints = () => {
       setIsDeleting(false);
       setError(
         error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Error deleting complaint"
+        error.response?.data?.error ||
+        "Error deleting complaint"
       );
       console.error(error);
     }
@@ -91,8 +91,8 @@ const UserComplaints = () => {
         if (error.response) {
           setError(
             error.response.data.message ||
-              error.response.data.error ||
-              "Error fetching complaints data"
+            error.response.data.error ||
+            "Error fetching complaints data"
           );
         } else {
           setError("Unknown fetching complaints data");
@@ -133,9 +133,8 @@ const UserComplaints = () => {
             complaints.map((complaint, index) => (
               <div
                 key={index}
-                className={`user-complaint ${
-                  complaint.status === "Open" ? "open" : ""
-                }`}
+                className={`user-complaint ${complaint.status === "Open" ? "open" : ""
+                  }`}
               >
                 <div className="complaint-content">
                   <div className="col">
@@ -340,7 +339,7 @@ export const ComplainDetails = ({
           <h4>Complaint details</h4>
           <X className="close-icon" onClick={handleShowComplainDetails} />
 
-          <div className="btns">
+          <div className="buttons">
             <button type="button" className="tertiary-button">
               <Printer size={19} /> <span>Print</span>
             </button>
