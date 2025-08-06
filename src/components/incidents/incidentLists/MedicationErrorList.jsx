@@ -163,7 +163,7 @@ const MedicationErrorList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/medication_error/${incidentId}`);
+    router.push(`/incident/medication-error/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {

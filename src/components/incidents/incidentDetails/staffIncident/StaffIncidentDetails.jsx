@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams } from "next/navigation"
 import DashboardLayout from "@/app/dashboard/layout"
 import IncidentDetailsHeader from "../IncidentDetailsHeader"
 import IncidentTabs from "../IncidentTabs"
@@ -20,8 +20,6 @@ import NoResources from "@/components/NoResources"
 import "../../../../styles/_generalIncidentDetailsPage.scss"
 
 const EmployeeDetailsContent = () => {
-  // const { medicationId } = useParams();
-
   const { incidentId } = useParams();
   const [isFetching, setIsFetching] = useState(true);
   const [incidentDetails, setIncidentDetails] = useState({});
@@ -30,24 +28,23 @@ const EmployeeDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [staffIncidentId, setStaffIncidentId] = useState(localStorage.getItem("staffIncidentId"))
   const [staffInvestigationId, setStaffInvestigationId] = useState(localStorage.getItem("employee_investigation_id"))
 
   const fetchIncidentDetails = async () => {
-    setIsFetching(true);
+    setIsFetching(true); 
     try {
       let response;
   
       if (useOriginalVersion) {
-        response = await api.get(`/incidents/staff-incident/${staffIncidentId}/`);
+        response = await api.get(`/incidents/staff-incident/${incidentId}/`);
         setIncidentDetails(response.data.incident);
         setCurrentIncidentData(response.data.incident);
       } else {
-        const res = await api.get(`${API_URL}/incidents/staff-incident/${staffIncidentId}/`);
+        const res = await api.get(`${API_URL}/incidents/staff-incident/${incidentId}/`);
         const latestIncident = res.data.modifications.versions.find(mod => mod.latest === true);
         if (latestIncident) {
           response = await api.get(
-            `${API_URL}/incidents/staff-incident/${staffIncidentId}/versions/${latestIncident.id}/`
+            `${API_URL}/incidents/staff-incident/${incidentId}/versions/${latestIncident.id}/`
           );
         } else {
           response = res;
@@ -58,7 +55,7 @@ const EmployeeDetailsContent = () => {
   
       // 🔽 NEW: fetch investigation separately
       const investigationRes = await api.get(
-        `/incidents/staff-incident/${staffIncidentId}/investigation/${staffInvestigationId}`
+        `/incidents/staff-incident/${incidentId}/investigation/${staffInvestigationId}`
       );
   
       if (investigationRes.status === 200) {
@@ -84,7 +81,7 @@ const EmployeeDetailsContent = () => {
     const getIncidentReviews = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/incidents/staff-incident/${staffIncidentId}/reviews/`
+          `${API_URL}/incidents/staff-incident/${incidentId}/reviews/`
         );
         if (response.status === 200) {
           localStorage.setItem("incidentReviewsCount", response.data.length);
@@ -104,7 +101,7 @@ const EmployeeDetailsContent = () => {
     const getDocumentHistory = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/activities/list/${staffIncidentId}/`
+          `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
           localStorage.setItem("documentHistoryCount", response.data.length);
@@ -131,7 +128,7 @@ const EmployeeDetailsContent = () => {
               data={
                 useOriginalVersion ? incidentDetails : latestIncidentDetails
               }
-              incidentDetailsId={staffIncidentId}
+              incidentDetailsId={incidentId}
               apiLink={"staff-incident"}
               sendTo={"send-to-department"}
               managerAccess={false}
@@ -168,10 +165,10 @@ const EmployeeDetailsContent = () => {
                 <StaffOtherInformation data={currentIncidentData} />
               }
               documentHistory={
-                <StaffDocumentHistory incidentId={staffIncidentId} />
+                <StaffDocumentHistory incidentId={incidentId} />
               }
-              reviews={<StaffReviews incidentId={staffIncidentId} />}
-              documents={<IncidentDocuments incidentId={staffIncidentId} />}
+              reviews={<StaffReviews incidentId={incidentId} />}
+              documents={<IncidentDocuments incidentId={incidentId} />}
               investigation={
                 <StaffInvestigationInfo data={investigationInfo} incidentStatuses={incidentStatus} />
               }

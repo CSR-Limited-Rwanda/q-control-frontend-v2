@@ -6,132 +6,100 @@ import DashboardLayout from "@/app/dashboard/layout";
 import IncidentDetailsHeader from "../IncidentDetailsHeader";
 import IncidentDetails from "../generalIncidents/IncidentDetails";
 import IncidentTabs from "../IncidentTabs";
-import api, {API_URL} from "@/utils/api";
-import DrugReactionContentTab from "./DrugReactionContentTab";
-import DrugReactionGeneraInfo from "./DrugReactionGeneralInfo";
-import DrugReactionOtherInformation from "./DrugReactionOtherInformation";
-import DrugReactionDocumentHistory from "./DrugReactionDocumentHistory";
-import DrugReactionReviews from "./DrugReactionReviews";
+import api,{API_URL} from "@/utils/api";
+import GrievanceDetailsContentTab from "./GrievanceDetailsContentTab";
+import GrievanceIncidentGeneralInfo from "./GrievanceIncidentGeneralInfo";
+import GrivanceDocumentHistory from "./GrievanceDocumentHistory";
+import GrievanceReview from "./GrievanceReview";
+import GrievanceInvestigationInfo from "./GrievanceInvestigationInfo";
 import FilesList from "../../documentHistory/FilesList";
-import { ChevronRight } from "lucide-react";
 import NoResources from "@/components/NoResources";
-
+import { ChevronRight } from 'lucide-react';
 // css
 import "../../../../styles/_generalIncidentDetailsPage.scss"
 
-const BreadCrumbs = () => {
-  const { drugReactionId } = useParams();
-  return (
-    <div className="breadcrumbs">
-      <Link href={"/"}>Overview</Link> <ChevronRight />
-      <Link href={"/incidents/"}>Incidents</Link> <ChevronRight />
-      <Link href={"/incident/drug-reaction/"}>
-        Anaphylaxis/Adverse Drug Reaction List
-      </Link>{" "}
-      <ChevronRight />
-      <Link className="current-page"> #{drugReactionId}</Link>
-    </div>
-  );
-};
-
-export const FacilityDetailsBreadCrumbs = ({ incidentID }) => {
-  const [facilityName, setFacilityName] = useState("");
-  const [facilityId, setFacilityId] = useState(null);
-
-  useEffect(() => {
-    setFacilityName(localStorage.getItem("facilityName"));
-    setFacilityId(localStorage.getItem("facilityId"));
-  });
-  return (
-    <div className="breadcrumbs">
-      <Link href={"/"} replace>
-        Overview
-      </Link>
-      <ChevronRight />
-      <Link href={"/facilities/"} replace>
-        Facilities
-      </Link>
-      <ChevronRight />
-      <Link href={`/facilities/${facilityId}/`} replace>
-        {facilityName}
-      </Link>
-      <ChevronRight />
-      <Link className="current-page" replace>
-        #{incidentID}
-      </Link>{" "}
-    </div>
-  );
-};
-
-function DrugReactionDetailsContent() {
+const GrievanceDetailsContent = () => {
+  const {incidentId} = useParams()
   const [isFetching, setIsFetching] = useState(true);
   const [incidentDetails, setIncidentDetails] = useState({});
+  const [investigationDetails, setInvestigationDetails] = useState({});
+  const [incidentStatus, setIncidentStatus] = useState({});
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [hasAccess, setHasAccess] = useState(true);
-  //   const [incidentStatus, setIncidentStatus] = useState({});
-  const {incidentId} = useParams()
+  // const [grievanceId, setGrievanceId] = useState(
+  //   localStorage.getItem("grievanceId")
+  // );
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
     try {
       let response;
-
       // Fetch the original version of the incident
       if (useOriginalVersion) {
         response = await api.get(
-          `${API_URL}/incidents/adverse-drug-reaction/${incidentId}/`
+          `${API_URL}/incidents/grievance/${incidentId}/`
         );
-        setIncidentDetails(response.data.incident); // Store the original data
-        setCurrentIncidentData(response.data.incident); // Set current data for UI
+        setIncidentDetails(response.data); // Store the original data
+        setCurrentIncidentData(response.data); // Set current data for UI
         console.log(response.data);
+        setInvestigationDetails(response.data.investigation); //
       } else {
         // Fetch the latest modified version of the incident
         const res = await api.get(
-          `${API_URL}/incidents/adverse-drug-reaction/${incidentId}/`
+          `${API_URL}/incidents/grievance/${incidentId}/`
         );
         const latestIncident = res.data.modifications.versions.find((mod) => {
           return mod.latest === true;
         });
-        if (res.status === 403) {
-          setHasAccess(false);
-        }
 
         if (latestIncident) {
           response = await api.get(
-            `${API_URL}/incidents/adverse-drug-reaction/${incidentId}/versions/${latestIncident.id}/`
+            `${API_URL}/incidents/grievance/${incidentId}/versions/${latestIncident.id}/`
           );
           console.log(response.data);
           console.log(latestIncident);
-          if (response.status === 403) {
-            setHasAccess(false);
-          }
         } else {
           response = res;
         }
 
-        setLatestIncidentDetails(response.data.incident); // Store the latest modified version
-        setCurrentIncidentData(response.data.incident); // Set current data for UI
+        setLatestIncidentDetails(response.data); // Store the latest modified version
+        setCurrentIncidentData(response.data); // Set current data for UI
+        setInvestigationDetails(response.data.investigation);
       }
-
-      setIsFetching(false); // Stop loading state
+      setIsFetching(false);
     } catch (error) {
-      console.error("Error fetching incident details:", error);
+      console.log(error);
       setIsFetching(false);
     }
+    // try {
+    //   const response = await api.get(
+    //     `${API_URL}/incidents/grievance/${grievanceId}/`
+    //   );
+    //   if (response.status === 200) {
+    //     //   setIncidentStatus(response.data.statuses);
+    //     console.log(response.data);
+    //     setIncidentDetails(response.data.grievance);
+    //     setInvestigationDetails(response.data.investigation);
+    //     setIsFetching(false);
+    //   }
+    //   console.log(incidentDetails);
+    // } catch (error) {
+    //   console.log(error);
+    //   setIsFetching(false);
+    // }
   };
 
+  // UseEffect to fetch data when either the incidentId or useOriginalVersion changes
   useEffect(() => {
-    fetchIncidentDetails();
-    console.log("currentincidentdata: ", currentIncidentData); // Fetch incident data when version toggles or incidentId changes
+    fetchIncidentDetails(); // Fetch incident data when version toggles or incidentId changes
   }, [incidentId, useOriginalVersion]);
 
   useEffect(() => {
     const getIncidentReviews = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/incidents/adverse_drug_reaction/${incidentId}/reviews/`
+          `${API_URL}/incidents/grievance/${incidentId}/reviews/`
         );
         if (response.status === 200) {
           localStorage.setItem("incidentReviewsCount", response.data.length);
@@ -140,7 +108,7 @@ function DrugReactionDetailsContent() {
         if (error.response && error.response.status === 403) {
           window.customToast.error("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch incident reviews");
+          // window.customToast.error("Failed to fetch incident reviews");
           console.error(error);
         }
       }
@@ -167,7 +135,7 @@ function DrugReactionDetailsContent() {
     };
     getDocumentHistory();
   }, []);
-  return hasAccess ? (
+  return (
     <div className="incident-details-page">
       {isFetching ? (
         <div className="fetching-data">Loading data</div>
@@ -175,11 +143,14 @@ function DrugReactionDetailsContent() {
         <div className="incident-details">
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
-              data={
-                useOriginalVersion ? incidentDetails : latestIncidentDetails
-              }
+              data={{
+                incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
+                modifications: useOriginalVersion 
+                  ? incidentDetails?.modifications 
+                  : latestIncidentDetails?.modifications
+              }}
               incidentDetailsId={incidentId}
-              apiLink={"adverse_drug_reaction"}
+              apiLink={"grievance"}
               sendTo={"send-to-department"}
               managerAccess={false}
               useOriginalVersion={useOriginalVersion}
@@ -193,34 +164,43 @@ function DrugReactionDetailsContent() {
           <div className="details">
             <IncidentDetails
               data={currentIncidentData}
-              fullName={`${currentIncidentData.patient_name?.last_name} ${currentIncidentData.patient_name?.first_name} `}
-              sex={currentIncidentData.patient_name?.gender}
-              IncidentDate={currentIncidentData.incident_date}
-              incidentTime={currentIncidentData.incident_time}
-              incidentCategory={currentIncidentData.patient_type}
-              incidentDetails={
-                <DrugReactionContentTab data={currentIncidentData} />
+              fullName={
+                currentIncidentData.incident?.form_initiated_by
+                  ? `${currentIncidentData.incident?.form_initiated_by?.last_name} ${currentIncidentData.incident?.form_initiated_by?.first_name}`
+                  : null
               }
+              age={currentIncidentData?.patient_name?.age}
+              dateBirth={currentIncidentData?.form_initiated_by?.date_of_birth}
+              IncidentDate={currentIncidentData.date}
+              incidentTime={currentIncidentData.incident_time}
+              incidentCategory={currentIncidentData.category}
+              incidentDetails={
+                <GrievanceDetailsContentTab data={currentIncidentData} />
+              }
+              hasSex={false}
+              hasInitiated={true}
             />
             <IncidentTabs
               data={currentIncidentData}
               //   statuses={incidentStatus}
               generalInformation={
-                <DrugReactionGeneraInfo
+                <GrievanceIncidentGeneralInfo
                   data={currentIncidentData}
-                  //   incidentStatuses={incidentStatus}
+                    incidentStatuses={incidentStatus}
                 />
               }
               otherInformation={
-                <DrugReactionOtherInformation data={{
-                    incident: currentIncidentData
-                }} />
+                "No other information"
               }
               documentHistory={
-                <DrugReactionDocumentHistory incidentId={incidentId} />
+                <GrivanceDocumentHistory incidentId={incidentId} />
               }
-              reviews={<DrugReactionReviews incidentId={incidentId} />}
-              documents={<IncidentDocuments incidentId={incidentId} />} //Add a form to upload a document on this incident
+              reviews={<GrievanceReview incidentId={incidentId} />}
+              documents={<IncidentDocuments incidentId={incidentId} />}
+              investigation={
+                <GrievanceInvestigationInfo data={investigationDetails} />
+              }
+              showInvestigationTab={true}
             />
           </div>
         </div>
@@ -228,22 +208,20 @@ function DrugReactionDetailsContent() {
         "No data"
       )}
     </div>
-  ) : (
-    <div className="no-access-text">You don't have access to this page</div>
   );
-}
+};
+
 const IncidentDocuments = ({ incidentId, apiLink }) => {
   const [documents, setDocuments] = useState([]);
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/adverse_drug_reaction/${incidentId}/documents/`
+          `/incidents/grievance/${incidentId}/documents/`
         );
         if (response.status === 200) {
           setDocuments(response.data);
-          console.log("Drug reaction: ", response.data);
-
+          console.log(response.data);
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
       } catch (error) {
@@ -254,16 +232,27 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
   }, []);
   return <FilesList documents={documents} showDownload={true} />;
 };
-function DrugReactionDetails() {
-//   const changeBreadCrumbs = localStorage.getItem("changeBreadCrumbs");
-//   const { drugReactionId } = useParams();
+const BreadCrumbs = () => {
+  const { grievanceId } = useParams();
+  return (
+    <div className="breadcrumbs">
+      <Link to={"/"}>Overview</Link> <ChevronRight />
+      <Link to={"/incidents/"}>Incidents</Link> <ChevronRight />
+      <Link to={"/incident/grievance/"}>Grievance List</Link>{" "}
+      <ChevronRight />
+      <Link className="current-page"> #{grievanceId}</Link>
+    </div>
+  );
+};
+
+const GrievanceDetails = () => {
   return (
     <div>
       <DashboardLayout
-        children={<DrugReactionDetailsContent />}
+        children={<GrievanceDetailsContent />}
         // breadCrumbs={
         //   changeBreadCrumbs ? (
-        //     <FacilityDetailsBreadCrumbs incidentID={drugReactionId} />
+        //     <FacilityDetailsBreadCrumbs incidentID={grievanceId} />
         //   ) : (
         //     <BreadCrumbs />
         //   )
@@ -271,6 +260,6 @@ function DrugReactionDetails() {
       />
     </div>
   );
-}
+};
 
-export default DrugReactionDetails;
+export default GrievanceDetails;

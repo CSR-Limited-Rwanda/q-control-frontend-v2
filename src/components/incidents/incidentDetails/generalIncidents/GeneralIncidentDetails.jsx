@@ -38,7 +38,7 @@ const GeneralIncidentDetailsContent = () => {
             // Fetch the original version of the incident
             if (useOriginalVersion) {
                 response = await api.get(`${API_URL}/incidents/general-visitor/${incidentId}/`);
-                console.log(response.data);
+                // console.log(response.data);
                 setIncidentDetails(response.data); // Store the original data
                 setCurrentIncidentData(response.data); // Set current data for UI
             } else {
@@ -55,11 +55,11 @@ const GeneralIncidentDetailsContent = () => {
                         `${API_URL}/incidents/general-visitor/${incidentId}/versions/${latestIncident.id}/`
                     );
                     console.log(response.data);
-                    console.log(latestIncident);
+                    console.log('latest version', latestIncident);
                 } else {
                     response = res;
                 }
-
+                console.log('latest version', latestIncident);
                 setLatestIncidentDetails(response.data); // Store the latest modified version
                 setCurrentIncidentData(response.data); // Set current data for UI
             }
@@ -71,7 +71,7 @@ const GeneralIncidentDetailsContent = () => {
         }
     };
 
-    console.log("real details ", incidentDetails);
+    // console.log("real details ", incidentDetails);
     // UseEffect to fetch data when either the incidentId or useOriginalVersion changes
     useEffect(() => {
         fetchIncidentDetails(); // Fetch incident data when version toggles or incidentId changes
