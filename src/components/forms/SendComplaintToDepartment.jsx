@@ -76,7 +76,7 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
-        const uploadResponse = await api.post("api/upload/", formData);
+        const uploadResponse = await api.post("/upload/", formData);
         documentUrl = uploadResponse.data.url;
       }
 
