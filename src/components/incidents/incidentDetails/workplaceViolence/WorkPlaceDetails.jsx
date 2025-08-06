@@ -1,9 +1,9 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import DashboardLayout from "@/app/dashboard/layout";
-import api, {API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import IncidentDetailsHeader from "../IncidentDetailsHeader";
 import IncidentTabs from "../IncidentTabs";
 
@@ -17,17 +17,18 @@ import WorkplaceReviews from "./WorkplaceReviews";
 import { ChevronRight } from "lucide-react";
 import FilesList from "../../documentHistory/FilesList";
 import NoResources from "@/components/NoResources";
+import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 
 const WorkPlaceDetailsContent = () => {
+  const { incidentId } = useParams()
   const [isFetching, setIsFetching] = useState(true);
   const [incidentDetails, setIncidentDetails] = useState({});
   const [incidentStatus, setIncidentStatus] = useState({});
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [workplaceViolenceId, setWorkPlaceViolenceId] = useState(
-    localStorage.getItem("workplaceViolenceId")
-  );
+  const [reviewsCount, setReviewsCount] = useState();
+
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -37,7 +38,7 @@ const WorkPlaceDetailsContent = () => {
       // Fetch the original version of the incident
       if (useOriginalVersion) {
         response = await api.get(
-          `${API_URL}/incidents/workplace-violence/${workplaceViolenceId}/`
+          `${API_URL}/incidents/workplace-violence/${incidentId}/`
         );
         setIncidentDetails(response.data); // Store the original data
         setCurrentIncidentData(response.data); // Set current data for UI
@@ -45,7 +46,7 @@ const WorkPlaceDetailsContent = () => {
       } else {
         // Fetch the latest modified version of the incident
         const res = await api.get(
-          `${API_URL}/incidents/workplace-violence/${workplaceViolenceId}/`
+          `${API_URL}/incidents/workplace-violence/${incidentId}/`
         );
         const latestIncident = res.data.modifications.versions.find((mod) => {
           return mod.latest === true;
@@ -53,7 +54,7 @@ const WorkPlaceDetailsContent = () => {
 
         if (latestIncident) {
           response = await api.get(
-            `${API_URL}/incidents/workplace-violence/${workplaceViolenceId}/versions/${latestIncident.id}/`
+            `${API_URL}/incidents/workplace-violence/${incidentId}/versions/${latestIncident.id}/`
           );
           console.log(response.data);
           console.log(latestIncident);
@@ -74,13 +75,13 @@ const WorkPlaceDetailsContent = () => {
 
   useEffect(() => {
     fetchIncidentDetails(); // Fetch incident data when version toggles or incidentId changes
-  }, [workplaceViolenceId, useOriginalVersion]);
+  }, [incidentId, useOriginalVersion]);
 
   useEffect(() => {
     const getIncidentReviews = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/incidents/workplace-violence/${workplaceViolenceId}/reviews/`
+          `${API_URL}/incidents/workplace-violence/${incidentId}/reviews/`
         );
         if (response.status === 200) {
           localStorage.setItem("incidentReviewsCount", response.data.length);
@@ -100,7 +101,7 @@ const WorkPlaceDetailsContent = () => {
     const getDocumentHistory = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/activities/list/${workplaceViolenceId}/`
+          `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
           localStorage.setItem("documentHistoryCount", response.data.length);
@@ -126,11 +127,11 @@ const WorkPlaceDetailsContent = () => {
             <IncidentDetailsHeader
               data={{
                 incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
-                modifications: useOriginalVersion 
-                  ? incidentDetails?.modifications 
+                modifications: useOriginalVersion
+                  ? incidentDetails?.modifications
                   : latestIncidentDetails?.modifications
               }}
-              incidentDetailsId={workplaceViolenceId}
+              incidentDetailsId={incidentId}
               apiLink={"workplace_violence"}
               sendTo={"send-to-department"}
               managerAccess={true}
@@ -171,12 +172,13 @@ const WorkPlaceDetailsContent = () => {
                 <WorkplaceOtherInfo data={currentIncidentData} />
               }
               documentHistory={
-                <WorkplaceDocumentHistory incidentId={workplaceViolenceId} />
+                <WorkplaceDocumentHistory incidentId={incidentId} />
               }
-              reviews={<WorkplaceReviews incidentId={workplaceViolenceId} />}
+              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"workplace-violence"} setCount={setReviewsCount} />}
               documents={
-                <IncidentDocuments incidentId={workplaceViolenceId} />
+                <IncidentDocuments incidentId={incidentId} />
               }
+              reviewsCount={reviewsCount}
             />
           </div>
         </div>
@@ -188,7 +190,7 @@ const WorkPlaceDetailsContent = () => {
 };
 
 const BreadCrumbs = () => {
-  const { workplaceViolenceId } = useParams();
+  const { incidentId } = useParams();
   return (
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <ChevronRight />
@@ -197,7 +199,7 @@ const BreadCrumbs = () => {
         Workplace Violence List
       </Link>{" "}
       <ChevronRight />
-      <Link className="current-page"> #{workplaceViolenceId}</Link>
+      <Link className="current-page"> #{incidentId}</Link>
     </div>
   );
 };

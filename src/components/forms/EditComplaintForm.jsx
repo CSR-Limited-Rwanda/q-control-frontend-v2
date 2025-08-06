@@ -1,34 +1,50 @@
-"use client";
 import { useEffect, useState } from "react";
-import api from "@/utils/api";
-import { X, CircleCheck, LoaderCircle, Square } from "lucide-react";
+import api, { cleanedData } from "@/utils/api";
+
 import CustomDatePicker from "../CustomDatePicker";
 import { howComplaintIsReceived } from "@/constants/constants";
 import RichTexField from "./RichTextField";
+import {
+  ArrowLeft,
+  LoaderCircle,
+  Save,
+  Square,
+  SquareCheck,
+  X,
+} from "lucide-react";
 
-const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
+const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [userError, setUserError] = useState("");
   const [fetchingStaff, setFetchingStaff] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [dateOfComplaint, setDateOfComplaint] = useState("");
-  const [patientName, setPatientName] = useState("");
-  const [medicalRecordNumber, setMedicalRecordNumber] = useState("");
-  const [natureOfComplaint, setNatureOfComplaint] = useState("");
+  const [dateOfComplaint, setDateOfComplaint] = useState(
+    complaint.date_of_complaint || ""
+  );
+  const [patientName, setPatientName] = useState(complaint.patient_name || "");
+  const [medicalRecordNumber, setMedicalRecordNumber] = useState(
+    complaint.medical_record_number || ""
+  );
+  const [natureOfComplaint, setNatureOfComplaint] = useState(
+    complaint.complaint_nature || ""
+  );
   const [department, setDepartment] = useState("");
-  const [complaintType, setComplaintType] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [resolvedByStaff, setResolvedByStaff] = useState(false);
-  const [howComplaintWasReceived, setHowComplaintWasReceived] = useState("");
+  const [complaintType, setComplaintType] = useState(
+    complaint.complaint_type || ""
+  );
+  const [phoneNumber, setPhoneNumber] = useState(complaint.phone_number || "");
+  const [resolvedByStaff, setResolvedByStaff] = useState(
+    complaint.resolved_by_staff || false
+  );
+  const [howComplaintWasReceived, setHowComplaintWasReceived] = useState(
+    complaint.how_complaint_was_taken || ""
+  );
   const [assignedToStaff, setAssignedToStaff] = useState("");
   const [assignedStaffList, setAssignedStaffList] = useState([]);
-  const [complaintDetails, setComplaintDetails] = useState("");
+  const [complaintDetails, setComplaintDetails] = useState(complaint.details);
   const [staffList, setStaffList] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
-  const [facilityId, setFacilityId] = useState(
-    localStorage.getItem("facilityId")
-  );
 
   const handleResolvedStaff = () => {
     setResolvedByStaff(!resolvedByStaff);
@@ -56,12 +72,10 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
   };
 
   const handleSubmit = async () => {
-    // Resolved by staff
-    //For concerns expressed by a patient or patient representative that were not resolved by staff present, the concern should be considered a Grievance. Please notify the House Supervisor, Charge Nurse or the Administrator on Call (AOC)
-    //Who resolved the complaint?
     setIsLoading(true);
+    setError("");
+    setSuccessMessage("");
     const complaintData = {
-      facility: parseInt(facilityId),
       date_of_complaint: dateOfComplaint,
       patient_name: patientName,
       medical_record_number: medicalRecordNumber,
@@ -75,13 +89,17 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
       details: complaintDetails,
     };
     try {
-      const response = await api.post("complaints/", complaintData);
-      if (response.status === 201) {
+      const response = await api.put(
+        `complaints/${complaint.id}/`,
+        cleanedData(complaintData)
+      );
+      if (response.status === 200) {
         setSuccessMessage("Complaint submitted successfully");
         setIsLoading(false);
         setTimeout(() => {
           handleSubmitComplaint();
         }, 3000);
+        window.location.reload();
       }
     } catch (error) {
       if (error.response) {
@@ -120,11 +138,11 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
     fetchStaff();
   }, []);
   return (
-    <div className={`user-complain-form ${hasHeight ? "has-height" : ""}`}>
+    <div className="user-complain-form">
       <div className="form">
-        <h3>Submit a new complaint</h3>
-        <X className="close-popup" onClick={handleSubmitComplaint} />
-        <form action="" className="newIncidentForm">
+        <h3>Edit your complaint</h3>
+        <X className="close-popup close-icon" onClick={handleSubmitComplaint} />
+        <form action="">
           <div className="field">
             <label htmlFor="">Patient's name</label>
             <input
@@ -192,19 +210,9 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
           </div>
           <div className="field">
             <div onClick={handleResolvedStaff} className="check-box">
-              {resolvedByStaff ? <CircleCheck /> : <Square />}
+              {resolvedByStaff ? <SquareCheck /> : <Square />}
               <p>Resolved by staff</p>
             </div>
-            {!resolvedByStaff && (
-              <div className="warning-message">
-                <small>
-                  For concerns expressed by a patient or patient representative
-                  that were not resolved by staff present, the concern should be
-                  considered a Grievance. Please notify the House Supervisor,
-                  Charge Nurse or the Administrator on Call (AOC)
-                </small>
-              </div>
-            )}
           </div>
           <div className="field">
             <label htmlFor="">How complaint was received</label>
@@ -218,7 +226,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
                   className="check-box"
                 >
                   {howComplaintWasReceived === howComplaintIsReceived ? (
-                    <CircleCheck />
+                    <SquareCheck />
                   ) : (
                     <Square />
                   )}
@@ -236,7 +244,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
                                         assignedStaffList.map((staff, index) => (
                                             <div className="staff">
                                                 <p>{staff.first_name}</p>
-                                                <X onClick={() => handleAssignedStaffList(staff)} size={18} />
+                                                <Cancel01Icon onClick={() => handleAssignedStaffList(staff)} size={18} />
                                             </div>
 
                                         ))
@@ -275,7 +283,11 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
         {successMessage && (
           <div className="success-message">{successMessage}</div>
         )}
-        {resolvedByStaff && (
+        <div className="buttons">
+          <button onClick={handleSubmitComplaint} className="tertiary-button">
+            <ArrowLeft size={16} />
+            Back
+          </button>
           <button
             onClick={handleSubmit}
             className="primary-button"
@@ -284,13 +296,16 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
             {isLoading ? (
               <LoaderCircle size={18} className="loading-icon" />
             ) : (
-              "Submit complaint"
+              <>
+                <Save size={18} />
+                Update complaint
+              </>
             )}
           </button>
-        )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default SubmitComplaintForm;
+export default EditComplaintForm;

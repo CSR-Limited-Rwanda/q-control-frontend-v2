@@ -13,6 +13,7 @@ import { ArrowRight } from "lucide-react";
 import LostAndfoundDocumentHistory from "./LostAndFoundDocumentHistory";
 import LostAndFoundReviews from "./LostAndFoundReview";
 import FilesList from "../../documentHistory/FilesList";
+import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 import NoResources from "@/components/NoResources";
 
 // css
@@ -26,6 +27,7 @@ const LostFoundDetailsContent = () => {
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const { incidentId } = useParams()
+  const [reviewsCount, setReviewsCount] = useState();
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -157,8 +159,9 @@ const LostFoundDetailsContent = () => {
               documentHistory={
                 <LostAndfoundDocumentHistory incidentId={incidentId} />
               }
-              reviews={<LostAndFoundReviews incidentId={incidentId} />}
+              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"lost-found"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
+              reviewsCount={reviewsCount}
             />
           </div>
         </div>

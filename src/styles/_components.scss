@@ -9,9 +9,6 @@
   animation: fadeInFadeOut 1s ease-in-out;
 }
 
-
-
-
 // inputs
 
 input,
@@ -66,7 +63,6 @@ textarea {
 }
 
 // form
-
 
 form,
 .form {
@@ -279,7 +275,6 @@ form,
   color: #155724;
 }
 
-
 /* Input Component */
 .input__wrapper {
   position: relative;
@@ -315,7 +310,7 @@ form,
   left: 0.75rem;
 }
 
-.input__icon--left+.input__field {
+.input__icon--left + .input__field {
   padding-left: 2.5rem;
 }
 
@@ -323,7 +318,7 @@ form,
   right: 0.75rem;
 }
 
-.input__icon--right+.input__field {
+.input__icon--right + .input__field {
   padding-right: 2.5rem;
 }
 
@@ -545,19 +540,26 @@ table {
     transition: all 0.3s ease-in-out;
     text-wrap: nowrap;
     cursor: pointer;
-    color: #A5A3A9;
+    color: #a5a3a9;
   }
 
-  &> :first-child {
+  & > :first-child {
     padding-left: 0;
   }
 
   .active {
-    background-color: #F3F8FF;
-    color: #145C9E;
-    border-radius: var(--base-border-radius);
+    background-color: #f3f8ff;
+    color: #145c9e;
+    border-radius: 12px;
     padding: 14px;
   }
+}
+
+.profile-tab {
+  border-bottom: 1px solid var(--border);
+  background-color: transparent;
+  border-radius: 0;
+  padding: 12px 18px;
 }
 
 .actions-dropdown {
@@ -568,7 +570,7 @@ table {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1rem;
     color: white;
     border-radius: var(--base-border-radius);
     justify-content: space-between;
@@ -733,9 +735,9 @@ table {
       cursor: pointer;
 
       &:hover {
-        background-color: #FFF1EB;
-        border: 1px solid #F87C47;
-        color: #F87C47;
+        background-color: #fff1eb;
+        border: 1px solid #f87c47;
+        color: #f87c47;
       }
 
       .icon {
@@ -781,7 +783,7 @@ table {
     justify-items: center;
 
     .icon {
-      background-color: #F87C47;
+      background-color: #f87c47;
       height: 100px;
       width: 100px;
       border-radius: 50%;
@@ -801,10 +803,12 @@ table {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: lighten($color: #145C9E, $amount: 60);
+  background-color: lighten($color: #145c9e, $amount: 60);
   // width: fit-content;
   padding: 1rem;
-  border: 1px solid lighten($color: #145C9E, $amount: 30);
+  border: 1px solid lighten($color: #145c9e, $amount: 30);
+  border-radius: 0.8rem;
+  border: 1px solid lighten($color: #145c9e, $amount: 30);
   border-radius: var(--base-border-radius);
 
   .facility {

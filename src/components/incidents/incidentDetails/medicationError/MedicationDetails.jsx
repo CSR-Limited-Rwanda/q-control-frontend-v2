@@ -14,18 +14,21 @@ import MedicationReviews from "./MedicationReviews";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import FilesList from "../../documentHistory/FilesList";
+import IncidentReviewsTab from "@/components/IncidentReviewsTab";
+
 
 // css
 import "../../../../styles/_generalIncidentDetailsPage.scss"
 
 const MedicationDetailsContent = () => {
+  const { incidentId } = useParams()
   const [isFetching, setIsFetching] = useState(true);
   const [incidentDetails, setIncidentDetails] = useState({});
   const [incidentStatus, setIncidentStatus] = useState({});
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const { incidentId } = useParams()
+  const [reviewsCount, setReviewsCount] = useState();
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -172,8 +175,9 @@ const MedicationDetailsContent = () => {
               documentHistory={
                 <MedicationDocumentHistory incidentId={incidentId} />
               }
-              reviews={<MedicationReviews incidentId={incidentId} />}
+              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"medication-error"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
+              reviewsCount={reviewsCount}
             />
           </div>
         </div>

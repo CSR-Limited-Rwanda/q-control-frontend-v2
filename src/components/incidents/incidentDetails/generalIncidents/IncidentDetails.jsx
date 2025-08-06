@@ -12,15 +12,15 @@ const IncidentDetails = ({
   hasSex = true,
   hasInitiated = false,
 }) => {
-  // console.log("Incident Detailss: ", data);
+  console.log("Incident Detailss: ", data);
   return (
     <div className="patient-name-type">
       <div className="date">
         Incident Date{" "}
         <DateFormatter
           dateString={
-            data.incident?.incident_date ||
-            data.incident?.date_of_injury_or_near_miss ||
+            data?.incident_date ||
+            data?.date_of_injury_or_near_miss ||
             data?.date ||
             data?.date_reported ||
             data?.date_of_report ||

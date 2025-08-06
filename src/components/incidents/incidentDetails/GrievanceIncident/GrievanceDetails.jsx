@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -6,7 +6,7 @@ import DashboardLayout from "@/app/dashboard/layout";
 import IncidentDetailsHeader from "../IncidentDetailsHeader";
 import IncidentDetails from "../generalIncidents/IncidentDetails";
 import IncidentTabs from "../IncidentTabs";
-import api,{API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import GrievanceDetailsContentTab from "./GrievanceDetailsContentTab";
 import GrievanceIncidentGeneralInfo from "./GrievanceIncidentGeneralInfo";
 import GrivanceDocumentHistory from "./GrievanceDocumentHistory";
@@ -15,11 +15,12 @@ import GrievanceInvestigationInfo from "./GrievanceInvestigationInfo";
 import FilesList from "../../documentHistory/FilesList";
 import NoResources from "@/components/NoResources";
 import { ChevronRight } from 'lucide-react';
+import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 // css
-import "../../../../styles/_generalIncidentDetailsPage.scss"
+import "../../../../styles/_generalIncidentDetailsPage.scss";
 
 const GrievanceDetailsContent = () => {
-  const {incidentId} = useParams()
+  const { incidentId } = useParams();
   const [isFetching, setIsFetching] = useState(true);
   const [incidentDetails, setIncidentDetails] = useState({});
   const [investigationDetails, setInvestigationDetails] = useState({});
@@ -27,9 +28,49 @@ const GrievanceDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  // const [grievanceId, setGrievanceId] = useState(
-  //   localStorage.getItem("grievanceId")
-  // );
+  const [reviewsCount, setReviewsCount] = useState();
+ 
+
+  const fetchInvestigationDetails = async () => {
+    setIsFetching(true);
+    try {
+      let response;
+      // Fetch the original version of the incident
+      if (useOriginalVersion) {
+        response = await api.get(
+          `${API_URL}/incidents/grievance/${incidentId}/investigation`
+        );
+        console.log(response.data);
+        setInvestigationDetails(response.data.investigation); //
+      } else {
+        // Fetch the latest modified version of the incident
+        const res = await api.get(
+          `${API_URL}/incidents/grievance/${incidentId}/`
+        );
+        const latestIncident = res.data.modifications.versions.find((mod) => {
+          return mod.latest === true;
+        });
+
+        if (latestIncident) {
+          response = await api.get(
+            `${API_URL}/incidents/grievance/${incidentId}/versions/${latestIncident.id}/`
+          );
+          console.log(response.data);
+          console.log(latestIncident);
+        } else {
+          response = res;
+        }
+
+        setLatestIncidentDetails(response.data); // Store the latest modified version
+        setCurrentIncidentData(response.data); // Set current data for UI
+        setInvestigationDetails(response.data.investigation);
+      }
+      setIsFetching(false);
+    } catch (error) {
+      console.log(error);
+      setIsFetching(false);
+    }
+  }
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -72,22 +113,6 @@ const GrievanceDetailsContent = () => {
       console.log(error);
       setIsFetching(false);
     }
-    // try {
-    //   const response = await api.get(
-    //     `${API_URL}/incidents/grievance/${grievanceId}/`
-    //   );
-    //   if (response.status === 200) {
-    //     //   setIncidentStatus(response.data.statuses);
-    //     console.log(response.data);
-    //     setIncidentDetails(response.data.grievance);
-    //     setInvestigationDetails(response.data.investigation);
-    //     setIsFetching(false);
-    //   }
-    //   console.log(incidentDetails);
-    // } catch (error) {
-    //   console.log(error);
-    //   setIsFetching(false);
-    // }
   };
 
   // UseEffect to fetch data when either the incidentId or useOriginalVersion changes
@@ -144,10 +169,12 @@ const GrievanceDetailsContent = () => {
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
               data={{
-                incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
-                modifications: useOriginalVersion 
-                  ? incidentDetails?.modifications 
-                  : latestIncidentDetails?.modifications
+                incident: useOriginalVersion
+                  ? incidentDetails
+                  : latestIncidentDetails,
+                modifications: useOriginalVersion
+                  ? incidentDetails?.modifications
+                  : latestIncidentDetails?.modifications,
               }}
               incidentDetailsId={incidentId}
               apiLink={"grievance"}
@@ -186,21 +213,20 @@ const GrievanceDetailsContent = () => {
               generalInformation={
                 <GrievanceIncidentGeneralInfo
                   data={currentIncidentData}
-                    incidentStatuses={incidentStatus}
+                  incidentStatuses={incidentStatus}
                 />
               }
-              otherInformation={
-                "No other information"
-              }
+              otherInformation={"No other information"}
               documentHistory={
                 <GrivanceDocumentHistory incidentId={incidentId} />
               }
-              reviews={<GrievanceReview incidentId={incidentId} />}
+              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"grievance"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
               investigation={
                 <GrievanceInvestigationInfo data={investigationDetails} />
               }
               showInvestigationTab={true}
+              reviewsCount={reviewsCount}
             />
           </div>
         </div>
@@ -238,8 +264,7 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link to={"/"}>Overview</Link> <ChevronRight />
       <Link to={"/incidents/"}>Incidents</Link> <ChevronRight />
-      <Link to={"/incident/grievance/"}>Grievance List</Link>{" "}
-      <ChevronRight />
+      <Link to={"/incident/grievance/"}>Grievance List</Link> <ChevronRight />
       <Link className="current-page"> #{grievanceId}</Link>
     </div>
   );
