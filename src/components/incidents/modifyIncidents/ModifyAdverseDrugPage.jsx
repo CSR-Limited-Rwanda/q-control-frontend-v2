@@ -30,7 +30,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
   const [adverseDrugReactionId, setAdverseDrugReactionId] = useState(
-    localStorage.getItem("adverseDrugReactionId")
+    localStorage.getItem("drugReactionId")
   );
 
   // form

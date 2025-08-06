@@ -187,6 +187,7 @@ const WorkplaceViolenceList = () => {
 
   const handleRowClick = (incidentId) => {
     router.push(`/incident/workplace-violence/${incidentId}`);
+    localStorage.setItem("workplaceViolenceId", incidentId);
   };
 
   const navigateToModify = (incidentId) => {

@@ -54,7 +54,7 @@ const GeneralIncidentGeneralInformation = ({ data, incidentStatuses }) => {
             </div>
           </div>
         </div>
-      ) : data.incident.incident_type === "Treatment related" ? (
+      ) : data.incident?.incident_type === "Treatment related" ? (
         <div className="treatment-type-incident">
           <h3>Treatment related incident</h3>
           <div className="treatment-incident-data">
