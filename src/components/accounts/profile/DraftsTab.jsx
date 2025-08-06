@@ -154,9 +154,9 @@ export const DraftCategory = ({
             <th>
               <div onClick={() => handleSelectAll(incident)}>
                 {selectedItems.length === incident.length &&
-                incident.every((item) =>
-                  selectedItems.some((selected) => selected.id === item.id)
-                ) ? (
+                  incident.every((item) =>
+                    selectedItems.some((selected) => selected.id === item.id)
+                  ) ? (
                   <SquareCheck />
                 ) : (
                   <Square />
@@ -176,9 +176,8 @@ export const DraftCategory = ({
             incident.map((draft, index) => (
               <tr
                 key={index}
-                className={`table-row ${
-                  selectedItems.includes(draft) ? "selected" : ""
-                }`}
+                className={`table-row ${selectedItems.includes(draft) ? "selected" : ""
+                  }`}
               >
                 <td>
                   <div
@@ -200,13 +199,12 @@ export const DraftCategory = ({
                 </td>
                 <td>
                   <p
-                    className={`follow-up ${
-                      draft.status === "Draft"
+                    className={`follow-up ${draft.status === "Draft"
                         ? "in-progress"
                         : draft.status === "Closed"
-                        ? "closed"
-                        : "open"
-                    }`}
+                          ? "closed"
+                          : "open"
+                      }`}
                   >
                     {draft.status || "Not specified"}
                   </p>
@@ -271,8 +269,8 @@ export const DraftsTab = () => {
     } catch (error) {
       setError(
         error.response?.data?.message ||
-          error.response?.error ||
-          "Error fetching drafts data, try again later"
+        error.response?.error ||
+        "Error fetching drafts data, try again later"
       );
       setLoading(false);
       console.error(error);
@@ -289,7 +287,7 @@ export const DraftsTab = () => {
     <div className="draft-list">
       {error && <div className="error-message">{error}</div>}
       {Object.keys(drafts).length === 0 ||
-      Object.values(drafts).every((arr) => arr.length === 0) ? (
+        Object.values(drafts).every((arr) => arr.length === 0) ? (
         <div className="no-drafts">No drafts found</div>
       ) : (
         <div className="drafts-categories">
@@ -305,7 +303,7 @@ export const DraftsTab = () => {
             <DraftCategory
               incident={generalIncidents}
               title={"General incident reports"}
-              apiLink={"incident/general"}
+              apiLink={"incidents/general"}
               incidentName={"general_incident"}
               fetchDrafts={fetchDrafts}
             />
@@ -314,7 +312,7 @@ export const DraftsTab = () => {
             <DraftCategory
               incident={grievances}
               title={"Grievance reports"}
-              apiLink={"incident/grievance"}
+              apiLink={"incidents/grievance"}
               incidentName={"grievance_incident"}
               fetchDrafts={fetchDrafts}
             />
@@ -323,7 +321,7 @@ export const DraftsTab = () => {
             <DraftCategory
               incident={adverseDrugReaction}
               title={"Adverse drug reaction reports"}
-              apiLink={"incident/drug-reaction"}
+              apiLink={"incidents/drug-reaction"}
               incidentName={"adverse_drug_reaction"}
               fetchDrafts={fetchDrafts}
             />
@@ -332,17 +330,17 @@ export const DraftsTab = () => {
             <DraftCategory
               incident={lostAndFoundIncidents}
               title={"Lost & Found property reports"}
-              apiLink={"incident/lost-and-found"}
+              apiLink={"incidents/lost-and-found"}
               incidentName={"lost_and_found"}
               fetchDrafts={fetchDrafts}
             />
           ) : null}
           {workplaceViolenceIncidents &&
-          workplaceViolenceIncidents.length > 0 ? (
+            workplaceViolenceIncidents.length > 0 ? (
             <DraftCategory
               incident={workplaceViolenceIncidents}
               title={"Workplace violence reports"}
-              apiLink={"incident/workplace-violence"}
+              apiLink={"incidents/workplace-violence"}
               incidentName={"workplace_violence"}
               fetchDrafts={fetchDrafts}
             />
@@ -351,7 +349,7 @@ export const DraftsTab = () => {
             <DraftCategory
               incident={medicationError}
               title={"Medication error reports"}
-              apiLink={"incident/medical-error"}
+              apiLink={"incidents/medical-error"}
               incidentName={"medical_error"}
               fetchDrafts={fetchDrafts}
             />
@@ -360,7 +358,7 @@ export const DraftsTab = () => {
             <DraftCategory
               incident={employeeIncidents}
               title={"Staff Incident reports"}
-              apiLink={"incident/staff"}
+              apiLink={"incidents/staff"}
               incidentName={"staff_incident_report"}
               fetchDrafts={fetchDrafts}
             />

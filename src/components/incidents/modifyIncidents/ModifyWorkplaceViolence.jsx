@@ -746,7 +746,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
     <div className="modify-page-content">
       <div className="modify-page-header">
         <BackToPage
-          link={"/incident/workplace-violence/"}
+          link={"/incidents/workplace-violence/"}
           pageName={"Workplace violence incident"}
         />
         <h2 className="title">Modifying Workplace Violence Incident</h2>
@@ -786,10 +786,10 @@ const ModifyWorkplaceIncident = ({ data }) => {
               Status :{" "}
               <span
                 className={`follow-up ${status === "Draft"
-                    ? "in-progress"
-                    : status === "Closed"
-                      ? "closed"
-                      : "Open"
+                  ? "in-progress"
+                  : status === "Closed"
+                    ? "closed"
+                    : "Open"
                   }`}
               >
                 {status}

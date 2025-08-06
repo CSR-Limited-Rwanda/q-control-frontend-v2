@@ -17,7 +17,7 @@ const StaffReviews = ({ incidentId }) => {
     const getIncidentReviews = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/incidents/employee_incident/${incidentId}/reviews/`
+          `${API_URL}/incidents/employee_incidents/${incidentId}/reviews/`
         );
         if (response.status === 200) {
           setReviews(response.data);
@@ -49,7 +49,7 @@ const StaffReviews = ({ incidentId }) => {
           <div key={index} className="review">
             <div className="profile">
               {review.created_by.profile_img &&
-              review.created_by.profile_img ? (
+                review.created_by.profile_img ? (
                 <img
                   className="profile-pic"
                   src={`${API_URL}${review.created_by.profile_img}`}
@@ -59,9 +59,8 @@ const StaffReviews = ({ incidentId }) => {
                 <div className="profile-place-holder">
                   {/* we will find a way to change color according to the user who is logged in */}
                   <NamesInitials
-                    fullName={`${
-                      review.created_by?.user?.last_name || "None"
-                    } ${review.created_by?.user?.first_name || "None"}`}
+                    fullName={`${review.created_by?.user?.last_name || "None"
+                      } ${review.created_by?.user?.first_name || "None"}`}
                   />
                 </div>
               )}

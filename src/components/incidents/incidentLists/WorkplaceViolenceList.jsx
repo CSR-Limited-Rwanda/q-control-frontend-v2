@@ -186,12 +186,12 @@ const WorkplaceViolenceList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/workplace-violence/${incidentId}`);
+    router.push(`/incidents/workplace-violence/${incidentId}`);
     localStorage.setItem("workplaceViolenceId", incidentId);
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/workplace-violence/${incidentId}/update/`);
+    router.push(`/incidents/workplace-violence/${incidentId}/update/`);
     localStorage.setItem("workplaceViolenceId", incidentId);
   };
 
@@ -402,9 +402,8 @@ const WorkplaceViolenceList = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${
-                            currentPage === number ? "active" : ""
-                          }`}
+                          className={`pagination-button ${currentPage === number ? "active" : ""
+                            }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}
@@ -473,9 +472,8 @@ const WorkplaceViolenceList = () => {
                   {pageNumbers.map((number) => (
                     <button
                       key={number}
-                      className={`pagination-button ${
-                        currentPage === number ? "active" : ""
-                      }`}
+                      className={`pagination-button ${currentPage === number ? "active" : ""
+                        }`}
                       onClick={() => handlePageChange(number)}
                     >
                       {number}
@@ -650,9 +648,8 @@ const WorkplaceViolenceTable = ({
                 )
               }
               key={index}
-              className={`table-card ${
-                selectedItems.includes(incident) ? "selected" : ""
-              }`}
+              className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+                }`}
             >
               <td>
                 <div
@@ -693,13 +690,12 @@ const WorkplaceViolenceTable = ({
               <td>{incident.severity_level || "Not provided"}</td>
               <td>
                 <p
-                  className={`follow-up ${
-                    incident.status === "Draft"
+                  className={`follow-up ${incident.status === "Draft"
                       ? "in-progress"
                       : incident.status === "Closed"
-                      ? "closed"
-                      : "Open"
-                  }`}
+                        ? "closed"
+                        : "Open"
+                    }`}
                 >
                   {incident.status || "Not specified"}
                 </p>
@@ -753,9 +749,8 @@ const IncidentTableCard = ({
 }) => {
   return (
     <div
-      className={`table-card ${
-        selectedItems.includes(incident) ? "selected" : ""
-      }`}
+      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+        }`}
     >
       <div className="card-header">
         <div className="id-number">
@@ -812,13 +807,12 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Status: </label>
           <span
-            className={`follow-up ${
-              incident.status === "Draft"
+            className={`follow-up ${incident.status === "Draft"
                 ? "in-progress"
                 : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-            }`}
+                  ? "closed"
+                  : "Open"
+              }`}
           >
             {incident.status || "Not specified"}
           </span>

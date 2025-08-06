@@ -163,11 +163,11 @@ const MedicationErrorList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/medication-error/${incidentId}`);
+    router.push(`/incidents/medication-error/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/medication-error/${incidentId}/update/`);
+    router.push(`/incidents/medication-error/${incidentId}/update/`);
     localStorage.setItem("medicationErrorIncidentId", incidentId)
   };
 
@@ -380,9 +380,8 @@ const MedicationErrorList = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${
-                            currentPage === number ? "active" : ""
-                          }`}
+                          className={`pagination-button ${currentPage === number ? "active" : ""
+                            }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}
@@ -451,9 +450,8 @@ const MedicationErrorList = () => {
                   {pageNumbers.map((number) => (
                     <button
                       key={number}
-                      className={`pagination-button ${
-                        currentPage === number ? "active" : ""
-                      }`}
+                      className={`pagination-button ${currentPage === number ? "active" : ""
+                        }`}
                       onClick={() => handlePageChange(number)}
                     >
                       {number}
@@ -622,9 +620,8 @@ const MedicationErrorTable = ({
                 )
               }
               key={index}
-              className={`table-card ${
-                selectedItems.includes(medication) ? "selected" : ""
-              }`}
+              className={`table-card ${selectedItems.includes(medication) ? "selected" : ""
+                }`}
             >
               <td>
                 <div
@@ -670,13 +667,12 @@ const MedicationErrorTable = ({
               </td>
               <td>
                 <p
-                  className={`follow-up ${
-                    medication.status === "Draft"
+                  className={`follow-up ${medication.status === "Draft"
                       ? "in-progress"
                       : medication.status === "Closed"
-                      ? "closed"
-                      : "Open"
-                  }`}
+                        ? "closed"
+                        : "Open"
+                    }`}
                 >
                   {medication.status || "Not specified"}
                 </p>
@@ -731,9 +727,8 @@ const IncidentTableCard = ({
 }) => {
   return (
     <div
-      className={`table-card ${
-        selectedItems.includes(incident) ? "selected" : ""
-      }`}
+      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+        }`}
     >
       <div className="card-header">
         <div className="id-number">
@@ -803,13 +798,12 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Status: </label>
           <span
-            className={`follow-up ${
-              incident.status === "Draft"
+            className={`follow-up ${incident.status === "Draft"
                 ? "in-progress"
                 : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-            }`}
+                  ? "closed"
+                  : "Open"
+              }`}
           >
             {incident?.status || "Not specified"}
           </span>
