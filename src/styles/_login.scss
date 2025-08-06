@@ -1,0 +1,95 @@
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+
+    .logo {
+        max-width: 80px;
+    }
+
+    .background {
+        background: url('/cohesive.jpg');
+        background-size: cover;
+        height: 100vh;
+        width: 50vw;
+    }
+
+    .login-page-content {
+        width: 50vw;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+
+        p,
+        h3 {
+            align-self: flex-start;
+        }
+    }
+
+    .form {
+        max-width: 500px;
+        width: 100%;
+
+        button {
+            width: 100%;
+        }
+    }
+
+
+    form {
+        padding: 2rem;
+        border: 1px solid var(--border);
+        border-radius: calc(var(--base-border-radius) * 2);
+
+        .links {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: space-between;
+
+            a {
+                color: var(--primary);
+                font-weight: 500;
+            }
+        }
+    }
+}
+
+
+@media screen and (max-width: 1024px) {
+    .login-page {
+        flex-direction: column;
+        height: auto;
+
+        .background {
+            width: 100%;
+            height: 30vh;
+        }
+
+        .login-page-content {
+            width: 100%;
+            padding: 2rem;
+        }
+    }
+
+}
+
+
+@media screen and (max-width: 768px) {
+    .login-page {
+        .background {
+            display: none;
+        }
+
+        .login-page-content {
+            width: 100%;
+            padding: 1rem;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}

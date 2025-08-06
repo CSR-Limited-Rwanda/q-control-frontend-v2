@@ -1,116 +1,169 @@
-import { useEffect, useState } from "react";
+'use client'
+import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import CryptoJS from "crypto-js";
-import { useRouter } from "next/navigation";
 import api from "@/utils/api";
 
-export const useAuthentication = () => {
-  const router = useRouter();
-  const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY;
-  const domainName = process.env.NEXT_PUBLIC_DOMAIN_NAME;
+// Create AuthContext
+const AuthContext = createContext({
+  user: null,
+  isAuth: false,
+  loading: true,
+  login: () => { },
+  logout: () => { },
+  refreshAuth: () => { },
+});
+
+// AuthProvider component
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Ensure this code runs only on the client side
-    if (typeof window === "undefined") return;
+  // Check if token exists and is valid
+  const checkTokenValidity = () => {
+    if (typeof window === "undefined") return false;
 
-    const init = async () => {
-      const params = new URLSearchParams(window.location.search);
-      const encryptedToken = params.get("token");
+    const token = localStorage.getItem("access");
 
-      if (!encryptionKey) {
-        window.location.href = `${domainName}/?error=Invalid encryption key`;
-        return;
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const decodedToken = jwtDecode(token);
+      const expirationTime = decodedToken.exp * 1000; // Convert to milliseconds
+      const currentTime = Date.now();
+
+      // Check if token is expired
+      if (expirationTime < currentTime) {
+        // Token is expired, clear localStorage
+        localStorage.clear();
+        return false;
       }
 
-      // Decrypt the token
-      if (encryptedToken) {
-        const decryptedToken = decryptToken(encryptedToken, encryptionKey);
-        if (!decryptedToken) {
-          console.error("Failed to decrypt token");
-          setLoading(false);
-          return;
-        }
-
-        // Store in localStorage
-        localStorage.setItem("access", decryptedToken);
-
-        // Clear query parameters from the URL
-        const newUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-      }
-
-      // Retrieve token from localStorage
-      const token = localStorage.getItem("access");
-
-      if (token) {
-        const tokenExpired = isTokenExpired(token);
-        if (tokenExpired) {
-          setIsAuth(false);
-        } else {
-          setIsAuth(true);
-
-          const result = await getUserInfoFromToken(token);
-          if (result && result.tokenUserInfo) {
-            setUser(result.tokenUserInfo);
-          }
-        }
-      }
-
-      setLoading(false);
-    };
-
-    init(); // Call the async function
-  }, []);
-
-  const logout = () => {
-    if (typeof window !== "undefined") {
+      return true;
+    } catch (error) {
+      console.error("Invalid token:", error);
       localStorage.clear();
-      window.location.href = "https://www.cohesiveapps.com/";
+      return false;
     }
   };
 
-  return { isAuth, loading, logout, user };
+  // Initialize authentication state
+  const initializeAuth = async () => {
+    setLoading(true);
+
+    const tokenIsValid = checkTokenValidity();
+
+    if (tokenIsValid) {
+      const token = localStorage.getItem("access");
+      const result = await getUserInfoFromToken(token);
+
+      if (result && result.tokenUserInfo) {
+        setUser(result.tokenUserInfo);
+        setIsAuth(true);
+      } else {
+        // Failed to get user info, clear auth state
+        localStorage.clear();
+        setUser(null);
+        setIsAuth(false);
+      }
+    } else {
+      setUser(null);
+      setIsAuth(false);
+    }
+
+    setLoading(false);
+  };
+
+  // Login function
+  const login = async (token, refreshToken = null) => {
+    try {
+      if (typeof window === "undefined") return false;
+
+      localStorage.setItem("access", token);
+      if (refreshToken) {
+        localStorage.setItem("refresh", refreshToken);
+      }
+
+      const result = await getUserInfoFromToken(token);
+
+      if (result && result.tokenUserInfo) {
+        setUser(result.tokenUserInfo);
+        setIsAuth(true);
+        return true;
+      } else {
+        localStorage.clear();
+        return false;
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      localStorage.clear();
+      return false;
+    }
+  };
+
+  // Logout function
+  const logout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.clear();
+      setUser(null);
+      setIsAuth(false);
+    }
+  };
+
+  // Refresh authentication state
+  const refreshAuth = () => {
+    initializeAuth();
+  };
+
+  // Initialize auth on mount
+  useEffect(() => {
+    initializeAuth();
+  }, []);
+
+  // Set up token expiration checking interval
+  useEffect(() => {
+    if (isAuth) {
+      const interval = setInterval(() => {
+        const tokenIsValid = checkTokenValidity();
+        if (!tokenIsValid && isAuth) {
+          logout();
+        }
+      }, 60000); // Check every minute
+
+      return () => clearInterval(interval);
+    }
+  }, [isAuth]);
+
+  const value = {
+    user,
+    isAuth,
+    loading,
+    login,
+    logout,
+    refreshAuth,
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-function isTokenExpired(token) {
-  try {
-    if (!token) return true;
-    const decodeToken = jwtDecode(token);
-    const expirationTime = decodeToken.exp * 1000;
-    return expirationTime < Date.now();
-  } catch (error) {
-    console.error("Invalid token:", error);
-    return true;
+// Custom hook to use AuthContext
+export const useAuthentication = () => {
+  const context = useContext(AuthContext);
+
+  if (context === undefined) {
+    throw new Error('useAuthentication must be used within an AuthProvider');
   }
-}
 
-function decryptToken(encryptedToken, key) {
-  if (!encryptedToken) return null;
-  try {
-    const iv = CryptoJS.enc.Hex.parse(encryptedToken.slice(0, 32));
-    const encryptedData = CryptoJS.enc.Hex.parse(encryptedToken.slice(32));
+  return context;
+};
 
-    const decrypted = CryptoJS.AES.decrypt(
-      { ciphertext: encryptedData },
-      CryptoJS.enc.Utf8.parse(key.padEnd(32, "0")),
-      {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7,
-      }
-    );
-
-    const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
-    return decryptedText || null;
-  } catch (error) {
-    console.error("Decryption failed:", error);
-    return null;
-  }
-}
-
+// Helper function to get user info from token
 async function getUserInfoFromToken(token) {
   try {
     if (!token) {

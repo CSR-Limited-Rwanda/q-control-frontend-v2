@@ -183,6 +183,33 @@ input, textarea, select {
   color: var(--foreground);
   background-color: transparent;
 }
+
+.icon-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+}
+.icon-input .icon {
+  position: absolute;
+  left: 0.5rem;
+}
+
+.icon-input input {
+  padding-left: 2.5rem;
+}
+.icon-input textarea {
+  padding-left: 2.5rem;
+}
+.icon-input select {
+  padding-left: 2.5rem;
+}
+.form-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 form {
   display: flex;
   flex-direction: column;
