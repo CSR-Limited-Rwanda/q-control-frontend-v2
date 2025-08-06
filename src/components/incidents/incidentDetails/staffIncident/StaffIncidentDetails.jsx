@@ -15,9 +15,7 @@ import StaffInvestigationInfo from "./StaffInvestigationInfo"
 import FilesList from "../../documentHistory/FilesList"
 import { MoveRight } from 'lucide-react'
 import Link from "next/link"
-// import { FacilityDetailsBreadCrumbs } from "./DrugReactionDetails"
-import NoResources from "@/components/NoResources"
-import "../../../../styles/_generalIncidentDetailsPage.scss"
+import IncidentReviewsTab from "@/components/IncidentReviewsTab"
 
 const EmployeeDetailsContent = () => {
   const { incidentId } = useParams();
@@ -29,6 +27,7 @@ const EmployeeDetailsContent = () => {
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [staffInvestigationId, setStaffInvestigationId] = useState(localStorage.getItem("employee_investigation_id"))
+  const [reviewsCount, setReviewsCount] = useState();
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true); 
@@ -167,12 +166,13 @@ const EmployeeDetailsContent = () => {
               documentHistory={
                 <StaffDocumentHistory incidentId={incidentId} />
               }
-              reviews={<StaffReviews incidentId={incidentId} />}
+              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"staff-incident"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
               investigation={
                 <StaffInvestigationInfo data={investigationInfo} incidentStatuses={incidentStatus} />
               }
               showInvestigationTab={true}
+              reviewsCount={reviewsCount}
             />
           </div>
         </div>
@@ -232,13 +232,6 @@ const EmployeeIncidentDetails = () => {
     <div>
       <DashboardLayout
         children={<EmployeeDetailsContent />}
-        // breadCrumbs={
-        //   changeBreadCrumbs ? (
-        //     <FacilityDetailsBreadCrumbs incidentID={incidentId} />
-        //   ) : (
-        //     <BreadCrumbs />
-        //   )
-        // }
       />
     </div>
   );

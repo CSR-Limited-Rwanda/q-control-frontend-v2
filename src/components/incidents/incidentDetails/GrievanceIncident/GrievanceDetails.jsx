@@ -15,6 +15,7 @@ import GrievanceInvestigationInfo from "./GrievanceInvestigationInfo";
 import FilesList from "../../documentHistory/FilesList";
 import NoResources from "@/components/NoResources";
 import { ChevronRight } from 'lucide-react';
+import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 // css
 import "../../../../styles/_generalIncidentDetailsPage.scss"
 
@@ -27,9 +28,8 @@ const GrievanceDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  // const [grievanceId, setGrievanceId] = useState(
-  //   localStorage.getItem("grievanceId")
-  // );
+  const [reviewsCount, setReviewsCount] = useState();
+ 
 
   const fetchInvestigationDetails = async () => {
     setIsFetching(true);
@@ -220,12 +220,13 @@ const GrievanceDetailsContent = () => {
               documentHistory={
                 <GrivanceDocumentHistory incidentId={incidentId} />
               }
-              reviews={<GrievanceReview incidentId={incidentId} />}
+              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"grievance"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
               investigation={
                 <GrievanceInvestigationInfo data={investigationDetails} />
               }
               showInvestigationTab={true}
+              reviewsCount={reviewsCount}
             />
           </div>
         </div>

@@ -14,6 +14,7 @@ import DrugReactionDocumentHistory from "./DrugReactionDocumentHistory";
 import DrugReactionReviews from "./DrugReactionReviews";
 import FilesList from "../../documentHistory/FilesList";
 import { ChevronRight } from "lucide-react";
+import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 import NoResources from "@/components/NoResources";
 
 // css
@@ -72,6 +73,7 @@ function DrugReactionDetailsContent() {
   const [hasAccess, setHasAccess] = useState(true);
   //   const [incidentStatus, setIncidentStatus] = useState({});
   const {incidentId} = useParams()
+  const [reviewsCount, setReviewsCount] = useState();
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -131,7 +133,7 @@ function DrugReactionDetailsContent() {
     const getIncidentReviews = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/incidents/adverse_drug_reaction/${incidentId}/reviews/`
+          `${API_URL}/incidents/adverse-drug-reaction/${incidentId}/reviews/`
         );
         if (response.status === 200) {
           localStorage.setItem("incidentReviewsCount", response.data.length);
@@ -219,8 +221,9 @@ function DrugReactionDetailsContent() {
               documentHistory={
                 <DrugReactionDocumentHistory incidentId={incidentId} />
               }
-              reviews={<DrugReactionReviews incidentId={incidentId} />}
-              documents={<IncidentDocuments incidentId={incidentId} />} //Add a form to upload a document on this incident
+              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"adverse-drug-reaction"} setCount={setReviewsCount} />}
+              documents={<IncidentDocuments incidentId={incidentId} />}
+              reviewsCount={reviewsCount}
             />
           </div>
         </div>
