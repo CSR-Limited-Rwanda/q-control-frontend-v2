@@ -208,9 +208,8 @@ const DashboardLayout = ({ children }) => {
               {hasDropdown && (
                 <ChevronDown
                   size={16}
-                  className={`menu-item-arrow ${
-                    isDropdownOpen ? "rotate" : ""
-                  }`}
+                  className={`menu-item-arrow ${isDropdownOpen ? "rotate" : ""
+                    }`}
                 />
               )}
             </>
@@ -225,9 +224,8 @@ const DashboardLayout = ({ children }) => {
                 <a
                   key={subIndex}
                   href={subItem.href}
-                  className={`menu-dropdown-item ${
-                    isSubActive ? "active" : ""
-                  }`}
+                  className={`menu-dropdown-item ${isSubActive ? "active" : ""
+                    }`}
                 >
                   {subItem.label}
                 </a>
@@ -248,16 +246,15 @@ const DashboardLayout = ({ children }) => {
   }
 
   if (!isAuth) {
-    return null;
+    return <LoginPopup />;
   }
 
   return (
     <div className="dashboard">
       {/* Sidebar */}
       <aside
-        className={`dashboard__sidebar ${
-          isSidebarCollapsed ? "collapsed" : ""
-        } ${showMobileMenu ? "mobile-open" : ""}`}
+        className={`dashboard__sidebar ${isSidebarCollapsed ? "collapsed" : ""
+          } ${showMobileMenu ? "mobile-open" : ""}`}
       >
         <div className="dashboard__logo">
           <Image src={"/logo.svg"} width={52} height={32} alt="logo" />
@@ -273,9 +270,8 @@ const DashboardLayout = ({ children }) => {
 
       {/* Main Content Area */}
       <main
-        className={`dashboard__main ${
-          isSidebarCollapsed ? "sidebar-collapsed" : ""
-        }`}
+        className={`dashboard__main ${isSidebarCollapsed ? "sidebar-collapsed" : ""
+          }`}
       >
         {/* Header */}
         <header className="dashboard__header">
@@ -394,14 +390,25 @@ export const ProfileContainer = () => {
   const [userProfile, setUserProfile] = useState({});
 
   useEffect(() => {
-    setUserProfile(JSON.parse(localStorage.getItem("loggedInUserInfo")));
+    if (typeof window !== "undefined") {
+      const storedProfile = localStorage.getItem("loggedInUserInfo");
+      if (storedProfile) {
+        setUserProfile(JSON.parse(storedProfile));
+      }
+    }
   }, []);
 
   const goToProfile = () => {
     router.push("/accounts/profile/");
   };
+
   const handleShowProfile = () => {
     setShowProfile(!showProfile);
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.push("/"); // Redirect to home or login page
   };
 
   return (
@@ -441,7 +448,7 @@ export const ProfileContainer = () => {
             <span>Settings</span>
           </div>
           <hr />
-          <div onClick={logout} className="dropdown__item">
+          <div onClick={handleLogout} className="dropdown__item">
             <LogOut size={18} />
             <span>Logout</span>
           </div>

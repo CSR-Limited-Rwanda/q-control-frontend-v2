@@ -9,6 +9,23 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
+// Flag to prevent multiple refresh attempts
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("access");
@@ -18,6 +35,68 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for handling token refresh
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        // If already refreshing, queue this request
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
+        }).catch(err => {
+          return Promise.reject(err);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      const refreshToken = localStorage.getItem('refresh');
+
+      if (!refreshToken) {
+        // No refresh token, redirect to login
+        localStorage.clear();
+        window.location.href = '/';
+        return Promise.reject(error);
+      }
+
+      try {
+        const response = await axios.post(`${API_URL}/auth/refresh/`, {
+          refresh: refreshToken,
+        });
+
+        if (response.status === 200) {
+          const { access } = response.data;
+          localStorage.setItem('access', access);
+
+          // Process queued requests
+          processQueue(null, access);
+
+          // Retry original request
+          originalRequest.headers.Authorization = `Bearer ${access}`;
+          return api(originalRequest);
+        }
+      } catch (refreshError) {
+        // Refresh failed, clear tokens and redirect
+        processQueue(refreshError, null);
+        localStorage.clear();
+        window.location.href = '/';
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
     return Promise.reject(error);
   }
 );
@@ -100,15 +179,14 @@ export const calculateAge = (dateOfBirth) => {
 //     doc.save(`${title}.pdf`);
 //   };
 
-//   export const exportExcel = (data, name) => {
-//     const workbook = XLSX.utils.book_new();
-
-//     const worksheet = XLSX.utils.json_to_sheet(data);
-
-//     XLSX.utils.book_append_sheet(workbook, worksheet, name || "cohesive");
-
-//     XLSX.writeFile(workbook, name + ".xlsx" || "cohesive_doc.xlsx");
-//   };
+export const exportExcel = (data, name) => {
+  console.log("Export Excel functionality needs XLSX library to be installed");
+  // Placeholder function - needs XLSX library
+  // const workbook = XLSX.utils.book_new();
+  // const worksheet = XLSX.utils.json_to_sheet(data);
+  // XLSX.utils.book_append_sheet(workbook, worksheet, name || "cohesive");
+  // XLSX.writeFile(workbook, name + ".xlsx" || "cohesive_doc.xlsx");
+};
 
 export const formatDateTime = (date) => {
   if (date) {

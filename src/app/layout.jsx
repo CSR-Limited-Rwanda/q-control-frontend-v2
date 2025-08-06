@@ -1,9 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/styles/_main.scss";
-import RootProvider from "@/context/RootContext";
+import { AuthProvider } from "@/context/authContext";
 import ToastManager from "@/components/toastManager/toastManager";
-import SwitchTheme from "@/components/SwitchTheme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,11 +23,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <RootProvider>
+        <AuthProvider>
           {/* <SwitchTheme /> */}
           <ToastManager />
           {children}
-        </RootProvider>
+        </AuthProvider>
       </body>
     </html>
   );
