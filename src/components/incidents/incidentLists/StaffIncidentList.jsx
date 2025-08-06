@@ -80,7 +80,7 @@ const StaffIncidentList = () => {
         queryParams.append("status", appliedFilters.status);
 
       const response = await api.get(
-        `${API_URL}/incidents/staff-incident/?${queryParams.toString()}`
+        `${API_URL}/incidents/staff-incidents/?${queryParams.toString()}`
       );
       if (response && response.status === 200 && response.data) {
         const formattedData = response.data.map((item) => ({
@@ -130,13 +130,13 @@ const StaffIncidentList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/staff/${incidentId}`);
+    router.push(`/incidents/staff/${incidentId}`);
     localStorage.setItem("staffIncidentId", incidentId)
     localStorage.setItem("employee_investigation_id", incidentId)
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/staff/${incidentId}/update/`);
+    router.push(`/incidents/staff/${incidentId}/update/`);
     localStorage.setItem("staffIncidentId", incidentId);
   };
 
@@ -378,9 +378,8 @@ const StaffIncidentList = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${
-                            currentPage === number ? "active" : ""
-                          }`}
+                          className={`pagination-button ${currentPage === number ? "active" : ""
+                            }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}
@@ -449,9 +448,8 @@ const StaffIncidentList = () => {
                   {pageNumbers.map((number) => (
                     <button
                       key={number}
-                      className={`pagination-button ${
-                        currentPage === number ? "active" : ""
-                      }`}
+                      className={`pagination-button ${currentPage === number ? "active" : ""
+                        }`}
                       onClick={() => handlePageChange(number)}
                     >
                       {number}
@@ -619,9 +617,8 @@ const StaffTable = ({
                 )
               }
               key={index}
-              className={`table-card ${
-                selectedItems.includes(employee) ? "selected" : ""
-              }`}
+              className={`table-card ${selectedItems.includes(employee) ? "selected" : ""
+                }`}
             >
               <td>
                 <div
@@ -640,7 +637,7 @@ const StaffTable = ({
               <td>{employee.report_facility?.name || "Not provided"}</td>
               <td>
                 {employee.patient_info?.last_name &&
-                employee.patient_info?.first_name
+                  employee.patient_info?.first_name
                   ? `${employee.patient_info?.last_name} ${employee.patient_info?.first_name}`
                   : "Not provided"}
               </td>
@@ -656,13 +653,12 @@ const StaffTable = ({
               <td>{employee.claim || "Not Specified"}</td>
               <td>
                 <p
-                  className={`follow-up ${
-                    employee.status === "Draft"
+                  className={`follow-up ${employee.status === "Draft"
                       ? "in-progress"
                       : employee.status === "Closed"
-                      ? "closed"
-                      : "Open"
-                  }`}
+                        ? "closed"
+                        : "Open"
+                    }`}
                 >
                   {employee.status || "Not specified"}
                 </p>
@@ -714,9 +710,8 @@ const IncidentTableCard = ({
 }) => {
   return (
     <div
-      className={`table-card ${
-        selectedItems.includes(incident) ? "selected" : ""
-      }`}
+      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+        }`}
     >
       <div className="card-header">
         <div className="id-number">
@@ -751,7 +746,7 @@ const IncidentTableCard = ({
           <label htmlFor="">Staff Name: </label>
           <span>
             {incident.patient_info?.last_name &&
-            incident.patient_info?.first_name
+              incident.patient_info?.first_name
               ? `${incident.patient_info?.last_name} ${incident.patient_info?.first_name}`
               : "Not provided"}
           </span>
@@ -774,13 +769,12 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Status: </label>
           <span
-            className={`follow-up ${
-              incident?.status === "Draft"
+            className={`follow-up ${incident?.status === "Draft"
                 ? "in-progress"
                 : incident?.status === "Closed"
-                ? "closed"
-                : "Open"
-            }`}
+                  ? "closed"
+                  : "Open"
+              }`}
           >
             {incident?.status || "Not specified"}
           </span>

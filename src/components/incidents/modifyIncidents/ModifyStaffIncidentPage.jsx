@@ -138,7 +138,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     const fetchIncidentDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/staff-incident/${staffIncidentId}/documents/`
+          `/incidents/staff-incidents/${staffIncidentId}/documents/`
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
@@ -164,7 +164,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       console.log([...formData]);
 
       const response = await mediaAPI.post(
-        `/incidents/staff-incident/${staffIncidentId}/documents/`,
+        `/incidents/staff-incidents/${staffIncidentId}/documents/`,
         formData
       );
 
@@ -267,7 +267,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
     try {
       const response = await api.patch(
-        `incidents/staff-incident/${staffIncidentId}/`,
+        `incidents/staff-incidents/${staffIncidentId}/`,
         cleanedData(incidentData)
       );
       if (response.status === 200) {
@@ -307,11 +307,11 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         </div>
       )}
       <div className="modify-page-header">
-        <BackToPage link={"/incident/staff/"} pageName={"Staff incidents"} />
+        <BackToPage link={"/incidents/staff/"} pageName={"Staff incidents"} />
         <h2 className="title">Modifying Staff Incident</h2>
         {investigation && investigation.id ? (
           <Link
-            href={`/incident/staff-incident/${staffIncidentId}`}
+            href={`/incidents/staff-incidents/${staffIncidentId}`}
             onClick={() => {
               localStorage.setItem("activate_investigation_tab", true);
             }}
@@ -367,10 +367,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
               Status :{" "}
               <span
                 className={`follow-up ${status === "Draft"
-                    ? "in-progress"
-                    : status === "Closed"
-                      ? "closed"
-                      : "Open"
+                  ? "in-progress"
+                  : status === "Closed"
+                    ? "closed"
+                    : "Open"
                   }`}
               >
                 {status}

@@ -23,7 +23,7 @@ const page = () => {
           )} */}
         <div className="incidents-reports">
           <Link
-            href={"/incident/general/"}
+            href={"/incidents/general/"}
             onClick={() => {
               localStorage.removeItem("changeBreadCrumbs");
             }}
@@ -43,7 +43,7 @@ const page = () => {
           </Link>
 
           <Link
-            href={"/incident/drug-reaction/"}
+            href={"/incidents/drug-reaction/"}
             className="incident-report"
             onClick={() => {
               localStorage.removeItem("changeBreadCrumbs");
@@ -63,7 +63,7 @@ const page = () => {
           </Link>
 
           <Link
-            href={"/incident/staff/"}
+            href={"/incidents/staff/"}
             onClick={() => {
               localStorage.removeItem("changeBreadCrumbs");
             }}
@@ -83,7 +83,7 @@ const page = () => {
           </Link>
 
           <Link
-            href={"/incident/grievance/"}
+            href={"/incidents/grievance/"}
             onClick={() => {
               localStorage.removeItem("changeBreadCrumbs");
             }}
@@ -103,7 +103,7 @@ const page = () => {
           </Link>
 
           <Link
-            href={"/incident/lost-and-found/"}
+            href={"/incidents/lost-and-found/"}
             className="incident-report"
             onClick={() => {
               localStorage.removeItem("changeBreadCrumbs");
@@ -123,7 +123,7 @@ const page = () => {
           </Link>
 
           <Link
-            href={"/incident/workplace-violence/"}
+            href={"/incidents/workplace-violence/"}
             className="incident-report"
             onClick={() => {
               localStorage.removeItem("changeBreadCrumbs");
@@ -143,7 +143,7 @@ const page = () => {
           </Link>
 
           <Link
-            href={"/incident/medication-error/"}
+            href={"/incidents/medication-error/"}
             className="incident-report"
             onClick={() => {
               localStorage.removeItem("changeBreadCrumbs");

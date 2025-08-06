@@ -229,7 +229,7 @@ const HealthIncidentInvestigationForm = () => {
         try {
             console.log(accidentHappened);
             const res = await api.post(
-                `${API_URL}/incidents/staff-incident/${staffIncidentId}/investigation/`,
+                `${API_URL}/incidents/staff-incidents/${staffIncidentId}/investigation/`,
                 {
                     name_of_injured_staff:
                         injuredStaffFirstName && injuredStaffLastName
@@ -288,7 +288,7 @@ const HealthIncidentInvestigationForm = () => {
 
         try {
             const res = await api.put(
-                `${API_URL}/incidents/staff-incident/${staffIncidentId}/investigation/${incidentId}/`,
+                `${API_URL}/incidents/staff-incidents/${staffIncidentId}/investigation/${incidentId}/`,
                 {
                     employee_prior_activity: activityPriorToEvent,
                     equipment_or_tools: equipmentInUse,
@@ -340,7 +340,7 @@ const HealthIncidentInvestigationForm = () => {
                 status: "Open",
             };
             const res = await api.put(
-                `${API_URL}/incidents/staff-incident/${staffIncidentId}/investigation/${incidentId}/`,
+                `${API_URL}/incidents/staff-incidents/${staffIncidentId}/investigation/${incidentId}/`,
                 cleanedData(data)
             );
             console.log("Step 3: ", res.data);

@@ -193,11 +193,11 @@ const LostAndFoundList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/lost-and-found/${incidentId}`);
+    router.push(`/incidents/lost-and-found/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/lost-and-found/${incidentId}/update/`);
+    router.push(`/incidents/lost-and-found/${incidentId}/update/`);
     localStorage.setItem("lostAndFoundId", incidentId);
   };
 
@@ -409,9 +409,8 @@ const LostAndFoundList = () => {
                         {pageNumbers.map((number) => (
                           <button
                             key={number}
-                            className={`pagination-button ${
-                              currentPage === number ? "active" : ""
-                            }`}
+                            className={`pagination-button ${currentPage === number ? "active" : ""
+                              }`}
                             onClick={() => handlePageChange(number)}
                           >
                             {number}
@@ -484,9 +483,8 @@ const LostAndFoundList = () => {
                     {pageNumbers.map((number) => (
                       <button
                         key={number}
-                        className={`pagination-button ${
-                          currentPage === number ? "active" : ""
-                        }`}
+                        className={`pagination-button ${currentPage === number ? "active" : ""
+                          }`}
                         onClick={() => handlePageChange(number)}
                       >
                         {number}
@@ -709,9 +707,8 @@ const LostFoundTable = ({
                 )
               }
               key={index}
-              className={`table-card ${
-                selectedItems.includes(incident) ? "selected" : ""
-              }`}
+              className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+                }`}
             >
               <td>
                 <div
@@ -743,19 +740,18 @@ const LostFoundTable = ({
               </td>
               <td>
                 {incident.reported_by?.last_name &&
-                incident.reported_by?.first_name
+                  incident.reported_by?.first_name
                   ? `${incident.reported_by.last_name} ${incident.reported_by.first_name}`
                   : "Not provided"}
               </td>
               <td>
                 <p
-                  className={`follow-up ${
-                    incident.status === "Draft"
+                  className={`follow-up ${incident.status === "Draft"
                       ? "in-progress"
                       : incident.status === "Closed"
-                      ? "closed"
-                      : "Open"
-                  }`}
+                        ? "closed"
+                        : "Open"
+                    }`}
                 >
                   {incident.status || "Not specified"}
                 </p>
@@ -809,9 +805,8 @@ const IncidentTableCard = ({
 }) => {
   return (
     <div
-      className={`table-card ${
-        selectedItems.includes(incident) ? "selected" : ""
-      }`}
+      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+        }`}
     >
       <div className="card-header">
         <div className="id-number">
@@ -880,13 +875,12 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Status: </label>
           <span
-            className={`follow-up ${
-              incident.status === "Draft"
+            className={`follow-up ${incident.status === "Draft"
                 ? "in-progress"
                 : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-            }`}
+                  ? "closed"
+                  : "Open"
+              }`}
           >
             {incident.status || "Not specified"}
           </span>

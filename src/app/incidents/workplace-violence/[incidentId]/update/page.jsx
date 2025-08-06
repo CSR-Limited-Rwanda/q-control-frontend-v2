@@ -1,35 +1,36 @@
-"use client";
+'use client'
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 import DashboardLayout from "@/app/dashboard/layout";
-import api from "@/utils/api";
-import ModifyGrievanceIncident from "@/components/incidents/modifyIncidents/ModifyGrievanceIncidentPage";
+import api, { API_URL } from "@/utils/api";
+import ModifyWorkplaceIncident from "@/components/incidents/modifyIncidents/ModifyWorkplaceViolence";
 import { MoveRight } from "lucide-react";
+// import { FacilityBreadCrumbs } from "../../drugReactionincidents/modifyMedicalAdverseDrugReactionIncidentPage";
 import NoResources from "@/components/NoResources";
 
-const ModifyGrievanceIncidentPageContent = () => {
+const ModifyWorkplaceIncidentPageContent = () => {
   const [error, setError] = useState();
   const [incident, setIncident] = useState({});
-  const [investigation, setInvestigation] = useState();
+  const [incidentData, setIncidentData] = useState([])
   const { incidentId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [grievanceId, setGrievanceId] = useState(
-    localStorage.getItem("grievanceId")
-  );
-
+  const [workplaceViolenceId, setGeneralIncidentId] = useState(
+    localStorage.getItem("workplaceViolenceId")
+  )
   useEffect(() => {
     const fetchIncidentData = async () => {
       try {
-        const response = await api.get(`/incidents/grievance/${grievanceId}/`);
+        const response = await api.get(
+          `/incidents/workplace-violence/${workplaceViolenceId}/`
+        );
 
         if (response.status === 200) {
-          setInvestigation(response.data.has_investigation);
+          console.log(response.data.incident);
           setIncident(response.data.incident);
+          console.log("Incident data here: ", response.data.incident);
           setIsLoading(false);
-          console.log(response.data);
-          console.log("weeeee");
         }
       } catch (error) {
         if (error.response.status === 404) {
@@ -41,16 +42,12 @@ const ModifyGrievanceIncidentPageContent = () => {
       }
     };
     fetchIncidentData();
-  }, [incidentId]);
+  }, []);
 
   return isLoading ? (
-    "Getting data..."
+    "Gettting data..."
   ) : incident && !isError ? (
-    <ModifyGrievanceIncident
-      data={incident}
-      incidentId={incidentId}
-      investigation={investigation}
-    />
+    <ModifyWorkplaceIncident data={incident} incidentId={incidentId} />
   ) : (
     <NoResources />
   );
@@ -61,8 +58,11 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <MoveRight />
       <Link href={"/incidents/"}>Incidents</Link> <MoveRight />
-      <Link href={"/incident/grievance/"}>Grievance List</Link> <MoveRight />
-      <Link href={`/incident/grievance/${incidentId}/`}>
+      <Link href={"/incidents/workplace-violence/"}>
+        Work Place Violence List
+      </Link>{" "}
+      <MoveRight />
+      <Link href={`/incidents/workplace-violence/${incidentId}/`}>
         #{incidentId}
       </Link>{" "}
       <MoveRight />
@@ -70,21 +70,19 @@ const BreadCrumbs = () => {
     </div>
   );
 };
-
-const ModifyGrievanceIncidentPage = () => {
-  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null);
+const ModifyWorkplaceIncidentPage = () => {
+  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null)
 
   useEffect(() => {
-    const storedValue = localStorage.getItem("changeBreadCrumbs");
+    const storedValue = localStorage.getItem("changeBreadCrumbs")
     setChangeBreadCrumbs(storedValue);
-  }, []);
-
+  }, [])
   return (
     <DashboardLayout
-      children={<ModifyGrievanceIncidentPageContent />}
+      children={<ModifyWorkplaceIncidentPageContent />}
       breadCrumbs={
         changeBreadCrumbs ? (
-          <FacilityBreadCrumbs facilityIncidentLink={"grievance"} />
+          <FacilityBreadCrumbs facilityIncidentLink={"workplace_violence"} />
         ) : (
           <BreadCrumbs />
         )
@@ -93,4 +91,4 @@ const ModifyGrievanceIncidentPage = () => {
   );
 };
 
-export default ModifyGrievanceIncidentPage;
+export default ModifyWorkplaceIncidentPage;

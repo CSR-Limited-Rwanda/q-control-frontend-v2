@@ -64,7 +64,7 @@ const DrugReactionList = () => {
   );
   const totalPages = Math.ceil(
     (isSearching ? searchResults.length : drugReactionData.length) /
-      itemsPerPage
+    itemsPerPage
   );
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -91,8 +91,8 @@ const DrugReactionList = () => {
           ...item,
           date_of_adverse_reaction: item.date_of_adverse_reaction
             ? new Date(item.date_of_adverse_reaction)
-                .toISOString()
-                .split("T")[0]
+              .toISOString()
+              .split("T")[0]
             : item.date_of_adverse_reaction,
         }));
         setDrugReactionData(formattedData);
@@ -138,11 +138,11 @@ const DrugReactionList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/drug-reaction/${incidentId}`);
+    router.push(`/incidents/drug-reaction/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/drug-reaction/${incidentId}/update/`);
+    router.push(`/incidents/drug-reaction/${incidentId}/update/`);
     localStorage.setItem("adverseDrugReactionId", incidentId)
   };
 
@@ -401,9 +401,8 @@ const DrugReactionList = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${
-                            currentPage === number ? "active" : ""
-                          }`}
+                          className={`pagination-button ${currentPage === number ? "active" : ""
+                            }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}
@@ -472,9 +471,8 @@ const DrugReactionList = () => {
                   {pageNumbers.map((number) => (
                     <button
                       key={number}
-                      className={`pagination-button ${
-                        currentPage === number ? "active" : ""
-                      }`}
+                      className={`pagination-button ${currentPage === number ? "active" : ""
+                        }`}
                       onClick={() => handlePageChange(number)}
                     >
                       {number}
@@ -641,9 +639,8 @@ const DrugReactionTable = ({
                 )
               }
               key={index}
-              className={`table-card ${
-                selectedItems.includes(data) ? "selected" : ""
-              }`}
+              className={`table-card ${selectedItems.includes(data) ? "selected" : ""
+                }`}
             >
               <td>
                 <div onClick={() => handleSelectedItems(data)} className="icon">
@@ -675,13 +672,12 @@ const DrugReactionTable = ({
               <td>{data.patient_type || "Not specified"}</td>
               <td>
                 <p
-                  className={`follow-up ${
-                    data.status === "Draft"
+                  className={`follow-up ${data.status === "Draft"
                       ? "in-progress"
                       : data.status === "Closed"
-                      ? "closed"
-                      : "Open"
-                  }`}
+                        ? "closed"
+                        : "Open"
+                    }`}
                 >
                   {data.status || "Not specified"}
                 </p>
@@ -731,9 +727,8 @@ const IncidentTableCard = ({
 }) => {
   return (
     <div
-      className={`table-card ${
-        selectedItems.includes(incident) ? "selected" : ""
-      }`}
+      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+        }`}
     >
       <div className="card-header">
         <div className="id-number">
@@ -768,7 +763,7 @@ const IncidentTableCard = ({
           <label htmlFor="">Patient/Visitor Name: </label>
           <span>
             {incident.patient_name?.last_name &&
-            incident.patient_name?.first_name
+              incident.patient_name?.first_name
               ? `${incident.patient_name?.last_name} ${incident.patient_name?.first_name}`
               : "Not provided"}
           </span>
@@ -797,13 +792,12 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Status: </label>
           <span
-            className={`follow-up ${
-              incident.status === "Draft"
+            className={`follow-up ${incident.status === "Draft"
                 ? "in-progress"
                 : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-            }`}
+                  ? "closed"
+                  : "Open"
+              }`}
           >
             {incident?.status || "Not specified"}
           </span>

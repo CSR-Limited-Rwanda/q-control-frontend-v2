@@ -132,11 +132,11 @@ const PatientVisitorGrievanceList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/grievance/${incidentId}`);
+    router.push(`/incidents/grievance/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/grievance/${incidentId}/update/`);
+    router.push(`/incidents/grievance/${incidentId}/update/`);
     localStorage.setItem("grievanceId", incidentId);
   };
 
@@ -236,18 +236,16 @@ const PatientVisitorGrievanceList = () => {
             <div className="tabs">
               <div
                 onClick={() => setActiveTab("all")}
-                className={`reports-tab tracking-tab ${
-                  activeTab === "all" ? "active" : ""
-                }`}
+                className={`reports-tab tracking-tab ${activeTab === "all" ? "active" : ""
+                  }`}
               >
                 <File />
                 <span>Grievance reports</span>
               </div>
               <div
                 onClick={() => setActiveTab("drafts")}
-                className={`drafts tracking-tab ${
-                  activeTab === "drafts" ? "active" : ""
-                }`}
+                className={`drafts tracking-tab ${activeTab === "drafts" ? "active" : ""
+                  }`}
               >
                 <FileEdit />
                 <span>Complaints</span>
@@ -411,9 +409,8 @@ const PatientVisitorGrievanceList = () => {
                           {pageNumbers.map((number) => (
                             <button
                               key={number}
-                              className={`pagination-button ${
-                                currentPage === number ? "active" : ""
-                              }`}
+                              className={`pagination-button ${currentPage === number ? "active" : ""
+                                }`}
                               onClick={() => handlePageChange(number)}
                             >
                               {number}
@@ -487,9 +484,8 @@ const PatientVisitorGrievanceList = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${
-                            currentPage === number ? "active" : ""
-                          }`}
+                          className={`pagination-button ${currentPage === number ? "active" : ""
+                            }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}
@@ -659,9 +655,8 @@ const GrievanceTable = ({
                 )
               }
               key={index}
-              className={`table-card ${
-                selectedItems.includes(grievance) ? "selected" : ""
-              }`}
+              className={`table-card ${selectedItems.includes(grievance) ? "selected" : ""
+                }`}
             >
               <td>
                 <div
@@ -680,7 +675,7 @@ const GrievanceTable = ({
               <td>{grievance.report_facility?.name || "Not provided"}</td>
               <td>
                 {grievance.patient_name?.last_name &&
-                grievance.patient_name?.first_name
+                  grievance.patient_name?.first_name
                   ? `${grievance.patient_name?.last_name} ${grievance.patient_name?.first_name}`
                   : "Not provided"}
               </td>
@@ -693,13 +688,12 @@ const GrievanceTable = ({
               </td>
               <td>
                 <p
-                  className={`follow-up ${
-                    grievance.status === "Draft"
+                  className={`follow-up ${grievance.status === "Draft"
                       ? "in-progress"
                       : grievance.status === "Closed"
-                      ? "closed"
-                      : "Open"
-                  }`}
+                        ? "closed"
+                        : "Open"
+                    }`}
                 >
                   {grievance.status || "Not specified"}
                 </p>
@@ -754,9 +748,8 @@ const IncidentTableCard = ({
 }) => {
   return (
     <div
-      className={`table-card ${
-        selectedItems.includes(incident) ? "selected" : ""
-      }`}
+      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+        }`}
     >
       <div className="card-header">
         <div className="id-number">
@@ -791,7 +784,7 @@ const IncidentTableCard = ({
           <label htmlFor="">Name: </label>
           <span>
             {incident.patient_name?.last_name &&
-            incident.patient_name?.first_name
+              incident.patient_name?.first_name
               ? `${incident.patient_name?.last_name} ${incident.patient_name?.first_name}`
               : "Not provided"}
           </span>
@@ -811,13 +804,12 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Status: </label>
           <span
-            className={`follow-up ${
-              incident.status === "Draft"
+            className={`follow-up ${incident.status === "Draft"
                 ? "in-progress"
                 : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-            }`}
+                  ? "closed"
+                  : "Open"
+              }`}
           >
             {incident?.status || "Not specified"}
           </span>
@@ -855,7 +847,7 @@ const ComplaintsTab = () => {
     : grievanceComplaints.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(
     (isSearching ? searchResults.length : grievanceComplaints.length) /
-      itemsPerPage
+    itemsPerPage
   );
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -882,8 +874,8 @@ const ComplaintsTab = () => {
         const data = Array.isArray(response.data.results)
           ? response.data.results
           : Array.isArray(response.data)
-          ? response.data
-          : [];
+            ? response.data
+            : [];
         const formattedData = data.map((item) => ({
           ...item,
           date_of_complaint: formatDate(item.date_of_complaint),
@@ -1078,8 +1070,8 @@ const ComplaintsTab = () => {
                       filters.resolved_by_staff === null
                         ? "Any"
                         : filters.resolved_by_staff
-                        ? "Yes"
-                        : "No"
+                          ? "Yes"
+                          : "No"
                     }
                     setSelected={(value) => {
                       const resolvedByStaff =
@@ -1226,11 +1218,10 @@ const ComplaintsTab = () => {
                                 </td>
                                 <td>
                                   <p
-                                    className={`follow-up ${
-                                      complaint.resolved_by_staff === false
+                                    className={`follow-up ${complaint.resolved_by_staff === false
                                         ? "in-progress"
                                         : "Open"
-                                    }`}
+                                      }`}
                                   >
                                     {(complaint.resolved_by_staff
                                       ? "Yes"
@@ -1256,9 +1247,8 @@ const ComplaintsTab = () => {
                         {pageNumbers.map((number) => (
                           <button
                             key={number}
-                            className={`pagination-button ${
-                              currentPage === number ? "active" : ""
-                            }`}
+                            className={`pagination-button ${currentPage === number ? "active" : ""
+                              }`}
                             onClick={() => handlePageChange(number)}
                           >
                             {number}
@@ -1342,11 +1332,10 @@ const ComplaintsTab = () => {
                             </td>
                             <td>
                               <p
-                                className={`follow-up ${
-                                  complaint.resolved_by_staff === false
+                                className={`follow-up ${complaint.resolved_by_staff === false
                                     ? "in-progress"
                                     : "Open"
-                                }`}
+                                  }`}
                               >
                                 {(complaint.resolved_by_staff ? "Yes" : "No") ||
                                   "Not specified"}
@@ -1373,9 +1362,8 @@ const ComplaintsTab = () => {
                     {pageNumbers.map((number) => (
                       <button
                         key={number}
-                        className={`pagination-button ${
-                          currentPage === number ? "active" : ""
-                        }`}
+                        className={`pagination-button ${currentPage === number ? "active" : ""
+                          }`}
                         onClick={() => handlePageChange(number)}
                       >
                         {number}
