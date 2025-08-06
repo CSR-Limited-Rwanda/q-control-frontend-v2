@@ -9,14 +9,14 @@ const GeneralIncidentOtherInformation = ({ data }) => {
           <div className="name">
             <small>Name of physician notified</small>
             <h4>
-              {data.incident.physician_notified
+              {data.incident?.physician_notified
                 ? `${data.incident.physician_notified?.last_name} ${data.incident.physician_notified?.first_name}`
                 : "Not provided"}
             </h4>
           </div>
           <div className="date">
             <small>Date/Time physician notified</small>
-            {data.incident.date_physician_notified && data.incident.time_physician_notified ? (
+            {data.incident?.date_physician_notified && data.incident.time_physician_notified ? (
               <h4>
                 <DateFormatter dateString={data.incident?.date_physician_notified} />,{" "}
                 {data.incident?.time_physician_notified}{" "}
@@ -30,14 +30,14 @@ const GeneralIncidentOtherInformation = ({ data }) => {
           <div className="name">
             <small>Name of family member notified</small>
             <h4>
-              {data.incident.family_notified
+              {data.incident?.family_notified
                 ? `${data.incident.family_notified?.last_name} ${data.incident.family_notified?.first_name}`
                 : "Not provided"}
             </h4>
           </div>
           <div className="date">
             <small>Date/Time family notified</small>
-            {data.incident.date_family_notified && data.incident.time_family_notified ? (
+            {data.incident?.date_family_notified && data.incident?.time_family_notified ? (
               <h4>
                 <DateFormatter dateString={data.incident?.date_family_notified} />,{" "}
                 {data.incident?.time_family_notified}{" "}
