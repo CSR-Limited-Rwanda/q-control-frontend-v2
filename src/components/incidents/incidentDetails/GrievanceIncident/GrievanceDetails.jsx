@@ -31,6 +31,47 @@ const GrievanceDetailsContent = () => {
   //   localStorage.getItem("grievanceId")
   // );
 
+  const fetchInvestigationDetails = async () => {
+    setIsFetching(true);
+    try {
+      let response;
+      // Fetch the original version of the incident
+      if (useOriginalVersion) {
+        response = await api.get(
+          `${API_URL}/incidents/grievance/${incidentId}/investigation`
+        );
+        console.log(response.data);
+        setInvestigationDetails(response.data.investigation); //
+      } else {
+        // Fetch the latest modified version of the incident
+        const res = await api.get(
+          `${API_URL}/incidents/grievance/${incidentId}/`
+        );
+        const latestIncident = res.data.modifications.versions.find((mod) => {
+          return mod.latest === true;
+        });
+
+        if (latestIncident) {
+          response = await api.get(
+            `${API_URL}/incidents/grievance/${incidentId}/versions/${latestIncident.id}/`
+          );
+          console.log(response.data);
+          console.log(latestIncident);
+        } else {
+          response = res;
+        }
+
+        setLatestIncidentDetails(response.data); // Store the latest modified version
+        setCurrentIncidentData(response.data); // Set current data for UI
+        setInvestigationDetails(response.data.investigation);
+      }
+      setIsFetching(false);
+    } catch (error) {
+      console.log(error);
+      setIsFetching(false);
+    }
+  }
+
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
     try {
@@ -72,22 +113,6 @@ const GrievanceDetailsContent = () => {
       console.log(error);
       setIsFetching(false);
     }
-    // try {
-    //   const response = await api.get(
-    //     `${API_URL}/incidents/grievance/${grievanceId}/`
-    //   );
-    //   if (response.status === 200) {
-    //     //   setIncidentStatus(response.data.statuses);
-    //     console.log(response.data);
-    //     setIncidentDetails(response.data.grievance);
-    //     setInvestigationDetails(response.data.investigation);
-    //     setIsFetching(false);
-    //   }
-    //   console.log(incidentDetails);
-    // } catch (error) {
-    //   console.log(error);
-    //   setIsFetching(false);
-    // }
   };
 
   // UseEffect to fetch data when either the incidentId or useOriginalVersion changes
