@@ -66,7 +66,6 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
       patient_name: patientName,
       medical_record_number: medicalRecordNumber,
       complaint_nature: natureOfComplaint,
-      department: department,
       phone_number: phoneNumber,
       complaint_type: complaintType,
       resolved_by_staff: resolvedByStaff,

@@ -19,6 +19,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "@/styles/_userComplaints.scss";
 import EditComplaintForm from "@/components/forms/EditComplaintForm";
 import SubmitComplaintForm from "@/components/forms/SubmitComplaintForm";
+import SendComplaintToDepartment from "@/components/forms/SendComplaintToDepartment";
 
 const UserComplaints = () => {
   const [complaints, setComplaints] = useState();
@@ -26,6 +27,8 @@ const UserComplaints = () => {
   const [error, setError] = useState("");
   const [showSubmitComplaint, setShowSubmitComplaint] = useState(false);
   const [showComplaintDetails, setShowComplainDetails] = useState(false);
+  const [showSendToDepartmentForm, setShowSendToDepartmentForm] =
+    useState(false);
   const [selectedComplain, setSelectedComplain] = useState({});
   const [showPopup, setShowPopup] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
@@ -52,6 +55,9 @@ const UserComplaints = () => {
 
   const handleShowEditForm = () => {
     setShowEditForm(!showEditForm);
+  };
+  const handleShowSendToDepartmentForm = () => {
+    setShowSendToDepartmentForm(!showSendToDepartmentForm);
   };
   const handleShowPopup = (index, event) => {
     setShowPopup(showPopup === index ? null : index);
@@ -114,6 +120,13 @@ const UserComplaints = () => {
           handleShowComplainDetails={() => handleShowComplainDetails({})}
           complaint={selectedComplain}
           isDeleting={isDeleting}
+        />
+      )}
+
+      {showSendToDepartmentForm && (
+        <SendComplaintToDepartment
+          complaint={selectedComplain}
+          onClose={handleShowSendToDepartmentForm}
         />
       )}
 
@@ -211,7 +224,7 @@ const UserComplaints = () => {
                         className="popup-item"
                         onClick={() => {
                           setSelectedComplain(complaint);
-                          setShowComplainDetails(true);
+                          setShowSendToDepartmentForm(true);
                           setShowPopup(null);
                         }}
                       >

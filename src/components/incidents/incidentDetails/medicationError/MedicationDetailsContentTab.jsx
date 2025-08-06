@@ -7,13 +7,13 @@ const MedicationDetailsContentTab = ({ data }) => {
         <div className="phone-number">
           <small>Patient Name</small>
           <h4>
-            {data.incident?.patient?.last_name || "Not provided"}{" "}
-            {data.incident?.patient?.first_name || "Not provided"}
+            {data?.patient?.last_name || "Not provided"}{" "}
+            {data?.patient?.first_name || "Not provided"}
           </h4>
         </div>
         <div className="mrn">
           <small>MRN</small>
-          <h4>{data.incident?.patient?.medical_record_number || "Not provided"}</h4>
+          <h4>{data?.patient?.medical_record_number || "Not provided"}</h4>
         </div>
       </div>
 
@@ -21,7 +21,7 @@ const MedicationDetailsContentTab = ({ data }) => {
         <div className="phone-number">
           <small>Date of birth</small>
           <h4>
-            <DateFormatter dateString={data.incident?.patient?.date_of_birth} />{" "}
+            <DateFormatter dateString={data?.patient?.date_of_birth} />{" "}
           </h4>
         </div>
         <div className="mrn">

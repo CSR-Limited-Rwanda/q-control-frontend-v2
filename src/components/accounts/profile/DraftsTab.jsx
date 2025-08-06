@@ -32,7 +32,7 @@ export const DraftCategory = ({
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/${apiLink}/${incidentId}/modify/`);
+    router.push(`/${apiLink}/${incidentId}/update/`);
     localStorage.setItem("canModifyDraft", true);
   };
 

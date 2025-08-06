@@ -41,7 +41,7 @@ const MedicationDetailsContent = () => {
           `${API_URL}/incidents/medication-error/${incidentId}/`
         );
         setIncidentDetails(response.data); // Store the original data
-        setCurrentIncidentData(response.data); // Set current data for UI
+        setCurrentIncidentData(response.data.incident); // Set current data for UI
         console.log(response.data);
       } else {
         // Fetch the latest modified version of the incident
@@ -63,7 +63,7 @@ const MedicationDetailsContent = () => {
         }
 
         setLatestIncidentDetails(response.data); // Store the latest modified version
-        setCurrentIncidentData(response.data); // Set current data for UI
+        setCurrentIncidentData(response.data.incident); // Set current data for UI
       }
       setIsFetching(false);
     } catch (error) {
@@ -125,12 +125,10 @@ const MedicationDetailsContent = () => {
         <div className="incident-details">
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
-              data={{
-                incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
-                modifications: useOriginalVersion
-                  ? incidentDetails?.modifications
-                  : latestIncidentDetails?.modifications
-              }}
+              data={
+             useOriginalVersion ? incidentDetails : latestIncidentDetails
+               
+              }
               incidentDetailsId={incidentId}
               apiLink={"medication-error"}
               sendTo={"send-to-department"}
@@ -145,16 +143,16 @@ const MedicationDetailsContent = () => {
 
           <div className="details">
             <IncidentDetails
-              data={currentIncidentData.incident}
+              data={currentIncidentData}
               fullName={
-                currentIncidentData.incident?.patient
-                  ? `${currentIncidentData.incident?.patient?.last_name} ${currentIncidentData.incident?.patient?.first_name}`
+                currentIncidentData?.patient
+                  ? `${currentIncidentData?.patient?.last_name} ${currentIncidentData?.patient?.first_name}`
                   : null
               }
-              sex={currentIncidentData.incident?.patient?.gender}
-              IncidentDate={currentIncidentData.incident?.date_of_error}
-              incidentTime={currentIncidentData.incident?.time_of_error}
-              incidentCategory={currentIncidentData.incident?.category}
+              sex={currentIncidentData?.patient?.gender}
+              IncidentDate={currentIncidentData?.date_of_error}
+              incidentTime={currentIncidentData?.time_of_error}
+              incidentCategory={currentIncidentData?.category}
               incidentDetails={
                 <MedicationDetailsContentTab data={currentIncidentData} />
               }
