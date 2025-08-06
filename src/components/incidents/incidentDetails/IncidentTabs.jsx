@@ -12,6 +12,7 @@ const IncidentTabs = ({
   documents,
   investigation,
   showInvestigationTab,
+  reviewsCount,
 }) => {
   const [activeTab, setActiveTab] = useState("incidentType");
   const [incidentReviewsCount, setIncidentReviewsCount] = useState(0);
@@ -85,7 +86,7 @@ const IncidentTabs = ({
           className={`tab reviews ${activeTab === "reviews" ? "active" : ""}`}
         >
           <p>Reviews</p>
-          <div className="counter">{incidentReviewsCount}</div>
+          <div className="counter">{reviewsCount}</div>
         </div>
         <div
           onClick={() => toggleActiveTab("document-history")}

@@ -5,7 +5,7 @@
   --foreground: #505050;
   --bold: #1d1d1d;
   --secondary: #1565c0;
-  --secondary-light: #4a8ad3;
+  --secondary-light: #eef6ff;
   --primary: #ff7043;
   --primary-light: #FBEDE7;
   --card: #ffffff;
@@ -173,6 +173,55 @@ button.light:hover, .btn.light:hover {
   flex: 1 1 20px;
 }
 
+input, textarea, select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--base-border-radius);
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--foreground);
+  background-color: transparent;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+form button {
+  width: fit-content;
+}
+
+.profile-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-light);  
+  h4 {
+    color: var(--primary);
+  }
+}
+
+.positions, .more-positions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.positions .position-item {
+  text-wrap: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: var(--base-border-radius);
+  background-color: var(--shade);
+}
 @keyframes spin {
   0% {
     transform: rotate(0deg);

@@ -29,6 +29,7 @@ const GeneralIncidentDetailsContent = () => {
     const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
     const [useOriginalVersion, setUseOriginalVersion] = useState(true);
     const [currentIncidentData, setCurrentIncidentData] = useState({});
+    const [reviewsCount, setReviewsCount] = useState();
 
     // Fetch incident details based on the selected version
     const fetchIncidentDetails = async () => {
@@ -123,11 +124,12 @@ const GeneralIncidentDetailsContent = () => {
                             otherInformation={
                                 <GeneralIncidentOtherInformation data={currentIncidentData} />
                             }
-                            reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"general-visitor"} />}
+                            reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"general-visitor"} setCount={setReviewsCount} />}
                             documentHistory={
                                 <GeneralIncidentDocumentHistory incidentId={incidentId} />
                             }
                             documents={<IncidentDocuments incidentId={incidentId} />}
+                            reviewsCount={reviewsCount}
                         />
                     </div>
                 </div>

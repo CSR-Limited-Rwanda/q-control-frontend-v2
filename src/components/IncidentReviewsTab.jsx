@@ -1,10 +1,16 @@
 'use client'
+import '@/styles/_incidentReviews.scss';
 import { createReview, fetchReviews } from '@/hooks/fetchReviews';
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import Button from './forms/Button';
-import { Plus, Send, X } from 'lucide-react';
+import { ArrowRight, Plus, Send, X } from 'lucide-react';
+import UserCard from './UserCard';
+import ProfilePlaceHolder from './ProfilePlaceHolder';
+import PositionCard from './toastManager/PositionCard';
+import { formatDateTime } from '@/utils/api';
+import RichTextField from './RichTextField';
 
-const IncidentReviewsTab = ({ incidentId, apiLink }) => {
+const IncidentReviewsTab = ({ incidentId, apiLink, setCount = 0 }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [reviews, setReviews] = useState([]);
     const [error, setError] = useState(null);
@@ -14,8 +20,11 @@ const IncidentReviewsTab = ({ incidentId, apiLink }) => {
         const response = await fetchReviews(incidentId, apiLink)
         if (!response.success) {
             setError(response.message);
+            setIsLoading(false);
+            return;
         }
-        setReviews(response.data);
+        setReviews(response.data || []);
+        setCount(Array.isArray(response.data) ? response.data.length : 0);
         setIsLoading(false);
 
     }
@@ -24,6 +33,10 @@ const IncidentReviewsTab = ({ incidentId, apiLink }) => {
     useEffect(() => {
         handleFetchReviews();
     }, []);
+
+    useEffect(() => {
+        setCount(Array.isArray(reviews) ? reviews.length : 0);
+    }, [reviews]);
 
     return (
         <div className='incident-reviews-tab'>
@@ -34,11 +47,22 @@ const IncidentReviewsTab = ({ incidentId, apiLink }) => {
                     <div className="message error">{error}</div>
                 ) : reviews.length > 0 ? (
                     <div className="reviews-list">
+
                         {reviews.map((review) => (
                             <div key={review.id} className="review-item">
-                                <h3>{review.title}</h3>
-                                <p>{review.content}</p>
-                                <span className="review-date">{new Date(review.created_at).toLocaleDateString()}</span>
+
+                                <ProfilePlaceHolder fullName={`${review.created_by.first_name} ${review.created_by.last_name}`} />
+                                <div className="review-item-content">
+                                    <div className="name-position">
+                                        <h3>{review.created_by.first_name} {review.created_by.last_name}</h3>
+                                        <div className="postilion">
+                                            <PositionCard position={review.created_by.position} itemsToShow={1} />
+                                        </div>
+                                    </div>
+                                    {/* display html content */}
+                                    <div className="review-content" dangerouslySetInnerHTML={{ __html: review.content }} />
+                                    <small className="review-date">{formatDateTime(review.created_at)}</small>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -47,7 +71,10 @@ const IncidentReviewsTab = ({ incidentId, apiLink }) => {
                 )
             }
 
-            <Button onClick={() => setNewReviewFormVisible(true)} icon={<Plus />} hasIcon={true} text={'Create Review'}></Button>
+            {
+                !isLoading && <Button onClick={() => setNewReviewFormVisible(true)} icon={<Plus />} hasIcon={true} text={'Create Review'}></Button>
+
+            }
             {newReviewFormVisible && (
                 <NewReviewForm
                     incidentId={incidentId}
@@ -92,15 +119,13 @@ export const NewReviewForm = ({ incidentId, apiLink, handleClose, }) => {
             <div className="close-icon" onClick={handleClose}>
                 <X />
             </div>
+            <h3>Add a comment or review</h3>
+            <p>Please provide your feedback below:</p>
             <form onSubmit={handleSubmit} className="">
-                <textarea
-                    value={reviewContent}
-                    onChange={(e) => setReviewContent(e.target.value)}
-                    placeholder="Write your review here..."
-                    required
-                />
+
+                <RichTextField value={reviewContent} onEditorChange={setReviewContent} />
                 {error && <div className="error-message">{error}</div>}
-                <Button hasIcon={true} icon={<Send />} text={'Submit Review'} type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
+                <Button onClick={e => handleSubmit(e)} hasIcon={true} icon={<ArrowRight />} text={'Send'} type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
 
                 </Button>
             </form>
