@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -20,7 +20,7 @@ import NoResources from "@/components/NoResources";
 import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 
 const WorkPlaceDetailsContent = () => {
-  const { incidentId } = useParams()
+  const { incidentId } = useParams();
   const [isFetching, setIsFetching] = useState(true);
   const [incidentDetails, setIncidentDetails] = useState({});
   const [incidentStatus, setIncidentStatus] = useState({});
@@ -28,7 +28,6 @@ const WorkPlaceDetailsContent = () => {
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [reviewsCount, setReviewsCount] = useState();
-
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -126,10 +125,12 @@ const WorkPlaceDetailsContent = () => {
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
               data={{
-                incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
+                incident: useOriginalVersion
+                  ? incidentDetails
+                  : latestIncidentDetails,
                 modifications: useOriginalVersion
                   ? incidentDetails?.modifications
-                  : latestIncidentDetails?.modifications
+                  : latestIncidentDetails?.modifications,
               }}
               incidentDetailsId={incidentId}
               apiLink={"workplace_violence"}
@@ -174,10 +175,14 @@ const WorkPlaceDetailsContent = () => {
               documentHistory={
                 <WorkplaceDocumentHistory incidentId={incidentId} />
               }
-              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"workplace-violence"} setCount={setReviewsCount} />}
-              documents={
-                <IncidentDocuments incidentId={incidentId} />
+              reviews={
+                <IncidentReviewsTab
+                  incidentId={incidentId}
+                  apiLink={"workplace-violence"}
+                  setCount={setReviewsCount}
+                />
               }
+              documents={<IncidentDocuments incidentId={incidentId} />}
               reviewsCount={reviewsCount}
             />
           </div>
@@ -229,9 +234,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 const WorkPlaceDetails = () => {
   return (
     <div>
-      <DashboardLayout
-        children={<WorkPlaceDetailsContent />}
-      />
+      <DashboardLayout children={<WorkPlaceDetailsContent />} />
     </div>
   );
 };

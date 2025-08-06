@@ -1,0 +1,221 @@
+import { useState, useEffect } from "react";
+import api from "@/utils/api";
+import { ArrowLeft, LoaderCircle, Send, X } from "lucide-react";
+// import "./SendComplaintToDepartment.scss";
+
+const SendComplaintToDepartment = ({ complaint, onClose }) => {
+  const [step, setStep] = useState(1);
+  const [facilities, setFacilities] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [selectedFacility, setSelectedFacility] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [comment, setComment] = useState("");
+  const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Fetch facilities on component mount
+  useEffect(() => {
+    const fetchFacilities = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get("/facilities/");
+        console.log("Facilities: ", response.data);
+        setFacilities(response.data);
+      } catch (error) {
+        setError("Failed to fetch facilities");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchFacilities();
+  }, []);
+
+  // Fetch departments when facility is selected
+  useEffect(() => {
+    if (selectedFacility) {
+      const fetchDepartments = async () => {
+        try {
+          setIsLoading(true);
+          const response = await api.get(
+            `/departments/?facility_id=${selectedFacility}`
+          );
+          console.log("Departments: ", response.data);
+
+          setDepartments(response.data.results);
+        } catch (error) {
+          setError("Failed to fetch departments");
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchDepartments();
+    }
+  }, [selectedFacility]);
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedDepartment || !comment) {
+      setError("Please select a department and add a comment");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+    setSuccessMessage("");
+
+    try {
+      // First, upload the file if it exists
+      let documentUrl = "";
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const uploadResponse = await api.post("api/upload/", formData);
+        documentUrl = uploadResponse.data.url;
+      }
+
+      // Then, send the complaint to the department
+      const complaintData = {
+        action: "send_to_department",
+        details: comment,
+        document: documentUrl,
+        department_id: selectedDepartment,
+      };
+
+      const response = await api.patch(
+        `complaints/${complaint.id}/`,
+        complaintData
+      );
+
+      if (response.status === 200) {
+        setSuccessMessage("Complaint sent successfully");
+        setTimeout(() => {
+          onClose();
+        }, 2000);
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || "Failed to send complaint");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="complaint-modal">
+      <div className="modal-content">
+        <X className="close-icon" onClick={onClose} />
+        <h2 className="modal-title">
+          {step === 1 ? "Select Department" : "Add Details"}
+        </h2>
+
+        {step === 1 && (
+          <div className="form-section">
+            <div className="form-group">
+              <label className="form-label">Select Facility</label>
+              <select
+                value={selectedFacility}
+                onChange={(e) => setSelectedFacility(e.target.value)}
+                className="form-select"
+              >
+                <option value="">Select a facility</option>
+                {facilities.map((facility) => (
+                  <option key={facility.id} value={facility.id}>
+                    {facility.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {selectedFacility && (
+              <div className="form-group">
+                <label className="form-label">Select Department</label>
+                <div className="department-list">
+                  {departments.map((dept) => (
+                    <div
+                      key={dept.id}
+                      onClick={() => setSelectedDepartment(dept.id)}
+                      className={`department-item ${
+                        selectedDepartment === dept.id ? "selected" : ""
+                      }`}
+                    >
+                      {dept.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="form-section">
+            <div className="form-group">
+              <label className="form-label">Comment</label>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="form-textarea"
+                rows={4}
+                placeholder="Enter your comment here"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Attach File</label>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="form-input"
+              />
+            </div>
+          </div>
+        )}
+
+        {error && <div className="error-message">{error}</div>}
+        {successMessage && (
+          <div className="success-message">{successMessage}</div>
+        )}
+
+        <div className="button-group">
+          {step === 1 ? (
+            <button onClick={onClose} className="cancel-button">
+              <ArrowLeft size={16} className="button-icon" />
+              Cancel
+            </button>
+          ) : (
+            <button onClick={() => setStep(1)} className="cancel-button">
+              <ArrowLeft size={16} className="button-icon" />
+              Back
+            </button>
+          )}
+          <button
+            onClick={step === 1 ? () => setStep(2) : handleSubmit}
+            disabled={step === 1 ? !selectedDepartment : isLoading}
+            className={`submit-button ${
+              isLoading || (step === 1 && !selectedDepartment) ? "disabled" : ""
+            }`}
+          >
+            {isLoading ? (
+              <LoaderCircle size={18} className="loading-icon" />
+            ) : step === 1 ? (
+              "Next"
+            ) : (
+              <>
+                <Send size={18} className="button-icon" />
+                Send Complaint
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SendComplaintToDepartment;
