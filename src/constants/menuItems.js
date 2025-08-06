@@ -15,7 +15,7 @@ export const menuItems = [
         items: [
             { label: "Overview", href: "/incidents/" },
             { label: "General Incident", href: "/incidents/general" },
-            { label: "Employee Incident", href: "/incidents/employee" },
+            { label: "Staff Incident", href: "/incidents/staff" },
             { label: "Lost and Found", href: "/incidents/lost-and-found" },
             { label: "Grievance", href: "/incidents/grievance" },
             { label: "Medication Error", href: "/incidents/medication-error" },

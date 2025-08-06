@@ -208,7 +208,7 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <ArrowRight />
       <Link href={"/incidents/"}>Incidents</Link> <ArrowRight />
-      <Link href={"/incident/lost-and-found/"}>
+      <Link href={"/incidents/lost-and-found/"}>
         Lost & Found Property report
       </Link>{" "}
       <ArrowRight />

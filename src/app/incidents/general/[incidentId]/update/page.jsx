@@ -1,38 +1,46 @@
-'use client'
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+"use client"
+import api, { API_URL } from "@/utils/api";
 import DashboardLayout from "@/app/dashboard/layout";
-import api from "@/utils/api";
-import ModifyMedicalErrorForm from "@/components/incidents/modifyIncidents/ModifyMedicationErrorPage";
-import { MoveRight } from "lucide-react";
+import ModifyPageLoader from "@/components/loader";
+// import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
+// import GeneralFieldsForm from "./generalFields";
+// import IncidentTypeForm from "./incidentType";
+// import OutcomeForm from "./outcomeForm";
+import "../../../../../styles/_modifyIncident.scss"
+import ModifyGeneralIncidentForm from "@/components/incidents/modifyIncidents/ModifyGeneralIncidentPage"
+import { MoveRight } from 'lucide-react';
 import Link from "next/link";
-// import { FacilityBreadCrumbs } from "../../drugReactionIncident/modifyMedicalAdverseDrugReactionIncidentPage";
+// import { FacilityBreadCrumbs } from "../../drugReactionincidents/modifyMedicalAdverseDrugReactionIncidentPage.jsx";
 import NoResources from "@/components/NoResources";
+import { useEffect, useState } from "react";
+
 
 const PageContent = () => {
-  const [error, setError] = useState();
-  const [incidentData, setIncidentData] = useState({});
-  const { incidentId } = useParams();
+  const [incidentData, setIncidentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { incidentId } = useParams();
   const [isError, setIsError] = useState(false);
-  const [medicationErrorIncidentId, setMedicationErrorIncidentId] = useState (
-    localStorage.getItem("medicationErrorIncidentId")
+  const [generalIncidentId, setGeneralIncidentId] = useState(
+    localStorage.getItem("generalIncidentId")
   )
-
   useEffect(() => {
     const fetchIncidentData = async () => {
       try {
         setIsLoading(true);
         const response = await api.get(
-          `/incidents/medication-error/${medicationErrorIncidentId}/`
+          `/incidents/general-visitor/${generalIncidentId}/`
         );
-
         if (response.status === 200) {
+          console.log(response.data.incident);
           setIncidentData(response.data.incident);
           console.log("Incident data: ", response.data.incident);
           setIsLoading(false);
         }
       } catch (error) {
+        // setIsLoading(false);
+        console.log("new error", error);
+
         if (error.response.status && error.response.status === 403) {
           window.customToast.error("You are not allowed to view this incident");
         } else if (error.response.status === 404) {
@@ -40,17 +48,17 @@ const PageContent = () => {
         } else {
           window.customToast.error("There was an error");
         }
-        console.log("error:", error);
       } finally {
         setIsLoading(false);
       }
     };
     fetchIncidentData();
   }, [incidentId]);
+
   return isLoading ? (
     "Getting data..."
   ) : incidentData && !isError ? (
-    <ModifyMedicalErrorForm data={incidentData} />
+    <ModifyGeneralIncidentForm data={incidentData} />
   ) : (
     "No data"
   );
@@ -60,20 +68,18 @@ const BreadCrumbs = () => {
   const { incidentId } = useParams();
   return (
     <div className="breadcrumbs">
-      <Link href={"/"}>Overview</Link> <MoveRight />
-      <Link href={"/incidents/"}>Incidents</Link> <MoveRight />
-      <Link href={"/incident/medication_error/"}>Medication Error List</Link>{" "}
+      <Link href={"/"}>Overview</Link> <ArrowRight01Icon />
+      <Link href={"/incidents/"}>Incidents</Link> <ArrowRight01Icon />
+      <Link href={"/incidents/general/"}>General Incidents List</Link>{" "}
       <MoveRight />
-      <Link href={`/incident/medication_error/${incidentId}/`}>
-        #{incidentId}
-      </Link>{" "}
+      <Link href={`/incidents/general/${incidentId}/`}>#{incidentId}</Link>{" "}
       <MoveRight />
       <Link className="current-page"> Modify</Link>
     </div>
   );
 };
 
-const ModifyMedicalErrorIncidentPage = () => {
+const ModifyGeneralIncident = ({ incidentId }) => {
   const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null)
 
   useEffect(() => {
@@ -83,8 +89,9 @@ const ModifyMedicalErrorIncidentPage = () => {
   return (
     <DashboardLayout
       children={<PageContent />}
+
     />
   );
 };
 
-export default ModifyMedicalErrorIncidentPage;
+export default ModifyGeneralIncident;

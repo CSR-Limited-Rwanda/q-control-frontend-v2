@@ -8,7 +8,7 @@ import api from "@/utils/api";
 // import BackToPage from "../../../../../components/incidents/backToPage";
 // import ModifyEmployeeIncident from "../../../../../components/incidents/forms/modiy/employeeIncident";
 import { ArrowRight } from "lucide-react";
-// import { FacilityBreadCrumbs } from "../../drugReactionIncident/modifyMedicalAdverseDrugReactionIncidentPage";
+// import { FacilityBreadCrumbs } from "../../drugReactionincidents/modifyMedicalAdverseDrugReactionIncidentPage";
 // import NoResources from "../../../../../components/general/noResources";
 import ModifyStaffIncident from "@/components/incidents/modifyIncidents/ModifyStaffIncidentPage";
 
@@ -25,7 +25,7 @@ const ModifyStaffIncidentPageContent = () => {
     const fetchIncidentData = async () => {
       try {
         const response = await api.get(
-          `/incidents/staff-incident/${staffIncidentId}/`
+          `/incidents/staff-incidents/${staffIncidentId}/`
         );
 
         if (response.status === 200) {
@@ -55,7 +55,7 @@ const ModifyStaffIncidentPageContent = () => {
       investigation={investigation}
     />
   ) : (
-   "No data"
+    "No data"
   );
 };
 
@@ -65,9 +65,9 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link to={"/"}>Overview</Link> <ArrowRight />
       <Link to={"/incidents/"}>Incidents</Link> <ArrowRight />
-      <Link to={"/incident/employee/"}>Employee Incident Report</Link>{" "}
+      <Link to={"/incidents/employee/"}>Employee Incident Report</Link>{" "}
       <ArrowRight />
-      <Link to={`/incident/employee_incident/${incidentId}/`}>
+      <Link to={`/incidents/employee_incidents/${incidentId}/`}>
         #{incidentId}
       </Link>{" "}
       <ArrowRight />

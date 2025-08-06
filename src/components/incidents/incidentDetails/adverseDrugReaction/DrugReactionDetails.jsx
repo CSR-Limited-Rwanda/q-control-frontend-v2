@@ -6,7 +6,7 @@ import DashboardLayout from "@/app/dashboard/layout";
 import IncidentDetailsHeader from "../IncidentDetailsHeader";
 import IncidentDetails from "../generalIncidents/IncidentDetails";
 import IncidentTabs from "../IncidentTabs";
-import api, {API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import DrugReactionContentTab from "./DrugReactionContentTab";
 import DrugReactionGeneraInfo from "./DrugReactionGeneralInfo";
 import DrugReactionOtherInformation from "./DrugReactionOtherInformation";
@@ -26,7 +26,7 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <ChevronRight />
       <Link href={"/incidents/"}>Incidents</Link> <ChevronRight />
-      <Link href={"/incident/drug-reaction/"}>
+      <Link href={"/incidents/drug-reaction/"}>
         Anaphylaxis/Adverse Drug Reaction List
       </Link>{" "}
       <ChevronRight />
@@ -72,7 +72,7 @@ function DrugReactionDetailsContent() {
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [hasAccess, setHasAccess] = useState(true);
   //   const [incidentStatus, setIncidentStatus] = useState({});
-  const {incidentId} = useParams()
+  const { incidentId } = useParams()
   const [reviewsCount, setReviewsCount] = useState();
 
   const fetchIncidentDetails = async () => {
@@ -210,12 +210,12 @@ function DrugReactionDetailsContent() {
               generalInformation={
                 <DrugReactionGeneraInfo
                   data={currentIncidentData}
-                  //   incidentStatuses={incidentStatus}
+                //   incidentStatuses={incidentStatus}
                 />
               }
               otherInformation={
                 <DrugReactionOtherInformation data={{
-                    incident: currentIncidentData
+                  incident: currentIncidentData
                 }} />
               }
               documentHistory={
@@ -258,19 +258,19 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
   return <FilesList documents={documents} showDownload={true} />;
 };
 function DrugReactionDetails() {
-//   const changeBreadCrumbs = localStorage.getItem("changeBreadCrumbs");
-//   const { drugReactionId } = useParams();
+  //   const changeBreadCrumbs = localStorage.getItem("changeBreadCrumbs");
+  //   const { drugReactionId } = useParams();
   return (
     <div>
       <DashboardLayout
         children={<DrugReactionDetailsContent />}
-        // breadCrumbs={
-        //   changeBreadCrumbs ? (
-        //     <FacilityDetailsBreadCrumbs incidentID={drugReactionId} />
-        //   ) : (
-        //     <BreadCrumbs />
-        //   )
-        // }
+      // breadCrumbs={
+      //   changeBreadCrumbs ? (
+      //     <FacilityDetailsBreadCrumbs incidentID={drugReactionId} />
+      //   ) : (
+      //     <BreadCrumbs />
+      //   )
+      // }
       />
     </div>
   );

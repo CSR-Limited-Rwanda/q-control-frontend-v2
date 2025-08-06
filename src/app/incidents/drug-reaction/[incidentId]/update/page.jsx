@@ -9,7 +9,7 @@ import { MoveRight } from "lucide-react";
 // import { usePermission } from "../../../../contexts/permissionsContext";
 import NoResources from "@/components/NoResources";
 
-const ModifyMedicalAdverseDrugReactionIncidentPageContent = ({}) => {
+const ModifyMedicalAdverseDrugReactionIncidentPageContent = ({ }) => {
     const [incident, setIncident] = useState({});
     const { incidentId } = useParams();
     const [hasAccess, setHasAccess] = useState(true);
@@ -62,11 +62,11 @@ const BreadCrumbs = () => {
         <div className="breadcrumbs">
             <Link to={"/"}>Overview</Link> <MoveRight />
             <Link to={"/incidents/"}>Incidents</Link> <MoveRight />
-            <Link to={"/incident/drug-reaction/"}>
+            <Link to={"/incidents/drug-reaction/"}>
                 Anaphylaxis/Adverse Drug Reaction List
             </Link>{" "}
             <MoveRight />
-            <Link to={`/incident/drug-reaction/${incidentId}/`}>
+            <Link to={`/incidents/drug-reaction/${incidentId}/`}>
                 #{incidentId}
             </Link>{" "}
             <MoveRight />
@@ -119,7 +119,7 @@ export default ModifyMedicalAdverseDrugReactionIncidentPage;
 //                 {facilityName}
 //             </Link>
 //             <MoveRight />
-//             <Link href={`/incident/${facilityIncidentLink}/${incidentId}/`} replace>
+//             <Link href={`/incidents/${facilityIncidentLink}/${incidentId}/`} replace>
 //                 #{incidentId}
 //             </Link>{" "}
 //             <MoveRight />

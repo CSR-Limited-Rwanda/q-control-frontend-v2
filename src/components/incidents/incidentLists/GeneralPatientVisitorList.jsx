@@ -154,11 +154,11 @@ const GeneralPatientVisitorList = () => {
   };
 
   const handleRowClick = (incidentId) => {
-    router.push(`/incident/general/${incidentId}`);
+    router.push(`/incidents/general/${incidentId}`);
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incident/general/${incidentId}/update/`);
+    router.push(`/incidents/general/${incidentId}/update/`);
     localStorage.setItem("generalIncidentId", incidentId)
   };
 
@@ -413,9 +413,8 @@ const GeneralPatientVisitorList = () => {
                           {pageNumbers.map((number) => (
                             <button
                               key={number}
-                              className={`pagination-button ${
-                                currentPage === number ? "active" : ""
-                              }`}
+                              className={`pagination-button ${currentPage === number ? "active" : ""
+                                }`}
                               onClick={() => handlePageChange(number)}
                             >
                               {number}
@@ -490,9 +489,8 @@ const GeneralPatientVisitorList = () => {
                     {pageNumbers.map((number) => (
                       <button
                         key={number}
-                        className={`pagination-button ${
-                          currentPage === number ? "active" : ""
-                        }`}
+                        className={`pagination-button ${currentPage === number ? "active" : ""
+                          }`}
                         onClick={() => handlePageChange(number)}
                       >
                         {number}
@@ -663,9 +661,8 @@ const GeneralIncidentTable = ({
                 )
               }
               key={index}
-              className={`table-card ${
-                selectedItems.includes(incident) ? "selected" : ""
-              }`}
+              className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+                }`}
             >
               <td>
                 <div
@@ -691,7 +688,7 @@ const GeneralIncidentTable = ({
               <td>{incident.report_facility?.name || "Not provided"}</td>
               <td>
                 {incident.patient_visitor?.last_name &&
-                incident.patient_visitor?.first_name
+                  incident.patient_visitor?.first_name
                   ? `${incident.patient_visitor?.last_name} ${incident.patient_visitor?.first_name}`
                   : "Not provided"}
               </td>
@@ -706,13 +703,12 @@ const GeneralIncidentTable = ({
               <td>{incident.category || "Not provided"}</td>
               <td>
                 <p
-                  className={`follow-up ${
-                    incident.status === "Draft"
+                  className={`follow-up ${incident.status === "Draft"
                       ? "in-progress"
                       : incident.status === "Closed"
-                      ? "closed"
-                      : "Open"
-                  }`}
+                        ? "closed"
+                        : "Open"
+                    }`}
                 >
                   {incident.status || "Not specified"}
                 </p>
@@ -767,9 +763,8 @@ const IncidentTableCard = ({
 }) => {
   return (
     <div
-      className={`table-card ${
-        selectedItems.includes(incident) ? "selected" : ""
-      }`}
+      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
+        }`}
     >
       <div className="card-header">
         <div className="id-number">
@@ -804,7 +799,7 @@ const IncidentTableCard = ({
           <label htmlFor="">Name: </label>
           <span>
             {incident.patient_visitor?.last_name &&
-            incident.patient_visitor?.first_name
+              incident.patient_visitor?.first_name
               ? `${incident.patient_visitor?.last_name} ${incident.patient_visitor?.first_name}`
               : "Not provided"}
           </span>
@@ -833,13 +828,12 @@ const IncidentTableCard = ({
         <div className="item">
           <label htmlFor="">Status: </label>
           <span
-            className={`follow-up ${
-              incident.status === "Draft"
+            className={`follow-up ${incident.status === "Draft"
                 ? "in-progress"
                 : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-            }`}
+                  ? "closed"
+                  : "Open"
+              }`}
           >
             {incident?.status || "Not specified"}
           </span>
