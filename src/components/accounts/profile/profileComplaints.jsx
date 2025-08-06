@@ -92,6 +92,7 @@ const UserComplaints = () => {
         const response = await api.get(`/users/${profileId}/complaints/`);
         setComplaints(response.data.results);
         console.log(response.data.results);
+        console.log(response.data);
         setIsLoading(false);
       } catch (error) {
         if (error.response) {
