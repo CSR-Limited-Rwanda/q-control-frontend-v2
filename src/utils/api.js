@@ -3,6 +3,8 @@ import axios from "axios";
 // import * as XLSX from "xlsx";
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const TINYEMCE_API_KEY = process.env.NEXT_PUBLIC_TINYEMCE_API_KEY;
+
 const api = axios.create({
   baseURL: API_URL,
 });
@@ -165,5 +167,5 @@ export const checkCurrentAccount = () => {
     console.log("No active account found in localStorage")
     return null;
   }
-  
+
 };
