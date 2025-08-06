@@ -1,6 +1,5 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
-
 
 const IncidentTabs = ({
   data,
@@ -21,7 +20,7 @@ const IncidentTabs = ({
   const [incidentDocumentCount, setIncidentDocumentCount] = useState(0);
 
   const toggleActiveTab = (tab) => {
-    setActiveTab(tab)
+    setActiveTab(tab);
   };
 
   useEffect(() => {
@@ -45,12 +44,13 @@ const IncidentTabs = ({
     return () => {
       clearInterval(intervalId);
     };
-  }, []);// Empty dependency array to run only once (on mount)
+  }, []); // Empty dependency array to run only once (on mount)
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const currentCount = localStorage.getItem("documentHistoryCount") || "0";
-      setIncidentDocumentHistoryCount(parseInt(currentCount, 10));
+      const currentCount = localStorage.getItem("documentHistoryCount") || 0;
+      const parsedCount = parseInt(currentCount, 10);
+      setIncidentDocumentHistoryCount(isNaN(parsedCount) ? 0 : parsedCount);
     }, 1000); // Adjust the interval as needed
 
     if (localStorage.getItem("activate_investigation_tab")) {
@@ -69,15 +69,17 @@ const IncidentTabs = ({
       <div className="tabs">
         <div
           onClick={() => toggleActiveTab("incidentType")}
-          className={`tab incident-type ${activeTab === "incidentType" ? "active" : ""
-            }`}
+          className={`tab incident-type ${
+            activeTab === "incidentType" ? "active" : ""
+          }`}
         >
           <p>General Info</p>
         </div>
         <div
           onClick={() => toggleActiveTab("otherInfo")}
-          className={`tab general-info ${activeTab === "otherInfo" ? "active" : ""
-            }`}
+          className={`tab general-info ${
+            activeTab === "otherInfo" ? "active" : ""
+          }`}
         >
           <p>Other info</p>
         </div>
@@ -90,16 +92,18 @@ const IncidentTabs = ({
         </div>
         <div
           onClick={() => toggleActiveTab("document-history")}
-          className={`tab document-history ${activeTab === "document-history" ? "active" : ""
-            }`}
+          className={`tab document-history ${
+            activeTab === "document-history" ? "active" : ""
+          }`}
         >
           <p>Document History</p>
           <div className="counter">{incidentDocumentHistoryCount}</div>
         </div>
         <div
           onClick={() => toggleActiveTab("documents")}
-          className={`tab documents ${activeTab === "documents" ? "active" : ""
-            }`}
+          className={`tab documents ${
+            activeTab === "documents" ? "active" : ""
+          }`}
         >
           <p>Documents</p>
           <div className="counter">{incidentDocumentCount}</div>
@@ -107,8 +111,9 @@ const IncidentTabs = ({
         {showInvestigationTab && (
           <div
             onClick={() => toggleActiveTab("investigation")}
-            className={`tab investigation ${activeTab === "investigation" ? "active" : ""
-              }`}
+            className={`tab investigation ${
+              activeTab === "investigation" ? "active" : ""
+            }`}
           >
             <p>Investigation</p>
           </div>

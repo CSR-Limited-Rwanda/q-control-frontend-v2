@@ -20,6 +20,7 @@ import {
   CirclePlus,
   ListCheck,
   LayoutList,
+  LoaderCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { splitName } from "@/utils/text";
@@ -47,7 +48,7 @@ const DashboardLayout = ({ children }) => {
   const [selectedForm, setSelectedForm] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { isAuth, logout } = useAuthentication();
+  const { isAuth, logout, loading } = useAuthentication();
   const pathname = usePathname();
 
   const handleMobileMenu = () => {
@@ -238,7 +239,19 @@ const DashboardLayout = ({ children }) => {
     );
   };
 
-  return isAuth ? (
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <LoaderCircle className="spinner" size={40} />
+      </div>
+    );
+  }
+
+  if (!isAuth) {
+    return null;
+  }
+
+  return (
     <div className="dashboard">
       {/* Sidebar */}
       <aside
@@ -369,8 +382,6 @@ const DashboardLayout = ({ children }) => {
         </div>
       </main>
     </div>
-  ) : (
-    <LoginPopup />
   );
 };
 
@@ -380,6 +391,11 @@ export const ProfileContainer = () => {
   const [showProfile, setShowProfile] = useState(false);
   const { isAuth, logout, user } = useAuthentication();
   const router = useRouter();
+  const [userProfile, setUserProfile] = useState({});
+
+  useEffect(() => {
+    setUserProfile(JSON.parse(localStorage.getItem("loggedInUserInfo")));
+  }, []);
 
   const goToProfile = () => {
     router.push("/accounts/profile/");
@@ -392,7 +408,11 @@ export const ProfileContainer = () => {
     <div className="header-popup">
       <div onClick={handleShowProfile} className="header-trigger">
         <div className="name-initials avatar">
-          <span>{splitName(`${user?.firstName} ${user?.lastName}`)}</span>
+          <span>
+            {splitName(
+              `${userProfile?.user?.first_name} ${userProfile?.user?.last_name}`
+            )}
+          </span>
         </div>
       </div>
       {showProfile && (
@@ -400,9 +420,9 @@ export const ProfileContainer = () => {
           <div className="dropdown__item">
             <div className="card">
               <UserCard
-                firstName={user?.firstName}
-                lastName={user?.lastName}
-                label={user?.email}
+                firstName={userProfile?.user?.first_name}
+                lastName={userProfile?.user?.last_name}
+                label={userProfile?.user?.email}
               />
             </div>
           </div>
