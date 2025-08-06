@@ -13,28 +13,16 @@ const IncidentTabs = ({
   investigation,
   showInvestigationTab,
   reviewsCount,
+  incidentDocumentHistoryCount
 }) => {
-  const [activeTab, setActiveTab] = useState("incidentType");
-  const [incidentReviewsCount, setIncidentReviewsCount] = useState(0);
-  const [incidentDocumentHistoryCount, setIncidentDocumentHistoryCount] =
-    useState(0);
+  const [activeTab, setActiveTab] = useState("documentHistoryCount");
+  useState(0);
   const [incidentDocumentCount, setIncidentDocumentCount] = useState(0);
 
   const toggleActiveTab = (tab) => {
     setActiveTab(tab)
   };
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const currentCount = localStorage.getItem("incidentReviewsCount") || "0";
-      setIncidentReviewsCount(parseInt(currentCount, 10));
-    }, 1000); // Adjust the interval as needed
-
-    // Cleanup the interval on component unmount
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
   useEffect(() => {
     const intervalId = setInterval(() => {
       const currentCount = localStorage.getItem("incidentDocumentCount") || "0";
@@ -46,23 +34,6 @@ const IncidentTabs = ({
       clearInterval(intervalId);
     };
   }, []);// Empty dependency array to run only once (on mount)
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const currentCount = localStorage.getItem("documentHistoryCount") || "0";
-      setIncidentDocumentHistoryCount(parseInt(currentCount, 10));
-    }, 1000); // Adjust the interval as needed
-
-    if (localStorage.getItem("activate_investigation_tab")) {
-      setActiveTab("investigation");
-      localStorage.removeItem("activate_investigation_tab");
-    }
-
-    // Cleanup the interval on component unmount
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []); // Empty dependency array to run only once (on mount)
 
   return (
     <div className="incident-type-tabs">
@@ -102,7 +73,7 @@ const IncidentTabs = ({
             }`}
         >
           <p>Documents</p>
-          <div className="counter">{incidentDocumentCount}</div>
+          <div className="counter">{incidentDocumentHistoryCount}</div>
         </div>
         {showInvestigationTab && (
           <div
