@@ -153,7 +153,7 @@ const IncidentDetailsHeader = ({
 
       try {
         const response = await api.get(`${API_URL}${url}`);
-        console.log(response.data);
+
         setCurrentIncidentData(
           selectedOption.isOriginal
             ? response?.data?.original_incident

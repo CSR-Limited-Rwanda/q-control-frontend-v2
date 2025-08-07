@@ -27,7 +27,6 @@ import DeleteDepartmentPopup from '@/components/accounts/forms/department/Delete
 import ErrorMessage from '@/components/messages/ErrorMessage'
 import EditDepartment from '@/components/accounts/forms/department/EditDepartment'
 
-
 const FacilityDepartmentContent = () => {
     const params = useParams()
     const facility_id = params.facility_id
@@ -48,7 +47,6 @@ const FacilityDepartmentContent = () => {
     const [showEditForm, setShowEditForm] = useState(false)
     const router = useRouter()
 
-
     useEffect(() => {
         const getDepartment = async () => {
             try {
@@ -61,7 +59,6 @@ const FacilityDepartmentContent = () => {
                         members: responseData.members || [],
                         facility: responseData.facility || { name: 'unknown facility' }
                     }
-                    console.log('department', departmentData)
                     setDepartment(departmentData);
                 }
             } catch (error) {
@@ -76,7 +73,6 @@ const FacilityDepartmentContent = () => {
             getDepartment();
         }
     }, [department_id]);
-
 
     useEffect(() => {
         if (!facility_id) return;
@@ -109,11 +105,10 @@ const FacilityDepartmentContent = () => {
             try {
                 const response = await api.get(`/departments/${department_id}/complaints`)
                 if (response.status === 200) {
-                    // console.log('department complaints', response.data)
                     setComplaints(response.data)
                 }
             } catch (error) {
-                console.log(`an error has occurred fetching complaints: ${error}`)
+                console.error('Error fetching complaints:', error)
             }
         }
         getComplaints()
@@ -125,12 +120,11 @@ const FacilityDepartmentContent = () => {
             try {
                 const response = await api.get(`/facilities/departments/${department_id}/members/`)
                 if (response.status === 200) {
-                    console.log('facility department members', response.data.members.length)
                     setMembers(response.data.members)
                     setDepartmentMembers(response.data.members.length)
                 }
             } catch (error) {
-                console.log(`an error has occurred: ${error}`)
+                console.error('Error fetching department members:', error);
             }
         }
         fetchStaffMembers()
@@ -142,10 +136,10 @@ const FacilityDepartmentContent = () => {
             try {
                 const response = await api.get(`/facilities/departments/${department_id}/incidents`)
                 if (response.status === 200) {
-                    console.log('incidents', response)
+                    setIncidents(response.data)
                 }
             } catch (error) {
-                console.log(`Failed to fetch the incidents of the departments: ${error}`)
+                console.error('Error fetching incidents:', error)
             }
         }
         getIncidents()
@@ -154,7 +148,7 @@ const FacilityDepartmentContent = () => {
     const handleShowNewUserForm = () => {
         setShowNewUserForm(prev => !prev);
     };
-    
+
     useEffect(() => {
         setDepartment(localStorage.getItem("department"));
     }, []);
@@ -172,7 +166,6 @@ const FacilityDepartmentContent = () => {
 
             if (res.status === 200 || res.status === 204) {
                 router.push(`/accounts`);
-                console.log('clicked')
             } else {
                 setDeleteError('Failed to delete department');
             }
@@ -184,7 +177,6 @@ const FacilityDepartmentContent = () => {
             setShowDeletePopup(false);
         }
     };
-
 
     if (!facility) {
         return <div>Loading facility data...</div>;
@@ -327,7 +319,7 @@ const FacilityDepartmentContent = () => {
                     <Users size={20} /> Staff
                 </div>
             </div>
-            
+
             {/* tabs */}
             {/* incident reports */}
             {activeTab === "reports" && (

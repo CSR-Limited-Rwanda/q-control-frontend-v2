@@ -15,7 +15,7 @@ const WorkplaceDocumentHistory = ({ incidentId }) => {
         );
         if (response.status === 200) {
           setDocumentHistory(response.data.data);
-          console.log(response.data.data);
+
           localStorage.setItem("documentHistoryCount", response.data.count);
           setGettingDocumentHistory(false);
         }

@@ -1,4 +1,4 @@
-import EmployeeIncidentDetails from "@/components/incidents/incidentDetails/staffincidents/StaffIncidentDetails"
+import EmployeeIncidentDetails from "@/components/incidents/incidentDetails/staffIncident/StaffIncidentDetails"
 
 const page = () => {
   return (

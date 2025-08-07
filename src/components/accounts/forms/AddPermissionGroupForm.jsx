@@ -40,7 +40,7 @@ const AddPermissionGroupForm = ({ handleClose }) => {
         const response = await api.get(`/permissions/features/${featureKey}/`);
         if (response.status === 200) {
           setPermissions((prev) => ({ ...prev, [featureKey]: response.data }));
-          console.log(response.data);
+
         }
       } catch (error) {
         console.error("Failed to fetch permissions:", error);

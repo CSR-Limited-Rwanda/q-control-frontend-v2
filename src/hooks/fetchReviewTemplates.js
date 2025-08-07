@@ -15,7 +15,7 @@ export const fetchReviewTemplates = async (params) => {
             };
         }
     } catch (error) {
-        console.log(error);
+
         let errorMessage = "An error occurred while fetching review templates.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || errorMessage;
@@ -42,7 +42,7 @@ export const fetchReviewTemplateById = async (templateId) => {
             };
         }
     } catch (error) {
-        console.log(error);
+
         let errorMessage = "An error occurred while fetching review template.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || errorMessage;
@@ -69,7 +69,7 @@ export const fetchReviewTemplateTasks = async (templateId) => {
             };
         }
     } catch (error) {
-        console.log(error);
+
         let errorMessage = "An error occurred while fetching review template tasks.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || errorMessage;

@@ -110,7 +110,6 @@ const DrugReactionForm = ({ togglePopup }) => {
 
   useEffect(() => {
     localStorage.setItem("updateNewIncident", "false");
-    console.log(localStorage.getItem("updateNewIncident"));
     const handleKeyDown = (event) => {
       // Check if Ctrl or Alt key is pressed
       if (event.key === "Enter") {
@@ -141,7 +140,7 @@ const DrugReactionForm = ({ togglePopup }) => {
             if (currentStepRef.current > 1 && currentStepRef.current <= 7) {
               document.getElementById("back-button").click();
             }
-            console.log(currentStepRef.current);
+
             break;
           case "f": // Ctrl + F
             event.preventDefault(); // Prevent default browser action
@@ -167,7 +166,6 @@ const DrugReactionForm = ({ togglePopup }) => {
             response.data.adverse_drug_reaction.length > 0 ? true : false
           );
 
-          console.log(response.data);
         }
       } catch (error) {
         window.customToast.error(error.message);
@@ -220,7 +218,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         prevSelected.filter((item) => item !== value)
       );
     }
-    console.log(selectedDescription);
+
   };
 
   const handleOutcomeChange = (e) => {
@@ -232,7 +230,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         prevSelected.filter((item) => item !== value)
       );
     }
-    console.log(selectedDescription);
+
   };
 
   const handleRouteChange = (e) => {
@@ -277,10 +275,9 @@ const DrugReactionForm = ({ togglePopup }) => {
         const id = response.data.id;
         localStorage.setItem("drugReactionId", id.toString());
         localStorage.setItem("updateNewIncident", "true");
-        console.log(localStorage.getItem("updateNewIncident"));
         window.customToast.success("Successfully posted data");
         setCurrentStep(currentStep + 1);
-        console.log(response.data.data);
+
         postDocumentHistory(id, "added a new incident", "create");
       }
     } catch (error) {
@@ -303,7 +300,7 @@ const DrugReactionForm = ({ togglePopup }) => {
     try {
       setIsLoading(true);
       const id = localStorage.getItem("drugReactionId");
-      console.log(id);
+
       const response = await api.put(
         `${API_URL}/incidents/adverse-drug-reaction/${id}/`,
         cleanedData(drugReactionData),
@@ -326,7 +323,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         if (currentStep === 9) {
           localStorage.setItem("updateNewIncident", "false");
         }
-        console.log(response.data);
+
       }
     } catch (error) {
       if (error.response.data) {
@@ -389,7 +386,6 @@ const DrugReactionForm = ({ togglePopup }) => {
 
           status: "Draft",
         };
-        console.log("Drug reaction data: ", drugReactionData);
 
         if (localStorage.getItem("updateNewIncident") === "false") {
           handleNewDrugAdverseReaction(cleanedData(drugReactionData));
@@ -516,7 +512,7 @@ const DrugReactionForm = ({ togglePopup }) => {
           reaction_was_treated: isReactionTreated,
           treatment_description: treatmentDescription,
         };
-        console.log("Drug reaction data: ", drugReactionData);
+
         updateDrugAdverseReaction(drugReactionData);
       }
     }

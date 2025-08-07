@@ -73,12 +73,11 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
   useEffect(() => {
     currentStepRef.current = currentStep;
-    console.log("Facility id:   ", facilityId);
+
   }, [currentStep]);
 
   useEffect(() => {
     localStorage.setItem("updateNewIncident", "false");
-    console.log(localStorage.getItem("updateNewIncident"));
     const handleKeyDown = (event) => {
       // Check if Ctrl or Alt key is pressed
       if (event.key === "Enter") {
@@ -109,7 +108,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             if (currentStepRef.current > 1 && currentStepRef.current <= 5) {
               document.getElementById("back-button").click();
             }
-            console.log(currentStepRef.current);
+
             break;
           case "f": // Ctrl + F
             event.preventDefault(); // Prevent default browser action
@@ -142,8 +141,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         last_name: "",
       });
 
-      console.log(newWitness);
-      console.log(witnesses);
     }
   };
 
@@ -205,7 +202,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       status: "Draft",
     };
 
-    console.log("Incident data:", incidentData);
     try {
       const res = await api.post(
         `${API_URL}/incidents/staff-incident/`,
@@ -218,18 +214,16 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         setIsLoading(false);
         setCurrentStep(currentStep + 1);
         window.customToast.success("Data posted successfully");
-        console.log(res.data);
+
         localStorage.setItem("employeeId", res.data.id);
         localStorage.setItem("updateNewIncident", "true");
-        console.log(localStorage.getItem("updateNewIncident"));
-        console.log(res.data);
+
         setReportID(res.data.id);
-        console.log(res.data.id);
-        console.log(age);
+
       }
     } catch (error) {
       console.error("Error submitting step 1: ", error);
-      console.log(error);
+
       setIsLoading(false);
       return;
     }
@@ -294,7 +288,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
 
       if (isValid) {
-        console.log(whenInjured);
+
         const data = {
           facility_id: facilityId,
           current_step: currentStep,
@@ -319,15 +313,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           status: "Open",
         };
 
-        console.log(data);
         try {
           const res = await api.put(
             `${API_URL}/incidents/staff-incident/${reportId}/`,
             cleanedData(data)
           );
-          console.log(dateSeenDoctor);
-          console.log(timeSeenDoctor);
-          console.log(res.data);
+
           setIsLoading(true);
 
           if (res.status === 200) {
@@ -341,11 +332,9 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             postDocumentHistory(reportId, "added a new incident", "create");
           }
         } catch (error) {
-          console.log(dateSeenDoctor);
-          console.log(timeSeenDoctor);
-          console.log(whenInjured);
+
           console.error("Error submitting step 4: ", error);
-          console.log(error);
+
           setIsLoading(false);
           return;
         }
@@ -362,9 +351,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         `${API_URL}/incidents/employee_incidents/update/staff/final_report/`,
         data
       );
-      console.log(dateSeenDoctor);
-      console.log(timeSeenDoctor);
-      console.log(res.data);
+
       setIsLoading(true);
 
       if (res.status === 200) {
@@ -378,9 +365,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         postDocumentHistory(reportId, "added a new incident", "create");
       }
     } catch (error) {
-      console.log(dateSeenDoctor);
-      console.log(timeSeenDoctor);
-      console.log(whenInjured);
+
       console.error("Error submitting step 4: ", error);
       return;
     }
@@ -428,7 +413,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
 
       if (isValid) {
-        console.log(witnesses);
+
         setIsLoading(true);
         if (localStorage.getItem("updateNewIncident") === "false") {
           handleStepOneSubmit();

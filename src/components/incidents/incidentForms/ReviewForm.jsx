@@ -25,7 +25,7 @@ const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
         toggleReviewForm();
       }
     } catch (error) {
-      console.log(error);
+
       if (error.response.data) {
         window.customToast.error(
           error.response.data.error || "Error adding review"

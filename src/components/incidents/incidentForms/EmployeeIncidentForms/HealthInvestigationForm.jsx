@@ -97,7 +97,7 @@ const HealthIncidentInvestigationForm = () => {
                         if (currentStepRef.current > 1 && currentStepRef.current <= 3) {
                             document.getElementById("back-button").click();
                         }
-                        console.log(currentStepRef.current);
+
                         break;
                     case "f": // Ctrl + F
                         event.preventDefault(); // Prevent default browser action
@@ -193,7 +193,7 @@ const HealthIncidentInvestigationForm = () => {
                 "Add Sex": sex,
                 "Add Status": status,
             });
-            console.log(isValid);
+
             if (isValid) {
                 setIsLoading(true);
 
@@ -207,7 +207,7 @@ const HealthIncidentInvestigationForm = () => {
                 "Add Time of Event": timeOfEvent,
                 "Add event Location": eventLocation,
             });
-            console.log(isValid);
+
             if (isValid) {
                 if (!incidentId) {
                     window.customToast.error("Missing incident ID. Please start over.");
@@ -227,7 +227,7 @@ const HealthIncidentInvestigationForm = () => {
 
     const handleStepOneSubmit = async () => {
         try {
-            console.log(accidentHappened);
+
             const res = await api.post(
                 `${API_URL}/incidents/staff-incident/${staffIncidentId}/investigation/`,
                 {
@@ -246,11 +246,8 @@ const HealthIncidentInvestigationForm = () => {
                 }
             );
 
-            console.log(accidentHappened);
-
             if (res.status === 201 || res.status === 200) {
-                console.log(res.data.id);
-                console.log(res.data);
+
                 localStorage.setItem("employee_investigation_id", res.data.id);
                 setIncidentId(res.data.id);
                 setCurrentStep(currentStep + 1);
@@ -301,7 +298,7 @@ const HealthIncidentInvestigationForm = () => {
             );
 
             if (res.status === 201 || res.status === 200) {
-                console.log(res.data);
+
                 setIncidentId(res.data.id);
                 setCurrentStep(currentStep + 1);
                 setIsLoading(false);
@@ -343,7 +340,7 @@ const HealthIncidentInvestigationForm = () => {
                 `${API_URL}/incidents/staff-incident/${staffIncidentId}/investigation/${incidentId}/`,
                 cleanedData(data)
             );
-            console.log("Step 3: ", res.data);
+
             if (res.status === 200 || res.status === 201) {
                 postDocumentHistory(incidentId, "added a new investigation", "create");
                 window.customToast.success("Data posted successfully");

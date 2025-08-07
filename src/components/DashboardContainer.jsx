@@ -7,7 +7,7 @@ export const FacilityCard = () => {
     const savedAccount = localStorage.getItem("activeAccount");
     if (savedAccount && savedAccount !== "undefined") {
       setActiveAccount(JSON.parse(savedAccount));
-      console.log("Facility:  ", savedAccount);
+
     }
   }, []);
   return (

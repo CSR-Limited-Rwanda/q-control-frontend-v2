@@ -63,7 +63,7 @@ const LostFoundDetailsContent = () => {
   // UseEffect to fetch data when either the incidentId or useOriginalVersion changes
   useEffect(() => {
     fetchIncidentDetails();
-    console.log("currentincidentdata: ", currentIncidentData); // Fetch incident data when version toggles or incidentId changes
+
   }, [incidentId, useOriginalVersion]); // Dependencies trigger re-fetch
   //   useEffect(() => {
   //     const getIncidentReviews = async () => {
@@ -182,11 +182,11 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
         );
         if (response.status === 200) {
           setDocuments(response.data);
-          console.log(response.data);
+
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
     fetchDocuments();

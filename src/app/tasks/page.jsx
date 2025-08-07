@@ -128,7 +128,6 @@ const TasksPage = () => {
             window.location.reload()
         }
         setUserInfo(user)
-        console.log('User Info:', user)
         if (user?.id) {
             loadTasks(user.id)
         }

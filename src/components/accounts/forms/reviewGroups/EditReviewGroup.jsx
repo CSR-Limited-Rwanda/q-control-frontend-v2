@@ -63,7 +63,7 @@ const EditReviewGroup = ({
             }
 
         } catch (error) {
-            console.log('an error occurred', error)
+            console.error('an error occurred', error)
             setError(error.response?.data?.message || 'Failed to update the review group')
         } finally {
             setIsLoading(false)

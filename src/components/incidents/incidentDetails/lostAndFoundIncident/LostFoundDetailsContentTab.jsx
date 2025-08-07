@@ -11,7 +11,6 @@ const formatTime = (time) => {
 };
 
 const LostFoundDetailsContentTab = ({ data }) => {
-  console.log('data:', data)
   return (
     <div className="incident-details">
       <div className="report">

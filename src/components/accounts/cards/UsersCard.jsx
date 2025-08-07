@@ -37,7 +37,7 @@ const UsersCard = ({ setUsersNumber }) => {
   };
 
   const handleNavigate = (user) => {
-    console.log("User: ", user);
+
     router.push(`/accounts/profiles/${user?.id}`);
   };
 
@@ -52,7 +52,7 @@ const UsersCard = ({ setUsersNumber }) => {
         setIsLoading(false);
       }
     } catch (error) {
-      console.log(error);
+
       let message = "Something went wrong";
       if (error?.response?.data) {
         message =
@@ -84,13 +84,13 @@ const UsersCard = ({ setUsersNumber }) => {
         });
 
         if (response.status === 200) {
-          console.log("Response: ", response);
+
           removedUserIds.push(user.id);
         }
       } catch (error) {
-        console.log(`Failed to remove permissions for user ${user}:`, error);
+
         alert(`Failed to remove permissions for user ${user.first_name}:`);
-        console.log("Payload: ", payload);
+
       } finally {
         setSelectedUsers([]);
       }

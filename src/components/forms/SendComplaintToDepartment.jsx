@@ -21,7 +21,7 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
       try {
         setIsLoading(true);
         const response = await api.get("/facilities/");
-        console.log("Facilities: ", response.data);
+
         setFacilities(response.data);
       } catch (error) {
         setError("Failed to fetch facilities");
@@ -42,7 +42,6 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
           const response = await api.get(
             `/departments/?facility_id=${selectedFacility}`
           );
-          console.log("Departments: ", response.data);
 
           setDepartments(response.data.results);
         } catch (error) {

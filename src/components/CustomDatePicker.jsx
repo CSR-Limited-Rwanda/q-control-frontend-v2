@@ -50,7 +50,7 @@ const CustomDatePicker = ({
         "0"
       )}-${day.padStart(2, "0")}`;
       setSelectedDate(formatted);
-      console.log("Formatted Date:", formatted);
+
     }
   }, [year, month, day]);
 

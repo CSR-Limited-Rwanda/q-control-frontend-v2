@@ -9,9 +9,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-const ProfileReports = ({ profileId }) => {
+const ProfileReports = () => {
+  const { accountId } = useParams();
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -28,17 +29,17 @@ const ProfileReports = ({ profileId }) => {
         setError("");
         setIsLoading(true);
         const response = await api.get(
-          `users/${profileId && profileId}/incidents/`
+          `users/${accountId}/incidents/`
         );
         setReports(response.data);
-        console.log(response.data);
+
         setIsLoading(false);
       } catch (error) {
         if (error.response) {
           setError(
             error.response.data.message ||
-              error.response.data.error ||
-              "Error fetching reports data"
+            error.response.data.error ||
+            "Error fetching reports data"
           );
         } else {
           setError("Unknown fetching reports data");
@@ -49,13 +50,11 @@ const ProfileReports = ({ profileId }) => {
     };
 
     fetchReports();
-  }, [profileId]);
+  }, [accountId]);
 
   const navigateToModify = (incidentId, reportName) => {
     if (!reportName) {
-      console.warn(
-        "reportName is undefined, defaulting to General Patient Visitor"
-      );
+
       router.push(`/incidents/general/${incidentId}/update/`);
       localStorage.setItem("generalIncidentId", incidentId);
       return;
@@ -91,9 +90,7 @@ const ProfileReports = ({ profileId }) => {
         localStorage.setItem("grievanceId", incidentId);
         break;
       default:
-        console.warn(
-          `Unknown reportName: ${reportName}, defaulting to General Patient Visitor`
-        );
+
         router.push(`/incidents/general/${incidentId}/update/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
@@ -102,9 +99,7 @@ const ProfileReports = ({ profileId }) => {
 
   const handleRowClick = (incidentId, reportName) => {
     if (!reportName) {
-      console.warn(
-        "reportName is undefined, defaulting to General Patient Visitor"
-      );
+
       router.push(`/incidents/general/${incidentId}/`);
       localStorage.setItem("generalIncidentId", incidentId);
       return;
@@ -140,9 +135,7 @@ const ProfileReports = ({ profileId }) => {
         localStorage.setItem("grievanceId", incidentId);
         break;
       default:
-        console.warn(
-          `Unknown reportName: ${reportName}, defaulting to General Patient Visitor`
-        );
+
         router.push(`/incidents/general/${incidentId}/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
@@ -177,13 +170,13 @@ const ProfileReports = ({ profileId }) => {
   const indexOfFirstReport = indexOfLastReport - reportsPerPage;
   const currentReports = reports
     ? reports
-        .flatMap((report) =>
-          report.incidents.map((incident) => ({
-            ...incident,
-            reportName: report.name,
-          }))
-        )
-        .slice(indexOfFirstReport, indexOfLastReport)
+      .flatMap((report) =>
+        report.incidents.map((incident) => ({
+          ...incident,
+          reportName: report.name,
+        }))
+      )
+      .slice(indexOfFirstReport, indexOfLastReport)
     : [];
 
   // Calculate total pages
@@ -223,9 +216,8 @@ const ProfileReports = ({ profileId }) => {
           {currentReports.map((incident, index) => (
             <div
               key={index}
-              className={`user-report ${
-                incident.status === "Draft" ? "draft" : ""
-              }`}
+              className={`user-report ${incident.status === "Draft" ? "draft" : ""
+                }`}
             >
               <div className="row">
                 {incident.status === "Draft" ? (
@@ -253,13 +245,12 @@ const ProfileReports = ({ profileId }) => {
               <div className="col">
                 <span className="title">Follow up</span>
                 <span
-                  className={`follow-up ${
-                    incident?.status === "Draft"
-                      ? "in-progress"
-                      : incident?.status === "Closed"
+                  className={`follow-up ${incident?.status === "Draft"
+                    ? "in-progress"
+                    : incident?.status === "Closed"
                       ? "closed"
                       : "Open"
-                  }`}
+                    }`}
                 >
                   {incident?.status}
                 </span>

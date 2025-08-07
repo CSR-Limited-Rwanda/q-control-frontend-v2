@@ -21,7 +21,7 @@ const WorkplaceReviews = ({ incidentId }) => {
         );
         if (response.status === 200) {
           setReviews(response.data);
-          console.log(response.data);
+
           localStorage.setItem("incidentReviewsCount", response.data.length);
           setGettingReviews(false);
         }

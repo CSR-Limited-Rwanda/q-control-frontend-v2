@@ -39,7 +39,7 @@ const NewReviewGroupForm = () => {
 
         if (response.status === 201 || response.status === 200) {
           setCurrentStep((prev) => prev + 1);
-          console.log(response.data);
+
           setGroupId(response.data.id);
         } else {
           alert("Something went wrong. Please try again.");
@@ -81,7 +81,7 @@ const NewReviewGroupForm = () => {
         );
 
         if (response.status === 200 || response.status === 204) {
-          console.log(`Added member ${member.id}:`, response.data);
+
         } else {
           console.error(`Failed to add member ${member.id}:`, response);
           allSuccessful = false;

@@ -22,7 +22,6 @@ const UserPermissions = ({ togglePermissions, userId }) => {
   const [success, setSuccess] = useState("");
 
   const handleSelectGroup = (group) => {
-    console.log("Current group:", group);
 
     setSelectedGroups((prevGroups) => {
       const exists = prevGroups.some((g) => g.id === group.id);
@@ -78,7 +77,7 @@ const UserPermissions = ({ togglePermissions, userId }) => {
         const response = await api.get(`/users/${userId}/permissions/`);
         if (response.status === 200) {
           setPermissions(response.data.groups);
-          console.log(response.data);
+
         }
       } catch (error) {
         setError("Error fetching permissions");

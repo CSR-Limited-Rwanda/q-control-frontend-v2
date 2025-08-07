@@ -35,10 +35,9 @@ function postDocumentHistory(incidentId, description, action) {
           description: description,
           incident_id: incidentId,
         });
-  
-        console.log("Activity created: ", apiResponse.data);
+
       } catch (error) {
-        console.log("Error:", error);
+
       }
     }
   

@@ -12,7 +12,6 @@ const StaffDetails = ({
   status,
   incidentDetails,
 }) => {
-  // console.log(data.incident_date)
   return (
     <div className="patient-name-type">
       <div className="date">

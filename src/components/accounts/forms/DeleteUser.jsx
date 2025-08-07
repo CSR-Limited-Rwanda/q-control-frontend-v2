@@ -27,7 +27,7 @@ const DeleteUserForm = ({ handleClose, userId }) => {
       }
     } catch (error) {
       handleDelete();
-      console.log(error);
+
       if (error.response) {
         setErrorMessage(
           error.response.data.message ||

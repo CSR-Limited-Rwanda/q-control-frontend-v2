@@ -16,7 +16,7 @@ const ProfileDocuments = () => {
         if (response.status === 200) {
           setDocuments(response.data.documents);
           setIsLoading(false);
-          console.log(response.data.documents);
+
         }
       } catch (error) {
         if (error.response) {

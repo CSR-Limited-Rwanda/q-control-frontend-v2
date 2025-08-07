@@ -192,7 +192,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
 
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadingDocuments, setUploadingDocuments] = useState(false);
-  // console.log(parties);
   const [witnesses, setWitnesses] = useState(
     incident?.incident_witness?.map((witness) => ({
       id: witness.id ?? null,
@@ -205,9 +204,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
     })) || []
   );
 
-  // data.incident_witness.map((witness) => {
-  //   return witness?.user?.first_name;
-  // })
   const [currentType, setCurrentType] = useState("Assailant");
   const [workplaceViolenceId, setWorkPlaceViolenceId] = useState(
     localStorage.getItem("workplaceViolenceId")
@@ -225,10 +221,10 @@ const ModifyWorkplaceIncident = ({ data }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-          console.log("documents updated successfully");
+
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
 
@@ -248,7 +244,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
 
     try {
       setUploadingDocuments(true);
-      console.log([...formData]);
 
       const response = await mediaAPI.post(
         `/incidents/workplace-violence/${workplaceViolenceId}/documents/`,
@@ -256,7 +251,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data.files);
+
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -264,7 +259,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-      console.log(error);
+
     }
   };
 
@@ -289,8 +284,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
     setInjuries(list);
   };
   const handleAddInjury = () => {
-    console.log(currentInjury);
-    console.log(injuries);
+
     if (
       currentInjury.first_name &&
       currentInjury.last_name &&
@@ -321,8 +315,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
   // };
 
   const handleAddWitness = () => {
-    console.log(currentWitness);
-    console.log(witnesses);
+
     if (
       currentWitness.first_name &&
       currentWitness.last_name &&
@@ -336,7 +329,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
         phone_number: "",
         address: "",
       });
-      console.log(witnesses);
+
     }
   };
 
@@ -592,7 +585,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
           profile_type: "Victim",
         })),
       };
-      console.log(injuryData);
+
     } else {
       injuryData = {
         there_were_injuries: injuryCheck,
@@ -701,17 +694,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
       status: incidentStatus,
     };
 
-    console.log(
-      "Person Injured  ",
-      injuries.map((injury) => ({
-        first_name: injury.first_name,
-        last_name: injury.last_name,
-        injury_description: injury.injury_description,
-        profile_type: "Victim",
-      }))
-    );
     try {
-      console.log(incidentData);
+
       const response = await api.patch(
         `incidents/workplace-violence/${workplaceViolenceId}/`,
         cleanedData(incidentData)
@@ -722,13 +706,13 @@ const ModifyWorkplaceIncident = ({ data }) => {
         setSavingDraft(false);
         window.customToast.success("Incident updated successfully");
         setIncident(response.data.incident);
-        console.log("response: ", response.data);
+
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       setIsLoading(false);
       setSavingDraft(false);
-      console.log(error);
+
       if (error.response) {
         window.customToast.error(
           error.response.data?.message ||

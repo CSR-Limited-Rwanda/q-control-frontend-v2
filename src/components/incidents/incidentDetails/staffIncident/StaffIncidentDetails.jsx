@@ -58,7 +58,6 @@ const EmployeeDetailsContent = () => {
       );
 
       if (investigationRes.status === 200) {
-        console.log('staff investigation:', investigationRes.data)
         setInvestigationInfo(investigationRes.data);
       } else {
         setInvestigationInfo(null);
@@ -70,7 +69,6 @@ const EmployeeDetailsContent = () => {
       setIsFetching(false);
     }
   };
-
 
   useEffect(() => {
     fetchIncidentDetails(); // Fetch incident data when version toggles or incidentId changes
@@ -193,11 +191,11 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
         );
         if (response.status === 200) {
           setDocuments(response.data);
-          console.log(response.data);
+
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
     fetchDocuments();

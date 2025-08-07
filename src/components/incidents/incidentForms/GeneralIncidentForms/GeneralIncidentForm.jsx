@@ -83,7 +83,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             if (currentStepRef.current > 1 && currentStepRef.current <= 7) {
               document.getElementById("back-button").click();
             }
-            console.log(currentStepRef.current);
+
             break;
           case "f": // Ctrl + F
             event.preventDefault(); // Prevent default browser action
@@ -112,7 +112,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   };
   const handleCheckboxChange = (option) => {
     let updatedOptions;
-    console.log(option);
+
     if (statusPrior.includes(option)) {
       updatedOptions = statusPrior.filter((item) => item !== option);
     } else {
@@ -300,27 +300,23 @@ const GeneralIncidentForm = ({ togglePopup }) => {
     try {
       setIsLoading(true);
 
-      console.log("Updating incident with data:", incidentPostData);
-
       const response = await api.put(
         `${API_URL}/incidents/general-visitor/${incidentId}/`,
         incidentPostData
       );
 
-      console.log("Response:", response);
-
       if (response.status === 200) {
         setCurrentStep(currentStep + 1);
-        console.log("Incident updated successfully:", response.data);
+
         window.customToast.success("Data posted successfully");
       } else {
-        console.log("Unexpected status code:", response.status);
+
         window.customToast.error(`Unexpected status code: ${response.status}`);
       }
     } catch (error) {
       if (error.response) {
         console.error("API error:", error.response.data);
-        console.log(error);
+
         // setErrorFetching(error.response.data.error);
         window.customToast.error(
           error.response.data.message || "API error occurred"
@@ -336,7 +332,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   };
 
   const handleNewGeneralIncident = async (incidentData) => {
-    console.log("Incident data", incidentData, "currentStep: " + currentStep);
+
     try {
       setIsLoading(true);
       const response = await api.post(
@@ -348,13 +344,12 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         localStorage.setItem("generalIncidentId", response?.data?.id);
         setPatientId(response?.data?.patient_visitor?.id);
         localStorage.setItem("patientId", response?.data?.patient_visitor?.id);
-        console.log(response.data);
+
         setUserId(response?.data?.created_by);
         setCurrentStep(currentStep + 1);
         setIsLoading(false);
         window.customToast.success("Data posted successfully");
         localStorage.setItem("updateNewIncident", "true");
-        console.log(localStorage.getItem("updateNewIncident"));
         postDocumentHistory(
           response?.data?.id,
           "added a new incident",
@@ -362,7 +357,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         );
       }
     } catch (error) {
-      console.log("Error:", error);
 
       setIsLoading(false);
       if (error?.response?.data) {
@@ -398,11 +392,10 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
       if (response.status === 201 || response.status === 200) {
         window.customToast.success("Media Posted Successfully");
-        console.log(response);
-        console.log("Files submitted successfully:", response.data);
+
       }
     } catch (error) {
-      console.log(error);
+
     }
   }
 
@@ -436,7 +429,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       } catch (error) {
         if (error.response) {
           console.error("API error:", error.response.data);
-          console.log(error);
+
           // setErrorFetching(error.response.data.error);
           window.customToast.error(
             error.response.data.message || "API error occurred"
@@ -469,7 +462,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         gender: sex,
       });
 
-      console.log("Facility ID", checkCurrentAccount());
       if (isValid) {
         const incidentPostData = {
           facility_id: facilityId,
@@ -495,7 +487,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             profile_type: profileType,
           },
         };
-        console.log(incidentPostData);
+
         if (localStorage.getItem("updateNewIncident") === "false") {
           handleNewGeneralIncident(
             cleanedData(incidentPostData),
@@ -542,8 +534,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           patient_status_prior: statusPriorUpdatedOptions.join(", "),
         };
 
-        console.log(incidentPostData);
-
         if (selectedStatus === "others") {
           incidentPostData.other_status = otherStatus;
         }
@@ -575,7 +565,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           isValid = false;
         }
         if (fallType === "Fall from" && !fallFromDetails) {
-          console.log("Fall from details is missing");
+
           window.customToast.error("Specify all the equipment");
           isValid = false;
         }
@@ -597,7 +587,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             window.customToast.error("Specify all the required places");
             isValid = false;
           }
-          console.log("Fall Related Data:", incidentPostData);
+
           updateIncident(
             cleanedData(incidentPostData),
             localStorage.getItem("generalIncidentId")
@@ -618,7 +608,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             treatment_type: type,
             status: "Draft",
           };
-          console.log("Treatment Related Data:", incidentPostData);
+
           updateIncident(
             incidentPostData,
             localStorage.getItem("generalIncidentId")
@@ -651,7 +641,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             "lot Number": lotNumber,
             checkboxes: removedFromService || maintenanceNotified,
           };
-          console.log("Equipment Malfunction Data:", incidentPostData);
+
           updateIncident(
             cleanedData(incidentPostData),
             localStorage.getItem("generalIncidentId")
@@ -675,7 +665,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             other_type_specimen_other: otherTypes,
             status: "Draft",
           };
-          console.log("Others Data:", incidentPostData);
+
           updateIncident(
             incidentPostData,
             localStorage.getItem("generalIncidentId")
@@ -755,7 +745,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           },
         };
 
-        console.log(incidentPostData);
         updateIncident(
           cleanedData(incidentPostData),
           localStorage.getItem("generalIncidentId")
@@ -780,7 +769,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   };
 
   const handleSuggestion = (suggestion) => {
-    console.log(suggestion);
+
     // setPatientVisitorName(
     //   `${suggestion.user.first_name} ${suggestion.user.last_name}`
     // );
@@ -803,7 +792,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
   useEffect(() => {
     localStorage.setItem("updateNewIncident", "false");
-    console.log(localStorage.getItem("updateNewIncident"));
     const fetchSuggestions = async () => {
       try {
         setFetchingSuggestions(true);

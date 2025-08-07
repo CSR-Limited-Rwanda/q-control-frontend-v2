@@ -47,7 +47,7 @@ const FilesList = ({
         setDocuments((prevFiles) =>
           prevFiles.filter((prevFile) => prevFile.id !== file.id)
         );
-        console.log(response.data);
+
         const totalDocsAfterDelete = documents.filter(
           (prevFile) => prevFile.id !== file.id
         ).length;
@@ -68,7 +68,7 @@ const FilesList = ({
       } else {
         setErrorMessage("Unknown error deleting file");
       }
-      console.log(error);
+
       setDeletingFile(false);
     }
   };

@@ -17,7 +17,7 @@ const TaskDetailsPopup = ({ task, discardFn, templateId }) => {
       );
 
       if (response.status === 201 || response.status === 200) {
-        console.log(response.data);
+
         // setTimeout(() => {
         // //   window.location.reload();
         // }, 2000);
@@ -28,7 +28,7 @@ const TaskDetailsPopup = ({ task, discardFn, templateId }) => {
       setIsCompleting(false);
     }
   };
-  console.log(task);
+
   return (
     <div className="task-details-popup">
       <div className="col-1">

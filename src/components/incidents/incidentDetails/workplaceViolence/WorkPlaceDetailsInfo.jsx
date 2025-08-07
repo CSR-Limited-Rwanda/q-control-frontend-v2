@@ -10,7 +10,7 @@ const WorkDetailsInfo = ({
   incidentDetails,
   data,
 }) => {
-  console.log("Workplace details: ", data);
+
   return (
     <div className="patient-name-type">
       <div className="date">

@@ -133,9 +133,9 @@ const AccessPermissions = ({
       setIsLoading(true);
       const response = await api.put(`/users/${userId}/`, payload);
       if (response.status === 200) {
-        console.log("Data saved successfully");
+
         window.location.reload();
-        console.log(response.data);
+
       }
     } catch (error) {
       console.error("Failed to save:", error);

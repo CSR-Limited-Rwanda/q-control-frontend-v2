@@ -56,7 +56,7 @@ const ReviewTemplatesDetailsContent = () => {
         );
         if (response.status === 200) {
           setReviewTemplate(response.data);
-          console.log(response.data);
+
         }
       } catch (error) {
         setErrorMessage(
@@ -64,7 +64,6 @@ const ReviewTemplatesDetailsContent = () => {
           error.response.data?.error ||
           "Failed to get review group members"
         );
-        console.log
       } finally {
         setIsLoading(false);
       }
@@ -79,7 +78,6 @@ const ReviewTemplatesDetailsContent = () => {
         const response = await api.get(
           `/permissions/review-templates/${templateId}/tasks/`
         );
-        console.log("data:", response);
 
         if (response.status === 200) {
           setLoadingTask(false);
@@ -91,7 +89,7 @@ const ReviewTemplatesDetailsContent = () => {
           }
         }
       } catch (error) {
-        console.log(error);
+
         if (error.response) {
           setErrorMessage(
             error.response.data?.message ||
@@ -130,14 +128,13 @@ const ReviewTemplatesDetailsContent = () => {
       const response = await api.get(
         `/permissions/review-templates/${templateId}/tasks/${id}/`
       );
-      console.log("data:", response);
 
       if (response.status === 200) {
         setTask(response.data);
-        console.log(response.data);
+
       }
     } catch (error) {
-      console.log(error);
+
       if (error.response) {
         setErrorMessage(
           error.response.data?.message ||

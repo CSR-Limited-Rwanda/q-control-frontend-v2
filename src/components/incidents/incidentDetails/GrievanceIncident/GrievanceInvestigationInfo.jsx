@@ -6,7 +6,7 @@ import DateFormatter from "@/components/DateFormatter";
 import "../../../../styles/_medication_details.scss"
 
 const GrievanceInvestigationInfo = ({ data, incidentStatuses }) => {
-  console.log(data);
+
   const formattedDate = (dateString) => {
     if (dateString) {
       const date = parseISO(dateString);

@@ -25,11 +25,10 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
         setIsLoading(true);
         const response = await api.get(`/users/`);
         if (response.status === 200) {
-          // console.log('Users:', response.data.results);
           setUsers(response.data.results);
         }
       } catch (error) {
-        console.log(`an error occurred: ${error}`);
+
         setError("Failed to fetch users");
       } finally {
         setIsLoading(false);
@@ -50,7 +49,7 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
     const options = Array.from(e.target.selectedOptions).map((option) =>
       parseInt(option.value, 10)
     );
-    console.log("Selected member IDs:", options);
+
     setFormData((prev) => ({
       ...prev,
       members: options,

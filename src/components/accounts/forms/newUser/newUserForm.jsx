@@ -57,12 +57,11 @@ const NewUserForm = ({
     setErrorMessage("");
     setSuccessMessage("");
     const data = saveBasicInfo();
-    console.log(data);
 
     try {
       setIsLoading(true);
       if (isEditMode) {
-        console.log("Data to be sent:", data);
+
         const response = await api.put(`/users/${existingUserData.id}/`, data);
         if (response.status === 200) {
           setSuccessMessage("User updated successfully");
@@ -80,7 +79,7 @@ const NewUserForm = ({
         }
       }
     } catch (error) {
-      console.log(error);
+
       let message;
       if (error?.response?.data) {
         message =
@@ -129,8 +128,6 @@ const NewUserForm = ({
     };
     setErrorMessage("");
 
-    // addToPermissionGroup, remove permissions from payload, else, remove the permission_groups from payload
-    // console.log(formData.addToPermissionGroups);
     if (isEditMode) {
       delete payload.access_to_departments;
       delete payload.access_to_facilities;
@@ -140,7 +137,7 @@ const NewUserForm = ({
       localStorage.setItem("userInfo", JSON.stringify(payload));
       return payload;
     } catch (error) {
-      console.log(error);
+
       setErrorMessage(
         "An error occurred while saving the data. Please try again."
       );

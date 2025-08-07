@@ -27,7 +27,7 @@ const ModifyLostFoundPageContent = () => {
           `${API_URL}/incidents/lost-found/${lostAndFoundId}/`
         );
         if (response.status === 200) {
-          console.log(response.data.incident);
+
           setIncident(response.data.incident);
           setIsLoading(false);
         }
