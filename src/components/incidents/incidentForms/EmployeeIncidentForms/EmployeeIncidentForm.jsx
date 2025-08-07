@@ -208,7 +208,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     console.log("Incident data:", incidentData);
     try {
       const res = await api.post(
-        `${API_URL}/incidents/staff-incidents/`,
+        `${API_URL}/incidents/staff-incident/`,
         incidentData
       );
 
@@ -238,7 +238,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const handleStepThreeSubmit = async () => {
     try {
       const res = await api.put(
-        `${API_URL}/incidents/staff-incidents/${reportId}/`,
+        `${API_URL}/incidents/staff-incident/${reportId}/`,
 
         cleanedData({
           current_step: currentStep,
@@ -322,7 +322,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         console.log(data);
         try {
           const res = await api.put(
-            `${API_URL}/incidents/staff-incidents/${reportId}/`,
+            `${API_URL}/incidents/staff-incident/${reportId}/`,
             cleanedData(data)
           );
           console.log(dateSeenDoctor);

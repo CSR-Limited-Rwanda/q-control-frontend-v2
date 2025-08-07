@@ -25,7 +25,7 @@ const ModifyStaffIncidentPageContent = () => {
     const fetchIncidentData = async () => {
       try {
         const response = await api.get(
-          `/incidents/staff-incidents/${staffIncidentId}/`
+          `/incidents/staff-incident/${staffIncidentId}/`
         );
 
         if (response.status === 200) {

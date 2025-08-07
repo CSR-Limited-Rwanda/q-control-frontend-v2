@@ -80,7 +80,7 @@ const StaffIncidentList = () => {
         queryParams.append("status", appliedFilters.status);
 
       const response = await api.get(
-        `${API_URL}/incidents/staff-incidents/?${queryParams.toString()}`
+        `${API_URL}/incidents/staff-incident/?${queryParams.toString()}`
       );
       if (response && response.status === 200 && response.data) {
         const formattedData = response.data.map((item) => ({
@@ -654,10 +654,10 @@ const StaffTable = ({
               <td>
                 <p
                   className={`follow-up ${employee.status === "Draft"
-                      ? "in-progress"
-                      : employee.status === "Closed"
-                        ? "closed"
-                        : "Open"
+                    ? "in-progress"
+                    : employee.status === "Closed"
+                      ? "closed"
+                      : "Open"
                     }`}
                 >
                   {employee.status || "Not specified"}
@@ -770,10 +770,10 @@ const IncidentTableCard = ({
           <label htmlFor="">Status: </label>
           <span
             className={`follow-up ${incident?.status === "Draft"
-                ? "in-progress"
-                : incident?.status === "Closed"
-                  ? "closed"
-                  : "Open"
+              ? "in-progress"
+              : incident?.status === "Closed"
+                ? "closed"
+                : "Open"
               }`}
           >
             {incident?.status || "Not specified"}
