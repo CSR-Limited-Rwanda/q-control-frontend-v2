@@ -37,14 +37,12 @@ const AddUserPermissionsFrom = ({
     };
 
     try {
-      console.log("user:", user);
-      console.log("permissionGroupID:", groupId);
-      console.log("payload:", payload);
+
       const response = await api.post(
         `/users/${user.user.id}/permissions/`,
         payload
       );
-      console.log(response);
+
       if (response.status === 200) {
         setSuccessMessage("User added successfully");
         setExistingUsers((prev) => [...prev, user]);
@@ -52,7 +50,7 @@ const AddUserPermissionsFrom = ({
         setErrorMessage("Group ID is not defined");
       }
     } catch (error) {
-      console.log(error);
+
       setErrorMessage("Error adding user");
     } finally {
       setLoadingState((prev) => ({ ...prev, [user.id]: false })); // Reset the loading state for the clicked user
@@ -66,7 +64,7 @@ const AddUserPermissionsFrom = ({
         if (response.status === 200) {
           setUsers(response.data.results);
           setFilteredUsers(response.data.results);
-          console.log(response.data);
+
         }
       } catch (error) {
         setErrorMessage("Error getting users");

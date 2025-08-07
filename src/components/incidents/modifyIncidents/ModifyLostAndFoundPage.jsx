@@ -25,8 +25,6 @@ const ModifyLostFound = ({ data }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
 
-  console.log("Modify LostFound: ", data);
-
   const [status, setStatus] = useState(incident?.status);
   const [severityRating, setSeverityRating] = useState(
     incident?.severity_rating
@@ -98,8 +96,6 @@ const ModifyLostFound = ({ data }) => {
     setIsFound((prev) => !prev);
   };
 
-  console.log(data);
-
   const handleDateOfBirth = (date) => {
     const calculatedAge = calculateAge(date);
     setDateBirth(date);
@@ -126,10 +122,10 @@ const ModifyLostFound = ({ data }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-          console.log("documents updated successfully");
+
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
 
@@ -146,7 +142,6 @@ const ModifyLostFound = ({ data }) => {
 
     try {
       setUploadingDocuments(true);
-      console.log([...formData]);
 
       const response = await mediaAPI.post(
         `/incidents/lost-found/${lostAndFoundId}/documents/`,
@@ -154,7 +149,7 @@ const ModifyLostFound = ({ data }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data.files);
+
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -162,7 +157,7 @@ const ModifyLostFound = ({ data }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-      console.log(error);
+
     }
   };
   const handleModify = async (incidentStatus) => {
@@ -181,11 +176,6 @@ const ModifyLostFound = ({ data }) => {
       const minutes = timeParts[1].padStart(2, "0");
       return `${hours}:${minutes}:00`;
     };
-    console.log("dateFound:", dateFound);
-    console.log("dateReturned:", dateReturned);
-    console.log("dateLetterSent:", dateLetterSent);
-    console.log("timeFound:", timeFound);
-    console.log("timeReturned:", timeReturned);
 
     const incidentData = {
       action: "modify",
@@ -242,7 +232,7 @@ const ModifyLostFound = ({ data }) => {
       setIsLoading(false);
       setSavingDraft(false);
       window.customToast.error("Error updating the incident");
-      console.log("Error updating incident:", error);
+
     }
   };
 

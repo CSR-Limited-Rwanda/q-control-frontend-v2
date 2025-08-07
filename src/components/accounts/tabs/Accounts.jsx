@@ -42,7 +42,6 @@ const Accounts = () => {
     try {
       const response = await api.get(`/users/?${params}`)
       if (response.status === 200) {
-        console.log('total_pages:', response.data.total_pages, 'count:', response.data.count, 'page_size:', response.data.page_size);
         setUsersData(response.data)
       } else {
         setErrorMessage("Error fetching users.")
@@ -57,7 +56,6 @@ const Accounts = () => {
   }, [])
 
   const handleSearch = useCallback(() => {
-    console.log("Searching for:", searchQuery)
     // Allow empty search or minimum 3 characters
     if (searchQuery.length >= 3 || searchQuery.length === 0) {
       setIsSearching(true)
@@ -108,8 +106,7 @@ const Accounts = () => {
   };
 
   const handleNavigate = (user) => {
-    console.log("User: ", user);
-    router.push(`/accounts/profiles/${user?.id}`);
+    router.push(`/accounts/${user?.id}`);
   };
 
   // Fixed debouncing effect - now properly watches searchQuery changes

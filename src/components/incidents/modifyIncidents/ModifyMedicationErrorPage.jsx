@@ -104,7 +104,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
 
   const handleDrugOrderedRoute = (drug) => {
     // check if the route is not in the array of routes, then add it else, remove it
-    console.log(drugOrderedRoutes, drug);
+
     if (drugOrderedRoutes && !drugOrderedRoutes.includes(drug)) {
       // drugOrderedRoutes.push(drug)
       setDrugOrderedRoutes([...drugOrderedRoutes, drug]);
@@ -216,7 +216,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
     };
 
     try {
-      console.log("submitted data:", incidentData);
+
       const response = await api.patch(
         `/incidents/medication-error/${medicationErrorIncidentId}/`,
         cleanedData(incidentData)
@@ -226,7 +226,6 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
         setSavingDraft(false);
         window.customToast.success("Incident updated successfully");
         setIncident(response.data.incident);
-        console.log(response.data.incident);
 
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
@@ -240,7 +239,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       } else {
         window.customToast.error("Unknown error while updating the incident");
       }
-      console.log(error);
+
       setIsLoading(false);
       setSavingDraft(false);
     }
@@ -253,7 +252,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
         label: otherWhatHappened,
       });
     }
-    console.log("WhatHappened: ", otherWhatHappened);
+
     handleWhatHappenedOptions(otherWhatHappened);
   };
 
@@ -291,10 +290,10 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-          console.log("documents updated successfully");
+
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
 
@@ -311,7 +310,6 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
 
     try {
       setUploadingDocuments(true);
-      console.log([...formData]);
 
       const response = await mediaAPI.post(
         `/incidents/medication-error/${medicationErrorIncidentId}/documents/`,
@@ -319,7 +317,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data.files);
+
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -327,7 +325,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-      console.log(error);
+
     }
   };
   return data.is_resolved ? (

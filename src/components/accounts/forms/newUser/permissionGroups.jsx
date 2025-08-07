@@ -45,7 +45,7 @@ const PermissionGroups = ({ formData, setFormData }) => {
       setGroups(response.data);
     } catch (error) {
       setErrorMessage("Failed to fetch groups");
-      console.log(error);
+
     } finally {
       setIsLoading(false);
       setIsSearching(false);
@@ -131,7 +131,7 @@ const PermissionGroups = ({ formData, setFormData }) => {
       const response = await api.get("/permissions/");
       setPermissions(response.data);
     } catch (error) {
-      console.log(error);
+
       setErrorMessage("Failed to fetch permissions");
     } finally {
       setIsLoading(false);
@@ -207,14 +207,10 @@ const PermissionGroups = ({ formData, setFormData }) => {
   }, [facilityDepartmentSelections]);
 
   useEffect(() => {
-    console.log("Synced selectedFacilities:", formData.selectedFacilities);
-    console.log(
-      "Synced facilityDepartmentSelections:",
-      formData.facilityDepartmentSelections
-    );
+
   }, [formData.selectedFacilities, formData.facilityDepartmentSelections]);
   useEffect(() => {
-    console.log("Updated permissionGroups:", formData.permissionGroups);
+
   }, [formData.permissionGroups]);
 
   return (

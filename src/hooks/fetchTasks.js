@@ -3,7 +3,6 @@ import api from "@/utils/api";
 export const fetchTasks = async (params) => {
     try {
         const response = await api.get(`/tasks/?${params}`);
-        console.log(response);
         if (response.status === 200) {
             return {
                 success: true,
@@ -16,7 +15,7 @@ export const fetchTasks = async (params) => {
             };
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         let errorMessage = "An error occurred while fetching tasks.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || errorMessage;
@@ -31,7 +30,6 @@ export const fetchTasks = async (params) => {
 export const fetchUserTasks = async (userId, params) => {
     try {
         const response = await api.get(`/users/${userId}/tasks/?${params}`);
-        console.log(response.data);
         if (response.status === 200) {
             return {
                 success: true,
@@ -44,7 +42,7 @@ export const fetchUserTasks = async (userId, params) => {
             };
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         let errorMessage = "An error occurred while fetching user tasks.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || errorMessage;
@@ -59,7 +57,6 @@ export const fetchUserTasks = async (userId, params) => {
 export const fetchTaskById = async (taskId) => {
     try {
         const response = await api.get(`/tasks/${taskId}/`);
-        console.log(response);
         if (response.status === 200) {
             return {
                 success: true,
@@ -72,7 +69,7 @@ export const fetchTaskById = async (taskId) => {
             };
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         let errorMessage = "An error occurred while fetching the task.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || errorMessage;
@@ -84,11 +81,9 @@ export const fetchTaskById = async (taskId) => {
     }
 }
 
-
 export const completeTask = async (taskId) => {
     try {
         const response = await api.patch(`/tasks/${taskId}/`, { "action": "complete" });
-        console.log(response);
         if (response.status === 200) {
             return {
                 success: true,
@@ -101,7 +96,7 @@ export const completeTask = async (taskId) => {
             };
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         let errorMessage = "An error occurred while completing the task.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || error.response.data.message || errorMessage;
@@ -116,7 +111,6 @@ export const completeTask = async (taskId) => {
 export const submitTask = async (taskId) => {
     try {
         const response = await api.patch(`/tasks/${taskId}/`, { status: "submit" });
-        console.log(response);
         if (response.status === 200) {
             return {
                 success: true,
@@ -129,7 +123,7 @@ export const submitTask = async (taskId) => {
             };
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         let errorMessage = "An error occurred while submitting the task.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || error.response.data.message || errorMessage;
@@ -141,11 +135,10 @@ export const submitTask = async (taskId) => {
     }
 }
 
-
 export const approveTask = async (taskId) => {
     try {
         const response = await api.patch(`/tasks/${taskId}/`, { status: "approve" });
-        console.log(response);
+
         if (response.status === 200) {
             return {
                 success: true,
@@ -158,7 +151,7 @@ export const approveTask = async (taskId) => {
             };
         }
     } catch (error) {
-        console.log(error);
+
         let errorMessage = "An error occurred while approving the task.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || error.response.data.message || errorMessage;

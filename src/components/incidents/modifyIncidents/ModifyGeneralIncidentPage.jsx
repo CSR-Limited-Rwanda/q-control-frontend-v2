@@ -55,7 +55,6 @@ const ModifyGeneralIncidentForm = ({ data }) => {
 
     try {
       setUploadingDocuments(true);
-      console.log([...formData]);
 
       const response = await mediaAPI.post(
         `/incidents/general-visitor/${generalIncidentId}/documents/`,
@@ -63,7 +62,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data.files);
+
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -71,7 +70,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-      console.log(error);
+
     }
   };
 
@@ -383,17 +382,12 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       treatment_type: selectedTreatment,
     };
 
-    // console.log(cleanedData(incidentData));
-    console.log("Submitting incident data", JSON.stringify(incidentData));
-
     try {
-      console.log(cleanedData(incidentData));
       const response = await api.patch(
         `/incidents/general-visitor/${generalIncidentId}/`,
         cleanedData(incidentData)
       );
 
-      console.log("response:", response.data);
       if (response.status === 200) {
         window.customToast.success("Incident is updated successfully");
         setIsLoading(false);
@@ -410,7 +404,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       } else {
         alert("Unknown error updating the incident");
       }
-      console.log(error);
+
       setIsLoading(false);
       setSavingDraft(false);
     }
@@ -426,10 +420,10 @@ const ModifyGeneralIncidentForm = ({ data }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-          console.log("documents updated successfully");
+
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
 

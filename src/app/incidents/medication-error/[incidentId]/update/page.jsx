@@ -29,7 +29,7 @@ const PageContent = () => {
 
         if (response.status === 200) {
           setIncidentData(response.data.incident);
-          console.log("Incident data: ", response.data.incident);
+
           setIsLoading(false);
         }
       } catch (error) {
@@ -40,7 +40,7 @@ const PageContent = () => {
         } else {
           window.customToast.error("There was an error");
         }
-        console.log("error:", error);
+
       } finally {
         setIsLoading(false);
       }

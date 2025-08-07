@@ -5,7 +5,6 @@ import api from "@/utils/api"
 import ErrorMessage from "@/components/messages/ErrorMessage"
 import '../../../../styles/facilities/_facilities.scss'
 
-
 const EditDepartment = ({
     department,
     onClose,
@@ -38,11 +37,10 @@ const EditDepartment = ({
                 setIsLoading(true)
                 const res = await api.get(`/users/`)
                 if (res.status === 200) {
-                    // console.log('users', res.data)
                     setUsers(res.data.results)
                 }
             } catch (error) {
-                console.log(`an error occurred: ${error}`)
+                console.error(`an error occurred: ${error}`)
                 setError('Failed to fetch users')
             } finally {
                 setIsLoading(false)
@@ -87,22 +85,20 @@ const EditDepartment = ({
                 return
             }
 
-
             const res = await api.patch(`/departments/${department.id}/update/`, payload)
             if (res.status === 200) {
-                console.log('API response data:', res.data.data)
                 const updatedDepartment = {
                     ...department,
                     ...res.data.data,
                     members: res.data.data.members || [],
                     header_of_department: res.data.data.header_of_department
                 }
-                console.log('Updated department:', updatedDepartment);
+
                 onDepartmentUpdated(updatedDepartment)
                 onClose()
             }
         } catch (error) {
-            console.log('an error occurred', error)
+            console.error('an error occurred', error)
             setError(error.response?.data?.message || 'Failed to update the department')
         } finally {
             setIsLoading(false)

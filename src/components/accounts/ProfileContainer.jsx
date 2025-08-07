@@ -23,7 +23,7 @@ export const ProfileContainer = () => {
     }, []);
 
     const goToProfile = () => {
-        router.push("/accounts/profile/");
+        router.push(`/accounts/${user.profileId}`);
     };
 
     const handleShowProfile = () => {

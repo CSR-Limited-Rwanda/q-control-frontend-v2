@@ -9,7 +9,6 @@ const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
     const [successMessage, setSuccessMessage] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
-
     const [formData, setFormData] = useState({
         name: existingTitleData?.name || '',
         description: existingTitleData?.description || '',
@@ -25,7 +24,7 @@ const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
         try {
             setIsLoading(true);
             if (isEditMode) {
-                console.log("Data to be sent:", data);
+
                 const response = await api.put(`/titles/${existingTitleData.id}/`, data);
                 if (response.status === 200) {
                     setSuccessMessage("Title updated successfully")
@@ -35,7 +34,7 @@ const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
                         , 1000);
                 }
             } else {
-                console.log("Data to be sent:", data);
+
                 const response = await api.post('/titles/', data);
                 if (response.status === 201) {
                     setSuccessMessage("Title created successfully")

@@ -28,7 +28,7 @@ const WorkPlaceDetailsContentTab = ({ data }) => {
           <h5>
             {(() => {
               const parsedValue = parseIfNeeded(data.type_of_incident);
-              console.log("parsed value is: ", parsedValue);
+
               if (typeof parsedValue === "string") {
                 return parsedValue;
               } else if (typeof parsedValue === "array") {
@@ -41,10 +41,6 @@ const WorkPlaceDetailsContentTab = ({ data }) => {
                 const objParsedValue = parseIfNeeded(parsedValue);
 
                 if (objParsedValue) {
-                  console.log(
-                    "This is the real object parsed value: ",
-                    objParsedValue
-                  );
 
                   if (objParsedValue.incidents.length > 0) {
                     return objParsedValue.incidents.join(", ");

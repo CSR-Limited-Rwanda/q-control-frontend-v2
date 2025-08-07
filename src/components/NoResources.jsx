@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const NoResources = () => {
   const userFirstName = JSON.parse(localStorage.getItem("userData")).first_name;
-  console.log(userFirstName);
+
   return (
     <div className="no-resources-container">
       <div className="no-resources-wrapper">

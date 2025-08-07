@@ -108,7 +108,7 @@ const WorkplaceViolenceList = () => {
       const response = await api.get(
         `${API_URL}/incidents/workplace-violence/?${queryParams.toString()}`
       );
-      console.log("Workplace Violence API response:", response);
+
       if (response && response.status === 200 && response.data) {
         const formattedData = response.data.map((item) => ({
           ...item,
@@ -544,7 +544,7 @@ const WorkplaceViolenceTable = ({
   };
 
   const handleSorting = (items, sortBy, direction, field) => {
-    console.log("sorting items:", sortBy, direction, field);
+
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const aValue = a.original_report ? a.original_report : a.id;

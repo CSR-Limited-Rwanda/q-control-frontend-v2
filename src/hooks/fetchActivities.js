@@ -3,7 +3,7 @@ import api from "@/utils/api";
 export const fetchActivities = async (id, type) => {
     try {
         const response = await api.get(`/activities/list/${id}/?incident_type=${type}`);
-        console.log("Incident Activities Response: ", response);
+
         if (response.status === 200) {
             return {
                 success: true,
@@ -120,7 +120,7 @@ export const fetchActivities = async (id, type) => {
             };
         }
     } catch (error) {
-        console.log(error);
+
         let errorMessage = "An error occurred while fetching activities.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || errorMessage;

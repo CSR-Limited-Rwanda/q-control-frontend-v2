@@ -30,7 +30,6 @@ const GrievanceDetailsContent = () => {
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [reviewsCount, setReviewsCount] = useState();
 
-
   const fetchInvestigationDetails = async () => {
     setIsFetching(true);
     try {
@@ -40,7 +39,7 @@ const GrievanceDetailsContent = () => {
         response = await api.get(
           `${API_URL}/incidents/grievance/${incidentId}/investigation`
         );
-        console.log(response.data);
+
         setInvestigationDetails(response.data.investigation); //
       } else {
         // Fetch the latest modified version of the incident
@@ -55,8 +54,7 @@ const GrievanceDetailsContent = () => {
           response = await api.get(
             `${API_URL}/incidents/grievance/${incidentId}/versions/${latestIncident.id}/`
           );
-          console.log(response.data);
-          console.log(latestIncident);
+
         } else {
           response = res;
         }
@@ -67,7 +65,7 @@ const GrievanceDetailsContent = () => {
       }
       setIsFetching(false);
     } catch (error) {
-      console.log(error);
+
       setIsFetching(false);
     }
   }
@@ -83,7 +81,7 @@ const GrievanceDetailsContent = () => {
         );
         setIncidentDetails(response.data); // Store the original data
         setCurrentIncidentData(response.data); // Set current data for UI
-        console.log(response.data);
+
         setInvestigationDetails(response.data.investigation); //
       } else {
         // Fetch the latest modified version of the incident
@@ -98,8 +96,7 @@ const GrievanceDetailsContent = () => {
           response = await api.get(
             `${API_URL}/incidents/grievance/${incidentId}/versions/${latestIncident.id}/`
           );
-          console.log(response.data);
-          console.log(latestIncident);
+
         } else {
           response = res;
         }
@@ -110,7 +107,7 @@ const GrievanceDetailsContent = () => {
       }
       setIsFetching(false);
     } catch (error) {
-      console.log(error);
+
       setIsFetching(false);
     }
   };
@@ -247,11 +244,11 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
         );
         if (response.status === 200) {
           setDocuments(response.data);
-          console.log(response.data);
+
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
     fetchDocuments();

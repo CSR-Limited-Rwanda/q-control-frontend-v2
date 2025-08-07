@@ -5,7 +5,7 @@ import api, { API_URL } from "@/utils/api";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 
 function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
-  console.log("Is resolved: ", isResolved);
+
   const [isLoading, setIsLoading] = useState(false);
   const [resolved, setResolved] = useState(false);
 
@@ -16,7 +16,6 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
         `/incidents/${apiLink}/${incidentId}/resolve/`
       );
       if (response.status === 200) {
-        console.log(response.data);
 
         setResolved(true);
         setIsLoading(false);
@@ -31,7 +30,7 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
       } else {
         window.customToast.error("Unknown error while resolving incident");
       }
-      console.log(error);
+
     }
   };
   const closeForm = () => {

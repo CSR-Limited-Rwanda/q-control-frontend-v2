@@ -140,7 +140,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
   const handleNotifiedAdministrator = () => {
     setNotifiedAdministrator((prev) => !prev);
   };
-  console.log(data);
+
   const handleFileChange = async (event) => {
     const formData = new FormData();
     const files = event.target.files;
@@ -151,7 +151,6 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
 
     try {
       setUploadingDocuments(true);
-      console.log([...formData]);
 
       const response = await mediaAPI.post(
         `/incidents/grievance/${grievanceId}/documents/`,
@@ -159,7 +158,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       );
 
       if (response.status === 200 || 201) {
-        console.log(response.data.files);
+
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -167,7 +166,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-      console.log(error);
+
     }
   };
 
@@ -181,7 +180,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
     } else {
       setSourceOfInformation(source);
     }
-    console.log(source);
+
     // setInputValue("");
   };
 
@@ -194,10 +193,10 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-          console.log("documents updated successfully");
+
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
 
@@ -270,12 +269,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       notification_time: grivanceTime,
       status: incidentStatus,
     };
-    console.log(dateBirth);
-    console.log(incidentDate);
-    console.log(
-      "Submitting incident data",
-      JSON.stringify(incidentData, null, 2)
-    );
+
     try {
       const response = await api.patch(
         `incidents/grievance/${grievanceId}/`,
@@ -286,11 +280,11 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         setSavingDraft(false);
         window.customToast.success("Incident updated successfully");
         setIncident(response.data.incident);
-        console.log(response.data.incident);
+
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
-      console.log(error);
+
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||

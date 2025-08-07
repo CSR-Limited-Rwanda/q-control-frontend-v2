@@ -4,7 +4,11 @@ import DashboardLayout from "@/app/dashboard/layout";
 import api from "@/utils/api";
 import {
   ChevronRight,
+  File,
+  Frown,
   Key,
+  Layers,
+  ListCheck,
   SquarePen,
   Trash2,
   UserCheck,
@@ -24,9 +28,13 @@ import DeleteUserForm from "@/components/accounts/forms/DeleteUser";
 import UserPermissions from "@/components/accounts/profile/userPermissions";
 import DeactivateUserForm from "@/components/accounts/forms/DeactivateUser";
 import AccessPermissions from "@/components/accounts/forms/AccessPermissions";
+import ProfileReports from "@/components/accounts/profile/profileReports";
+import { DraftsTab } from "@/components/accounts/profile/DraftsTab";
+import UserComplaints from "@/components/accounts/profile/profileComplaints";
+import ProfileDocuments from "@/components/accounts/profile/profileDocuments";
 
 const ProfileDetailsPage = () => {
-  const { profileId } = useParams();
+  const { accountId } = useParams();
   const [profile, setProfile] = useState(null);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [showUpdateUserForm, setShowUpdateUserForm] = useState(false);
@@ -78,10 +86,8 @@ const ProfileDetailsPage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await api.get(`/users/${profileId}/`);
-        console.log(response.data);
+        const response = await api.get(`/users/${accountId}/`);
         if (response.status === 200) {
-          console.log(response.data);
           const data = response.data;
           const transformedProfile = {
             ...data,
@@ -114,7 +120,7 @@ const ProfileDetailsPage = () => {
     };
 
     fetchProfile();
-  }, [profileId]);
+  }, [accountId]);
 
   return (
     <DashboardLayout>
@@ -265,25 +271,25 @@ const ProfileDetailsPage = () => {
       {showChangePasswordForm && <ChangePasswordForm />}
       {showActivateUserForm && (
         <ActivateUserForm
-          userId={profileId}
+          userId={accountId}
           handleClose={handleShowActivateUserForm}
         />
       )}
       {showDeactivateUserForm && (
         <DeactivateUserForm
-          userId={profileId}
+          userId={accountId}
           handleClose={handleShowDeactivateUserForm}
         />
       )}
       {showDeleteUserForm && (
         <DeleteUserForm
-          userId={profileId}
+          userId={accountId}
           handleClose={handleShowDeleteUserForm}
         />
       )}
       {showUserPermissionsForm && (
         <UserPermissions
-          userId={profileId}
+          userId={accountId}
           togglePermissions={handleShowUserPermissionsForm}
         />
       )}
@@ -291,7 +297,7 @@ const ProfileDetailsPage = () => {
         <AccessPermissions
           formData={formData}
           setFormData={setFormData}
-          userId={profileId}
+          userId={accountId}
           email={profile.user.email}
           handleClose={handleShowAccessPermissionsForm}
         />
@@ -316,67 +322,67 @@ const ProfileTabs = ({ userId }) => {
   }, []);
 
   return (
-    <div>This feature is under development and testing.</div>
-    // <div className="profile-data">
-    //   <div className="tabs">
-    //     <div
-    //       onClick={() => setActiveTab("reports")}
-    //       className={`tab ${activeTab === "reports" ? "active" : ""}`}
-    //     >
-    //       <ListCheck size={20} />
-    //       <p> Submitted reports</p>
-    //     </div>
-    //     <div
-    //       onClick={() => {
-    //         setActiveTab("drafts");
-    //         localStorage.removeItem("changeBreadCrumbs");
-    //       }}
-    //       className={`tab ${activeTab === "drafts" ? "active" : ""}`}
-    //     >
-    //       <Layers size={20} />
-    //       <p> Drafts reports</p>
-    //     </div>
-    //     <div
-    //       onClick={() => setActiveTab("complaints")}
-    //       className={`tab ${activeTab === "complaints" ? "active" : ""}`}
-    //     >
-    //       {" "}
-    //       <Frown size={20} /> <p>Complaints</p>
-    //     </div>
-    //     <div
-    //       onClick={() => setActiveTab("documents")}
-    //       className={`tab ${activeTab === "documents" ? "active" : ""}`}
-    //     >
-    //       <File />
-    //       <p>Documents</p>
-    //     </div>
-    //   </div>
+    // <div>This feature is under development and testing.</div>
+    <div className="profile-data">
+      <div className="tabs">
+        <div
+          onClick={() => setActiveTab("reports")}
+          className={`tab ${activeTab === "reports" ? "active" : ""}`}
+        >
+          <ListCheck size={20} />
+          <p> Submitted reports</p>
+        </div>
+        <div
+          onClick={() => {
+            setActiveTab("drafts");
+            localStorage.removeItem("changeBreadCrumbs");
+          }}
+          className={`tab ${activeTab === "drafts" ? "active" : ""}`}
+        >
+          <Layers size={20} />
+          <p> Drafts reports</p>
+        </div>
+        <div
+          onClick={() => setActiveTab("complaints")}
+          className={`tab ${activeTab === "complaints" ? "active" : ""}`}
+        >
+          {" "}
+          <Frown size={20} /> <p>Complaints</p>
+        </div>
+        <div
+          onClick={() => setActiveTab("documents")}
+          className={`tab ${activeTab === "documents" ? "active" : ""}`}
+        >
+          <File />
+          <p>Documents</p>
+        </div>
+      </div>
 
-    //   {activeTab === "reports" && (
-    //     <div className="tabs-content">
-    //       <h3>Your reports</h3>
-    //       <ProfileReports userId={userId} />
-    //     </div>
-    //   )}
-    //   {activeTab === "drafts" && (
-    //     <div className="tabs-content">
-    //       <h3>Your drafts</h3>
-    //       <DraftsTab />
-    //     </div>
-    //   )}
-    //   {activeTab === "complaints" && (
-    //     <div className="tabs-content">
-    //       <h3>Your complaints</h3>
-    //       <UserComplaints />
-    //     </div>
-    //   )}
-    //   {activeTab === "documents" && (
-    //     <div className="tabs-content">
-    //       <h3>Your documents</h3>
-    //       <ProfileDocuments />
-    //     </div>
-    //   )}
-    // </div>
+      {activeTab === "reports" && (
+        <div className="tabs-content">
+          <h3>Your reports</h3>
+          <ProfileReports />
+        </div>
+      )}
+      {activeTab === "drafts" && (
+        <div className="tabs-content">
+          <h3>Your drafts</h3>
+          <DraftsTab />
+        </div>
+      )}
+      {activeTab === "complaints" && (
+        <div className="tabs-content">
+          <h3>Your complaints</h3>
+          <UserComplaints />
+        </div>
+      )}
+      {activeTab === "documents" && (
+        <div className="tabs-content">
+          <h3>Your documents</h3>
+          <ProfileDocuments />
+        </div>
+      )}
+    </div>
   );
 };
 

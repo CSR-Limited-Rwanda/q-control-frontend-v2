@@ -64,7 +64,6 @@ export const authService = {
     },
 };
 
-
 export const forgotPassword = async (email) => {
     try {
         const response = await axios.post(`${API_URL}/accounts/password-reset-request/`, { email });
@@ -88,9 +87,8 @@ export const forgotPassword = async (email) => {
     }
 }
 
-
 export const resetPassword = async (payload) => {
-    console.log("Resetting password with payload:", payload);
+
     try {
         const response = await axios.post(`${API_URL}/accounts/reset-password/`, payload);
 

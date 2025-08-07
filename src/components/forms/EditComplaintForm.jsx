@@ -60,7 +60,6 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
   };
 
   const handleAssignedStaffList = (staff) => {
-    console.log("staff is :", staff);
 
     if (!assignedStaffList.includes(staff)) {
       setAssignedStaffList((prevList) => [...prevList, staff]);
@@ -121,7 +120,7 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
       try {
         const response = await api.get("users/?page_size=5");
         setStaffList(response.data);
-        console.log(response.data);
+
         setFetchingStaff(false);
       } catch (error) {
         if (error.response) {

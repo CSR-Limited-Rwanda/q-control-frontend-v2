@@ -1,7 +1,7 @@
 import DateFormatter from "@/components/DateFormatter";
 
 function DrugReactionContentTab({ data }) {
-  console.log("Content Tab: ", data);
+
   return (
     <div className="incident-details">
       <div className="number-mrn">

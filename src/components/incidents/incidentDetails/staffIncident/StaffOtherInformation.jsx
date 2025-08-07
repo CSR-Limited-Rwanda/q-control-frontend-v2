@@ -2,7 +2,7 @@ import React from "react";
 import DateFormatter from "@/components/DateFormatter";
 
 const StaffOtherInformation = ({ data, incidentStatuses }) => {
-  console.log(data);
+
   return (
     <div className="incident-type-data">
       <div className="general-col">

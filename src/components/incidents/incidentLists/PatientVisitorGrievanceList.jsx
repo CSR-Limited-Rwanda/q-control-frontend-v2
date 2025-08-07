@@ -84,7 +84,7 @@ const PatientVisitorGrievanceList = () => {
       const response = await api.get(
         `${API_URL}/incidents/grievance/?${queryParams.toString()}`
       );
-      console.log("Grievance API response:", response);
+
       if (response && response.status === 200 && response.data) {
         const formattedData = response.data.map((item) => ({
           ...item,
@@ -559,7 +559,7 @@ const GrievanceTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-    console.log("sorting items:", sortBy, direction, field);
+
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const result = a.id - b.id;
@@ -869,7 +869,7 @@ const ComplaintsTab = () => {
       const response = await api.get(
         `${API_URL}/complaints/?${queryParams.toString()}`
       );
-      console.log("Complaints API response:", response);
+
       if (response && response.status === 200 && response.data) {
         const data = Array.isArray(response.data.results)
           ? response.data.results
@@ -953,7 +953,7 @@ const ComplaintsTab = () => {
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-    console.log("sorting items:", sortBy, direction, field);
+
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const result = a.id - b.id;

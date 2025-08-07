@@ -97,7 +97,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
 
       if (response.status === 200) {
         setResponseLaterFile(response.data.document);
-        console.log(response.data.document);
+
       }
     } catch (error) {
       console.error(error);
@@ -131,7 +131,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
 
       if (response.status === 200) {
         setResponseLaterFile(response.data.document);
-        console.log(response.data.document);
+
       }
     } catch (error) {
       console.error(error);
@@ -211,7 +211,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
             if (currentStepRef.current > 1 && currentStepRef.current <= 4) {
               document.getElementById("back-button").click();
             }
-            console.log(currentStepRef.current);
+
             break;
           case "f": // Ctrl + F
             event.preventDefault(); // Prevent default browser action
@@ -252,14 +252,14 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
 
   const handleNewIncident = async (data) => {
     setIsLoading(true);
-    console.log("Form data: ", data);
+
     try {
       const response = await api.post(
         `${API_URL}/incidents/grievance/${incidentId}/investigation/`,
         data
       );
       if (response.status === 201) {
-        console.log(response.data.incident);
+
         window.customToast.success(
           "Grievance investigation saved successfully"
         );
@@ -269,7 +269,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       }
     } catch (error) {
       setIsLoading(false);
-      console.log(error);
+
       if (error.response.data) {
         window.customToast.error(
           error.response.data.message ||
@@ -302,7 +302,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       }
     } catch (error) {
       setIsLoading(false);
-      console.log(error);
+
       if (error.response.data) {
         window.customToast.error(
           error.response.data.message ||
@@ -339,7 +339,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
         medical_record_findings: medicalRecordFindings,
         status: "Draft",
       };
-      console.log("incident data: ", data);
+
       const incidentData = cleanedData(data);
       handleNewIncident(incidentData);
     } else if (currentStep === 2) {

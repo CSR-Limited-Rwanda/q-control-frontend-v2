@@ -9,9 +9,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-const ProfileReports = ({ userId }) => {
+const ProfileReports = () => {
+  const { accountId } = useParams();
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -27,9 +28,11 @@ const ProfileReports = ({ userId }) => {
       try {
         setError("");
         setIsLoading(true);
-        const response = await api.get(`users/${userId && userId}/incidents/`);
+        const response = await api.get(
+          `users/${accountId}/incidents/`
+        );
         setReports(response.data);
-        console.log(response.data);
+
         setIsLoading(false);
       } catch (error) {
         if (error.response) {
@@ -47,13 +50,11 @@ const ProfileReports = ({ userId }) => {
     };
 
     fetchReports();
-  }, [userId]);
+  }, [accountId]);
 
   const navigateToModify = (incidentId, reportName) => {
     if (!reportName) {
-      console.warn(
-        "reportName is undefined, defaulting to General Patient Visitor"
-      );
+
       router.push(`/incidents/general/${incidentId}/update/`);
       localStorage.setItem("generalIncidentId", incidentId);
       return;
@@ -89,9 +90,7 @@ const ProfileReports = ({ userId }) => {
         localStorage.setItem("grievanceId", incidentId);
         break;
       default:
-        console.warn(
-          `Unknown reportName: ${reportName}, defaulting to General Patient Visitor`
-        );
+
         router.push(`/incidents/general/${incidentId}/update/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
@@ -100,9 +99,7 @@ const ProfileReports = ({ userId }) => {
 
   const handleRowClick = (incidentId, reportName) => {
     if (!reportName) {
-      console.warn(
-        "reportName is undefined, defaulting to General Patient Visitor"
-      );
+
       router.push(`/incidents/general/${incidentId}/`);
       localStorage.setItem("generalIncidentId", incidentId);
       return;
@@ -138,9 +135,7 @@ const ProfileReports = ({ userId }) => {
         localStorage.setItem("grievanceId", incidentId);
         break;
       default:
-        console.warn(
-          `Unknown reportName: ${reportName}, defaulting to General Patient Visitor`
-        );
+
         router.push(`/incidents/general/${incidentId}/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
@@ -251,10 +246,10 @@ const ProfileReports = ({ userId }) => {
                 <span className="title">Follow up</span>
                 <span
                   className={`follow-up ${incident?.status === "Draft"
-                      ? "in-progress"
-                      : incident?.status === "Closed"
-                        ? "closed"
-                        : "Open"
+                    ? "in-progress"
+                    : incident?.status === "Closed"
+                      ? "closed"
+                      : "Open"
                     }`}
                 >
                   {incident?.status}

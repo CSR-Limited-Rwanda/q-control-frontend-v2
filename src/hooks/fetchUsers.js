@@ -3,7 +3,7 @@ import api from "@/utils/api";
 export const fetchUsers = async (params) => {
     try {
         const response = await api.get(`/users/?${params}`);
-        console.log(response);
+
         if (response.status === 200) {
             return {
                 success: true,
@@ -16,7 +16,7 @@ export const fetchUsers = async (params) => {
             };
         }
     } catch (error) {
-        console.log(error);
+
         let errorMessage = "An error occurred while fetching users.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || errorMessage;

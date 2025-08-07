@@ -99,8 +99,6 @@ export const ReviewTemplates = () => {
         if (response.status === 200) {
           setReviewTemplates(response.data.results);
 
-          console.log(groupsWithFullname);
-          console.log(response.data);
           setIsLoading(false);
         }
       } catch (error) {
@@ -113,7 +111,7 @@ export const ReviewTemplates = () => {
         } else {
           setErrorMessage("Unknown error fetching users");
         }
-        console.log(error);
+
         setIsLoading(false);
       }
     };
@@ -127,10 +125,10 @@ export const ReviewTemplates = () => {
       if (response.status === 200) {
         setShowEditTemplateForm(!showEditTemplateForm);
         setReviewTemplate(response.data);
-        console.log(response.data);
+
       }
     } catch (error) {
-      console.log(error);
+
       if (error.response) {
         setErrorMessage(
           error.response.data?.message ||
@@ -167,7 +165,6 @@ export const ReviewTemplates = () => {
   const handleSortChange = (config) => {
     setSortConfig(config)
   }
-
 
   return isLoading ? (
     <div className="dashboard-page-content">

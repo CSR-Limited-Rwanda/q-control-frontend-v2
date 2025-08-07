@@ -67,8 +67,6 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
           return;
         }
 
-        // console.log(selectedGroups);
-
         if (data.review_groups.length > 0) {
           try {
             setSubmitting(true);
@@ -81,7 +79,6 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
             );
 
             if ([200, 204].includes(patchResponse.status)) {
-              // console.log(patchResponse.data);
 
               try {
                 const response = await api.put(
@@ -98,7 +95,6 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
                     return;
                   }
 
-                  console.log(selectedGroups);
                   try {
                     setSubmitting(true);
                     const patchResponse = await api.patch(
@@ -110,7 +106,7 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
                     );
 
                     if ([200, 204].includes(patchResponse.status)) {
-                      console.log(patchResponse.data);
+
                       setCurrentStep(3);
                     }
                   } catch (error) {
@@ -120,7 +116,6 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
                     setLoading(false);
                   }
 
-                  console.log(response.data);
                 } else {
                   alert("Something went wrong. Please try again.");
                 }
@@ -149,7 +144,7 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
             );
 
             if ([200, 204].includes(patchResponse.status)) {
-              console.log(patchResponse.data);
+
               setCurrentStep(3);
             }
           } catch (error) {
@@ -160,7 +155,6 @@ const EditTaskForm = ({ showTaskDetails, data, discardFn }) => {
           }
         }
 
-        console.log(response.data);
       } else {
         alert("Something went wrong. Please try again.");
       }

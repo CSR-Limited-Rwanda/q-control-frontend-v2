@@ -21,7 +21,7 @@ const DrugReactionReviews = ({ incidentId }) => {
         );
         if (response.status === 200) {
           setReviews(response.data);
-          console.log(response.data);
+
           localStorage.setItem("incidentReviewsCount", response.data.length);
           setGettingReviews(false);
         }
@@ -38,7 +38,7 @@ const DrugReactionReviews = ({ incidentId }) => {
     getIncidentReviews();
 
     const intervalId = setInterval(getIncidentReviews, 3000);
-    console.log(reviews.created_by?.user?.first_name);
+
     return () => clearInterval(intervalId);
   }, [incidentId]);
   return gettingReviews ? (

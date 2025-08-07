@@ -39,9 +39,9 @@ const PermissionGroups = () => {
   const handleShowDeleteModal = (id, group) => {
     setShowDeleteModal(!showDeleteModal);
     setGroup(group);
-    console.log(group);
+
     setGroupId(id);
-    console.log(id);
+
   };
 
   const formatGroupDataForDelete = (group) => {
@@ -63,7 +63,6 @@ const PermissionGroups = () => {
     setDeleteError("");
 
     const formattedBody = formatGroupDataForDelete(group);
-    console.log(formattedBody);
 
     try {
       const response = await api.delete(
@@ -74,7 +73,6 @@ const PermissionGroups = () => {
       );
 
       if (response.status === 204 || response.status === 200) {
-        console.log(response.data);
 
         try {
           const response = await api.delete(`/permissions/`, {
@@ -88,7 +86,7 @@ const PermissionGroups = () => {
             window.location.reload();
           }
         } catch (error) {
-          console.log(error);
+
         }
         handleFetchGroups();
       } else {
@@ -156,14 +154,14 @@ const PermissionGroups = () => {
     try {
       const response = await api.get(`/permissions/`);
       if (response.status === 200) {
-        console.log(response.data);
+
         setGroups(response.data);
         return;
       } else {
         setErrorMessage("Error fetching groups. Contact support.");
       }
     } catch (error) {
-      console.log(error);
+
       setErrorMessage("Error fetching groups. Contact support.");
     } finally {
       setIsLoading(false);

@@ -2,11 +2,10 @@ import React from "react";
 
 const DateFormatter = ({ dateString }) => {
   // Log input for debugging
-  console.log("DateFormatter input:", dateString);
 
   // Check if dateString is valid and parseable
   if (!dateString || isNaN(new Date(dateString).getTime())) {
-    console.log("Invalid date in DateFormatter:", dateString);
+
     return <span>N/A</span>;
   }
 
