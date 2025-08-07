@@ -29,7 +29,7 @@ const GrievanceDetailsContent = () => {
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [reviewsCount, setReviewsCount] = useState();
- 
+
 
   const fetchInvestigationDetails = async () => {
     setIsFetching(true);
@@ -264,7 +264,7 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link to={"/"}>Overview</Link> <ChevronRight />
       <Link to={"/incidents/"}>Incidents</Link> <ChevronRight />
-      <Link to={"/incident/grievance/"}>Grievance List</Link> <ChevronRight />
+      <Link to={"/incidents/grievance/"}>Grievance List</Link> <ChevronRight />
       <Link className="current-page"> #{grievanceId}</Link>
     </div>
   );
@@ -275,13 +275,13 @@ const GrievanceDetails = () => {
     <div>
       <DashboardLayout
         children={<GrievanceDetailsContent />}
-        // breadCrumbs={
-        //   changeBreadCrumbs ? (
-        //     <FacilityDetailsBreadCrumbs incidentID={grievanceId} />
-        //   ) : (
-        //     <BreadCrumbs />
-        //   )
-        // }
+      // breadCrumbs={
+      //   changeBreadCrumbs ? (
+      //     <FacilityDetailsBreadCrumbs incidentID={grievanceId} />
+      //   ) : (
+      //     <BreadCrumbs />
+      //   )
+      // }
       />
     </div>
   );

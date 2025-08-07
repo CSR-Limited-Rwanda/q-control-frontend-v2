@@ -263,7 +263,7 @@ const ModifyLostFound = ({ data }) => {
       )} */}
       <div className="modify-page-header">
         <BackToPage
-          link={"/incident/lost-and-found/"}
+          link={"/incidents/lost-and-found/"}
           pageName={"Lost and Found incidents"}
         />
         <h2 className="title">Modifying Lost and Found incident</h2>
@@ -302,10 +302,10 @@ const ModifyLostFound = ({ data }) => {
             Status :{" "}
             <span
               className={`follow-up ${status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
-                    ? "closed"
-                    : "Open"
+                ? "in-progress"
+                : status === "Closed"
+                  ? "closed"
+                  : "Open"
                 }`}
             >
               {status}

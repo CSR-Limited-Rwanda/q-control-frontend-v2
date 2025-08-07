@@ -126,8 +126,8 @@ const MedicationDetailsContent = () => {
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
               data={
-             useOriginalVersion ? incidentDetails : latestIncidentDetails
-               
+                useOriginalVersion ? incidentDetails : latestIncidentDetails
+
               }
               incidentDetailsId={incidentId}
               apiLink={"medication-error"}
@@ -213,7 +213,7 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <ChevronRight />
       <Link href={"/incidents/"}>Incidents</Link> <ChevronRight />
-      <Link href={"/incident/medication-error/"}>Medication Error List</Link>{" "}
+      <Link href={"/incidents/medication-error/"}>Medication Error List</Link>{" "}
       <ChevronRight />
       <Link className="current-page">#{incidentId}</Link>
     </div>

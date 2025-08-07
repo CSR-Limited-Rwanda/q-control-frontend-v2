@@ -209,7 +209,6 @@ async function getUserInfoFromToken(token) {
         serverUserData: serverData,
       };
     } else {
-      console.error("Failed to fetch user data. Status:", response.status);
       return { tokenUserInfo: userInfo, serverUserData: null };
     }
   } catch (error) {

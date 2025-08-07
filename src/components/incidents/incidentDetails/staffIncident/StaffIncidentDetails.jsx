@@ -4,9 +4,9 @@ import { useParams } from "next/navigation"
 import DashboardLayout from "@/app/dashboard/layout"
 import IncidentDetailsHeader from "../IncidentDetailsHeader"
 import IncidentTabs from "../IncidentTabs"
-import api, { API_URL }  from "@/utils/api"
-import StaffDetails from "@/components/incidents/incidentDetails/staffIncident/StaffDetails"
-import StaffDetailsContentTab from "@/components/incidents/incidentDetails/staffIncident/StaffDetailsContentTab"
+import api, { API_URL } from "@/utils/api"
+import StaffDetails from "@/components/incidents/incidentDetails/staffincidents/StaffDetails"
+import StaffDetailsContentTab from "@/components/incidents/incidentDetails/staffincidents/StaffDetailsContentTab"
 import StaffGeneralInfo from "./StaffGeneralInfo"
 import StaffOtherInformation from "./StaffOtherInformation"
 import StaffDocumentHistory from "./StaffDocumentHistory"
@@ -30,10 +30,10 @@ const EmployeeDetailsContent = () => {
   const [reviewsCount, setReviewsCount] = useState();
 
   const fetchIncidentDetails = async () => {
-    setIsFetching(true); 
+    setIsFetching(true);
     try {
       let response;
-  
+
       if (useOriginalVersion) {
         response = await api.get(`/incidents/staff-incident/${incidentId}/`);
         setIncidentDetails(response.data.incident);
@@ -51,26 +51,26 @@ const EmployeeDetailsContent = () => {
         setLatestIncidentDetails(response.data);
         setCurrentIncidentData(response.data.incident);
       }
-  
+
       // 🔽 NEW: fetch investigation separately
       const investigationRes = await api.get(
         `/incidents/staff-incident/${incidentId}/investigation/${staffInvestigationId}`
       );
-  
+
       if (investigationRes.status === 200) {
         console.log('staff investigation:', investigationRes.data)
         setInvestigationInfo(investigationRes.data);
       } else {
         setInvestigationInfo(null);
       }
-  
+
       setIsFetching(false);
     } catch (error) {
       console.error("Error fetching incident details:", error);
       setIsFetching(false);
     }
   };
-  
+
 
   useEffect(() => {
     fetchIncidentDetails(); // Fetch incident data when version toggles or incidentId changes
@@ -157,7 +157,7 @@ const EmployeeDetailsContent = () => {
               generalInformation={
                 <StaffGeneralInfo
                   data={currentIncidentData}
-                  incidentStatuses={incidentStatus}   
+                  incidentStatuses={incidentStatus}
                 />
               }
               otherInformation={
@@ -213,7 +213,7 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <MoveRight />
       <Link href={"/incidents/"}>Incidents</Link> <MoveRight />
-      <Link href={"/incident/employee/"}>Staff Incident Report</Link>{" "}
+      <Link href={"/incidents/employee/"}>Staff Incident Report</Link>{" "}
       <MoveRight />
       <Link className="current-page"> #{incidentId}</Link>
     </div>

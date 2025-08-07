@@ -35,8 +35,8 @@ const ProfileReports = ({ userId }) => {
         if (error.response) {
           setError(
             error.response.data.message ||
-              error.response.data.error ||
-              "Error fetching reports data"
+            error.response.data.error ||
+            "Error fetching reports data"
           );
         } else {
           setError("Unknown fetching reports data");
@@ -54,45 +54,45 @@ const ProfileReports = ({ userId }) => {
       console.warn(
         "reportName is undefined, defaulting to General Patient Visitor"
       );
-      router.push(`/incident/general/${incidentId}/update/`);
+      router.push(`/incidents/general/${incidentId}/update/`);
       localStorage.setItem("generalIncidentId", incidentId);
       return;
     }
 
     switch (reportName) {
       case "General Patient Visitor":
-        router.push(`/incident/general/${incidentId}/update/`);
+        router.push(`/incidents/general/${incidentId}/update/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
       case "Adverse Drug Reaction":
-        router.push(`/incident/drug-reaction/${incidentId}/update/`);
+        router.push(`/incidents/drug-reaction/${incidentId}/update/`);
         localStorage.setItem("adverseDrugReactionId", incidentId);
         break;
       case "Lost and Found":
-        router.push(`/incident/lost-and-found/${incidentId}/update/`);
+        router.push(`/incidents/lost-and-found/${incidentId}/update/`);
         localStorage.setItem("lostAndFoundId", incidentId);
         break;
       case "Medication Error":
-        router.push(`/incident/medication-error/${incidentId}/update/`);
+        router.push(`/incidents/medication-error/${incidentId}/update/`);
         localStorage.setItem("medicationErrorIncidentId", incidentId);
         break;
       case "Staff Incident Report":
-        router.push(`/incident/staff/${incidentId}/update/`);
+        router.push(`/incidents/staff/${incidentId}/update/`);
         localStorage.setItem("staffIncidentId", incidentId);
         break;
       case "workplace violence":
-        router.push(`/incident/workplace-violence/${incidentId}/update/`);
+        router.push(`/incidents/workplace-violence/${incidentId}/update/`);
         localStorage.setItem("workplaceViolenceId", incidentId);
         break;
       case "Grievance":
-        router.push(`/incident/grievance/${incidentId}/update/`);
+        router.push(`/incidents/grievance/${incidentId}/update/`);
         localStorage.setItem("grievanceId", incidentId);
         break;
       default:
         console.warn(
           `Unknown reportName: ${reportName}, defaulting to General Patient Visitor`
         );
-        router.push(`/incident/general/${incidentId}/update/`);
+        router.push(`/incidents/general/${incidentId}/update/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
     }
@@ -103,45 +103,45 @@ const ProfileReports = ({ userId }) => {
       console.warn(
         "reportName is undefined, defaulting to General Patient Visitor"
       );
-      router.push(`/incident/general/${incidentId}/`);
+      router.push(`/incidents/general/${incidentId}/`);
       localStorage.setItem("generalIncidentId", incidentId);
       return;
     }
 
     switch (reportName) {
       case "General Patient Visitor":
-        router.push(`/incident/general/${incidentId}/`);
+        router.push(`/incidents/general/${incidentId}/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
       case "Adverse Drug Reaction":
-        router.push(`/incident/drug-reaction/${incidentId}/`);
+        router.push(`/incidents/drug-reaction/${incidentId}/`);
         localStorage.setItem("adverseDrugReactionId", incidentId);
         break;
       case "Lost and Found":
-        router.push(`/incident/lost-and-found/${incidentId}/`);
+        router.push(`/incidents/lost-and-found/${incidentId}/`);
         localStorage.setItem("lostAndFoundId", incidentId);
         break;
       case "Medication Error":
-        router.push(`/incident/medication-error/${incidentId}/`);
+        router.push(`/incidents/medication-error/${incidentId}/`);
         localStorage.setItem("medicationErrorIncidentId", incidentId);
         break;
       case "Staff Incident Report":
-        router.push(`/incident/staff/${incidentId}/`);
+        router.push(`/incidents/staff/${incidentId}/`);
         localStorage.setItem("staffIncidentId", incidentId);
         break;
       case "workplace violence":
-        router.push(`/incident/workplace-violence/${incidentId}/`);
+        router.push(`/incidents/workplace-violence/${incidentId}/`);
         localStorage.setItem("workplaceViolenceId", incidentId);
         break;
       case "Grievance":
-        router.push(`/incident/grievance/${incidentId}/`);
+        router.push(`/incidents/grievance/${incidentId}/`);
         localStorage.setItem("grievanceId", incidentId);
         break;
       default:
         console.warn(
           `Unknown reportName: ${reportName}, defaulting to General Patient Visitor`
         );
-        router.push(`/incident/general/${incidentId}/`);
+        router.push(`/incidents/general/${incidentId}/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
     }
@@ -175,13 +175,13 @@ const ProfileReports = ({ userId }) => {
   const indexOfFirstReport = indexOfLastReport - reportsPerPage;
   const currentReports = reports
     ? reports
-        .flatMap((report) =>
-          report.incidents.map((incident) => ({
-            ...incident,
-            reportName: report.name,
-          }))
-        )
-        .slice(indexOfFirstReport, indexOfLastReport)
+      .flatMap((report) =>
+        report.incidents.map((incident) => ({
+          ...incident,
+          reportName: report.name,
+        }))
+      )
+      .slice(indexOfFirstReport, indexOfLastReport)
     : [];
 
   // Calculate total pages
@@ -221,9 +221,8 @@ const ProfileReports = ({ userId }) => {
           {currentReports.map((incident, index) => (
             <div
               key={index}
-              className={`user-report ${
-                incident.status === "Draft" ? "draft" : ""
-              }`}
+              className={`user-report ${incident.status === "Draft" ? "draft" : ""
+                }`}
             >
               <div className="row">
                 {incident.status === "Draft" ? (
@@ -251,13 +250,12 @@ const ProfileReports = ({ userId }) => {
               <div className="col">
                 <span className="title">Follow up</span>
                 <span
-                  className={`follow-up ${
-                    incident?.status === "Draft"
+                  className={`follow-up ${incident?.status === "Draft"
                       ? "in-progress"
                       : incident?.status === "Closed"
-                      ? "closed"
-                      : "Open"
-                  }`}
+                        ? "closed"
+                        : "Open"
+                    }`}
                 >
                   {incident?.status}
                 </span>
@@ -296,7 +294,7 @@ const ProfileReports = ({ userId }) => {
                       <span>Details</span>
                     </div>
                     <div
-                      href={`/incident/general/${incident.id}/update/`}
+                      href={`/incidents/general/${incident.id}/update/`}
                       className="link"
                       onClick={() => {
                         setShowPopup(null);

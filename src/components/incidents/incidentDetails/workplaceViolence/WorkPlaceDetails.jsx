@@ -200,7 +200,7 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <ChevronRight />
       <Link href={"/incidents/"}>Incidents</Link> <ChevronRight />
-      <Link href={"/incident/workplace-violence/"}>
+      <Link href={"/incidents/workplace-violence/"}>
         Workplace Violence List
       </Link>{" "}
       <ChevronRight />

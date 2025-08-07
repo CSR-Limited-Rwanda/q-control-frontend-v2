@@ -359,7 +359,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const updateStepOne = async (data) => {
     try {
       const res = await api.put(
-        `${API_URL}/incidents/employee_incident/update/staff/final_report/`,
+        `${API_URL}/incidents/employee_incidents/update/staff/final_report/`,
         data
       );
       console.log(dateSeenDoctor);

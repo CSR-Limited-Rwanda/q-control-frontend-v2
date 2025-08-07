@@ -179,7 +179,7 @@ const BreadCrumbs = () => {
         <div className="breadcrumbs">
             <Link href={"/"}>Overview</Link> <ChevronRight />
             <Link href={"/incidents/"}>Incidents</Link> <ChevronRight />
-            <Link href={"/incident/general/"}>General Incidents List</Link>{" "}
+            <Link href={"/incidents/general/"}>General Incidents List</Link>{" "}
             <ChevronRight />
             <Link className="current-page"> #{incidentId}</Link>
         </div>
