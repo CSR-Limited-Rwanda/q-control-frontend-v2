@@ -1,4 +1,3 @@
-@import "./animations";
 // loading icon
 
 .loading-icon {
@@ -310,7 +309,7 @@ form,
   left: 0.75rem;
 }
 
-.input__icon--left + .input__field {
+.input__icon--left+.input__field {
   padding-left: 2.5rem;
 }
 
@@ -318,7 +317,7 @@ form,
   right: 0.75rem;
 }
 
-.input__icon--right + .input__field {
+.input__icon--right+.input__field {
   padding-right: 2.5rem;
 }
 
@@ -543,7 +542,7 @@ table {
     color: #a5a3a9;
   }
 
-  & > :first-child {
+  &> :first-child {
     padding-left: 0;
   }
 

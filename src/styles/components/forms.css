@@ -1,0 +1,151 @@
+/* ============================================================================
+   FORMS & INPUT ELEMENTS
+   ============================================================================ */
+
+/* Form Structure */
+.form-input {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  column-gap: 1rem;
+}
+
+.form-group label {
+  flex: 1 1 20px;
+}
+
+.form-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+form button {
+  width: fit-content;
+}
+
+/* Input Elements */
+input, textarea, select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--base-border-radius);
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--foreground);
+  background-color: transparent;
+}
+
+input,
+.search-input,
+textarea {
+  border: 1px solid var(--gray-color-shade);
+}
+
+input::placeholder,
+.search-input::placeholder,
+textarea::placeholder {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+/* Icon Input */
+.icon-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon-input .icon {
+  position: absolute;
+  left: 0.5rem;
+}
+
+.icon-input input,
+.icon-input textarea,
+.icon-input select {
+  padding-left: 2.5rem;
+}
+
+/* Select Placeholder */
+.select-placeholder {
+  border: 1px solid var(--gray-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: var(--base-border-radius);
+}
+
+/* Form Errors */
+.form-errors {
+  padding: 24px;
+  background-color: #ff8181;
+  color: black;
+  border-radius: var(--base-border-radius);
+}
+
+/* Delete Form */
+.delete-form {
+  display: grid;
+  height: fit-content;
+  gap: 1rem;
+}
+
+/* Form Completion Styles */
+.form-complete-message {
+  border-radius: var(--base-border-radius);
+  width: 80%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-complete-message button {
+  width: 100%;
+}
+
+.form-complete-message .message-container {
+  background-color: #f7f7f7;
+  padding: 48px;
+  margin: auto;
+  display: grid;
+  height: fit-content;
+  gap: 24px;
+  border-radius: var(--base-border-radius);
+  text-align: center;
+  justify-items: center;
+}
+
+.form-complete-message .message-container .icon {
+  background-color: var(--secondary-color);
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.form-complete-message .message-container .message {
+  color: #898989;
+}

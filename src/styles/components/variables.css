@@ -1,0 +1,59 @@
+/* ============================================================================
+   CSS CUSTOM PROPERTIES (VARIABLES)
+   ============================================================================ */
+
+:root {
+  /* Base Color Palette */
+  --background: #ffffff;
+  --foreground: #505050;
+  --bold: #1d1d1d;
+  --card: #ffffff;
+  --border: #e5e5e5;
+  --divider: #f0f0f0;
+  --shade: #f5f5f5;
+
+  /* Brand Colors */
+  --primary: #ff7043;
+  --primary-light: #FBEDE7;
+  --secondary: #1565c0;
+  --secondary-light: #eef6ff;
+
+  /* Status Colors */
+  --success: #22c55e;
+  --error: #ef4444;
+  --warning: #f59e0b;
+
+  /* Gray Scale */
+  --gray-color: #F2F2F2;
+
+  /* Legacy Variables from SCSS (for backward compatibility) */
+  --body-background-color: white;
+  --text-color: #1E1E1E;
+  --primary-color: #145C9E;
+  --light-primary-color: #F3F8FF;
+  --primary-color-shade: #145b9e26;
+  --secondary-color: #F87C47;
+  --secondary-color-shade: #FFF1EB;
+  --gray-color-shade: #f3f3f3;
+  --gray-color-main: #909090;
+  
+  /* Dark Theme Variables */
+  --dark-body-background-color: #1E1E1E;
+  --dark-primary-color: white;
+  --dark-secondary-color: #F87C47;
+  --dark-secondary-color-shade: #3c3c3c;
+  --dark-gray-color-shade: #2C2C2C;
+
+  /* Layout & Spacing */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 64px;
+  --header-height: 64px;
+  --buttons-height: 48px;
+  --base-border-radius: 6px;
+  --max-width: 1200px;
+  --max-content-width: 100%;
+
+  /* Effects & Animations */
+  --transition-speed: 0.3s;
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
