@@ -1,21 +1,10 @@
 "use client";
 import "@/styles/accounts/_profile.scss";
 import DashboardLayout from "@/app/dashboard/layout";
-import { DraftsTab } from "@/components/accounts/profile/DraftsTab";
-import UserComplaints from "@/components/accounts/profile/profileComplaints";
-import ProfileDocuments from "@/components/accounts/profile/profileDocuments";
-import ProfileReports from "@/components/accounts/profile/profileReports";
 import api from "@/utils/api";
 import {
-  ChevronDown,
   ChevronRight,
-  File,
-  Frown,
   Key,
-  Layers,
-  ListCheck,
-  LoaderCircle,
-  ShieldCheck,
   SquarePen,
   Trash2,
   UserCheck,

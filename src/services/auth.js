@@ -1,6 +1,7 @@
-import api from '@/utils/api';
+import api, { API_URL } from '@/utils/api';
+import axios from 'axios';
 
-const authService = {
+export const authService = {
     async login(username, password) {
         try {
             const response = await api.post('/accounts/login/', {
@@ -63,4 +64,51 @@ const authService = {
     },
 };
 
-export default authService;
+
+export const forgotPassword = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/accounts/password-reset-request/`, { email });
+
+        if (response.status === 200) {
+            return {
+                success: true,
+                message: 'A code has been sent to your email.',
+            };
+        } else {
+            return {
+                success: false,
+                error: 'Failed to send reset code. Please try again.',
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data?.detail || 'An unexpected error occurred. Please try again.',
+        };
+    }
+}
+
+
+export const resetPassword = async (payload) => {
+    console.log("Resetting password with payload:", payload);
+    try {
+        const response = await axios.post(`${API_URL}/accounts/reset-password/`, payload);
+
+        if (response.status === 200) {
+            return {
+                success: true,
+                message: 'Password has been reset successfully.',
+            };
+        } else {
+            return {
+                success: false,
+                error: 'Failed to reset password. Please try again.',
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data?.error || error.response?.data?.message || 'An unexpected error occurred. Please try again.',
+        };
+    }
+};

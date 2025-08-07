@@ -6,9 +6,12 @@ import api from "@/utils/api";
 // Create AuthContext
 const AuthContext = createContext({
   user: null,
+  fullUserData: null,
   isAuth: false,
   loading: true,
   login: () => { },
+  getUser: () => { },
+  getFullUserData: () => { },
   logout: () => { },
   refreshAuth: () => { },
 });
@@ -16,6 +19,7 @@ const AuthContext = createContext({
 // AuthProvider component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [fullUserData, setFullUserData] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -61,15 +65,18 @@ export const AuthProvider = ({ children }) => {
 
       if (result && result.tokenUserInfo) {
         setUser(result.tokenUserInfo);
+        setFullUserData(result.serverUserData);
         setIsAuth(true);
       } else {
         // Failed to get user info, clear auth state
         localStorage.clear();
         setUser(null);
+        setFullUserData(null);
         setIsAuth(false);
       }
     } else {
       setUser(null);
+      setFullUserData(null);
       setIsAuth(false);
     }
 
@@ -90,6 +97,7 @@ export const AuthProvider = ({ children }) => {
 
       if (result && result.tokenUserInfo) {
         setUser(result.tokenUserInfo);
+        setFullUserData(result.serverUserData);
         setIsAuth(true);
         return true;
       } else {
@@ -102,12 +110,21 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
   };
+  // Get user info function (synchronous)
+  const getUser = () => {
+    return user;
+  };
 
+  // Get full user data function (synchronous)
+  const getFullUserData = () => {
+    return fullUserData;
+  };
   // Logout function
   const logout = () => {
     if (typeof window !== "undefined") {
       localStorage.clear();
       setUser(null);
+      setFullUserData(null);
       setIsAuth(false);
     }
   };
@@ -138,10 +155,13 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    fullUserData,
     isAuth,
     loading,
     login,
     logout,
+    getUser,
+    getFullUserData,
     refreshAuth,
   };
 
@@ -180,7 +200,11 @@ async function getUserInfoFromToken(token) {
       id: userId,
       firstName: decodedToken.first_name,
       lastName: decodedToken.last_name,
-      email: decodedToken.email, 
+      email: decodedToken.email,
+      role: decodedToken.role,
+      facility: decodedToken.facility,
+      department: decodedToken.department,
+      profileId: decodedToken.profile_id,
     };
 
     if (!userId) {

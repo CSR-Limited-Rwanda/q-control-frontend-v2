@@ -220,7 +220,7 @@ form,
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 100000;
 
   .popup-content {
     background-color: var(--background);
@@ -719,6 +719,7 @@ table {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+    height: fit-content;
 
     .choice {
       flex: 1 1 200px;
