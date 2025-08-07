@@ -32,7 +32,7 @@ const ModifyStaffIncidentPageContent = () => {
           console.log(response.data);
           setIncident(response.data.incident);
           setIsLoading(false);
-          setInvestigation(response.data.investigation);
+          setInvestigation(response.data.has_investigation);
         }
       } catch (error) {
         if (error.response.status === 404) {

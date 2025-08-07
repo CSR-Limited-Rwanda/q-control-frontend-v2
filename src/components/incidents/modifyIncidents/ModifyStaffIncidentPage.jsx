@@ -309,9 +309,9 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       <div className="modify-page-header">
         <BackToPage link={"/incidents/staff/"} pageName={"Staff incidents"} />
         <h2 className="title">Modifying Staff Incident</h2>
-        {investigation && investigation.id ? (
+        {investigation ? (
           <Link
-            href={`/incidents/staff-incident/${staffIncidentId}`}
+            href={`/incidents/staff/${staffIncidentId}`}
             onClick={() => {
               localStorage.setItem("activate_investigation_tab", true);
             }}
