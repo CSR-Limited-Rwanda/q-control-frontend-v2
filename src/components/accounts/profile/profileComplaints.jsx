@@ -38,7 +38,9 @@ const UserComplaints = () => {
 
   let profileId;
   if (typeof window !== "undefined") {
-    profileId = JSON.parse(localStorage.getItem("loggedInUserInfo"))?.id;
+    profileId = JSON.parse(
+      localStorage.getItem("loggedInUserInfo")
+    )?.profile_id;
   } else {
     profileId = null;
   }

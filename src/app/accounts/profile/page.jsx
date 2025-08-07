@@ -39,7 +39,9 @@ import AccessPermissions from "@/components/accounts/forms/AccessPermissions";
 const ProfileDetailsPage = () => {
   let profileId;
   if (typeof window !== "undefined") {
-    profileId = JSON.parse(localStorage.getItem("loggedInUserInfo"))?.id;
+    profileId = JSON.parse(
+      localStorage.getItem("loggedInUserInfo")
+    )?.profile_id;
   } else {
     profileId = null;
   }
@@ -322,10 +324,13 @@ export default ProfileDetailsPage;
 const ProfileTabs = ({ userId }) => {
   let profileId;
   if (typeof window !== "undefined") {
-    profileId = JSON.parse(localStorage.getItem("loggedInUserInfo"))?.id;
+    profileId = JSON.parse(
+      localStorage.getItem("loggedInUserInfo")
+    )?.profile_id;
   } else {
     profileId = null;
   }
+  console.log(profileId);
   const [activeTab, setActiveTab] = useState("reports");
 
   if (activeTab === "drafts") {
@@ -378,7 +383,7 @@ const ProfileTabs = ({ userId }) => {
       {activeTab === "reports" && (
         <div className="tabs-content">
           <h3>Your reports</h3>
-          <ProfileReports userId={profileId} />
+          <ProfileReports profileId={profileId} />
         </div>
       )}
       {activeTab === "drafts" && (

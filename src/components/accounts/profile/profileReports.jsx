@@ -11,7 +11,7 @@ import Link from "next/link";
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-const ProfileReports = ({ userId }) => {
+const ProfileReports = ({ profileId }) => {
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -27,7 +27,9 @@ const ProfileReports = ({ userId }) => {
       try {
         setError("");
         setIsLoading(true);
-        const response = await api.get(`users/${userId && userId}/incidents/`);
+        const response = await api.get(
+          `users/${profileId && profileId}/incidents/`
+        );
         setReports(response.data);
         console.log(response.data);
         setIsLoading(false);
@@ -35,8 +37,8 @@ const ProfileReports = ({ userId }) => {
         if (error.response) {
           setError(
             error.response.data.message ||
-            error.response.data.error ||
-            "Error fetching reports data"
+              error.response.data.error ||
+              "Error fetching reports data"
           );
         } else {
           setError("Unknown fetching reports data");
@@ -47,7 +49,7 @@ const ProfileReports = ({ userId }) => {
     };
 
     fetchReports();
-  }, [userId]);
+  }, [profileId]);
 
   const navigateToModify = (incidentId, reportName) => {
     if (!reportName) {
@@ -175,13 +177,13 @@ const ProfileReports = ({ userId }) => {
   const indexOfFirstReport = indexOfLastReport - reportsPerPage;
   const currentReports = reports
     ? reports
-      .flatMap((report) =>
-        report.incidents.map((incident) => ({
-          ...incident,
-          reportName: report.name,
-        }))
-      )
-      .slice(indexOfFirstReport, indexOfLastReport)
+        .flatMap((report) =>
+          report.incidents.map((incident) => ({
+            ...incident,
+            reportName: report.name,
+          }))
+        )
+        .slice(indexOfFirstReport, indexOfLastReport)
     : [];
 
   // Calculate total pages
@@ -221,8 +223,9 @@ const ProfileReports = ({ userId }) => {
           {currentReports.map((incident, index) => (
             <div
               key={index}
-              className={`user-report ${incident.status === "Draft" ? "draft" : ""
-                }`}
+              className={`user-report ${
+                incident.status === "Draft" ? "draft" : ""
+              }`}
             >
               <div className="row">
                 {incident.status === "Draft" ? (
@@ -250,12 +253,13 @@ const ProfileReports = ({ userId }) => {
               <div className="col">
                 <span className="title">Follow up</span>
                 <span
-                  className={`follow-up ${incident?.status === "Draft"
+                  className={`follow-up ${
+                    incident?.status === "Draft"
                       ? "in-progress"
                       : incident?.status === "Closed"
-                        ? "closed"
-                        : "Open"
-                    }`}
+                      ? "closed"
+                      : "Open"
+                  }`}
                 >
                   {incident?.status}
                 </span>
