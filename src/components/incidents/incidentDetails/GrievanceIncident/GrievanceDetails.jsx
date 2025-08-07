@@ -30,46 +30,6 @@ const GrievanceDetailsContent = () => {
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [reviewsCount, setReviewsCount] = useState();
 
-  const fetchInvestigationDetails = async () => {
-    setIsFetching(true);
-    try {
-      let response;
-      // Fetch the original version of the incident
-      if (useOriginalVersion) {
-        response = await api.get(
-          `${API_URL}/incidents/grievance/${incidentId}/investigation`
-        );
-
-        setInvestigationDetails(response.data.investigation); //
-      } else {
-        // Fetch the latest modified version of the incident
-        const res = await api.get(
-          `${API_URL}/incidents/grievance/${incidentId}/`
-        );
-        const latestIncident = res.data.modifications.versions.find((mod) => {
-          return mod.latest === true;
-        });
-
-        if (latestIncident) {
-          response = await api.get(
-            `${API_URL}/incidents/grievance/${incidentId}/versions/${latestIncident.id}/`
-          );
-
-        } else {
-          response = res;
-        }
-
-        setLatestIncidentDetails(response.data); // Store the latest modified version
-        setCurrentIncidentData(response.data); // Set current data for UI
-        setInvestigationDetails(response.data.investigation);
-      }
-      setIsFetching(false);
-    } catch (error) {
-
-      setIsFetching(false);
-    }
-  }
-
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
     try {
@@ -80,8 +40,8 @@ const GrievanceDetailsContent = () => {
           `${API_URL}/incidents/grievance/${incidentId}/`
         );
         setIncidentDetails(response.data); // Store the original data
-        setCurrentIncidentData(response.data); // Set current data for UI
-
+        setCurrentIncidentData(response.data.incident); // Set current data for UI
+        console.log(response.data);
         setInvestigationDetails(response.data.investigation); //
       } else {
         // Fetch the latest modified version of the incident
@@ -102,8 +62,15 @@ const GrievanceDetailsContent = () => {
         }
 
         setLatestIncidentDetails(response.data); // Store the latest modified version
-        setCurrentIncidentData(response.data); // Set current data for UI
-        setInvestigationDetails(response.data.investigation);
+        setCurrentIncidentData(response.data.incident); // Set current data for UI
+        
+      }
+      const investigationRes = await api.get(
+        `/incidents/grievance/${incidentId}/investigation/`
+      )
+      if (investigationRes.status === 200) {
+        console.log('staff investigation:', investigationRes.data)
+        setInvestigationDetails(investigationRes.data)
       }
       setIsFetching(false);
     } catch (error) {
@@ -165,14 +132,10 @@ const GrievanceDetailsContent = () => {
         <div className="incident-details">
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
-              data={{
-                incident: useOriginalVersion
+              data={ useOriginalVersion
                   ? incidentDetails
-                  : latestIncidentDetails,
-                modifications: useOriginalVersion
-                  ? incidentDetails?.modifications
-                  : latestIncidentDetails?.modifications,
-              }}
+                  : latestIncidentDetails
+              }
               incidentDetailsId={incidentId}
               apiLink={"grievance"}
               sendTo={"send-to-department"}
@@ -189,8 +152,8 @@ const GrievanceDetailsContent = () => {
             <IncidentDetails
               data={currentIncidentData}
               fullName={
-                currentIncidentData.incident?.form_initiated_by
-                  ? `${currentIncidentData.incident?.form_initiated_by?.last_name} ${currentIncidentData.incident?.form_initiated_by?.first_name}`
+                currentIncidentData.form_initiated_by
+                  ? `${currentIncidentData.form_initiated_by?.last_name} ${currentIncidentData.form_initiated_by?.first_name}`
                   : null
               }
               age={currentIncidentData?.patient_name?.age}
@@ -220,7 +183,7 @@ const GrievanceDetailsContent = () => {
               reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"grievance"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
               investigation={
-                <GrievanceInvestigationInfo data={investigationDetails} />
+                <GrievanceInvestigationInfo data={investigationDetails} incidentStatuses={incidentStatus} />
               }
               showInvestigationTab={true}
               reviewsCount={reviewsCount}

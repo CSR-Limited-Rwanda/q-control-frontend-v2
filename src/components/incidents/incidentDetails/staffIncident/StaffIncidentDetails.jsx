@@ -5,8 +5,8 @@ import DashboardLayout from "@/app/dashboard/layout"
 import IncidentDetailsHeader from "../IncidentDetailsHeader"
 import IncidentTabs from "../IncidentTabs"
 import api, { API_URL } from "@/utils/api"
-import StaffDetails from "@/components/incidents/incidentDetails/staffincidents/StaffDetails"
-import StaffDetailsContentTab from "@/components/incidents/incidentDetails/staffincidents/StaffDetailsContentTab"
+import StaffDetails from "./StaffDetails"
+import StaffDetailsContentTab from "./StaffDetailsContentTab"
 import StaffGeneralInfo from "./StaffGeneralInfo"
 import StaffOtherInformation from "./StaffOtherInformation"
 import StaffDocumentHistory from "./StaffDocumentHistory"
@@ -54,10 +54,11 @@ const EmployeeDetailsContent = () => {
 
       // 🔽 NEW: fetch investigation separately
       const investigationRes = await api.get(
-        `/incidents/staff-incident/${incidentId}/investigation/${staffInvestigationId}`
+        `/incidents/staff-incident/${incidentId}/investigation/`
       );
 
       if (investigationRes.status === 200) {
+        // console.log('staff investigation:', investigationRes.data)
         setInvestigationInfo(investigationRes.data);
       } else {
         setInvestigationInfo(null);

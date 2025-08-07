@@ -1,4 +1,4 @@
-import LostFoundDetails from "@/components/incidents/incidentDetails/lostAndFoundIncident/LostFoundDetailsContent"
+import LostFoundDetails from '@/components/incidents/incidentDetails/lostAndFoundIncident/LostFoundDetailsContent'
 
 const page = () => {
   return (
