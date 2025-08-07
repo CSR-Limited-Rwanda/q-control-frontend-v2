@@ -1,0 +1,146 @@
+/* ============================================================================
+   BUTTONS & INTERACTIVE ELEMENTS
+   ============================================================================ */
+
+/* Base Button Styles */
+button, .btn {
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  min-height: var(--buttons-height);
+  border: none;
+  border-radius: var(--base-border-radius);
+  cursor: pointer;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  background-color: var(--primary);
+  color: var(--background);
+  justify-content: center;
+}
+
+/* Button Loading States */
+button.loader {
+  position: absolute;
+  right: 1rem;
+}
+
+button.loading {
+  padding-right: 3rem;
+}
+
+/* Button Container */
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Button Variants */
+button.gray, .btn.gray {
+  background-color: var(--gray-color);
+  color: var(--foreground);
+}
+
+button.secondary, .btn.secondary {
+  background-color: var(--secondary);
+  color: var(--background);
+}
+
+button.light, .btn.light {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+button.danger, .btn.danger {
+  background-color: var(--error);
+  color: var(--background);
+}
+
+/* Button Hover States */
+button:hover, .btn:hover {
+  background-color: #ff916f;
+}
+
+button.gray:hover, .btn.gray:hover {
+  background-color: #e0e0e0;
+}
+
+button.secondary:hover, .btn.secondary:hover {
+  background-color: #0d47a1;
+}
+
+button.light:hover, .btn.light:hover {
+  background-color: #fbe9e6;
+}
+
+/* Specialized Button Styles */
+.Exit-button {
+  color: #3c3c3c;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 12px 40px 12px;
+  gap: 10px;
+}
+
+.Exit-button:hover {
+  background-color: #f3f3f3;
+}
+
+.Exit-button:active {
+  background-color: #909090;
+}
+
+.Exit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(242, 242, 242, 0.5);
+}
+
+.primary-button {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.primary-button:hover {
+  background-color: var(--primary-color);
+}
+
+.primary-button:disabled {
+  background-color: #2196f3;
+}
+
+.secondary-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.secondary-button:hover {
+  background-color: var(--primary-color);
+}
+
+.secondary-button:disabled {
+  background-color: #ff8a65;
+}
+
+.tertiary-button {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.tertiary-button:hover {
+  border: 1px solid var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.delete-button {
+  background-color: tomato;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: red;
+}
