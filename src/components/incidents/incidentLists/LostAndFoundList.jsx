@@ -108,7 +108,7 @@ const LostAndFoundList = () => {
       const response = await api.get(
         `${API_URL}/incidents/lost-found/?${queryParams.toString()}`
       );
-      console.log("Lost and Found API response:", response);
+
       if (response && response.status === 200 && response.data) {
         const formattedData = response.data.map((item) => ({
           ...item,
@@ -568,7 +568,7 @@ const LostFoundTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-    console.log("sorting items:", sortBy, direction, field);
+
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const result = a.id - b.id;

@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 function NamesInitials({ fullName }) {
   // Log only when the `fullName` prop changes
   useEffect(() => {
-    console.log("fullname", fullName);
+
   }, [fullName]); // Dependency array ensures it only runs when `fullName` changes
 
   if (!fullName) {

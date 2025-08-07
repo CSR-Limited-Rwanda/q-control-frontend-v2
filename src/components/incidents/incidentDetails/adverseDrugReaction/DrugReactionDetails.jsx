@@ -87,7 +87,7 @@ function DrugReactionDetailsContent() {
         );
         setIncidentDetails(response.data.incident); // Store the original data
         setCurrentIncidentData(response.data.incident); // Set current data for UI
-        console.log(response.data);
+
       } else {
         // Fetch the latest modified version of the incident
         const res = await api.get(
@@ -104,8 +104,7 @@ function DrugReactionDetailsContent() {
           response = await api.get(
             `${API_URL}/incidents/adverse-drug-reaction/${incidentId}/versions/${latestIncident.id}/`
           );
-          console.log(response.data);
-          console.log(latestIncident);
+
           if (response.status === 403) {
             setHasAccess(false);
           }
@@ -126,7 +125,7 @@ function DrugReactionDetailsContent() {
 
   useEffect(() => {
     fetchIncidentDetails();
-    console.log("currentincidentdata: ", currentIncidentData); // Fetch incident data when version toggles or incidentId changes
+
   }, [incidentId, useOriginalVersion]);
 
   useEffect(() => {
@@ -245,12 +244,11 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
         );
         if (response.status === 200) {
           setDocuments(response.data);
-          console.log("Drug reaction: ", response.data);
 
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
     fetchDocuments();

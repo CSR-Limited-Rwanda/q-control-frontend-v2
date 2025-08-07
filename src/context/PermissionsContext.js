@@ -13,7 +13,7 @@ const fetchPermissions = async () => {
       return [];
     }
   } catch (error) {
-    console.log(error);
+
     // window.customToast.error("You are logged out");
     return [];
   }

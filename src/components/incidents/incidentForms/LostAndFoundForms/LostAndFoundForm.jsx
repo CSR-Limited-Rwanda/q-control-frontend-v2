@@ -71,7 +71,6 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
   useEffect(() => {
     localStorage.setItem("updateNewIncident", "false");
-    console.log(localStorage.getItem("updateNewIncident"));
     const handleKeyDown = (event) => {
       // Check if Ctrl or Alt key is pressed
       if (event.key === "Enter") {
@@ -102,7 +101,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
             if (currentStepRef.current > 1 && currentStepRef.current <= 2) {
               document.getElementById("back-button").click();
             }
-            console.log(currentStepRef.current);
+
             break;
           case "f": // Ctrl + F
             event.preventDefault(); // Prevent default browser action
@@ -160,7 +159,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
       status: "Draft",
     };
-    console.log("data:", data);
+
     try {
       const response = await api.post(
         `${API_URL}/incidents/lost-found/`,
@@ -171,7 +170,6 @@ const LostAndFoundForm = ({ togglePopup }) => {
         localStorage.setItem("lost_found_id", response.data.id);
         window.customToast.success("Data posted successfully");
         localStorage.setItem("updateNewIncident", "true");
-        console.log(localStorage.getItem("updateNewIncident"));
         if (currentStep <= 3) {
           setCurrentStep(currentStep + 1);
         }
@@ -200,15 +198,12 @@ const LostAndFoundForm = ({ togglePopup }) => {
     const lostFoundId = localStorage.getItem("lost_found_id");
     const payload = cleanedData(data);
 
-    // console.log("PATCH TO:", `${API_URL}/incidents/lost-found/${lostFoundId}/`);
-    // console.log("PAYLOAD:", JSON.stringify(payload, null, 2));
-
     try {
       const response = await api.put(
         `${API_URL}/incidents/lost-found/${lostFoundId}/`,
         payload
       );
-      console.log("RESPONSE:", response.data);
+
       window.customToast.success("Data posted successfully");
 
       if (currentStep <= 4) {

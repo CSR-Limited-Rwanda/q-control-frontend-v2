@@ -23,13 +23,13 @@ export const PermissionGroupCard = ({ users }) => {
   const fetchPermission = async () => {
     try {
       const response = await api.get(`/permissions/${permissionGroupID}/`);
-      console.log(response);
+
       if (response.status === 200) {
         setSelectedGroup(response.data);
         setIsLoading(false);
       }
     } catch (error) {
-      console.log(error);
+
     } finally {
       setIsLoading(false);
     }

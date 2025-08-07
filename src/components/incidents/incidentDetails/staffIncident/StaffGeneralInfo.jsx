@@ -1,7 +1,6 @@
 import React from "react"
 import "../../../../styles/_medication_details.scss"
 const StaffGeneralInfo = ({ data, incidentStatuses }) => {
-  console.log(data)
   return (
     <div className="incident-details">
       <div className="number-mrn">

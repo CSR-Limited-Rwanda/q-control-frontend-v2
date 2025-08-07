@@ -43,7 +43,6 @@ const ReviewGroupsDetailsContent = () => {
           `/permissions/review-groups/${reviewId}/`
         );
         if (response.status === 200) {
-          // console.log('review group', response.data)
           setReviewGroup(response.data);
         }
       } catch (error) {
@@ -64,12 +63,10 @@ const ReviewGroupsDetailsContent = () => {
         const response = await api.get(
           `/permissions/review-groups/${reviewId}/members/`
         );
-        // console.log("data:", response.data);
 
         if (response.status === 200) {
           if (Array.isArray(response.data)) {
             setMembers(response.data);
-            // console.log(response.data);
           } else {
             setErrorMessage("Received data in unexpected format");
             setMembers([]);

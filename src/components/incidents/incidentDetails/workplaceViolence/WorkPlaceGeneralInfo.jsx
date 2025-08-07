@@ -2,7 +2,7 @@ import React from "react";
 import "../../../../styles/_medication_details.scss"
 
 const WorkPlaceGeneralInfo = ({ data, incidentStatuses }) => {
-  console.log("Incident data: ", data);
+
   return (
     <div className="incident-details">
       <div className="number-mrn">

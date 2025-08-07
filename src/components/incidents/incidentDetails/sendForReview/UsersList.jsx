@@ -12,7 +12,7 @@ const UsersList = ({ currentStep, setCurrentStep, error, setError, users, setUse
         setIsLoading(true);
         setError(null);
         const response = await fetchUsers(queryParams);
-        console.log(response);
+
         if (response.success) {
             setUsers(response.data);
         } else {
@@ -20,7 +20,6 @@ const UsersList = ({ currentStep, setCurrentStep, error, setError, users, setUse
         }
         setIsLoading(false);
     }
-
 
     const handleInputChange = (e) => {
         const value = e.target.value;

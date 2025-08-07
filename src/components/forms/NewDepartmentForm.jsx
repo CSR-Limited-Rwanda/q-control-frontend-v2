@@ -26,7 +26,7 @@ import api from "@/utils/api";
         facility_id: departmentFacility.id,
         add_to_all: addToAllFacilities,
       };
-      console.log("department data", departmentData);
+
       if (!name || !headOfDepartment) {
         setErrorMessage("Please fill all required fields");
   
@@ -38,7 +38,7 @@ import api from "@/utils/api";
   
         const response = await api.post(`departments/new/`, departmentData);
         if (response.status === 201) {
-          console.log(response.data);
+
           const message = response.data.facilities_added
             ? response.data.facilities_added.map((fa) => fa)
             : facility.name;
@@ -68,7 +68,7 @@ import api from "@/utils/api";
           setErrorMessage("Unknown error creating department");
         }
         setLoading(false);
-        console.log(error);
+
       }
     };
   

@@ -29,7 +29,7 @@ const ModifyStaffIncidentPageContent = () => {
         );
 
         if (response.status === 200) {
-          console.log(response.data);
+
           setIncident(response.data.incident);
           setIsLoading(false);
           setInvestigation(response.data.has_investigation);

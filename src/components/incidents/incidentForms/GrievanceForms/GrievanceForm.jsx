@@ -88,7 +88,6 @@ const GrievanceForm = ({ togglePopup }) => {
 
   useEffect(() => {
     localStorage.setItem("updateNewIncident", "false");
-    console.log(localStorage.getItem("updateNewIncident"));
     const handleKeyDown = (event) => {
       // Check if Ctrl or Alt key is pressed
       if (event.key === "Enter") {
@@ -119,7 +118,7 @@ const GrievanceForm = ({ togglePopup }) => {
             if (currentStepRef.current > 1 && currentStepRef.current <= 3) {
               document.getElementById("back-button").click();
             }
-            console.log(currentStepRef.current);
+
             break;
           case "f": // Ctrl + F
             event.preventDefault(); // Prevent default browser action
@@ -178,7 +177,6 @@ const GrievanceForm = ({ togglePopup }) => {
           ? selectedOption
           : null,
     };
-    console.log("data:", data);
 
     try {
       const response = await api.post(
@@ -189,12 +187,7 @@ const GrievanceForm = ({ togglePopup }) => {
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("grievance_id", response.data.id);
         localStorage.setItem("updateNewIncident", "true");
-        console.log(localStorage.getItem("updateNewIncident"));
-        // postDocumentHistory(
-        //   // response.data.grievance.id,
-        //   "added a new incident",
-        //   "create"
-        // );
+
         setUserId(response.data.created_by);
         window.customToast.success("Data saved successfully");
         setCurrentStep(currentStep + 1);
@@ -234,7 +227,6 @@ const GrievanceForm = ({ togglePopup }) => {
         }
       }
 
-      console.log(response.data);
     } catch (error) {
       console.error(error);
       setIsLoading(false);
@@ -354,14 +346,9 @@ const GrievanceForm = ({ togglePopup }) => {
                 ? selectedOption
                 : null,
           });
-          // console.log("Submitting data:", cleanedData(data));
         }
       }
 
-      // if (!selectedOption) {
-      //   window.customToast.error("Please select at least one source of information.");
-      //   isValid = false;
-      // }
     } else if (currentStep === 2) {
       isValid = validateStep({
         "complaint or concern": complaintOrConcern,
@@ -460,7 +447,6 @@ const GrievanceForm = ({ togglePopup }) => {
     try {
       const grievance_id = localStorage.getItem("grievance_id");
       setUploadingDocuments(true);
-      console.log([...formData]);
 
       const response = await mediaAPI.post(
         `/incidents/grievance/${grievance_id}/documents/`,
@@ -468,7 +454,7 @@ const GrievanceForm = ({ togglePopup }) => {
       );
 
       if (response.status === 201 || response.status === 200) {
-        console.log(response.data.files);
+
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -476,7 +462,7 @@ const GrievanceForm = ({ togglePopup }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-      console.log(error);
+
     }
   };
   return (

@@ -52,7 +52,7 @@ const EditReviewTemplateForm = ({ discardFn, data }) => {
 
         if (response.status === 201 || response.status === 200) {
           setCurrentStep((prev) => prev + 1);
-          console.log(response.data);
+
         } else {
           alert("Something went wrong. Please try again.");
         }

@@ -187,11 +187,10 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-          console.log("documents fetched successfully");
-          console.log(response.data);
+
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
 
@@ -208,7 +207,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
 
     try {
       setUploadingDocuments(true);
-      console.log([...formData]);
 
       const response = await mediaAPI.post(
         `/incidents/adverse-drug-reaction/${adverseDrugReactionId}/documents/`,
@@ -216,7 +214,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data.files);
+
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -224,7 +222,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-      console.log(error);
+
     }
   };
   const handleOutcomeDescription = (e) => {
@@ -236,7 +234,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         prevSelected.filter((item) => item !== value)
       );
     }
-    console.log(selectedDescription);
+
   };
 
   const handleReactionTreated = () => {
@@ -253,7 +251,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         prevSelected.filter((item) => item !== value)
       );
     }
-    console.log(selectedDescription);
+
   };
   const handleSelection = (agreementName) => {
     setSelectedAgreements((prevSelected) => {
@@ -364,13 +362,8 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       severity_rating: severityRating,
     };
 
-    console.log(selectedAgreements);
-    console.log(
-      "Submitting incident data",
-      JSON.stringify(incidentData, null, 2)
-    );
     try {
-      console.log("request data: ", incidentData);
+
       const response = await api.patch(
         `/incidents/adverse-drug-reaction/${adverseDrugReactionId}/`,
         cleanedData(incidentData)
@@ -380,12 +373,12 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         setIncident(response.data.incident);
         setIsLoading(false);
         setSavingDraft(false);
-        console.log("Response: ", response.data.incident);
+
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       if (error.response) {
-        console.log(error);
+
         window.customToast.error(
           error.response.data.error ||
           error.response.data.message ||
@@ -393,7 +386,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         );
       } else {
         window.customToast.error("Unknown error updating incident");
-        console.log(error);
+
       }
 
       setIsLoading(false);

@@ -543,7 +543,7 @@ const DrugReactionTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-    console.log("sorting items:", sortBy, direction, field);
+
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const result = a.id - b.id;

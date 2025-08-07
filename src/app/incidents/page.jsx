@@ -13,8 +13,14 @@ import {
   Syringe,
   Users,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  const router = useRouter();
+
+  const handleClick = (link) => {
+    router.push(link);
+  }
   return (
     <DashboardLayout>
       <div className="tabs-content">
@@ -22,17 +28,10 @@ const page = () => {
            
           )} */}
         <div className="incidents-reports">
-          <Link
-            href={"/incidents/general/"}
-            onClick={() => {
-              localStorage.removeItem("changeBreadCrumbs");
-            }}
+          <div
+            onClick={() => handleClick("/incidents/general/")}
             className="incident-report"
           >
-            <div className="list-icon">
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-            </div>
             <div className="icon">
               <FileText size={24} variant={"stroke"} />
             </div>
@@ -40,14 +39,11 @@ const page = () => {
               <h3>General Incident Reports</h3>
               {/* <small>Last updated on 24 June, 2023</small> */}
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href={"/incidents/drug-reaction/"}
+          <div
+            onClick={() => handleClick("/incidents/drug-reaction/")}
             className="incident-report"
-            onClick={() => {
-              localStorage.removeItem("changeBreadCrumbs");
-            }}
           >
             <div className="list-icon">
               <i className="fa-solid fa-ellipsis-vertical"></i>
@@ -60,13 +56,10 @@ const page = () => {
               <h3>Anaphylaxis/Adverse Drug Reaction Reports</h3>
               {/* <small>Last updated on 24 June, 2023</small> */}
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href={"/incidents/staff/"}
-            onClick={() => {
-              localStorage.removeItem("changeBreadCrumbs");
-            }}
+          <div
+            onClick={() => handleClick("/incidents/staff/")}
             className="incident-report"
           >
             <div className="list-icon">
@@ -80,13 +73,10 @@ const page = () => {
               <h3>Staff Incident Reports</h3>
               {/* <small>Last updated on 24 June, 2023</small> */}
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href={"/incidents/grievance/"}
-            onClick={() => {
-              localStorage.removeItem("changeBreadCrumbs");
-            }}
+          <div
+            onClick={() => handleClick("/incidents/grievance/")}
             className="incident-report"
           >
             <div className="list-icon">
@@ -100,14 +90,11 @@ const page = () => {
               <h3>Complaint & Grievance Reports</h3>
               {/* <small>Last updated on 24 June, 2023</small> */}
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href={"/incidents/lost-and-found/"}
+          <div
+            onClick={() => handleClick("/incidents/lost-and-found/")}
             className="incident-report"
-            onClick={() => {
-              localStorage.removeItem("changeBreadCrumbs");
-            }}
           >
             <div className="list-icon">
               <i className="fa-solid fa-ellipsis-vertical"></i>
@@ -120,14 +107,11 @@ const page = () => {
               <h3>Lost & Found Property Reports</h3>
               {/* <small>Last updated on 24 June, 2023</small> */}
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href={"/incidents/workplace-violence/"}
+          <div
+            onClick={() => handleClick("/incidents/workplace-violence/")}
             className="incident-report"
-            onClick={() => {
-              localStorage.removeItem("changeBreadCrumbs");
-            }}
           >
             <div className="list-icon">
               <i className="fa-solid fa-ellipsis-vertical"></i>
@@ -140,14 +124,11 @@ const page = () => {
               <h3>Workplace Violence Incident Reports</h3>
               {/* <small>Last updated on 24 June, 2023</small> */}
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href={"/incidents/medication-error/"}
+          <div
+            onClick={() => handleClick("/incidents/medication-error/")}
             className="incident-report"
-            onClick={() => {
-              localStorage.removeItem("changeBreadCrumbs");
-            }}
           >
             <div className="list-icon">
               <i className="fa-solid fa-ellipsis-vertical"></i>
@@ -160,7 +141,7 @@ const page = () => {
               <h3>Medication Error Reports</h3>
               {/* <small>Last updated on 24 June, 2023</small> */}
             </div>
-          </Link>
+          </div>
         </div>
         {/* {activeTab === "drafts" && (
             <div className="drafts">

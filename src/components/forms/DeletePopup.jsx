@@ -18,7 +18,7 @@ function DeletePopup({ apiUrl, text, cancelFn }) {
 
       if (response.status >= 200 && response.status < 300) {
         setSuccess(true);
-        console.log(response.data);
+
         window.location.reload();
         setErrorExist(false);
       } else {
@@ -30,7 +30,7 @@ function DeletePopup({ apiUrl, text, cancelFn }) {
           err.response?.data?.message || err.message || "Delete failed."
         );
         setErrorExist(true);
-        console.log(err);
+
       }
     } finally {
       setIsDeleting(false);

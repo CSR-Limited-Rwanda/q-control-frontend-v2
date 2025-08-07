@@ -29,7 +29,7 @@ const DeactivateUserForm = ({ handleClose, userId }) => {
       } else {
         alert("An error occurred while deactivating user");
       }
-      console.log(error);
+
     } finally {
       setDeactivating(false);
     }

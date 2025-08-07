@@ -33,7 +33,6 @@ const EditPermissionGroupForm = ({ handleClose, groupId }) => {
         const response = await api.get(`/permissions/${groupId}/`);
         if (response.status === 200) {
           setGroupTitle(response.data.name || "");
-          console.log(response.data);
 
           const mappedPermissions = {};
           response.data.permissions.forEach((featureSet) => {

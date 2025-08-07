@@ -15,7 +15,6 @@ import Link from "next/link";
 import NoResources from "@/components/NoResources";
 import { useEffect, useState } from "react";
 
-
 const PageContent = () => {
   const [incidentData, setIncidentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,14 +31,13 @@ const PageContent = () => {
           `/incidents/general-visitor/${generalIncidentId}/`
         );
         if (response.status === 200) {
-          console.log(response.data.incident);
+
           setIncidentData(response.data.incident);
-          console.log("Incident data: ", response.data.incident);
+
           setIsLoading(false);
         }
       } catch (error) {
         // setIsLoading(false);
-        console.log("new error", error);
 
         if (error.response.status && error.response.status === 403) {
           window.customToast.error("You are not allowed to view this incident");

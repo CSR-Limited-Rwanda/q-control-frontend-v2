@@ -62,7 +62,6 @@ const AddTaskForm = ({ fetchTaskDetails, showTaskDetails, discardFn }) => {
           return;
         }
 
-        console.log(selectedGroups);
         try {
           setSubmitting(true);
           const patchResponse = await api.patch(
@@ -74,7 +73,7 @@ const AddTaskForm = ({ fetchTaskDetails, showTaskDetails, discardFn }) => {
           );
 
           if ([200, 204].includes(patchResponse.status)) {
-            console.log(patchResponse.data);
+
             setCurrentStep(3);
           }
         } catch (error) {
@@ -84,7 +83,6 @@ const AddTaskForm = ({ fetchTaskDetails, showTaskDetails, discardFn }) => {
           setLoading(false);
         }
 
-        console.log(response.data);
       } else {
         alert("Something went wrong. Please try again.");
       }

@@ -20,8 +20,10 @@ import "@/styles/_userComplaints.scss";
 import EditComplaintForm from "@/components/forms/EditComplaintForm";
 import SubmitComplaintForm from "@/components/forms/SubmitComplaintForm";
 import SendComplaintToDepartment from "@/components/forms/SendComplaintToDepartment";
+import { useParams } from "next/navigation";
 
 const UserComplaints = () => {
+  const { accountId } = useParams();
   const [complaints, setComplaints] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -35,13 +37,6 @@ const UserComplaints = () => {
   const actionRefs = useRef({});
   const [isDeleting, setIsDeleting] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
-
-  let profileId;
-  if (typeof window !== "undefined") {
-    profileId = JSON.parse(localStorage.getItem("loggedInUserInfo"))?.id;
-  } else {
-    profileId = null;
-  }
 
   const handleShowComplainDetails = (complaint) => {
     setSelectedComplain(complaint);
@@ -77,8 +72,8 @@ const UserComplaints = () => {
       setIsDeleting(false);
       setError(
         error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Error deleting complaint"
+        error.response?.data?.error ||
+        "Error deleting complaint"
       );
       console.error(error);
     }
@@ -89,16 +84,16 @@ const UserComplaints = () => {
       try {
         setError("");
         setIsLoading(true);
-        const response = await api.get(`/users/${profileId}/complaints/`);
+        const response = await api.get(`/users/${accountId}/complaints/`);
         setComplaints(response.data.results);
-        console.log(response.data.results);
+
         setIsLoading(false);
       } catch (error) {
         if (error.response) {
           setError(
             error.response.data.message ||
-              error.response.data.error ||
-              "Error fetching complaints data"
+            error.response.data.error ||
+            "Error fetching complaints data"
           );
         } else {
           setError("Unknown fetching complaints data");
@@ -146,9 +141,8 @@ const UserComplaints = () => {
             complaints.map((complaint, index) => (
               <div
                 key={index}
-                className={`user-complaint ${
-                  complaint.status === "Open" ? "open" : ""
-                }`}
+                className={`user-complaint ${complaint.status === "Open" ? "open" : ""
+                  }`}
               >
                 <div className="complaint-content">
                   <div className="col">

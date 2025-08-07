@@ -4,7 +4,7 @@ const PopUp = ({ togglePopup, isPopupOpen, popupContent: PopupContent, spacialCl
         <div className={`popup-content`}>
   
           {isPopupOpen && PopupContent}
-          {console.log(isPopupOpen)}
+          
         </div>
       </div>
     );

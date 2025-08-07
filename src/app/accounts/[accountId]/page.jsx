@@ -1,21 +1,14 @@
 "use client";
 import "@/styles/accounts/_profile.scss";
 import DashboardLayout from "@/app/dashboard/layout";
-import { DraftsTab } from "@/components/accounts/profile/DraftsTab";
-import UserComplaints from "@/components/accounts/profile/profileComplaints";
-import ProfileDocuments from "@/components/accounts/profile/profileDocuments";
-import ProfileReports from "@/components/accounts/profile/profileReports";
 import api from "@/utils/api";
 import {
-  ChevronDown,
   ChevronRight,
   File,
   Frown,
   Key,
   Layers,
   ListCheck,
-  LoaderCircle,
-  ShieldCheck,
   SquarePen,
   Trash2,
   UserCheck,
@@ -35,15 +28,13 @@ import DeleteUserForm from "@/components/accounts/forms/DeleteUser";
 import UserPermissions from "@/components/accounts/profile/userPermissions";
 import DeactivateUserForm from "@/components/accounts/forms/DeactivateUser";
 import AccessPermissions from "@/components/accounts/forms/AccessPermissions";
+import ProfileReports from "@/components/accounts/profile/profileReports";
+import { DraftsTab } from "@/components/accounts/profile/DraftsTab";
+import UserComplaints from "@/components/accounts/profile/profileComplaints";
+import ProfileDocuments from "@/components/accounts/profile/profileDocuments";
 
 const ProfileDetailsPage = () => {
-  let profileId;
-  if (typeof window !== "undefined") {
-    profileId = JSON.parse(localStorage.getItem("loggedInUserInfo"))?.id;
-  } else {
-    profileId = null;
-  }
-  //   const profileId = JSON.parse(localStorage.getItem("loggedInUserInfo")).id;
+  const { accountId } = useParams();
   const [profile, setProfile] = useState(null);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [showUpdateUserForm, setShowUpdateUserForm] = useState(false);
@@ -95,10 +86,8 @@ const ProfileDetailsPage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await api.get(`/users/${profileId}/`);
-        console.log(response.data);
+        const response = await api.get(`/users/${accountId}/`);
         if (response.status === 200) {
-          console.log(response.data);
           const data = response.data;
           const transformedProfile = {
             ...data,
@@ -131,7 +120,7 @@ const ProfileDetailsPage = () => {
     };
 
     fetchProfile();
-  }, [profileId]);
+  }, [accountId]);
 
   return (
     <DashboardLayout>
@@ -267,7 +256,7 @@ const ProfileDetailsPage = () => {
               </div>
             </div>
           </div>
-          <div className="card profile-tabs" id="profile-tabs">
+          <div className="card profile-tabs">
             <ProfileTabs userId={profile?.id} />
           </div>
         </div>
@@ -282,25 +271,25 @@ const ProfileDetailsPage = () => {
       {showChangePasswordForm && <ChangePasswordForm />}
       {showActivateUserForm && (
         <ActivateUserForm
-          userId={profileId}
+          userId={accountId}
           handleClose={handleShowActivateUserForm}
         />
       )}
       {showDeactivateUserForm && (
         <DeactivateUserForm
-          userId={profileId}
+          userId={accountId}
           handleClose={handleShowDeactivateUserForm}
         />
       )}
       {showDeleteUserForm && (
         <DeleteUserForm
-          userId={profileId}
+          userId={accountId}
           handleClose={handleShowDeleteUserForm}
         />
       )}
       {showUserPermissionsForm && (
         <UserPermissions
-          userId={profileId}
+          userId={accountId}
           togglePermissions={handleShowUserPermissionsForm}
         />
       )}
@@ -308,7 +297,7 @@ const ProfileDetailsPage = () => {
         <AccessPermissions
           formData={formData}
           setFormData={setFormData}
-          userId={profileId}
+          userId={accountId}
           email={profile.user.email}
           handleClose={handleShowAccessPermissionsForm}
         />
@@ -320,12 +309,6 @@ const ProfileDetailsPage = () => {
 export default ProfileDetailsPage;
 
 const ProfileTabs = ({ userId }) => {
-  let profileId;
-  if (typeof window !== "undefined") {
-    profileId = JSON.parse(localStorage.getItem("loggedInUserInfo"))?.id;
-  } else {
-    profileId = null;
-  }
   const [activeTab, setActiveTab] = useState("reports");
 
   if (activeTab === "drafts") {
@@ -341,7 +324,7 @@ const ProfileTabs = ({ userId }) => {
   return (
     // <div>This feature is under development and testing.</div>
     <div className="profile-data">
-      <div className="tabs profile-tab">
+      <div className="tabs">
         <div
           onClick={() => setActiveTab("reports")}
           className={`tab ${activeTab === "reports" ? "active" : ""}`}
@@ -378,7 +361,7 @@ const ProfileTabs = ({ userId }) => {
       {activeTab === "reports" && (
         <div className="tabs-content">
           <h3>Your reports</h3>
-          <ProfileReports userId={profileId} />
+          <ProfileReports />
         </div>
       )}
       {activeTab === "drafts" && (

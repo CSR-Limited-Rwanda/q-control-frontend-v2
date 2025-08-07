@@ -27,7 +27,7 @@ const ModifyMedicalAdverseDrugReactionIncidentPageContent = ({ }) => {
                     `/incidents/adverse-drug-reaction/${adverseDrugReactionId}/`
                 );
                 if (response.status === 200) {
-                    console.log("Data: ", response.data.incident);
+
                     setIncident(response.data.incident);
                     setIsLoading(false);
                 }
@@ -38,7 +38,7 @@ const ModifyMedicalAdverseDrugReactionIncidentPageContent = ({ }) => {
                 if (error.response.status === 404) {
                     setIsError(true);
                 }
-                console.log(error);
+
                 setIsLoading(false);
             } finally {
                 setIsLoading(false);
@@ -92,7 +92,6 @@ const ModifyMedicalAdverseDrugReactionIncidentPage = () => {
 };
 
 export default ModifyMedicalAdverseDrugReactionIncidentPage;
-
 
 // export const FacilityBreadCrumbs = ({ facilityIncidentLink }) => {
 //     const [facilityName, setFacilityName] = useState("");

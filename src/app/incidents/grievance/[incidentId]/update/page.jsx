@@ -28,8 +28,7 @@ const ModifyGrievanceIncidentPageContent = () => {
           setInvestigation(response.data.has_investigation);
           setIncident(response.data.incident);
           setIsLoading(false);
-          console.log(response.data);
-          console.log("weeeee");
+
         }
       } catch (error) {
         if (error.response.status === 404) {

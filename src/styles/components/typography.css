@@ -1,0 +1,70 @@
+/* ============================================================================
+   TYPOGRAPHY
+   ============================================================================ */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--bold);
+  font-family: "Poppins", serif;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: var(--divider);
+}
+
+small {
+  opacity: 0.5;
+  word-break: break-all;
+}
+
+/* ============================================================================
+   LINKS
+   ============================================================================ */
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.inline-link {
+  color: var(--secondary-color);
+  text-decoration: underline;
+  cursor: pointer;
+  font-style: italic;
+}
+
+.report-error-link .error-link {
+  color: var(--secondary-color);
+  text-decoration: underline;
+  font-style: italic;
+}
+
+.documentation-link {
+  display: flex;
+  align-items: center;
+}
+
+.documentation-link a {
+  display: flex;
+  align-items: center;
+  background-color: whitesmoke;
+  color: var(--primary-color);
+  background-color: #ffefe6;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--base-border-radius);
+  border: 1px solid #ffe0cc;
+  margin-left: 0.5rem;
+}

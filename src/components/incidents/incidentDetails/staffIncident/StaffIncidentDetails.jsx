@@ -71,7 +71,6 @@ const EmployeeDetailsContent = () => {
     }
   };
 
-
   useEffect(() => {
     fetchIncidentDetails(); // Fetch incident data when version toggles or incidentId changes
   }, [incidentId, useOriginalVersion]);
@@ -193,11 +192,11 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
         );
         if (response.status === 200) {
           setDocuments(response.data);
-          console.log(response.data);
+
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
     fetchDocuments();

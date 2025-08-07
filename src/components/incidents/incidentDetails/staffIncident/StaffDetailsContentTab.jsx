@@ -2,7 +2,7 @@
 
 const StaffDetailsContentTab = ({ data }) => {
   const workRelated = data.previous_injury ? "Yes" : "No"
-  console.log(workRelated);
+
   return (
     <div className="incident-details">
       <div className="number-mrn">
@@ -29,7 +29,6 @@ const StaffDetailsContentTab = ({ data }) => {
             }
           </div>
 
-
         </div>
 
       </div>
@@ -51,7 +50,6 @@ const StaffDetailsContentTab = ({ data }) => {
           <h4>{data.age || "Not provided"}</h4>
         </div>
       </div>
-
 
       {/* <div className="location-contribution-diagnosis">
         <h3>Provider/Staff Involved</h3>

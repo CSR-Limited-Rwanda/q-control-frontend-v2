@@ -29,7 +29,7 @@ const ActivateUserForm = ({ handleClose, userId }) => {
       } else {
         alert("An error occurred while activating user");
       }
-      console.log(error);
+
     } finally {
       setActivating(false);
     }

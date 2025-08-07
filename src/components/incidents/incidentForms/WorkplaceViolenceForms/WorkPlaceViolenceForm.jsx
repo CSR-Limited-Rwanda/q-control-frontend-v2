@@ -148,7 +148,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             if (currentStepRef.current > 1 && currentStepRef.current <= 10) {
               document.getElementById("back-button").click();
             }
-            console.log(currentStepRef.current);
+
             break;
           case "f": // Ctrl + F
             event.preventDefault(); // Prevent default browser action
@@ -198,8 +198,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   // };
 
   const handleAddInjury = () => {
-    console.log(currentInjury);
-    console.log(injuries);
+
     if (
       currentInjury.user_data.first_name &&
       currentInjury.user_data.last_name &&
@@ -253,7 +252,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         profile_data: { phone_number: "" },
         address: "",
       });
-      console.log(witnesses);
+
     }
   };
 
@@ -322,19 +321,11 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   };
 
   const validateInputFields = () => {
-    console.log("Current parties state:", parties);
 
     const isAssailantFieldsFilled = parties["Assailant"].length > 0;
     const isVictimFieldsFilled = parties["Victim"].length > 0;
     const isBackgroundFieldsFilled = selectedBackground.length > 0;
     const isRelationshipFieldsFilled = selectedRelationship.length > 0;
-
-    console.log("Validation results:", {
-      isAssailantFieldsFilled,
-      isVictimFieldsFilled,
-    });
-
-    console.log(currentStep);
 
     return {
       isAssailantFieldsFilled,
@@ -546,13 +537,13 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             window.customToast.success("Data posted successfully");
             setIsLoading(false);
             setSuccess(true);
-            console.log(response.data);
+
           }
         } catch (error) {
           window.customToast.error("Error posting data please try again");
           setIsLoading(false);
           console.error(error);
-          console.log(error);
+
         }
       }
     }
@@ -571,12 +562,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
 
     let incidentPostData = {};
     const handleNewWorkPlaceViolence = async (incidentData) => {
-      console.log("Incident data", incidentData, "currentStep: " + currentStep);
+
       try {
-        setIsLoading(true);
-        console.log(incidentData);
-        console.log(cleanedData(incidentData));
-        
+        setIsLoading(true);        
         // return
         const payload = {
           department: checkCurrentAccount(),
@@ -593,10 +581,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             response.data.id
           );
           removeError(errorFetching);
-          console.log(response.data.id);
+
           setCurrentStep(currentStep + 1);
           setIsLoading(false);
-          console.log(response);
+
           postDocumentHistory(
             response.data.id,
             "added a new incident",
@@ -607,7 +595,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         }
       } catch (error) {
         setIsLoading(false);
-        console.log(error);
+
         if (error.message) {
           appendError(error.message);
           window.customToast.error(
@@ -624,7 +612,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
     };
 
     const updateIncident = async (incidentPostData, incidentId) => {
-      console.log(incidentId);
+
       try {
         setIsLoading(true);
         const response = await api.put(
@@ -636,14 +624,14 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           setCurrentStep(currentStep + 1);
           window.customToast.success("Data posted successfully");
           setIsLoading(false);
-          console.log(response.data);
+
         }
       } catch (error) {
         setIsLoading(false);
         if (error.response.data) {
           appendError(error.response.data.error);
           window.customToast.error("Error posting data please try again");
-          console.log(error);
+
           return;
         } else {
           window.customToast.error("Something went wrong");
@@ -695,8 +683,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           current_step: currentStep,
         };
 
-        console.log(cleanedData(incidentData));
-
         handleNewWorkPlaceViolence(incidentData);
       }
     } else if (currentStep === 2) {
@@ -720,7 +706,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         "Time of incident": time,
         Details: detail,
       });
-      console.log(date);
 
       if (isValid) {
         incidentPostData = {
@@ -735,7 +720,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         );
       }
     } else if (currentStep === 4) {
-      console.log(parties);
+
       const {
         isAssailantFieldsFilled,
         isVictimFieldsFilled,
@@ -808,7 +793,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             incidentPostData,
             localStorage.getItem("workplaceViolenceId")
           );
-          console.log(incidentPostData);
+
         }
       } else {
         if (!isAssailantFieldsFilled) {
@@ -826,7 +811,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         Location: location,
         "Check if reported!": violence,
       });
-      console.log(violence);
+
       if (isValid) {
         incidentPostData = {
           type_of_contact: typeOfContact,
@@ -843,7 +828,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("workplaceViolenceId")
         );
       }
-      console.log(incidentPostData);
+
     } else if (currentStep === 6) {
       if (injuryCheck === null) {
         window.customToast.error("Please select whether there were injuries");
@@ -870,14 +855,13 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           })),
           current_step: currentStep,
         };
-        console.log(injuryData);
+
       } else {
         injuryData = {
           there_were_injuries: injuryCheck,
           current_step: currentStep,
         };
 
-        console.log(injuryData);
       }
 
       updateIncident(injuryData, localStorage.getItem("workplaceViolenceId"));

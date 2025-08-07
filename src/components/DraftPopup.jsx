@@ -16,10 +16,9 @@ const DraftPopup = ({ incidentType, incidentString }) => {
                 const response = await api.get(`incidents/overview/draft/user/`);
                 if (response.status === 200) {
                     setIncident(response.data[incidentType]);
-                    console.log(response.data[incidentType]);
+
                     setPopupOpen(response.data[incidentType].length > 0 ? true : false);
 
-                    console.log(response.data);
                 }
             } catch (error) {
                 window.customToast.error(error.message);
@@ -32,7 +31,7 @@ const DraftPopup = ({ incidentType, incidentString }) => {
 
     const toggleDraftPopup = () => {
         setPopupOpen(!popupOpen);
-        console.log(popupOpen);
+
     };
 
     return (

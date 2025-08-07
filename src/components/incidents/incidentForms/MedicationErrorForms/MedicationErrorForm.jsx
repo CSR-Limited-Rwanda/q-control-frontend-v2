@@ -83,7 +83,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
   const handleDrugOrderedRoute = (drug) => {
     // check if the route is not in the array of routes, then add it else, remove it
-    console.log(drugOrderedRoutes, drug);
+
     if (drugOrderedRoutes && !drugOrderedRoutes.includes(drug)) {
       // drugOrderedRoutes.push(drug)
       setDrugOrderedRoutes([...drugOrderedRoutes, drug]);
@@ -125,7 +125,6 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
   useEffect(() => {
     localStorage.setItem("updateNewIncident", "false");
-    console.log(localStorage.getItem("updateNewIncident"));
     const handleKeyDown = (event) => {
       // Check if Ctrl or Alt key is pressed
       if (event.key === "Enter") {
@@ -156,7 +155,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
             if (currentStepRef.current > 1 && currentStepRef.current <= 9) {
               document.getElementById("back-button").click();
             }
-            console.log(currentStepRef.current);
+
             break;
           case "f": // Ctrl + F
             event.preventDefault(); // Prevent default browser action
@@ -300,7 +299,6 @@ const MedicationErrorForm = ({ togglePopup }) => {
       status: "Draft",
     };
 
-    console.log(data);
     try {
       const response = await api.post(
         `${API_URL}/incidents/medication-error/`,
@@ -312,10 +310,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
         cleanedData(data)
       );
 
-      console.log(response.status);
-
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data);
+
         localStorage.setItem("medication_id", response.data.id);
         window.customToast.success("Data posted successfully");
         if (currentStep <= 7) {
@@ -323,19 +319,18 @@ const MedicationErrorForm = ({ togglePopup }) => {
           setIsLoading(false);
         }
         localStorage.setItem("updateNewIncident", "true");
-        console.log(localStorage.getItem("updateNewIncident"));
       }
     } catch (error) {
       console.error(error);
       setIsLoading(false);
       window.customToast.error("Failed to post data");
       window.customToast.error(error.message);
-      console.log(currentStep);
+
     }
   }
 
   async function patchData(data) {
-    console.log(data);
+
     try {
       const medication_id = localStorage.getItem("medication_id");
 
@@ -358,7 +353,6 @@ const MedicationErrorForm = ({ togglePopup }) => {
         setIsLoading(false);
       }
 
-      console.log(response.data);
     } catch (error) {
       console.error(error);
       setIsLoading(false);
@@ -439,7 +433,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
   const handleNextStep = () => {
     if (currentStep === 1) {
-      console.log(time);
+
       const isValid = validateStep({
         Age: age,
         "Date of birth": dateOfBirth,
@@ -450,7 +444,6 @@ const MedicationErrorForm = ({ togglePopup }) => {
         day: dayWeek,
         location: location,
       });
-      console.log(isValid);
 
       if (isValid) {
         if (localStorage.getItem("updateNewIncident") === "false") {
@@ -493,7 +486,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
         "Duration of Varience": varienceDuration,
         Hours: hour,
       });
-      console.log(isValid);
+
       if (isValid) {
         patchData({
           facility_id: facilityId,
@@ -539,7 +532,6 @@ const MedicationErrorForm = ({ togglePopup }) => {
         "Select what happened ": whatHappened.length > 0,
         "Form of error": formError,
       });
-      console.log(isValid);
 
       if (isValid) {
         setIsLoading(true);
@@ -568,11 +560,10 @@ const MedicationErrorForm = ({ togglePopup }) => {
     }
 
     if (currentStep === 6) {
-      console.log("Contributing Factors:", contributingfactors);
+
       const isValid = validateStep({
         "Contributing Factors": contributingfactors.length > 0,
       });
-      console.log(isValid);
 
       if (isValid) {
         setIsLoading(true);
@@ -596,7 +587,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           current_step: currentStep,
           error_category: JSON.stringify(selectedCategory),
         });
-        console.log(category);
+
       } else {
       }
     }

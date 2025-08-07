@@ -21,7 +21,7 @@ const CustomModifiedSelectInput = ({
     setSelectOption(value);
     setSelected(value); // This should trigger the parent component’s data fetch
     setShowOptions(false);
-    console.log(selected);
+
   };
 
   const toggleShowOptions = () => {

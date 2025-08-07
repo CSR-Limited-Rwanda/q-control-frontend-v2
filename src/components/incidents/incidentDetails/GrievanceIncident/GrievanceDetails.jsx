@@ -56,8 +56,7 @@ const GrievanceDetailsContent = () => {
           response = await api.get(
             `${API_URL}/incidents/grievance/${incidentId}/versions/${latestIncident.id}/`
           );
-          console.log(response.data);
-          console.log(latestIncident);
+
         } else {
           response = res;
         }
@@ -75,7 +74,7 @@ const GrievanceDetailsContent = () => {
       }
       setIsFetching(false);
     } catch (error) {
-      console.log(error);
+
       setIsFetching(false);
     }
   };
@@ -208,11 +207,11 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
         );
         if (response.status === 200) {
           setDocuments(response.data);
-          console.log(response.data);
+
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
     fetchDocuments();

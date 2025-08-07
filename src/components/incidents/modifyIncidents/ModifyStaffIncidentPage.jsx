@@ -93,7 +93,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     localStorage.getItem("staffIncidentId")
   );
 
-  console.log(data);
   const [newWitness, setNewWitness] = useState(
     data.witnesses.map((el) => {
       return {
@@ -115,8 +114,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         last_name: "",
       });
 
-      console.log(newWitness);
-      console.log(witnesses);
     }
   };
 
@@ -142,10 +139,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-          console.log("documents updated successfully");
+
         }
       } catch (error) {
-        console.log(error);
+
       }
     };
 
@@ -161,7 +158,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
     try {
       setUploadingDocuments(true);
-      console.log([...formData]);
 
       const response = await mediaAPI.post(
         `/incidents/staff-incident/${staffIncidentId}/documents/`,
@@ -169,7 +165,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data.files);
+
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -177,7 +173,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-      console.log(error);
+
     }
   };
   const handleSeenDoctor = () => {
@@ -197,7 +193,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
   const handleToldSupervisor = () => {
     setToldSupervisor(!toldSupervisor);
-    console.log(!toldSupervisor);
+
   };
 
   const handleSaveDraft = () => {
@@ -217,7 +213,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       last_name: el.last_name,
       profile_type: "Witness",
     }));
-    console.log(witnessesList);
+
     const incidentData = {
       action: "modify",
       incident_status: statusType || "Open",
@@ -262,9 +258,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       status: incidentStatus,
     };
 
-    // console.log(cleanedData(incidentData));
-    // console.log("Submitting incident data", JSON.stringify(incidentData, null, 2));
-
     try {
       const response = await api.patch(
         `incidents/staff-incident/${staffIncidentId}/`,
@@ -275,12 +268,11 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         setSavingDraft(false);
         window.customToast.success("Incident updated successfully");
         setIncident(response.data.incident);
-        console.log(response.data.incident);
+
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       setIsLoading(false);
-      console.log(error);
 
       if (error.response) {
         window.customToast.error(
