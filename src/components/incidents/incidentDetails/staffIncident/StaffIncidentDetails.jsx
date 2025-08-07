@@ -35,15 +35,15 @@ const EmployeeDetailsContent = () => {
       let response;
 
       if (useOriginalVersion) {
-        response = await api.get(`/incidents/staff-incidents/${incidentId}/`);
+        response = await api.get(`/incidents/staff-incident/${incidentId}/`);
         setIncidentDetails(response.data.incident);
         setCurrentIncidentData(response.data.incident);
       } else {
-        const res = await api.get(`${API_URL}/incidents/staff-incidents/${incidentId}/`);
+        const res = await api.get(`${API_URL}/incidents/staff-incident/${incidentId}/`);
         const latestIncident = res.data.modifications.versions.find(mod => mod.latest === true);
         if (latestIncident) {
           response = await api.get(
-            `${API_URL}/incidents/staff-incidents/${incidentId}/versions/${latestIncident.id}/`
+            `${API_URL}/incidents/staff-incident/${incidentId}/versions/${latestIncident.id}/`
           );
         } else {
           response = res;
@@ -54,7 +54,7 @@ const EmployeeDetailsContent = () => {
 
       // 🔽 NEW: fetch investigation separately
       const investigationRes = await api.get(
-        `/incidents/staff-incidents/${incidentId}/investigation/${staffInvestigationId}`
+        `/incidents/staff-incident/${incidentId}/investigation/${staffInvestigationId}`
       );
 
       if (investigationRes.status === 200) {
@@ -80,7 +80,7 @@ const EmployeeDetailsContent = () => {
     const getIncidentReviews = async () => {
       try {
         const response = await api.get(
-          `${API_URL}/incidents/staff-incidents/${incidentId}/reviews/`
+          `${API_URL}/incidents/staff-incident/${incidentId}/reviews/`
         );
         if (response.status === 200) {
           localStorage.setItem("incidentReviewsCount", response.data.length);
@@ -189,7 +189,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
     const fetchDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/staff-incidents/${incidentId}/documents/`
+          `/incidents/staff-incident/${incidentId}/documents/`
         );
         if (response.status === 200) {
           setDocuments(response.data);

@@ -138,7 +138,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     const fetchIncidentDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/staff-incidents/${staffIncidentId}/documents/`
+          `/incidents/staff-incident/${staffIncidentId}/documents/`
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
@@ -164,7 +164,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       console.log([...formData]);
 
       const response = await mediaAPI.post(
-        `/incidents/staff-incidents/${staffIncidentId}/documents/`,
+        `/incidents/staff-incident/${staffIncidentId}/documents/`,
         formData
       );
 
@@ -267,7 +267,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
     try {
       const response = await api.patch(
-        `incidents/staff-incidents/${staffIncidentId}/`,
+        `incidents/staff-incident/${staffIncidentId}/`,
         cleanedData(incidentData)
       );
       if (response.status === 200) {
@@ -311,7 +311,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         <h2 className="title">Modifying Staff Incident</h2>
         {investigation && investigation.id ? (
           <Link
-            href={`/incidents/staff-incidents/${staffIncidentId}`}
+            href={`/incidents/staff-incident/${staffIncidentId}`}
             onClick={() => {
               localStorage.setItem("activate_investigation_tab", true);
             }}
