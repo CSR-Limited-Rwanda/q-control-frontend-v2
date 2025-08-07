@@ -4,11 +4,10 @@ import { Key, LoaderCircle, Mail } from "lucide-react";
 import React, { useState } from "react";
 import Button from "../forms/Button";
 import { useAuthentication } from "@/context/authContext";
-import authService from "@/services/auth";
+import { authService } from "@/services/auth";
 
 const LoginPopup = () => {
   const { login } = useAuthentication();
-
   // login form
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

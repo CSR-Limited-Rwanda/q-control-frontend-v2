@@ -67,15 +67,15 @@ const DashboardLayout = ({ children }) => {
     <div className="dashboard">
       {/* Sidebar */}
       <aside
-        className={`dashboard__sidebar ${isSidebarCollapsed ? "collapsed" : ""
+        className={`sidebar ${isSidebarCollapsed ? "collapsed" : ""
           } ${showMobileMenu ? "mobile-open" : ""}`}
       >
-        <div className="dashboard__logo">
+        <div className="logo">
           <Image src={"/logo.svg"} width={52} height={32} alt="logo" />
-          {!isSidebarCollapsed && <span>Quality control</span>}
+          <h2 className="brand-name">Q-Control</h2>
           <X onClick={handleMobileMenu} className="close-mobile" />
         </div>
-        <nav className="dashboard__sidebar-nav">
+        <nav className="sidebar-nav">
           {menuItems.map((item, index) => (
             <MenuItem key={index} item={item} index={index} />
           ))}
@@ -84,104 +84,101 @@ const DashboardLayout = ({ children }) => {
 
       {/* Main Content Area */}
       <main
-        className={`dashboard__main ${isSidebarCollapsed ? "sidebar-collapsed" : ""
+        className={`main ${isSidebarCollapsed ? "sidebar-collapsed" : ""
           }`}
       >
         {/* Header */}
-        <header className="dashboard__header">
-          <div className="dashboard__header-container">
-            <div className="dashboard__header-left">
-              <div
-                className="sidebar-toggle"
-                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              >
-                {isSidebarCollapsed ? (
-                  <ChevronRight size={20} />
-                ) : (
-                  <ChevronLeft size={20} />
-                )}
-              </div>
-
-              <Menu
-                onClick={handleMobileMenu}
-                size={32}
-                className="mobile-menu"
-              />
-
-
+        <header className="header">
+          <div className="header-left">
+            <div
+              className="sidebar-toggle"
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            >
+              {isSidebarCollapsed ? (
+                <ChevronRight size={20} />
+              ) : (
+                <ChevronLeft size={20} />
+              )}
             </div>
 
-            <div className="dashboard__header-actions">
-              <button
-                onClick={toggleFormChoicesOpen}
-                className="add-incident-btn"
-              >
-                <CirclePlus />
-                <span>Add New</span>
-                {isFormChoicesOpen ? (
-                  <FormChoicesPopup
-                    togglePopup={togglePopup}
-                    setSelectedForm={setSelectedForm}
-                  />
-                ) : (
-                  ""
-                )}
-              </button>
-              <ProfileMessages />
-              <ProfileNotification />
-              <ProfileContainer />
+            <div className="mobile-menu" onClick={handleMobileMenu}>
+              {
+                showMobileMenu ?
+                  <X /> :
+                  <Menu />
+              }
             </div>
+
+
           </div>
-          <div className="page-content">
-            {isPopupOpen ? (
-              <PopUp
-                togglePopup={togglePopup}
-                isPopupOpen={isPopupOpen}
-                popupContent={
-                  selectedForm === "general" ? (
-                    <GeneralIncidentForm togglePopup={togglePopup} />
-                  ) : selectedForm === "lostAndFound" ? (
-                    <LostAndFoundForm togglePopup={togglePopup} />
-                  ) : selectedForm === "employee" ? (
-                    <EmployeeIncidentForm togglePopup={togglePopup} />
-                  ) : selectedForm === "medicationError" ? (
-                    <MedicationErrorForm togglePopup={togglePopup} />
-                  ) : selectedForm === "grievance" ? (
-                    <GrievanceForm togglePopup={togglePopup} />
-                  ) : selectedForm === "reactionReport" ? (
-                    <DrugReactionForm togglePopup={togglePopup} />
-                  ) : selectedForm === "workPlaceViolence" ? (
-                    <WorkplaceViolenceIncidentForm togglePopup={togglePopup} />
-                  ) : selectedForm === "healthIncident" ? (
-                    <HealthIncidentInvestigationForm
-                      togglePopup={togglePopup}
-                    />
-                  ) : selectedForm === "verbalComplaint" ? (
-                    <VerbalComplaintForm />
-                  ) : selectedForm === "grievanceInvestigation" ? (
-                    <GrievanceInvestigationForm />
-                  ) : selectedForm === "complaintForm" ? (
-                    <SubmitComplaintForm
-                      hasHeight={false}
-                      handleSubmitComplaint={togglePopup}
-                    />
-                  ) : (
-                    ""
-                  )
-                }
-              />
-            ) : (
-              ""
-            )}
+
+          <div className="header-actions">
+            <button
+              onClick={toggleFormChoicesOpen}
+              className="add-incident-btn"
+            >
+              <CirclePlus />
+              <span>Add New</span>
+              {isFormChoicesOpen ? (
+                <FormChoicesPopup
+                  togglePopup={togglePopup}
+                  setSelectedForm={setSelectedForm}
+                />
+              ) : (
+                ""
+              )}
+            </button>
+            <ProfileMessages />
+            <ProfileNotification />
+            <ProfileContainer />
           </div>
+
         </header>
 
         {/* Page Content */}
-        <div className="dashboard__content">
+        <div className="content">
+          {isPopupOpen ? (
+            <PopUp
+              togglePopup={togglePopup}
+              isPopupOpen={isPopupOpen}
+              popupContent={
+                selectedForm === "general" ? (
+                  <GeneralIncidentForm togglePopup={togglePopup} />
+                ) : selectedForm === "lostAndFound" ? (
+                  <LostAndFoundForm togglePopup={togglePopup} />
+                ) : selectedForm === "employee" ? (
+                  <EmployeeIncidentForm togglePopup={togglePopup} />
+                ) : selectedForm === "medicationError" ? (
+                  <MedicationErrorForm togglePopup={togglePopup} />
+                ) : selectedForm === "grievance" ? (
+                  <GrievanceForm togglePopup={togglePopup} />
+                ) : selectedForm === "reactionReport" ? (
+                  <DrugReactionForm togglePopup={togglePopup} />
+                ) : selectedForm === "workPlaceViolence" ? (
+                  <WorkplaceViolenceIncidentForm togglePopup={togglePopup} />
+                ) : selectedForm === "healthIncident" ? (
+                  <HealthIncidentInvestigationForm
+                    togglePopup={togglePopup}
+                  />
+                ) : selectedForm === "verbalComplaint" ? (
+                  <VerbalComplaintForm />
+                ) : selectedForm === "grievanceInvestigation" ? (
+                  <GrievanceInvestigationForm />
+                ) : selectedForm === "complaintForm" ? (
+                  <SubmitComplaintForm
+                    hasHeight={false}
+                    handleSubmitComplaint={togglePopup}
+                  />
+                ) : (
+                  ""
+                )
+              }
+            />
+          ) : (
+            ""
+          )}
           {children}
-          <div className="copy">
-            <small>Made with love by guys at CSR</small>
-          </div>
+
         </div>
       </main>
     </div>
