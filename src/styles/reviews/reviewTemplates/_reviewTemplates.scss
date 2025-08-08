@@ -83,6 +83,7 @@
   padding: 10px 15px;
   transition: 0.5s ease-in;
 }
+
 .delete-form-popup {
   .popup-content {
     max-width: 450px;
@@ -168,11 +169,11 @@
   border-radius: var(--base-border-radius);
   justify-content: space-between;
 
-  & > :first-child {
+  &> :first-child {
     border-radius: var(--base-border-radius) 0 0 0.5rem;
   }
 
-  & > :last-child {
+  &> :last-child {
     border-radius: 0 var(--base-border-radius) var(--base-border-radius) 0;
   }
 
@@ -237,7 +238,7 @@
     display: flex;
     flex-direction: column;
 
-    > span,
+    >span,
     p {
       color: $gray-color;
     }
@@ -298,6 +299,7 @@
   gap: 10px;
   padding-bottom: 30px;
 }
+
 .create-task-container {
   flex: 1;
   display: flex;
@@ -311,6 +313,7 @@
   h2 {
     font-size: 22px;
   }
+
   p {
     max-width: 400px;
     text-align: center;
@@ -321,6 +324,7 @@
   margin: auto;
   font-size: 20px;
 }
+
 .tasks-wrapper {
   background-color: $body-background-color;
   border-radius: var(--base-border-radius);
@@ -339,13 +343,13 @@
     flex: 1;
     min-width: 250px;
 
-    > .col {
+    >.col {
       display: flex;
       flex-direction: column;
       gap: 10px;
       height: 100%;
 
-      > .row {
+      >.row {
         display: flex;
         justify-content: space-between;
         gap: 20px;
@@ -356,12 +360,12 @@
         font-size: 14px;
       }
 
-      > .col {
+      >.col {
         display: flex;
         flex-direction: column;
         gap: 10px;
 
-        > .row {
+        >.row {
           display: flex;
           gap: 10px;
           align-items: center;
@@ -425,6 +429,7 @@
           padding: 10px 18px;
           border-radius: var(--base-border-radius);
         }
+
         .details-btn {
           border: 2px solid $gray-color;
           padding: 8px 10px;
@@ -469,11 +474,12 @@
 }
 
 .review-task {
-  > h3 {
+  >h3 {
     font-size: 16px;
     font-weight: 600;
   }
-  > span {
+
+  >span {
     font-size: 14px;
     color: $gray-color;
   }
@@ -485,10 +491,12 @@
   height: 100%;
 
   gap: 30px;
-  > .col-1 {
+
+  >.col-1 {
     display: flex;
     flex-direction: column;
     gap: 20px;
+
     .days {
       background-color: #f9fcff;
       color: $primary-color;
@@ -500,12 +508,12 @@
       align-items: center;
     }
 
-    > .col {
+    >.col {
       display: flex;
       flex-direction: column;
       gap: 10px;
 
-      > .row {
+      >.row {
         display: flex;
         gap: 10px;
         align-items: center;
@@ -540,10 +548,11 @@
       }
     }
   }
-  > .col-2 {
+
+  >.col-2 {
     margin-top: auto;
 
-    > span {
+    >span {
       background-color: #f9fcff;
       padding: 12px 20px;
       border-radius: var(--base-border-radius);
@@ -599,9 +608,5 @@
         }
       }
     }
-  }
-
-  .users-table {
-    display: none;
   }
 }

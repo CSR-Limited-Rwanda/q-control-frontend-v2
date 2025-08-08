@@ -3,6 +3,7 @@ import React from 'react'
 
 const TasksTable = ({ tasks, selectedTasks, handleSelectAllTasks, handleSortTasks, parameters, handleOpenTaskDetails, handleSelectTask, isSearching }) => {
     return (
+
         <table>
             <thead>
                 <tr>

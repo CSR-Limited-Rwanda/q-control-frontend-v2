@@ -1,113 +1,110 @@
 @import '../variables';
 
 .actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+
+.mobile-users {
+  display: none;
+  max-height: 80vh;
+  overflow: auto;
+  gap: 1rem;
+
+  .user-card {
+    padding: 1rem;
+    border-radius: var(--base-border-radius);
+    background-color: whitesmoke;
+    display: grid;
+    height: fit-content;
+    gap: 0.5rem;
+  }
+}
+
+.form-tabs {
+  display: flex;
+  align-items: center;
+  border-radius: var(--base-border-radius);
+  justify-content: space-between;
+
+  &> :first-child {
+    border-radius: var(--base-border-radius) 0 0 0.5rem;
   }
 
-  
-  .mobile-users {
-    display: none;
-    max-height: 80vh;
-    overflow: auto;
-    gap: 1rem;
-  
-    .user-card {
-      padding: 1rem;
-      border-radius: var(--base-border-radius);
-      background-color: whitesmoke;
-      display: grid;
-      height: fit-content;
-      gap: 0.5rem;
-    }
+  &> :last-child {
+    border-radius: 0 var(--base-border-radius) var(--base-border-radius) 0;
   }
-  
-  .form-tabs {
+
+  .tab {
+    flex: 1;
+    padding: 0.8rem;
     display: flex;
     align-items: center;
+    gap: 0.5rem;
+    background-color: whitesmoke;
+    cursor: pointer;
+    justify-content: center;
+  }
+
+  .active {
+    background-color: $secondary-color;
+    color: white;
+  }
+}
+
+.form-choices {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .choice {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    background-color: whitesmoke;
+    padding: 0.8rem;
     border-radius: var(--base-border-radius);
-    justify-content: space-between;
-  
-    & > :first-child {
-      border-radius: var(--base-border-radius) 0 0 0.5rem;
-    }
-  
-    & > :last-child {
-      border-radius: 0 var(--base-border-radius) var(--base-border-radius) 0;
-    }
-  
-    .tab {
-      flex: 1;
-      padding: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background-color: whitesmoke;
-      cursor: pointer;
-      justify-content: center;
-    }
-  
-    .active {
-      background-color: $secondary-color;
-      color: white;
+    color: rgb(74, 74, 74);
+
+    &:hover {
+      background-color: lighten($color: $secondary-color, $amount: 30);
     }
   }
-  
-  .form-choices {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  
-    .choice {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      background-color: whitesmoke;
-      padding: 0.8rem;
-      border-radius: var(--base-border-radius);
-      color: rgb(74, 74, 74);
-  
-      &:hover {
-        background-color: lighten($color: $secondary-color, $amount: 30);
+
+  .selected {
+    background-color: $secondary-color;
+    color: white;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .mobile-users {
+    display: grid;
+  }
+
+  .actions {
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    position: relative;
+
+    .filters {
+      width: 100%;
+
+      input {
+        flex: 1;
       }
     }
-  
-    .selected {
-      background-color: $secondary-color;
-      color: white;
+
+    .new-user-button {
+      position: absolute;
+      right: 0;
     }
   }
-  
-  @media screen and (max-width: 768px) {
-    .mobile-users {
-      display: grid;
-    }
-  
-    .actions {
-      flex-direction: column;
-      justify-content: start;
-      align-items: start;
-      position: relative;
-  
-      .filters {
-        width: 100%;
-  
-        input {
-          flex: 1;
-        }
-      }
-  
-      .new-user-button {
-        position: absolute;
-        right: 0;
-      }
-    }
-  
-    .users-table {
-      display: none;
-    }
-  }
+
+}
