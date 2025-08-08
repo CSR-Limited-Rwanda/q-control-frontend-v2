@@ -1,12 +1,12 @@
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, Square, SquareCheck } from 'lucide-react';
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, Eye, Pencil, Square, SquareCheck, Trash } from 'lucide-react';
 import React from 'react'
 import { Table } from '../tables/page';
 
 const TasksTable = ({ tasks, selectedTasks, handleSelectAllTasks, handleSortTasks, parameters, handleOpenTaskDetails, handleSelectTask, isSearching }) => {
     const actions = [
-        { label: 'View', onClick: (task) => handleOpenTaskDetails(task.id), customClass: 'normal' },
-        { label: 'Edit', onClick: (task) => console.log('Edit', task.id), customClass: 'action' },
-        { label: 'Delete', onClick: (task) => console.log('Delete', task.id), customClass: 'danger' }
+        { label: <Eye />, onClick: (task) => handleOpenTaskDetails(task.id), customClass: 'normal' },
+        { label: <Pencil />, onClick: (task) => console.log('Edit', task.id), customClass: 'action' },
+        { label: <Trash />, onClick: (task) => console.log('Delete', task.id), customClass: 'danger' }
     ];
 
     const newTasks = tasks.map(task => ({
@@ -105,7 +105,17 @@ const TasksTable = ({ tasks, selectedTasks, handleSelectAllTasks, handleSortTask
         //     </tbody>
         // </table>
 
-        <Table headers={['ID', 'Name', 'Description', 'Deadline', 'Incident', 'Status', 'Priority', "Actions"]} actions={actions} data={newTasks} />
+        <Table
+            headers={['ID', 'Name', 'Description', 'Deadline', 'Incident', 'Status', 'Priority', "Actions"]}
+            actions={actions}
+            data={newTasks}
+            selectedItems={selectedTasks}
+            handleSelect={handleSelectTask}
+            handleSelectAll={handleSelectAllTasks}
+            isSelectable={true}
+            onRowClick={(row) => handleOpenTaskDetails(row.id)}
+
+        />
     )
 }
 

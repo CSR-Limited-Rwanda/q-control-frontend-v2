@@ -75,8 +75,7 @@ const TasksPage = () => {
     }
 
     // handle open task details
-    const handleOpenTaskDetails = (e, taskId) => {
-        e.stopPropagation()
+    const handleOpenTaskDetails = (taskId) => {
         setSelectedTask(taskId)
         setShowTaskDetails(true)
     }

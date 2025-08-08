@@ -1,5 +1,6 @@
 'use client'
 import '@/styles/components/tables.css'
+import { Square, SquareCheck } from 'lucide-react';
 import React from 'react'
 
 const page = () => {
@@ -51,7 +52,7 @@ export default page
 
 
 
-export const Table = ({ headers, data, onRowClick, actions }) => {
+export const Table = ({ headers, data, onRowClick, actions, handleSelect, handleSelectAll, selectedItems, customClassName = null, isSelectable = false }) => {
 
     const handleRowClick = (row) => {
         if (onRowClick) {
@@ -66,31 +67,48 @@ export const Table = ({ headers, data, onRowClick, actions }) => {
         }
     }
     return (
-        <div className="custom-table">
-            <div className="custom-table-header">
+        <div className={`custom-table table ${customClassName || ''} ${isSelectable ? 'selectable' : ''}`}>
+            <div className="custom-table-header header">
+                {
+                    isSelectable && <div className="checkbox select-all-cell" onClick={handleSelectAll}>
+                        {
+                            selectedItems?.length === data.length ? <SquareCheck /> : <Square />
+                        }
+                    </div>
+                }
+
                 {actions && actions.length > 0 ? headers.map((item, index) => (
-                    <div className="custom-table-header-cell" key={index}>
+                    <div className="custom-table-header-cell cell" key={index}>
                         {item}
                     </div>
                 )) : headers.slice(0, -1).map((item, index) => (
-                    <div className="custom-table-header-cell" key={index}>
+                    <div className="custom-table-header-cell cell" key={index}>
                         {item}
                     </div>
                 ))}
             </div>
 
             {data?.map((row, rowIndex) => (
-                <div className="custom-table-row" key={rowIndex} onClick={() => handleRowClick(row)}>
+                <div className={`custom-table-row row ${selectedItems.includes(row.id) ? 'selected' : ''}`} key={rowIndex} onClick={() => handleRowClick(row)}>
+                    {
+                        isSelectable &&
+                        <div onClick={(e) => {
+                            e.stopPropagation();
+                            handleSelect(row.id);
+                        }} className='select-cell'>
+                            {selectedItems.includes(row.id) ? <SquareCheck /> : <Square />}
+                        </div>
+                    }
                     {Object.entries(row).map(([key, value], cellIndex) => (
-                        <div data-label={headers[cellIndex]} className="custom-table-cell" key={cellIndex}>
-                            <span className='hide-desktop'>{headers[cellIndex]}: </span>
-                            {value}
+                        <div data-label={headers[cellIndex]} className="custom-table-cell cell" key={cellIndex}>
+
+                            <p><span className='hide-desktop'>{headers[cellIndex]}: </span> {value}</p>
                         </div>
                     ))}
                     {
                         actions && <div className="custom-table-cell custom-table-actions">
                             {actions.map((action, actionIndex) => (
-                                <div className={`custom-table-action-button ${action.customClass || ''}`}
+                                <div className={`custom-table-action-button action ${action.customClass || ''}`}
                                     key={actionIndex}
                                     onClick={e => handleActionClick(e, action, row)}
                                 >
