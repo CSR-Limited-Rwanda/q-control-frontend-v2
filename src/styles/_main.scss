@@ -623,7 +623,7 @@ table {
     flex-direction: column;
     gap: 24px;
 
-    .pop-up-buttons {
+    .popup-buttons {
       width: 100%;
       display: flex;
       gap: 10px;
@@ -943,7 +943,7 @@ button,
   gap: 1rem;
 }
 
-.pop-up {
+.popup {
   position: fixed;
   top: 0;
   left: 0;
@@ -1057,7 +1057,7 @@ button,
     padding: 24px;
   }
 
-  .pop-up {
+  .popup {
     .popup-content {
       max-width: 100%;
     }
@@ -1079,7 +1079,7 @@ input[type="checkbox"] {
     color: white;
   }
 
-  .pop-up {
+  .popup {
     .popup-content {
       background-color: white;
       color: black;
@@ -1286,7 +1286,7 @@ input[type="checkbox"] {
     background-color: $dark-secondary-color-shade;
   }
 
-  .pop-up {
+  .popup {
     background-color: rgba(0, 0, 0, 0.566);
 
     .popup-content {

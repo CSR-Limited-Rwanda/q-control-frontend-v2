@@ -298,7 +298,7 @@ const LostAndFoundList = () => {
                         dateFormat="yyyy-MM-dd"
                       />
                     </div>
-                    <div className="pop-up-buttons">
+                    <div className="popup-buttons">
                       <button onClick={clearFilters} className="outline-button">
                         <X size={20} variant="stroke" />
                         Clear
@@ -747,10 +747,10 @@ const LostFoundTable = ({
               <td>
                 <p
                   className={`follow-up ${incident.status === "Draft"
-                      ? "in-progress"
-                      : incident.status === "Closed"
-                        ? "closed"
-                        : "Open"
+                    ? "in-progress"
+                    : incident.status === "Closed"
+                      ? "closed"
+                      : "Open"
                     }`}
                 >
                   {incident.status || "Not specified"}
@@ -876,10 +876,10 @@ const IncidentTableCard = ({
           <label htmlFor="">Status: </label>
           <span
             className={`follow-up ${incident.status === "Draft"
-                ? "in-progress"
-                : incident.status === "Closed"
-                  ? "closed"
-                  : "Open"
+              ? "in-progress"
+              : incident.status === "Closed"
+                ? "closed"
+                : "Open"
               }`}
           >
             {incident.status || "Not specified"}

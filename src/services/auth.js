@@ -85,7 +85,7 @@ export const forgotPassword = async (email) => {
     } catch (error) {
         return {
             success: false,
-            error: error.response?.data?.detail || 'An unexpected error occurred. Please try again.',
+            error: error.response?.data?.message || error.response?.data?.error || 'An unexpected error occurred. Please try again.',
         };
     }
 }

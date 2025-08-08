@@ -296,7 +296,7 @@ const PatientVisitorGrievanceList = () => {
                             dateFormat="yyyy-MM-dd"
                           />
                         </div>
-                        <div className="pop-up-buttons">
+                        <div className="popup-buttons">
                           <button
                             onClick={clearFilters}
                             className="outline-button"
@@ -689,10 +689,10 @@ const GrievanceTable = ({
               <td>
                 <p
                   className={`follow-up ${grievance.status === "Draft"
-                      ? "in-progress"
-                      : grievance.status === "Closed"
-                        ? "closed"
-                        : "Open"
+                    ? "in-progress"
+                    : grievance.status === "Closed"
+                      ? "closed"
+                      : "Open"
                     }`}
                 >
                   {grievance.status || "Not specified"}
@@ -805,10 +805,10 @@ const IncidentTableCard = ({
           <label htmlFor="">Status: </label>
           <span
             className={`follow-up ${incident.status === "Draft"
-                ? "in-progress"
-                : incident.status === "Closed"
-                  ? "closed"
-                  : "Open"
+              ? "in-progress"
+              : incident.status === "Closed"
+                ? "closed"
+                : "Open"
               }`}
           >
             {incident?.status || "Not specified"}
@@ -1106,7 +1106,7 @@ const ComplaintsTab = () => {
                       dateFormat="yyyy-MM-dd"
                     />
                   </div>
-                  <div className="pop-up-buttons">
+                  <div className="popup-buttons">
                     <button onClick={clearFilters} className="outline-button">
                       <X size={20} variant="stroke" />
                       Clear
@@ -1219,8 +1219,8 @@ const ComplaintsTab = () => {
                                 <td>
                                   <p
                                     className={`follow-up ${complaint.resolved_by_staff === false
-                                        ? "in-progress"
-                                        : "Open"
+                                      ? "in-progress"
+                                      : "Open"
                                       }`}
                                   >
                                     {(complaint.resolved_by_staff
@@ -1333,8 +1333,8 @@ const ComplaintsTab = () => {
                             <td>
                               <p
                                 className={`follow-up ${complaint.resolved_by_staff === false
-                                    ? "in-progress"
-                                    : "Open"
+                                  ? "in-progress"
+                                  : "Open"
                                   }`}
                               >
                                 {(complaint.resolved_by_staff ? "Yes" : "No") ||

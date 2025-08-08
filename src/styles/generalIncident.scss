@@ -1,6 +1,6 @@
 @import "./variables";
 
-.pop-up {
+.popup {
   width: 100vw;
   position: fixed;
   top: 0;
@@ -101,6 +101,7 @@ input[type="radio"]:checked::before {
     cursor: pointer;
     background-color: $gray-color-shade;
   }
+
   .selected {
     background-color: $secondary-color;
     color: white;

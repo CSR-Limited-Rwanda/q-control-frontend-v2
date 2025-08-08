@@ -268,7 +268,7 @@ const MedicationErrorList = () => {
                         dateFormat="yyyy-MM-dd"
                       />
                     </div>
-                    <div className="pop-up-buttons">
+                    <div className="popup-buttons">
                       <button onClick={clearFilters} className="outline-button">
                         <X size={20} variant="stroke" />
                         Clear
@@ -667,10 +667,10 @@ const MedicationErrorTable = ({
               <td>
                 <p
                   className={`follow-up ${medication.status === "Draft"
-                      ? "in-progress"
-                      : medication.status === "Closed"
-                        ? "closed"
-                        : "Open"
+                    ? "in-progress"
+                    : medication.status === "Closed"
+                      ? "closed"
+                      : "Open"
                     }`}
                 >
                   {medication.status || "Not specified"}
@@ -798,10 +798,10 @@ const IncidentTableCard = ({
           <label htmlFor="">Status: </label>
           <span
             className={`follow-up ${incident.status === "Draft"
-                ? "in-progress"
-                : incident.status === "Closed"
-                  ? "closed"
-                  : "Open"
+              ? "in-progress"
+              : incident.status === "Closed"
+                ? "closed"
+                : "Open"
               }`}
           >
             {incident?.status || "Not specified"}

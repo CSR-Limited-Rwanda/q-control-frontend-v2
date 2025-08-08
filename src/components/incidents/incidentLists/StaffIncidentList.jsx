@@ -265,7 +265,7 @@ const StaffIncidentList = () => {
                       />
                     </div>
 
-                    <div className="pop-up-buttons">
+                    <div className="popup-buttons">
                       <button onClick={clearFilters} className="outline-button">
                         <X size={20} variant="stroke" />
                         Clear
