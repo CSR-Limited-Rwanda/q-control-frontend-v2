@@ -7,7 +7,6 @@ import { useAuthentication } from "@/context/authContext";
 import { authService } from "@/services/auth";
 
 const LoginPopup = () => {
-  const { login } = useAuthentication();
   // login form
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,6 +15,7 @@ const LoginPopup = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuthentication();
 
   const handleSubmit = async () => {
     // validate form
@@ -33,17 +33,17 @@ const LoginPopup = () => {
       const result = await authService.login(username, password);
 
       if (result.success) {
+        // Use the auth context login method
         const loginSuccess = await login(result.accessToken, result.refreshToken);
 
         if (loginSuccess) {
           setSuccessMessage("Login successful!");
-          // The AuthContext will handle the authentication state
-          // No need to reload the page
+          // No need to reload the window, the auth context will handle the state update
         } else {
-          setErrorMessage("Failed to authenticate user. Please try again.");
+          setErrorMessage("Failed to authenticate user data. Please try again.");
         }
       } else {
-        setErrorMessage(result.error);
+        setErrorMessage(result.error || "Login failed. Please try again.");
       }
     } catch (error) {
       setErrorMessage("An unexpected error occurred. Please try again.");

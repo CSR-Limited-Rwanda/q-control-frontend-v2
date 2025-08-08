@@ -201,9 +201,9 @@ async function getUserInfoFromToken(token) {
       firstName: decodedToken.first_name,
       lastName: decodedToken.last_name,
       email: decodedToken.email,
-      role: decodedToken.role,
-      facility: decodedToken.facility,
-      department: decodedToken.department,
+      role: decodedToken.role || null,
+      facility: decodedToken.facility || null,
+      department: decodedToken.department || null,
       profileId: decodedToken.profile_id,
     };
 
@@ -213,26 +213,37 @@ async function getUserInfoFromToken(token) {
     }
 
     // Fetch user data from backend
-    const response = await api.get(`/users/${userId}/`);
-    if (response.status === 200) {
-      const serverData = response.data;
+    try {
+      const response = await api.get(`/users/${userId}/`);
+      if (response.status === 200) {
+        const serverData = response.data;
 
-      // Store in localStorage
-      localStorage.setItem("loggedInUserInfo", JSON.stringify(serverData));
-      localStorage.setItem(
-        "facilityId",
-        JSON.stringify(serverData.facility.id)
-      );
-      localStorage.setItem(
-        "departmentId",
-        JSON.stringify(serverData.department.id)
-      );
+        // Store in localStorage
+        localStorage.setItem("loggedInUserInfo", JSON.stringify(serverData));
+        if (serverData.facility && serverData.facility.id) {
+          localStorage.setItem(
+            "facilityId",
+            JSON.stringify(serverData.facility.id)
+          );
+        }
+        if (serverData.department && serverData.department.id) {
+          localStorage.setItem(
+            "departmentId",
+            JSON.stringify(serverData.department.id)
+          );
+        }
 
-      return {
-        tokenUserInfo: userInfo,
-        serverUserData: serverData,
-      };
-    } else {
+        return {
+          tokenUserInfo: userInfo,
+          serverUserData: serverData,
+        };
+      } else {
+        console.warn("Failed to fetch user data from server, using token data only");
+        return { tokenUserInfo: userInfo, serverUserData: null };
+      }
+    } catch (apiError) {
+      console.warn("Error fetching user data from server:", apiError.response?.data || apiError.message);
+      console.warn("Proceeding with token data only");
       return { tokenUserInfo: userInfo, serverUserData: null };
     }
   } catch (error) {

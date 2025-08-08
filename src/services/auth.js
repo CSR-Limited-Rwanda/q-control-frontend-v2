@@ -4,14 +4,17 @@ import axios from 'axios';
 export const authService = {
     async login(username, password) {
         try {
-            const response = await api.post('/accounts/login/', {
+            const response = await axios.post(`${API_URL}/accounts/login/`, {
                 username,
                 password,
             });
 
             if (response.status === 200) {
                 const { access, refresh } = response.data;
-                localStorage.setItem('loggedInUserInfo', JSON.stringify(response.data.user_info));
+                localStorage.setItem('access', access);
+                if (refresh) {
+                    localStorage.setItem('refresh', refresh);
+                }
                 return {
                     success: true,
                     accessToken: access,
