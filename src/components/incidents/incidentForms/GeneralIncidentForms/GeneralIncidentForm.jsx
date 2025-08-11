@@ -37,6 +37,8 @@ import { useAuthentication } from "@/context/authContext";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication()
+  console.log(user);
+  const [currentFacility, setCurrentFacility] = useState(user.facility)
   const [restraintOn, setRestraintOn] = useState([]);
   const [specimen, setSpecimen] = useState([]);
   const [showSpecimen, setshowSpecimen] = useState(false);
@@ -472,7 +474,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           category: category,
           incident_date: incidentDate,
           incident_time: incidentTime,
-          report_facility_id: user.facility.id,
+          report_facility_id: currentFacility?.id,
           patient_visitor: {
             first_name: patientVisitorFirstName,
             last_name: patientVisitorLastName,
@@ -824,6 +826,13 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       setFilteredSuggestions(results);
     }
   };
+
+  const handleCurrentFacility = (facilityId) => {
+    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    setCurrentFacility(selectedFacility);
+    console.log(selectedFacility);
+  };
+
   return (
     <div className="forms-container">
       <div className="forms-header">
@@ -926,6 +935,16 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         {/* <FacilityCard /> */}
         <DraftPopup incidentString="general" incidentType="general_incident" />
       </div>
+
+      <select name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
+        {
+          user?.accounts?.map((facility) => (
+            <option key={facility.id} value={facility.id}>
+              Submitting for  {facility.name}
+            </option>
+          ))
+        }
+      </select>
       <form className="newIncidentForm">
         {currentStep === 1 ? (
           <div className="step incident-info">
