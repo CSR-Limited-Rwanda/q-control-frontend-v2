@@ -241,74 +241,29 @@ const PermissionGroups = () => {
           />
         </div>
       </div>
-
-      <div className="custom-table">
-        <div className="cards-header card">
-          <div className="row">
-            <div className="col">
-              <span>Permission group</span>
-            </div>
-            <div className="col">Created at</div>
-            <div className="col number">Total features</div>
-            <div className="col">
-              <span>Action</span>
-            </div>
-          </div>
-        </div>
-        {groups &&
-          groups.map((group, index) => (
-            <div key={index} className="col card">
-              <div
-                className="row"
-                key={index}
-                onDoubleClick={(e) => handleShowDetails(group)}
-              >
-                <div className="col">
-                  <span>{group.name}</span>
-                </div>
-                <div className="col">{group.created_at}</div>
-                <div className="col number">{group.permissions?.length}</div>
-
-                <div className="actions col">
-                  <div
-                    onClick={() => {
-                      handleShowDeleteModal(group.id, group);
-                    }}
-                    className="action danger"
-                  >
-                    <Trash2 size={18} />
-                  </div>
-                  <div
-                    onClick={() => {
-                      handleShowEditPermissionForm(group.id);
-                    }}
-                    className="action"
-                  >
-                    <SquarePen size={18} />
-                  </div>
-                </div>
-              </div>
-              {/* <div className={`details ${groupToShow === group.id ? 'show' : ''}`}>
-                                <hr />
-                                <h4>Access to: </h4>
-                                <div className="features-list">
-                                    {group.permissions?.slice(0, 12).map((permission, index) => (
-                                        <div className="permission" key={index}>
-                                            <div className="dot"></div>
-                                            {permission.feature}
-                                        </div>
-                                    ))}
-                                    {group.permissions?.length > 12 && (
-                                        <div key={index} className="permission">
-                                            <div className="dot"></div>
-                                            <span>+{group.permissions?.length - 5} more</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div> */}
-            </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Permission group</th>
+            <th>Created at</th>
+            <th>Total feature</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {groups.map((group) => (
+            <tr key={group.id}>
+              <td>{group.name || '-'}</td>
+              <td>{group.created_at || '-'}</td>
+              <td>{group.permissions?.length || 0}</td>
+              <td>
+                <Trash2 size={18} onClick={() => handleShowDeleteModal(group.id, group)} />
+                <SquarePen size={18} onClick={() => handleShowEditPermissionForm(group.id)} />
+              </td>
+            </tr>
           ))}
-      </div>
+        </tbody>
+      </table>
 
       {showNewUserForm && <AddPermissionGroupForm handleClose={handleClose} />}
       {showEditPermissionForm && (
