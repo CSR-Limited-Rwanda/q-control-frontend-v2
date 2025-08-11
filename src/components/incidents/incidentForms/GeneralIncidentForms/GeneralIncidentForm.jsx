@@ -32,11 +32,12 @@ import ErrorMessage from "@/components/messages/ErrorMessage";
 import DraftPopup from "@/components/DraftPopup";
 import "../../../../styles/_forms.scss";
 import "../../../../styles/generalIncident.scss";
+import { useAuthentication } from "@/context/authContext";
 // import RichTexField from "./inputs/richTexField";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
+  const { user } = useAuthentication()
   const [restraintOn, setRestraintOn] = useState([]);
-
   const [specimen, setSpecimen] = useState([]);
   const [showSpecimen, setshowSpecimen] = useState(false);
   const [showRestrainOptions, setShowRestrainOptions] = useState(false);
@@ -363,7 +364,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         // setErrorFetching(error?.response?.data?.error);
         window.customToast.error(
           error?.response?.data?.message ||
-            "Error while creating new incident, please try again"
+          "Error while creating new incident, please try again"
         );
         return;
       } else {
@@ -464,14 +465,14 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
       if (isValid) {
         const incidentPostData = {
-          facility_id: facilityId,
-          department: departmentId,
+          facility_id: user.facility.id,
+          department: user.department.id,
           status: "Draft",
           current_step: currentStep,
           category: category,
           incident_date: incidentDate,
           incident_time: incidentTime,
-          report_facility_id: facilityId,
+          report_facility_id: user.facility.id,
           patient_visitor: {
             first_name: patientVisitorFirstName,
             last_name: patientVisitorLastName,
@@ -981,9 +982,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
             <div className="form-half">
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor first name</label>
                 <input
@@ -998,9 +998,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                 />
               </div>
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor last name</label>
                 <input
@@ -1172,8 +1171,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </label>
               <div
                 className="check-boxes check-boxes-row"
-                //  onChange={(e) => setRoute(e.target.value)}
-                //  value={route}
+              //  onChange={(e) => setRoute(e.target.value)}
+              //  value={route}
               >
                 {statusesPrionToIncident.map((status, index) => (
                   <div
@@ -1679,7 +1678,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                         style={{
                           display:
                             specialTypes.includes(type.name) &&
-                            otherTypes !== "Specimen"
+                              otherTypes !== "Specimen"
                               ? "none"
                               : "block",
                         }}
@@ -1938,9 +1937,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           >
             <span>{isLoading ? "Saving..." : "Save Incident"}</span>
             <i
-              className={`fa-solid fa-arrow-right ${
-                isLoading ? "loading" : ""
-              }`}
+              className={`fa-solid fa-arrow-right ${isLoading ? "loading" : ""
+                }`}
             ></i>
           </button>
         ) : currentStep < 7 ? (
