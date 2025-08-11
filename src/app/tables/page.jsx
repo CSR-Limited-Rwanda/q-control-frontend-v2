@@ -39,7 +39,7 @@ const page = () => {
 
     const actions = [
         { label: 'View', onClick: (row) => handleView(row), customClass: 'normal' },
-        { label: 'Edit', onClick: (row) => handleEdit(row), customClass: 'action' },
+        { label: 'Edit', onClick: (row) => handleEdit(row), customClass: 'edit' },
         { label: 'Delete', onClick: (row) => handleDelete(row), customClass: 'danger' }
     ];
     return (
@@ -66,6 +66,7 @@ export const Table = ({ headers, data, onRowClick, actions, handleSelect, handle
             action.onClick(row);
         }
     }
+    return (<CustomTable />)
     return (
         <div className={`custom-table table ${customClassName || ''} ${isSelectable ? 'selectable' : ''}`}>
             <div className="custom-table-header header">
@@ -108,7 +109,7 @@ export const Table = ({ headers, data, onRowClick, actions, handleSelect, handle
                     {
                         actions && <div className="custom-table-cell custom-table-actions">
                             {actions.map((action, actionIndex) => (
-                                <div className={`custom-table-action-button action ${action.customClass || ''}`}
+                                <div className={`custom-table-action-button ${action.customClass || ''}`}
                                     key={actionIndex}
                                     onClick={e => handleActionClick(e, action, row)}
                                 >
@@ -120,5 +121,42 @@ export const Table = ({ headers, data, onRowClick, actions, handleSelect, handle
                 </div>
             ))}
         </div>
+    )
+}
+
+const CustomTable = () => {
+    return (
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Occupation</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="Name">John Doe</td>
+                    <td data-label="Age">30</td>
+                    <td data-label="Occupation">Engineer</td>
+                    <td data-label="City">New York</td>
+                </tr>
+                <tr>
+                    <td data-label="Name">Jane Smith</td>
+                    <td data-label="Age">25</td>
+                    <td data-label="Occupation">Designer</td>
+                    <td data-label="City">Los Angeles</td>
+                </tr>
+                <tr>
+                    <td data-label="Name">Sam Wilson</td>
+                    <td data-label="Age">40</td>
+                    <td data-label="Occupation">Teacher</td>
+                    <td data-label="City">Chicago</td>
+                </tr>
+            </tbody>
+        </table>
+
     )
 }

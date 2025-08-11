@@ -161,6 +161,15 @@ button.light:hover, .btn.light:hover {
   padding: 4px;
 }
 
+.auth-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100vw;
+  height: 100vh;
+}
+
 .form-input {
   width: 100%;
   display: flex;

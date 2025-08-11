@@ -150,7 +150,7 @@ const TasksPage = () => {
                             <button className='secondary'><Printer /><span> Export Tasks</span></button>
                         </>
                     }
-                    <Filters filters={[parameters]} setFilters={setParameters} handleFilterChange={() => loadTasks(userInfo?.id)} />
+                    <Filters filters={[parameters]} setFilters={setParameters} handleFilterChange={() => loadTasks()} />
                 </div>
             </div>
 
