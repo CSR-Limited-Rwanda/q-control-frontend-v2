@@ -936,15 +936,19 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         <DraftPopup incidentString="general" incidentType="general_incident" />
       </div>
 
-      <select name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
-        {
-          user?.accounts?.map((facility) => (
-            <option key={facility.id} value={facility.id}>
-              Submitting for  {facility.name}
-            </option>
-          ))
-        }
-      </select>
+      {currentStep === 1 && (
+        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
+          {
+            user?.accounts?.map((facility) => (
+              <option key={facility.id} value={facility.id}>
+                Submitting for  {facility.name}
+              </option>
+            ))
+          }
+        </select>
+      )}
+
+
       <form className="newIncidentForm">
         {currentStep === 1 ? (
           <div className="step incident-info">
