@@ -1,6 +1,6 @@
 'use client';
 import '@/styles/_login.scss';
-import { Key, LoaderCircle, Mail } from "lucide-react";
+import { CheckSquare, Key, Mail, Square } from "lucide-react";
 import React, { useState } from "react";
 import Button from "../forms/Button";
 import { useAuthentication } from "@/context/authContext";
@@ -15,6 +15,7 @@ const LoginPopup = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuthentication();
 
   const handleSubmit = async () => {
@@ -78,7 +79,7 @@ const LoginPopup = () => {
                   className="form-control"
                   placeholder="Enter your email"
                 />
-                <Mail className="icon" />
+                <Mail size={20} className="icon" />
               </div>
             </div>
             <div className="form-control">
@@ -91,14 +92,16 @@ const LoginPopup = () => {
                   className="form-control"
                   placeholder="Enter your password"
                 />
-                <Key className="icon" />
+                <Key size={20} className="icon" />
               </div>
             </div>
 
             <div className="links">
               {/* remember me */}
-              <div className="remember-me">
-                <input type="checkbox" id="rememberMe" />
+              <div className="remember-me" onClick={() => setRememberMe(!rememberMe)}>
+                {
+                  rememberMe ? <CheckSquare size={20} /> : <Square size={20} />
+                }
                 <label htmlFor="rememberMe">Remember me</label>
               </div>
               {/* forgot password */}

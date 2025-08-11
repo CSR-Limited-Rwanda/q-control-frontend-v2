@@ -1,8 +1,19 @@
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, Square, SquareCheck } from 'lucide-react';
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, Eye, Pencil, Square, SquareCheck, Trash } from 'lucide-react';
 import React from 'react'
+import { Table } from '../tables/page';
 
 const TasksTable = ({ tasks, selectedTasks, handleSelectAllTasks, handleSortTasks, parameters, handleOpenTaskDetails, handleSelectTask, isSearching }) => {
+    const newTasks = tasks.map(task => ({
+        id: task.id || 'N/A',
+        name: task.name || 'N/A',
+        deadline: task.deadline || 'N/A',
+        incident: task.incident || 'N/A',
+        status: task.status || 'N/A',
+        priority: task.priority || 'N/A',
+    }));
     return (
+
+
 
         <table>
             <thead>
@@ -10,80 +21,74 @@ const TasksTable = ({ tasks, selectedTasks, handleSelectAllTasks, handleSortTask
                     <th>
                         <div onClick={handleSelectAllTasks} className='select-all'>
                             {
-                                tasks.length > 0 && selectedTasks.length === tasks.length ? <SquareCheck /> : <Square />
+                                tasks.length > 0 && selectedTasks.length === tasks.length ? <SquareCheck size={18} /> : <Square size={18} />
                             }
                         </div>
                     </th>
-                    <th className='sort-cell'>
-                        Task Name
-                        <div className="sort-icon" onClick={() => handleSortTasks('name', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
-                            {
-                                parameters.sort_by === 'name' && parameters.sort_order === 'asc' ?
-                                    <ArrowDownNarrowWide />
-                                    : parameters.sort_by === 'name' && parameters.sort_order === 'desc' ?
-                                        <ArrowUpNarrowWide />
-                                        : <ArrowDownNarrowWide />
-                            }
+                    <th>ID</th>
+                    <th>
+                        <div className="sort-cell" onClick={() => handleSortTasks('name', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
+                            Name
+                            <div className="sort-icon" >
+                                {
+                                    parameters.sort_by === 'name' && parameters.sort_order === 'asc' ?
+                                        <ArrowDownNarrowWide size={18} />
+                                        : parameters.sort_by === 'name' && parameters.sort_order === 'desc' ?
+                                            <ArrowUpNarrowWide size={18} />
+                                            : <ArrowDownNarrowWide size={18} />
+                                }
+                            </div>
                         </div>
                     </th>
-                    <th>Description</th>
-                    <th className='sort-cell'>
-                        Deadline
-                        <div className="sort-icon" onClick={() => handleSortTasks('deadline', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
-                            {
-                                parameters.sort_by === 'deadline' && parameters.sort_order === 'asc' ?
-                                    <ArrowDownNarrowWide />
-                                    : parameters.sort_by === 'deadline' && parameters.sort_order === 'desc' ?
-                                        <ArrowUpNarrowWide />
-                                        : <ArrowDownNarrowWide />
-                            }
+                    <th>
+                        <div className="sort-cell" onClick={() => handleSortTasks('deadline', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
+                            Deadline
+                            <div className="sort-icon" >
+                                {
+                                    parameters.sort_by === 'deadline' && parameters.sort_order === 'asc' ?
+                                        <ArrowDownNarrowWide size={18} />
+                                        : parameters.sort_by === 'deadline' && parameters.sort_order === 'desc' ?
+                                            <ArrowUpNarrowWide size={18} />
+                                            : <ArrowDownNarrowWide size={18} />
+                                }
+                            </div>
                         </div>
                     </th>
                     <th>Incident</th>
-                    <th className='sort-cell' >
-                        Status
-                        <div className="sort-icon" onClick={() => handleSortTasks('status', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
-                            {
-                                parameters.sort_by === 'status' && parameters.sort_order === 'asc' ?
-                                    <ArrowDownNarrowWide />
-                                    : parameters.sort_by === 'status' && parameters.sort_order === 'desc' ?
-                                        <ArrowUpNarrowWide />
-                                        : <ArrowDownNarrowWide />
-                            }
+                    <th>
+                        <div className="sort-cell" onClick={() => handleSortTasks('status', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
+                            Status
+                            <div className="sort-icon">
+                                {
+                                    parameters.sort_by === 'status' && parameters.sort_order === 'asc' ?
+                                        <ArrowDownNarrowWide size={18} />
+                                        : parameters.sort_by === 'status' && parameters.sort_order === 'desc' ?
+                                            <ArrowUpNarrowWide size={18} />
+                                            : <ArrowDownNarrowWide size={18} />
+                                }
+                            </div>
                         </div>
                     </th>
                     <th>Priority</th>
                 </tr>
             </thead>
             <tbody>
-                {tasks.map((task) => (
-                    <tr className={`task-row ${selectedTasks.includes(task.id) ? 'selected' : ''} ${isSearching ? 'is-searching' : ''}`} key={task.id} onClick={(e) => handleOpenTaskDetails(e, task.id)}>
-                        <td>
+                {newTasks.map((task) => (
+                    <tr key={task.id} className={`task-row ${selectedTasks.includes(task.id) ? 'selected' : ''} ${isSearching ? 'is-searching' : ''}`} onClick={(e) => handleOpenTaskDetails(task.id)}>
+                        <td data-label="Select">
                             <div onClick={(e) => {
                                 e.stopPropagation();
                                 handleSelectTask(task.id);
                             }} className='select-task'>
-                                {selectedTasks.includes(task.id) ? <SquareCheck /> : <Square />}
+                                {selectedTasks.includes(task.id) ? <SquareCheck size={18} /> : <Square size={18} />}
                             </div>
                         </td>
-                        <td>{task.name}</td>
-                        <td>{task.description}</td>
-                        <td>{task.deadline}</td>
-                        <td>{task.incident}</td>
-                        <td>{task.status}</td>
-                        <td>{
-                            task.task_priority === 1 ?
-                                <div className="high priority-value">
-                                    <small>High</small>
-                                </div>
-                                : task.task_priority === 2 ?
-                                    <div className="medium priority-value">
-                                        <small>Medium</small>
-                                    </div>
-                                    : <div className="low priority-value">
-                                        <small>Low</small>
-                                    </div>}
-                        </td>
+                        <td data-label="ID">{task.id}</td>
+                        <td data-label="Name">{task.name}</td>
+                        <td data-label="Deadline">{task.deadline}</td>
+                        <td data-label="Incident">{task.incident}</td>
+                        <td data-label="Status">{task.status}</td>
+                        <td data-label="Priority">{task.priority}</td>
                     </tr>
                 ))}
             </tbody>

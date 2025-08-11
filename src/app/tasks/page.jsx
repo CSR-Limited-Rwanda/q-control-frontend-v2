@@ -75,8 +75,7 @@ const TasksPage = () => {
     }
 
     // handle open task details
-    const handleOpenTaskDetails = (e, taskId) => {
-        e.stopPropagation()
+    const handleOpenTaskDetails = (taskId) => {
         setSelectedTask(taskId)
         setShowTaskDetails(true)
     }
@@ -151,12 +150,12 @@ const TasksPage = () => {
                             <button className='secondary'><Printer /><span> Export Tasks</span></button>
                         </>
                     }
-                    <Filters filters={[parameters]} setFilters={setParameters} handleFilterChange={() => loadTasks(userInfo?.id)} />
+                    <Filters filters={[parameters]} setFilters={setParameters} handleFilterChange={() => loadTasks()} />
                 </div>
             </div>
 
             <TasksTable handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
-            <TasksMobileCard handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
+            {/* <TasksMobileCard handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} /> */}
 
             {
                 showTaskDetails && selectedTask && (
