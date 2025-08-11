@@ -3,7 +3,7 @@ import DateFormatter from "@/components/DateFormatter";
 const displayValue = (value) => value || "Not provided";
 
 const GeneralIncidentDetailsContentTab = ({ data }) => {
-  const incident = data.incident || {};
+  const incident = data || {};
   const patientVisitor = incident.patient_visitor || {};
 
   return (
