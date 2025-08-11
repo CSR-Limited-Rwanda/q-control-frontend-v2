@@ -616,33 +616,37 @@ const GeneralIncidentTable = ({
             </div>
           </th>
           <th>No</th>
-          <th className="sort-cell">
-            ID
-            <SortByNumberIcon
-              setSortDesc={setSortDesc}
-              handleSortById={handleSortById}
-              sortDesc={sortDesc}
-            />
+          <th >
+            <div className="sort-cell">
+              ID
+              <SortByNumberIcon
+                setSortDesc={setSortDesc}
+                handleSortById={handleSortById}
+                sortDesc={sortDesc}
+              />
+            </div>
           </th>
           <th>Facility</th>
-          <th className="sort-cell">
-            Name
-            <SortNameIcon
-              handleSortById={handleSortByName}
-              sortDesc={nameAZ}
-              setSortDesc={setNameAZ}
-            />
+          <th>
+            <div className="sort-cell">
+              Name
+              <SortNameIcon
+                handleSortById={handleSortByName}
+                sortDesc={nameAZ}
+                setSortDesc={setNameAZ}
+              />
+            </div>
           </th>
-          <th>Type of incident</th>
-          <th className="sort-cell">
-            Date & Time
-            <SortDateIcon
-              setSortDesc={setDateRecent}
-              handleSortById={handleFilterByDate}
-              sortDesc={dateRecent}
-            />
+          <th >
+            <div className="sort-cell">
+              Date & Time
+              <SortDateIcon
+                setSortDesc={setDateRecent}
+                handleSortById={handleFilterByDate}
+                sortDesc={dateRecent}
+              />
+            </div>
           </th>
-          <th>Severity</th>
           <th>Care level</th>
           <th>Status</th>
           <th className="action-col">Action</th>
@@ -663,7 +667,7 @@ const GeneralIncidentTable = ({
               className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
                 }`}
             >
-              <td>
+              <td data-label="Select">
                 <div
                   onClick={() => handleSelectedItems(incident)}
                   className="icon"
@@ -675,8 +679,8 @@ const GeneralIncidentTable = ({
                   )}
                 </div>
               </td>
-              <td>{index + 1}</td>
-              <td className="tag">
+              <td data-label="No">{index + 1}</td>
+              <td data-label="ID" className="tag">
                 {incident.original_report || incident.id}
                 {incident.is_modified ? (
                   <div className="tag-data">Edited</div>
@@ -684,23 +688,21 @@ const GeneralIncidentTable = ({
                   ""
                 )}
               </td>
-              <td>{incident.report_facility?.name || "Not provided"}</td>
-              <td>
+              <td data-label="Facility">{incident.report_facility?.name || "Not provided"}</td>
+              <td data-label="Name">
                 {incident.patient_visitor?.last_name &&
                   incident.patient_visitor?.first_name
                   ? `${incident.patient_visitor?.last_name} ${incident.patient_visitor?.first_name}`
                   : "Not provided"}
               </td>
-              <td>{incident.incident_type || "Not provided"}</td>
-              <td>
+              <td data-label="Date & Time">
                 <div>
                   <DateFormatter dateString={incident.incident_date} />,{" "}
                   {incident.incident_time || "-"}
                 </div>
               </td>
-              <td>{incident.severity_rating || "Not provided"}</td>
-              <td>{incident.category || "Not provided"}</td>
-              <td>
+              <td data-label="Care level">{incident.severity_rating || "Not provided"}</td>
+              <td data-label="Status">
                 <p
                   className={`follow-up ${incident.status === "Draft"
                     ? "in-progress"
@@ -713,6 +715,7 @@ const GeneralIncidentTable = ({
                 </p>
               </td>
               <td
+                data-label="Action"
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
               >

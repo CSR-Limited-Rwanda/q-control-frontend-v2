@@ -22,23 +22,6 @@ import {
   SortNameIcon2,
 } from "./StaffIncidentList";
 
-// Debugging check for imported components
-// if (
-//   !SortByNumberIcon ||
-//   !SortDateIcon ||
-//   !SortNameIcon ||
-//   !SortNameIcon2 ||
-//   !DateFormatter
-// ) {
-//   console.error("One or more imported components are undefined:", {
-//     SortByNumberIcon: !!SortByNumberIcon,
-//     SortDateIcon: !!SortDateIcon,
-//     SortNameIcon: !!SortNameIcon,
-//     SortNameIcon2: !!SortNameIcon2,
-//     DateFormatter: !!DateFormatter,
-//   });
-// }
-
 function formatDate(dateString) {
   if (!dateString || isNaN(new Date(dateString).getTime())) {
     return "Invalid Date";
@@ -371,33 +354,7 @@ const LostAndFoundList = () => {
                         selectedItems={selectedItems}
                         handleSelectAll={handleSelectAll}
                       />
-                      <div className="mobile-table">
-                        <button
-                          onClick={() => handleSelectAll(searchResults)}
-                          type="button"
-                          className="tertiary-button"
-                        >
-                          {searchResults.every((item) =>
-                            selectedItems.some(
-                              (selected) => selected.id === item.id
-                            )
-                          ) ? (
-                            <SquareCheck />
-                          ) : (
-                            <Square />
-                          )}{" "}
-                          Select all
-                        </button>
-                        {currentSearchResults.map((incident, index) => (
-                          <IncidentTableCard
-                            key={index}
-                            incident={incident}
-                            handleRowClick={handleRowClick}
-                            selectedItems={selectedItems}
-                            handleSelectedItems={handleSelectedItems}
-                          />
-                        ))}
-                      </div>
+
                       <div className="pagination-controls">
                         <button
                           className="pagination-button"
@@ -445,33 +402,7 @@ const LostAndFoundList = () => {
                     selectedItems={selectedItems}
                     handleSelectAll={handleSelectAll}
                   />
-                  <div className="mobile-table">
-                    <button
-                      onClick={() => handleSelectAll(incidentData)}
-                      type="button"
-                      className="tertiary-button"
-                    >
-                      {incidentData.every((item) =>
-                        selectedItems.some(
-                          (selected) => selected.id === item.id
-                        )
-                      ) ? (
-                        <SquareCheck />
-                      ) : (
-                        <Square />
-                      )}{" "}
-                      Select all
-                    </button>
-                    {currentIncidentData.map((incident, index) => (
-                      <IncidentTableCard
-                        key={index}
-                        incident={incident}
-                        handleRowClick={handleRowClick}
-                        selectedItems={selectedItems}
-                        handleSelectedItems={handleSelectedItems}
-                      />
-                    ))}
-                  </div>
+
                   <div className="pagination-controls">
                     <button
                       className="pagination-button"
@@ -710,7 +641,7 @@ const LostFoundTable = ({
               className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
                 }`}
             >
-              <td>
+              <td data-label="Select">
                 <div
                   onClick={() => handleSelectedItems(incident)}
                   className="icon"
@@ -722,10 +653,10 @@ const LostFoundTable = ({
                   )}
                 </div>
               </td>
-              <td>{index + 1}</td>
-              <td>{incident.original_report || incident.id}</td>
-              <td>{incident.report_facility?.name || "Not provided"}</td>
-              <td>
+              <td data-label="No">{index + 1}</td>
+              <td data-label="ID">{incident.original_report || incident.id}</td>
+              <td data-label="Facility">{incident.report_facility?.name || "Not provided"}</td>
+              <td data-label="Date & Time Reported">
                 {DateFormatter ? (
                   <DateFormatter dateString={incident.date_reported} />
                 ) : (
@@ -733,18 +664,18 @@ const LostFoundTable = ({
                 )}
                 , {formatTime(incident.time_reported)}
               </td>
-              <td>
+              <td data-label="Person Taking Report">
                 {incident.taken_by?.last_name && incident.taken_by?.first_name
                   ? `${incident.taken_by.last_name} ${incident.taken_by.first_name}`
                   : "Not provided"}
               </td>
-              <td>
+              <td data-label="Person Reporting">
                 {incident.reported_by?.last_name &&
                   incident.reported_by?.first_name
                   ? `${incident.reported_by.last_name} ${incident.reported_by.first_name}`
                   : "Not provided"}
               </td>
-              <td>
+              <td data-label="Status">
                 <p
                   className={`follow-up ${incident.status === "Draft"
                     ? "in-progress"
@@ -757,6 +688,7 @@ const LostFoundTable = ({
                 </p>
               </td>
               <td
+                data-label="Action"
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
               >
@@ -794,99 +726,6 @@ const LostFoundTable = ({
         )}
       </tbody>
     </table>
-  );
-};
-
-const IncidentTableCard = ({
-  incident,
-  handleRowClick,
-  selectedItems,
-  handleSelectedItems,
-}) => {
-  return (
-    <div
-      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
-        }`}
-    >
-      <div className="card-header">
-        <div className="id-number">
-          <div onClick={() => handleSelectedItems(incident)} className="icon">
-            {selectedItems.includes(incident) ? (
-              <SquareCheck color="orange" />
-            ) : (
-              <Square />
-            )}
-          </div>
-          <span>ID</span>
-          <span>{incident.original_report || incident.id}</span>
-        </div>
-        <div
-          onClick={() =>
-            handleRowClick(
-              incident.original_report ? incident.original_report : incident.id
-            )
-          }
-          className="card-actions"
-        >
-          <ViewIcon />
-          <span>View more</span>
-        </div>
-      </div>
-      <div className="card-content-items">
-        <div className="item">
-          <label htmlFor="">Facility: </label>
-          <span>{incident.report_facility?.name || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Date & Time: </label>
-          <span>
-            {DateFormatter ? (
-              <DateFormatter dateString={incident.date_reported} />
-            ) : (
-              incident.date_reported
-            )}
-            , {formatTime(incident.time_reported)}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Person taking report: </label>
-          <span>
-            {incident.taken_by?.last_name && incident.taken_by?.first_name
-              ? `${incident.taken_by.last_name} ${incident.taken_by.first_name}`
-              : "Not provided"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Person reporting: </label>
-          <span>
-            {incident.reported_by?.last_name && incident.reported_by?.first_name
-              ? `${incident.reported_by.last_name} ${incident.reported_by.first_name}`
-              : "Not provided"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Location found: </label>
-          <span>{incident.location_found || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Location disposed: </label>
-          <span>{incident.location_returned || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Status: </label>
-          <span
-            className={`follow-up ${incident.status === "Draft"
-              ? "in-progress"
-              : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-              }`}
-          >
-            {incident.status || "Not specified"}
-          </span>
-        </div>
-      </div>
-    </div>
   );
 };
 

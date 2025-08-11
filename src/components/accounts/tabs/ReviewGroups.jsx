@@ -275,10 +275,10 @@ const ReviewGroups = () => {
                 <tbody className={`${isSearching && "is-searching"}`}>
                   {reviewGroups.map((group) => (
                     <tr key={group.id} onClick={() => handleRowClick(group.id)}>
-                      <td>{group.id || "N/A"}</td>
-                      <td>{group.title || "N/A"}</td>
-                      <td>{group.description || "N/A"}</td>
-                      <td>
+                      <td data-label="ID">{group.id || "N/A"}</td>
+                      <td data-label="Group Name">{group.title || "N/A"}</td>
+                      <td data-label="Description">{group.description || "N/A"}</td>
+                      <td data-label="Date Created">
                         <DateFormatter dateString={group.created_at} />
                       </td>
                     </tr>
@@ -348,9 +348,8 @@ const ReviewGroups = () => {
                 {total_pages > 1 && (
                   <button
                     onClick={() => handlePageChange(total_pages)}
-                    className={`pagination-button ${
-                      total_pages === page ? "active" : ""
-                    }`}
+                    className={`pagination-button ${total_pages === page ? "active" : ""
+                      }`}
                   >
                     {total_pages}
                   </button>

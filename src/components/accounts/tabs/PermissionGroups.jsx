@@ -253,10 +253,10 @@ const PermissionGroups = () => {
         <tbody>
           {groups.map((group) => (
             <tr key={group.id}>
-              <td>{group.name || '-'}</td>
-              <td>{group.created_at || '-'}</td>
-              <td>{group.permissions?.length || 0}</td>
-              <td>
+              <td data-label="Permission group">{group.name || '-'}</td>
+              <td data-label="Created at">{group.created_at || '-'}</td>
+              <td data-label="Total features">{group.permissions?.length || 0}</td>
+              <td data-label="Actions">
                 <Trash2 size={18} onClick={() => handleShowDeleteModal(group.id, group)} />
                 <SquarePen size={18} onClick={() => handleShowEditPermissionForm(group.id)} />
               </td>

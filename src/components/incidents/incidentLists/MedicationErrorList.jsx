@@ -414,31 +414,7 @@ const MedicationErrorList = () => {
                   handleSelectAll={handleSelectAll}
                   setIncidentData={setMedicationData}
                 />
-                <div className="mobile-table">
-                  <button
-                    onClick={() => handleSelectAll(medicationData)}
-                    type="button"
-                    className="tertiary-button"
-                  >
-                    {medicationData.every((item) =>
-                      selectedItems.some((selected) => selected.id === item.id)
-                    ) ? (
-                      <SquareCheck />
-                    ) : (
-                      <Square />
-                    )}{" "}
-                    Select all
-                  </button>
-                  {currentMedicationData.map((incident, index) => (
-                    <IncidentTableCard
-                      key={index}
-                      incident={incident}
-                      handleRowClick={handleRowClick}
-                      selectedItems={selectedItems}
-                      handleSelectedItems={handleSelectedItems}
-                    />
-                  ))}
-                </div>
+
                 <div className="pagination-controls">
                   <button
                     className="pagination-button"
@@ -576,31 +552,37 @@ const MedicationErrorTable = ({
             </div>
           </th>
           <th>No</th>
-          <th className="sort-cell">
-            ID
-            <SortByNumberIcon
-              setSortDesc={setSortDesc}
-              handleSortById={handleSortById}
-              sortDesc={sortDesc}
-            />
+          <th>
+            <div className="sort-cell">
+              ID
+              <SortByNumberIcon
+                setSortDesc={setSortDesc}
+                handleSortById={handleSortById}
+                sortDesc={sortDesc}
+              />
+            </div>
           </th>
           <th>Facility</th>
-          <th className="sort-cell">
-            Patient Name
-            <SortNameIcon
-              handleSortById={handleSortByName}
-              sortDesc={nameAZ}
-              setSortDesc={setNameAZ}
-            />
+          <th>
+            <div className="sort-cell">
+              Patient Name
+              <SortNameIcon
+                handleSortById={handleSortByName}
+                sortDesc={nameAZ}
+                setSortDesc={setNameAZ}
+              />
+            </div>
           </th>
           <th>MRN</th>
-          <th className="sort-cell">
-            Date & Time
-            <SortDateIcon
-              setSortDesc={setDateRecent}
-              handleSortById={handleFilterByDate}
-              sortDesc={dateRecent}
-            />
+          <th>
+            <div className="sort-cell">
+              Date & Time
+              <SortDateIcon
+                setSortDesc={setDateRecent}
+                handleSortById={handleFilterByDate}
+                sortDesc={dateRecent}
+              />
+            </div>
           </th>
           <th>Category</th>
           <th>Status</th>
@@ -622,7 +604,7 @@ const MedicationErrorTable = ({
               className={`table-card ${selectedItems.includes(medication) ? "selected" : ""
                 }`}
             >
-              <td>
+              <td data-label="Select">
                 <div
                   onClick={() => handleSelectedItems(medication)}
                   className="icon"
@@ -634,20 +616,20 @@ const MedicationErrorTable = ({
                   )}
                 </div>
               </td>
-              <td>{index + 1}</td>
-              <td>{medication.original_report || medication.id}</td>
-              <td>{medication.report_facility?.name || "Not found"}</td>
-              <td>
+              <td data-label="No">{index + 1}</td>
+              <td data-label="ID">{medication.original_report || medication.id}</td>
+              <td data-label="Facility">{medication.report_facility?.name || "Not found"}</td>
+              <td data-label="Patient Name">
                 {medication.patient?.last_name || medication.patient?.first_name
                   ? `${medication.patient?.last_name} ${medication.patient?.first_name}`
                   : "Not provided"}
               </td>
-              <td>{medication?.patient?.medical_record_number || "-"}</td>
-              <td>
+              <td data-label="MRN">{medication?.patient?.medical_record_number || "-"}</td>
+              <td data-label="Date & Time">
                 <DateFormatter dateString={medication.date_of_error} />,{" "}
                 {medication.time_of_error}
               </td>
-              <td>
+              <td data-label="Category">
                 {(() => {
                   try {
                     const errorCat = medication.error_category;
@@ -664,7 +646,7 @@ const MedicationErrorTable = ({
                   }
                 })()}
               </td>
-              <td>
+              <td data-label="Status">
                 <p
                   className={`follow-up ${medication.status === "Draft"
                     ? "in-progress"
@@ -677,6 +659,7 @@ const MedicationErrorTable = ({
                 </p>
               </td>
               <td
+                data-label="Action"
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
               >
@@ -717,99 +700,5 @@ const MedicationErrorTable = ({
   );
 };
 
-const IncidentTableCard = ({
-  incident,
-  items,
-  handleRowClick,
-  selectedItems,
-  handleSelectedItems,
-}) => {
-  return (
-    <div
-      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
-        }`}
-    >
-      <div className="card-header">
-        <div className="id-number">
-          <div onClick={() => handleSelectedItems(incident)} className="icon">
-            {selectedItems.includes(incident) ? (
-              <SquareCheck color="orange" />
-            ) : (
-              <Square />
-            )}
-          </div>
-          <span>ID</span>
-          <span>{incident.original_report || incident.id}</span>
-        </div>
-        <div
-          onClick={() =>
-            handleRowClick(
-              incident.original_report ? incident.original_report : incident.id
-            )
-          }
-          className="card-actions"
-        >
-          <ViewIcon />
-          <span>View more</span>
-        </div>
-      </div>
-      {items}
-      <div className="card-content-items">
-        <div className="item">
-          <label htmlFor="">Facility: </label>
-          <span>{incident?.report_facility?.name || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">MRN: </label>
-          <span>
-            {incident?.patient?.medical_record_number || "Not provided"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Patient Name: </label>
-          <span>
-            {`${incident.patient?.last_name} ${incident.patient?.first_name}` ||
-              "Not provided"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Date & Time: </label>
-          <span>
-            <span>
-              <DateFormatter dateString={incident?.date_of_error} />,{" "}
-              {incident?.time_of_error}
-            </span>{" "}
-            || "-"
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Category: </label>
-          <span>{incident?.error_category || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Med classification: </label>
-          <span>{incident?.drug_given || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Nurse patient ratio: </label>
-          <span>{incident?.provider_name || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Status: </label>
-          <span
-            className={`follow-up ${incident.status === "Draft"
-              ? "in-progress"
-              : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-              }`}
-          >
-            {incident?.status || "Not specified"}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default MedicationErrorList;
