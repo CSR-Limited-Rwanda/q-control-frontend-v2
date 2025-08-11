@@ -27,6 +27,8 @@ import { useAuthentication } from "@/context/authContext";
 
 const EmployeeIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
+  const [currentFacility, setCurrentFacility] = useState(user.facility);
+
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [statusType, setStatusType] = useState("Select Status");
@@ -174,11 +176,11 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       profile_type: "Witness",
     }));
     const incidentData = {
-      facility_id: facilityId,
-      department: departmentId,
+      facility_id: user?.facility?.id,
+      department: user?.department?.id,
       current_step: currentStep,
       incident_status: statusType,
-      report_facility: checkCurrentAccount(),
+      report_facility_id: currentFacility?.id,
       patient_info:
         firstName && lastName
           ? {
@@ -468,6 +470,14 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const handlePreviousStep = () => {
     currentStep > 1 ? setCurrentStep(currentStep - 1) : setCurrentStep(1);
   };
+
+  const handleCurrentFacility = (facilityId) => {
+    const selectedFacility = user?.accounts?.find(
+      (facility) => facility.id === parseInt(facilityId)
+    );
+    setCurrentFacility(selectedFacility);
+    console.log(selectedFacility);
+  };
   return (
     <div className="forms-container">
       <div className="forms-header">
@@ -520,6 +530,21 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           incidentType="employee_incident"
         />
       </div>
+
+      {currentStep === 2 && (
+        <select
+          name="facility"
+          id="facility"
+          value={currentFacility?.id || ""}
+          onChange={(e) => handleCurrentFacility(e.target.value)}
+        >
+          {user?.accounts?.map((facility) => (
+            <option key={facility.id} value={facility.id}>
+              Submitting for {facility.name}
+            </option>
+          ))}
+        </select>
+      )}
 
       <form className="newIncidentForm">
         {currentStep === 1 ? (
