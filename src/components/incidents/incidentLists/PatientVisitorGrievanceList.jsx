@@ -582,14 +582,14 @@ const GrievanceTable = ({
           </th>
           <th>MRN</th>
           <th>
-            <sort className="sort-cell">
+            <div className="sort-cell">
               Date
               <SortDateIcon
                 setSortDesc={setDateRecent}
                 handleSortById={handleFilterByDate}
                 sortDesc={dateRecent}
               />
-            </sort>
+            </div>
           </th>
           <th>Status</th>
           <th>Action</th>
