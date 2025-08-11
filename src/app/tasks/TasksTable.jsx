@@ -27,44 +27,44 @@ const TasksTable = ({ tasks, selectedTasks, handleSelectAllTasks, handleSortTask
                     </th>
                     <th>ID</th>
                     <th>
-                        <div className="sort-cell">
+                        <div className="sort-cell" onClick={() => handleSortTasks('name', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
                             Name
-                            <div className="sort-icon" onClick={() => handleSortTasks('name', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
+                            <div className="sort-icon" >
                                 {
                                     parameters.sort_by === 'name' && parameters.sort_order === 'asc' ?
-                                        <ArrowDownNarrowWide />
+                                        <ArrowDownNarrowWide size={18} />
                                         : parameters.sort_by === 'name' && parameters.sort_order === 'desc' ?
-                                            <ArrowUpNarrowWide />
-                                            : <ArrowDownNarrowWide />
+                                            <ArrowUpNarrowWide size={18} />
+                                            : <ArrowDownNarrowWide size={18} />
                                 }
                             </div>
                         </div>
                     </th>
                     <th>
-                        <div className="sort-cell">
+                        <div className="sort-cell" onClick={() => handleSortTasks('deadline', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
                             Deadline
-                            <div className="sort-icon" onClick={() => handleSortTasks('deadline', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
+                            <div className="sort-icon" >
                                 {
                                     parameters.sort_by === 'deadline' && parameters.sort_order === 'asc' ?
-                                        <ArrowDownNarrowWide />
+                                        <ArrowDownNarrowWide size={18} />
                                         : parameters.sort_by === 'deadline' && parameters.sort_order === 'desc' ?
-                                            <ArrowUpNarrowWide />
-                                            : <ArrowDownNarrowWide />
+                                            <ArrowUpNarrowWide size={18} />
+                                            : <ArrowDownNarrowWide size={18} />
                                 }
                             </div>
                         </div>
                     </th>
                     <th>Incident</th>
                     <th>
-                        <div className="sort-cell">
+                        <div className="sort-cell" onClick={() => handleSortTasks('status', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
                             Status
-                            <div className="sort-icon" onClick={() => handleSortTasks('status', parameters.sort_order === 'asc' ? 'desc' : 'asc')}>
+                            <div className="sort-icon">
                                 {
                                     parameters.sort_by === 'status' && parameters.sort_order === 'asc' ?
-                                        <ArrowDownNarrowWide />
+                                        <ArrowDownNarrowWide size={18} />
                                         : parameters.sort_by === 'status' && parameters.sort_order === 'desc' ?
-                                            <ArrowUpNarrowWide />
-                                            : <ArrowDownNarrowWide />
+                                            <ArrowUpNarrowWide size={18} />
+                                            : <ArrowDownNarrowWide size={18} />
                                 }
                             </div>
                         </div>
