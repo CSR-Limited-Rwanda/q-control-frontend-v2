@@ -32,9 +32,12 @@ import ErrorMessage from "@/components/messages/ErrorMessage";
 import DraftPopup from "@/components/DraftPopup";
 import "../../../../styles/_forms.scss";
 import "../../../../styles/generalIncident.scss";
+import { useAuthentication } from "@/context/authContext";
 // import RichTexField from "./inputs/richTexField";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
+  const {user} = useAuthentication()
+  console.log(user)
   const [restraintOn, setRestraintOn] = useState([]);
 
   const [specimen, setSpecimen] = useState([]);
@@ -464,14 +467,13 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
       if (isValid) {
         const incidentPostData = {
-          facility_id: facilityId,
-          department: departmentId,
+          facility_id: user.facility.id,
+          department: user.department.id,
           status: "Draft",
           current_step: currentStep,
           category: category,
           incident_date: incidentDate,
           incident_time: incidentTime,
-          report_facility_id: facilityId,
           patient_visitor: {
             first_name: patientVisitorFirstName,
             last_name: patientVisitorLastName,

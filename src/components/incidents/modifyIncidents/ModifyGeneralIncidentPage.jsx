@@ -146,7 +146,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
     incident.incident_time ?? ""
   );
   const [medicalRecoredNumber, setMedicalRecordNumber] = useState(
-    incident.patient_visitor?.medical_record_number
+    incident.patient_visitor?.medical_record_number ?? ""
   );
   const [address, setAddress] = useState(
     incident.patient_visitor?.address ?? ""
@@ -160,7 +160,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   );
   const [sex, setSex] = useState(incident.patient_visitor?.gender ?? "");
   const [dateOfBirth, setDateOfBirth] = useState(
-    incident.patient_visitor?.date_of_birth
+    incident.patient_visitor?.date_of_birth ?? ""
   );
   const [age, setAge] = useState(incident.patient_visitor?.age ?? "");
 
