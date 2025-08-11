@@ -23,8 +23,10 @@ import DraftPopup from "@/components/DraftPopup";
 
 import "@/styles/_forms.scss";
 import "@/styles/_employeeIncidentForm.scss";
+import { useAuthentication } from "@/context/authContext";
 
 const EmployeeIncidentForm = ({ togglePopup }) => {
+  const { user } = useAuthentication();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [statusType, setStatusType] = useState("Select Status");
@@ -64,16 +66,15 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const [age, setAge] = useState("");
   const currentStepRef = useRef(currentStep);
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [facilityId, setFacilityId] = useState(
-    localStorage.getItem("facilityId")
-  );
+  const [facilityId, setFacilityId] = useState(user.facility.id);
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
-  )
+  );
+
+  console.log(facilityId);
 
   useEffect(() => {
     currentStepRef.current = currentStep;
-
   }, [currentStep]);
 
   useEffect(() => {
@@ -140,7 +141,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         first_name: "",
         last_name: "",
       });
-
     }
   };
 
@@ -182,12 +182,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       patient_info:
         firstName && lastName
           ? {
-            first_name: firstName,
-            last_name: lastName,
-            profile_type: "Patient",
-            age: age,
-            date_of_birth: dateBirth,
-          }
+              first_name: firstName,
+              last_name: lastName,
+              profile_type: "Patient",
+              age: age,
+              date_of_birth: dateBirth,
+            }
           : null,
       job_title: jobTitle,
 
@@ -219,7 +219,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         localStorage.setItem("updateNewIncident", "true");
 
         setReportID(res.data.id);
-
       }
     } catch (error) {
       console.error("Error submitting step 1: ", error);
@@ -288,7 +287,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
 
       if (isValid) {
-
         const data = {
           facility_id: facilityId,
           current_step: currentStep,
@@ -300,10 +298,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           doctor_consulted_info:
             doctorFirstName && doctorLastName
               ? {
-                first_name: doctorFirstName,
-                last_name: doctorLastName,
-                profile_type: "Physician",
-              }
+                  first_name: doctorFirstName,
+                  last_name: doctorLastName,
+                  profile_type: "Physician",
+                }
               : null,
 
           previous_injury: injuredBody,
@@ -332,7 +330,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             postDocumentHistory(reportId, "added a new incident", "create");
           }
         } catch (error) {
-
           console.error("Error submitting step 4: ", error);
 
           setIsLoading(false);
@@ -365,7 +362,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         postDocumentHistory(reportId, "added a new incident", "create");
       }
     } catch (error) {
-
       console.error("Error submitting step 4: ", error);
       return;
     }
@@ -413,7 +409,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
 
       if (isValid) {
-
         setIsLoading(true);
         if (localStorage.getItem("updateNewIncident") === "false") {
           handleStepOneSubmit();
@@ -433,12 +428,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               patient_info:
                 firstName && lastName
                   ? {
-                    first_name: firstName,
-                    last_name: lastName,
-                    profile_type: "Patient",
-                    age: age,
-                    date_of_birth: dateBirth,
-                  }
+                      first_name: firstName,
+                      last_name: lastName,
+                      profile_type: "Patient",
+                      age: age,
+                      date_of_birth: dateBirth,
+                    }
                   : null,
               job_title: jobTitle,
 

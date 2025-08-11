@@ -134,7 +134,7 @@ const styles = {
     top: "20px",
     left: "50%",
     transform: "translateX(-50%)",
-    zIndex: 1000,
+    zIndex: 10000000,
     display: "flex",
     flexDirection: "column",
     gap: "10px",
