@@ -260,8 +260,8 @@ const Accounts = () => {
                   <tbody className={`${isSearching && "is-searching"}`}>
                     {users.map((user) => (
                       <tr key={user.id} onClick={() => handleNavigate(user)}>
-                        <td>{user.id || "N/A"}</td>
-                        <td>
+                        <td data-label="ID">{user.id || "N/A"}</td>
+                        <td data-label="Name">
                           <UserCard
                             firstName={user.user?.first_name || "N/A"}
                             lastName={user.user?.last_name || "N/A"}
@@ -269,10 +269,10 @@ const Accounts = () => {
                           />
                         </td>
 
-                        <td>{user.user?.email || "N/A"}</td>
-                        <td>{user?.phone_number || "N/A"}</td>
-                        <td>{user?.department?.name || "N/A"}</td>
-                        <td>{formatDate(user.created_at)}</td>
+                        <td data-label="Email">{user.user?.email || "N/A"}</td>
+                        <td data-label="Phone Number">{user?.phone_number || "N/A"}</td>
+                        <td data-label="Department">{user?.department?.name || "N/A"}</td>
+                        <td data-label="Date Added">{formatDate(user.created_at)}</td>
                       </tr>
                     ))}
                     <tr></tr>

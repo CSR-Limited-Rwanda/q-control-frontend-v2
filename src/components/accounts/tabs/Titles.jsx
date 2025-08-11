@@ -219,10 +219,10 @@ const Titles = () => {
             <tbody>
               {titles.map((title, index) => (
                 <tr onClick={() => handleShowTitleDetails(title)} key={index}>
-                  <td>{title.id}</td>
-                  <td>{title.name || "-"}</td>
-                  <td>{title.description || "-"}</td>
-                  <td>{<DateFormatter dateString={title.created_at || "-"} />}</td>
+                  <td data-label="ID">{title.id}</td>
+                  <td data-label="Name">{title.name || "-"}</td>
+                  <td data-label="Description">{title.description || "-"}</td>
+                  <td data-label="Date created">{<DateFormatter dateString={title.created_at || "-"} />}</td>
                 </tr>
               ))}
             </tbody>

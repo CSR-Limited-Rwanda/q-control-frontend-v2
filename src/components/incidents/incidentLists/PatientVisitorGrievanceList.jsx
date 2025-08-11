@@ -370,34 +370,7 @@ const PatientVisitorGrievanceList = () => {
                           handleSelectAll={handleSelectAll}
                           handleSelectedItems={handleSelectedItems}
                         />
-                        <div className="mobile-table">
-                          <button
-                            onClick={() => handleSelectAll(searchResults)}
-                            type="button"
-                            className="tertiary-button"
-                          >
-                            {searchResults.every((item) =>
-                              selectedItems.some(
-                                (selected) => selected.id === item.id
-                              )
-                            ) ? (
-                              <SquareCheck />
-                            ) : (
-                              <Square />
-                            )}{" "}
-                            Select all
-                          </button>
-                          {currentSearchResults.map((grievance, index) => (
-                            <IncidentTableCard
-                              key={index}
-                              incident={grievance}
-                              navigateToModify={navigateToModify}
-                              handleRowClick={handleRowClick}
-                              selectedItems={selectedItems}
-                              handleSelectedItems={handleSelectedItems}
-                            />
-                          ))}
-                        </div>
+
                         <div className="pagination-controls">
                           <button
                             className="pagination-button"
@@ -445,34 +418,7 @@ const PatientVisitorGrievanceList = () => {
                       handleSelectAll={handleSelectAll}
                       handleSelectedItems={handleSelectedItems}
                     />
-                    <div className="mobile-table">
-                      <button
-                        onClick={() => handleSelectAll(grievanceData)}
-                        type="button"
-                        className="tertiary-button"
-                      >
-                        {grievanceData.every((item) =>
-                          selectedItems.some(
-                            (selected) => selected.id === item.id
-                          )
-                        ) ? (
-                          <SquareCheck />
-                        ) : (
-                          <Square />
-                        )}{" "}
-                        Select all
-                      </button>
-                      {currentGrievanceData.map((grievance, index) => (
-                        <IncidentTableCard
-                          key={index}
-                          incident={grievance}
-                          navigateToModify={navigateToModify}
-                          handleRowClick={handleRowClick}
-                          selectedItems={selectedItems}
-                          handleSelectedItems={handleSelectedItems}
-                        />
-                      ))}
-                    </div>
+
                     <div className="pagination-controls">
                       <button
                         className="pagination-button"
@@ -613,31 +559,37 @@ const GrievanceTable = ({
             </div>
           </th>
           <th>No</th>
-          <th className="sort-cell">
-            ID
-            <SortByNumberIcon
-              setSortDesc={setSortDesc}
-              handleSortById={handleSortById}
-              sortDesc={sortDesc}
-            />
+          <th>
+            <div className="sort-cell">
+              ID
+              <SortByNumberIcon
+                setSortDesc={setSortDesc}
+                handleSortById={handleSortById}
+                sortDesc={sortDesc}
+              />
+            </div>
           </th>
           <th>Facility</th>
-          <th className="sort-cell">
-            Name
-            <SortNameIcon
-              handleSortById={handleSortByName}
-              sortDesc={nameAZ}
-              setSortDesc={setNameAZ}
-            />
+          <th>
+            <div className="sort-cell">
+              Name
+              <SortNameIcon
+                handleSortById={handleSortByName}
+                sortDesc={nameAZ}
+                setSortDesc={setNameAZ}
+              />
+            </div>
           </th>
           <th>MRN</th>
-          <th className="sort-cell">
-            Date
-            <SortDateIcon
-              setSortDesc={setDateRecent}
-              handleSortById={handleFilterByDate}
-              sortDesc={dateRecent}
-            />
+          <th>
+            <sort className="sort-cell">
+              Date
+              <SortDateIcon
+                setSortDesc={setDateRecent}
+                handleSortById={handleFilterByDate}
+                sortDesc={dateRecent}
+              />
+            </sort>
           </th>
           <th>Status</th>
           <th>Action</th>
@@ -658,7 +610,7 @@ const GrievanceTable = ({
               className={`table-card ${selectedItems.includes(grievance) ? "selected" : ""
                 }`}
             >
-              <td>
+              <td data-label="Select">
                 <div
                   onClick={() => handleSelectedItems(grievance)}
                   className="icon"
@@ -670,23 +622,23 @@ const GrievanceTable = ({
                   )}
                 </div>
               </td>
-              <td>{index + 1}</td>
-              <td>{grievance.original_report || grievance.id}</td>
-              <td>{grievance.report_facility?.name || "Not provided"}</td>
-              <td>
+              <td data-label="No">{index + 1}</td>
+              <td data-label="ID">{grievance.original_report || grievance.id}</td>
+              <td data-label="Facility">{grievance.report_facility?.name || "Not provided"}</td>
+              <td data-label="Name">
                 {grievance.patient_name?.last_name &&
                   grievance.patient_name?.first_name
                   ? `${grievance.patient_name?.last_name} ${grievance.patient_name?.first_name}`
                   : "Not provided"}
               </td>
-              <td>
+              <td data-label="MRN">
                 {grievance.patient_name?.medical_record_number ||
                   "Not specified"}
               </td>
-              <td>
+              <td data-label="Date">
                 <DateFormatter dateString={grievance.date} />
               </td>
-              <td>
+              <td data-label="Status">
                 <p
                   className={`follow-up ${grievance.status === "Draft"
                     ? "in-progress"
@@ -699,6 +651,7 @@ const GrievanceTable = ({
                 </p>
               </td>
               <td
+                data-label="Action"
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
               >
@@ -739,85 +692,6 @@ const GrievanceTable = ({
   );
 };
 
-const IncidentTableCard = ({
-  incident,
-  navigateToModify,
-  handleRowClick,
-  selectedItems,
-  handleSelectedItems,
-}) => {
-  return (
-    <div
-      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
-        }`}
-    >
-      <div className="card-header">
-        <div className="id-number">
-          <div onClick={() => handleSelectedItems(incident)} className="icon">
-            {selectedItems.includes(incident) ? (
-              <SquareCheck color="orange" />
-            ) : (
-              <Square />
-            )}
-          </div>
-          <span>ID</span>
-          <span>{incident.original_report || incident.id}</span>
-        </div>
-        <div
-          onClick={() =>
-            handleRowClick(
-              incident.original_report ? incident.original_report : incident.id
-            )
-          }
-          className="card-actions"
-        >
-          <ViewIcon />
-          <span>View more</span>
-        </div>
-      </div>
-      <div className="card-content-items">
-        <div className="item">
-          <label htmlFor="">Facility: </label>
-          <span>{incident?.report_facility?.name || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Name: </label>
-          <span>
-            {incident.patient_name?.last_name &&
-              incident.patient_name?.first_name
-              ? `${incident.patient_name?.last_name} ${incident.patient_name?.first_name}`
-              : "Not provided"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">MRN: </label>
-          <span>
-            {incident.patient_name?.medical_record_number || "Not provided"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Date: </label>
-          <span>
-            <DateFormatter dateString={incident?.date} />
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Status: </label>
-          <span
-            className={`follow-up ${incident.status === "Draft"
-              ? "in-progress"
-              : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-              }`}
-          >
-            {incident?.status || "Not specified"}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const ComplaintsTab = () => {
   const [loadingComplaints, setLoadingComplaints] = useState(true);
@@ -1203,20 +1077,20 @@ const ComplaintsTab = () => {
                                   handleSelectedComplaint(complaint)
                                 }
                               >
-                                <td>{index + 1}</td>
-                                <td>{complaint.id}</td>
-                                <td>
+                                <td data-label="No"> {index + 1}</td>
+                                <td data-label="ID">{complaint.id}</td>
+                                <td data-label="Patient Name">
                                   {complaint.patient_name || "Not provided"}
                                 </td>
-                                <td>
+                                <td data-label="MRN">
                                   {complaint.medical_record_number || "-"}
                                 </td>
-                                <td>
+                                <td data-label="Date of Complaint">
                                   <DateFormatter
                                     dateString={complaint.date_of_complaint}
                                   />
                                 </td>
-                                <td>
+                                <td data-label="Resolved by staff">
                                   <p
                                     className={`follow-up ${complaint.resolved_by_staff === false
                                       ? "in-progress"
@@ -1228,7 +1102,7 @@ const ComplaintsTab = () => {
                                       : "No") || "Not specified"}
                                   </p>
                                 </td>
-                                <td>
+                                <td data-label="How complaint was taken">
                                   {complaint.how_complaint_was_taken || "-"}
                                 </td>
                               </tr>
@@ -1321,16 +1195,16 @@ const ComplaintsTab = () => {
                             key={index}
                             onClick={() => handleSelectedComplaint(complaint)}
                           >
-                            <td>{index + 1}</td>
-                            <td>{complaint.id}</td>
-                            <td>{complaint.patient_name || "Not provided"}</td>
-                            <td>{complaint.medical_record_number || "-"}</td>
-                            <td>
+                            <td data-label="No">{index + 1}</td>
+                            <td data-label="ID">{complaint.id}</td>
+                            <td data-label="Patient Name">{complaint.patient_name || "Not provided"}</td>
+                            <td data-label="MRN">{complaint.medical_record_number || "-"}</td>
+                            <td data-label="Date of Complaint">
                               <DateFormatter
                                 dateString={complaint.date_of_complaint}
                               />
                             </td>
-                            <td>
+                            <td data-label="Resolved by staff">
                               <p
                                 className={`follow-up ${complaint.resolved_by_staff === false
                                   ? "in-progress"
@@ -1341,7 +1215,7 @@ const ComplaintsTab = () => {
                                   "Not specified"}
                               </p>
                             </td>
-                            <td>{complaint.how_complaint_was_taken || "-"}</td>
+                            <td data-label="How complaint was taken">{complaint.how_complaint_was_taken || "-"}</td>
                           </tr>
                         ))
                       ) : (

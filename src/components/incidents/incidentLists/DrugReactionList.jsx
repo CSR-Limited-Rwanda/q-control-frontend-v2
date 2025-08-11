@@ -435,31 +435,7 @@ const DrugReactionList = () => {
                   handleSelectedItems={handleSelectedItems}
                   handleSelectAll={handleSelectAll}
                 />
-                <div className="mobile-table">
-                  <button
-                    onClick={() => handleSelectAll(drugReactionData)}
-                    type="button"
-                    className="tertiary-button"
-                  >
-                    {drugReactionData.every((item) =>
-                      selectedItems.some((selected) => selected.id === item.id)
-                    ) ? (
-                      <SquareCheck />
-                    ) : (
-                      <Square />
-                    )}{" "}
-                    Select all
-                  </button>
-                  {currentDrugReactionData.map((incident, index) => (
-                    <IncidentTableCard
-                      key={index}
-                      incident={incident}
-                      handleRowClick={handleRowClick}
-                      selectedItems={selectedItems}
-                      handleSelectedItems={handleSelectedItems}
-                    />
-                  ))}
-                </div>
+
                 <div className="pagination-controls">
                   <button
                     className="pagination-button"
@@ -597,31 +573,37 @@ const DrugReactionTable = ({
             </div>
           </th>
           <th>No</th>
-          <th className="sort-cell">
-            ID
-            <SortByNumberIcon
-              setSortDesc={setSortDesc}
-              handleSortById={handleSortById}
-              sortDesc={sortDesc}
-            />
+          <th>
+            <div className="sort-cell">
+              ID
+              <SortByNumberIcon
+                setSortDesc={setSortDesc}
+                handleSortById={handleSortById}
+                sortDesc={sortDesc}
+              />
+            </div>
           </th>
           <th>Facility</th>
-          <th className="sort-cell">
-            Patient/Visitor Name
-            <SortNameIcon
-              handleSortById={handleSortByName}
-              sortDesc={nameAZ}
-              setSortDesc={setNameAZ}
-            />
+          <th>
+            <div className="sort-cell">
+              Patient/Visitor Name
+              <SortNameIcon
+                handleSortById={handleSortByName}
+                sortDesc={nameAZ}
+                setSortDesc={setNameAZ}
+              />
+            </div>
           </th>
           <th>Outcome</th>
-          <th className="sort-cell">
-            Date & Time
-            <SortDateIcon
-              setSortDesc={setDateRecent}
-              handleSortById={handleFilterByDate}
-              sortDesc={dateRecent}
-            />
+          <th>
+            <div className="sort-cell">
+              Date & Time
+              <SortDateIcon
+                setSortDesc={setDateRecent}
+                handleSortById={handleFilterByDate}
+                sortDesc={dateRecent}
+              />
+            </div>
           </th>
           <th>Severity</th>
           <th>Care Level</th>
@@ -642,7 +624,7 @@ const DrugReactionTable = ({
               className={`table-card ${selectedItems.includes(data) ? "selected" : ""
                 }`}
             >
-              <td>
+              <td data-label="Select">
                 <div onClick={() => handleSelectedItems(data)} className="icon">
                   {selectedItems.includes(data) ? (
                     <SquareCheck color="orange" />
@@ -651,16 +633,16 @@ const DrugReactionTable = ({
                   )}
                 </div>
               </td>
-              <td>{index + 1}</td>
-              <td>{data.original_report || data.id}</td>
-              <td>{data?.report_facility?.name || "Not provided"}</td>
-              <td>
+              <td data-label="No"> {index + 1}</td>
+              <td data-label="ID">{data.original_report || data.id}</td>
+              <td data-label="Facility">{data?.report_facility?.name || "Not provided"}</td>
+              <td data-label="Name">
                 {data.patient_name?.last_name && data.patient_name?.first_name
                   ? `${data.patient_name?.last_name} ${data.patient_name?.first_name}`
                   : "Not provided"}
               </td>
-              <td>{data.outcome_type || "Not Provided"}</td>
-              <td>
+              <td data-label="Outcome">{data.outcome_type || "Not Provided"}</td>
+              <td data-label="Date & Time">
                 <div>
                   <DateFormatter dateString={data.date_of_adverse_reaction} />,{" "}
                   {data.incident_time
@@ -668,9 +650,9 @@ const DrugReactionTable = ({
                     : "-"}
                 </div>
               </td>
-              <td>{data.severity_rating || "Not specified"}</td>
-              <td>{data.patient_type || "Not specified"}</td>
-              <td>
+              <td data-label="Severity">{data.severity_rating || "Not specified"}</td>
+              <td data-label="Care Level">{data.patient_type || "Not specified"}</td>
+              <td data-label="Status">
                 <p
                   className={`follow-up ${data.status === "Draft"
                     ? "in-progress"
@@ -683,6 +665,7 @@ const DrugReactionTable = ({
                 </p>
               </td>
               <td
+                data-label="Action"
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
               >
