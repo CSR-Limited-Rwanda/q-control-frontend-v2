@@ -1,12 +1,12 @@
 const PopUp = ({ togglePopup, isPopupOpen, popupContent: PopupContent, spacialClass }) => {
-    return (
-      <div className="pop-up incident-form-popup">
-        <div className={`popup-content`}>
-  
-          {isPopupOpen && PopupContent}
-          
-        </div>
+  return (
+    <div className="popup incident-form-popup">
+      <div className={`popup-content`}>
+
+        {isPopupOpen && PopupContent}
+
       </div>
-    );
-  };
-  export default PopUp;
+    </div>
+  );
+};
+export default PopUp;

@@ -9,10 +9,11 @@ import { TaskDetails } from './TaskDetails'
 import { Filters } from './TaskFilters'
 import TasksTable from './TasksTable'
 import TasksMobileCard from './TasksMobileCard'
+import { useAuthentication } from '@/context/authContext'
 
 const TasksPage = () => {
+    const { user } = useAuthentication()
     const [totalTasks, setTotalTasks] = useState(null)
-    const [userInfo, setUserInfo] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [isSearching, setIsSearching] = useState(false)
     const [tasks, setTasks] = useState([])
@@ -34,10 +35,11 @@ const TasksPage = () => {
     })
 
 
-    const loadTasks = async (userId) => {
+    const loadTasks = async () => {
 
         const queryParams = createUrlParams(parameters)
-        const response = await fetchUserTasks(userId, queryParams)
+
+        const response = await fetchTasks(queryParams)
         if (response.success) {
             setTasks(response.data.results)
             setTotalTasks(response.data.count)
@@ -73,8 +75,7 @@ const TasksPage = () => {
     }
 
     // handle open task details
-    const handleOpenTaskDetails = (e, taskId) => {
-        e.stopPropagation()
+    const handleOpenTaskDetails = (taskId) => {
         setSelectedTask(taskId)
         setShowTaskDetails(true)
     }
@@ -121,22 +122,12 @@ const TasksPage = () => {
             setPage(localStorage.getItem('tasksPage') || 1)
             setPageSize(localStorage.getItem('tasksPageSize') || 10)
         }
-
-        const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('loggedInUserInfo') || 'null') : null
-        if (!user && typeof window !== 'undefined') {
-            localStorage.removeItem('access')
-            window.location.reload()
-        }
-        setUserInfo(user)
-        if (user?.id) {
-            loadTasks(user.id)
-        }
+        loadTasks()
     }, [])
 
 
     return (
         <DashboardLayout>
-            <h1>Tasks Page</h1>
             {isLoading && <p>Loading tasks...</p>}
             {error && <p className='message error'>Error: {error}</p>}
             <div className="filters-container">
@@ -159,12 +150,12 @@ const TasksPage = () => {
                             <button className='secondary'><Printer /><span> Export Tasks</span></button>
                         </>
                     }
-                    <Filters filters={[parameters]} setFilters={setParameters} handleFilterChange={() => loadTasks(userInfo?.id)} />
+                    <Filters filters={[parameters]} setFilters={setParameters} handleFilterChange={() => loadTasks()} />
                 </div>
             </div>
 
             <TasksTable handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
-            <TasksMobileCard handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} />
+            {/* <TasksMobileCard handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} /> */}
 
             {
                 showTaskDetails && selectedTask && (

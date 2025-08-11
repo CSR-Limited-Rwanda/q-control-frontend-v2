@@ -68,7 +68,7 @@
     }
   }
 
-  
+
 }
 
 .departments {
@@ -147,9 +147,6 @@
     border-bottom-left-radius: 7px;
     border-bottom-right-radius: 7px;
   }
-  .results-table {
-    gap: 0;
-  }
 
   .filters_popup {
     h3 {
@@ -166,6 +163,7 @@
   .status {
     padding: 1rem;
   }
+
   .update-follow-up {
     max-width: 100px;
     width: 100%;
@@ -223,6 +221,7 @@
         margin-left: 20px;
         color: rgb(224, 224, 224);
       }
+
       #systemSearch {
         width: 100%;
         background-color: #4678a7;
@@ -324,7 +323,7 @@
         .facility-name {
           font-size: 18px;
         }
-  
+
         .date-created {
           color: #BBBBBB;
           font-weight: 400;
@@ -348,11 +347,13 @@
         flex-direction: column;
         gap: 8px;
 
-        .staff-card-title, .complaints-card-title {
+        .staff-card-title,
+        .complaints-card-title {
           color: #8D8D8D;
         }
 
-        .staff-card-desc, .complaints-card-desc {
+        .staff-card-desc,
+        .complaints-card-desc {
           font-size: 18px;
           font-weight: bold;
         }
@@ -400,6 +401,7 @@
       .header {
         cursor: pointer;
       }
+
       .actions-list {
         .action {
           cursor: pointer;
@@ -420,7 +422,7 @@
     align-items: center;
   }
 
-  
+
 }
 
 @media screen and (max-width: 960px) {

@@ -3,10 +3,11 @@ import api from "@/utils/api";
 export const fetchTasks = async (params) => {
     try {
         const response = await api.get(`/tasks/?${params}`);
+        console.log(response.data.results)
         if (response.status === 200) {
             return {
                 success: true,
-                data: response.data.results,
+                data: response.data,
             };
         } else {
             return {
@@ -28,6 +29,7 @@ export const fetchTasks = async (params) => {
 }
 
 export const fetchUserTasks = async (userId, params) => {
+    return
     try {
         const response = await api.get(`/users/${userId}/tasks/?${params}`);
         if (response.status === 200) {

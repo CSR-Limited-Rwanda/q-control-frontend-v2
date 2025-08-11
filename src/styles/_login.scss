@@ -58,6 +58,12 @@
     }
 }
 
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    cursor: pointer;
+}
 
 @media screen and (max-width: 1024px) {
     .login-page {

@@ -53,8 +53,8 @@ const DashboardLayout = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <LoaderCircle className="spinner" size={40} />
+      <div className="auth-loading-container">
+        <LoaderCircle className="loading-icon" size={40} />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 "use client";
 import api, { createUrlParams } from "@/utils/api";
-import { LoaderCircle, CirclePlus, ChevronDown, Ellipsis } from "lucide-react";
+import { LoaderCircle, CirclePlus, ChevronDown, Ellipsis, ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
 import React, { useEffect, useState, useCallback } from "react";
 import PrimaryButton from "@/components/PrimaryButton";
 import UserCard from "@/components/UserCard";
@@ -188,66 +188,91 @@ const Accounts = () => {
                 <table>
                   <thead>
                     <tr>
-                      <SortableHeader
-                        field="first_name"
-                        currentField={sortField}
-                        currentOrder={sortOrder}
-                        onSort={handleSort}
-                      >
-                        Names
-                      </SortableHeader>
-                      <SortableHeader
-                        field="id"
-                        currentField={sortField}
-                        currentOrder={sortOrder}
-                        onSort={handleSort}
-                      >
-                        ID
-                      </SortableHeader>
-                      <SortableHeader
-                        field="email"
-                        currentField={sortField}
-                        currentOrder={sortOrder}
-                        onSort={handleSort}
-                      >
-                        Email
-                      </SortableHeader>
-                      <th>Phone</th>
-                      <SortableHeader
-                        field="department"
-                        currentField={sortField}
-                        currentOrder={sortOrder}
-                        onSort={handleSort}
-                      >
-                        Department
-                      </SortableHeader>
-                      <SortableHeader
-                        field="created_at"
-                        currentField={sortField}
-                        currentOrder={sortOrder}
-                        onSort={handleSort}
-                      >
-                        Date Added
-                      </SortableHeader>
-                      {/* <th>Facility</th> */}
+                      <th>
+                        <div className="sort-cell" onClick={() => handleSort('id')}>
+                          ID
+                          {sortField === 'id' && sortOrder === 'asc' ? (
+                            <ArrowDownNarrowWide size={18} />
+                          ) : sortField === 'id' && sortOrder === 'desc' ? (
+                            <ArrowUpNarrowWide size={18} />
+                          ) : (
+                            <ArrowDownNarrowWide size={18} />
+                          )}
+                        </div>
+
+                      </th>
+                      <th>
+                        <div className="sort-cell" onClick={() => handleSort('first_name')}>
+                          Name
+                          {sortField === 'first_name' && sortOrder === 'asc' ? (
+                            <ArrowDownNarrowWide size={18} />
+                          ) : sortField === 'first_name' && sortOrder === 'desc' ? (
+                            <ArrowUpNarrowWide size={18} />
+                          ) : (
+                            <ArrowDownNarrowWide size={18} />
+                          )}
+
+                        </div>
+                      </th>
+
+                      <th>
+                        <div className="sort-cell">
+                          Email
+                          {sortField === 'email' && sortOrder === 'asc' ? (
+                            <ArrowDownNarrowWide size={18} />
+                          ) : sortField === 'email' && sortOrder === 'desc' ? (
+                            <ArrowUpNarrowWide size={18} />
+                          ) : (
+                            <ArrowDownNarrowWide size={18} />
+                          )}
+                        </div>
+                      </th>
+                      <th>
+                        Phone number
+                      </th>
+                      <th>
+                        <div className="sort-cell">
+                          Department
+                          {sortField === 'department' && sortOrder === 'asc' ? (
+                            <ArrowDownNarrowWide size={18} />
+                          ) : sortField === 'department' && sortOrder === 'desc' ? (
+                            <ArrowUpNarrowWide size={18} />
+                          ) : (
+                            <ArrowDownNarrowWide size={18} />
+                          )}
+                        </div>
+                      </th>
+                      <th>
+                        <div className="sort-cell">
+                          Date Added
+                          {sortField === 'created_at' && sortOrder === 'asc' ? (
+                            <ArrowDownNarrowWide size={18} />
+                          ) : sortField === 'created_at' && sortOrder === 'desc' ? (
+                            <ArrowUpNarrowWide size={18} />
+                          ) : (
+                            <ArrowDownNarrowWide size={18} />
+                          )}
+                        </div>
+                      </th>
+
                     </tr>
                   </thead>
                   <tbody className={`${isSearching && "is-searching"}`}>
                     {users.map((user) => (
                       <tr key={user.id} onClick={() => handleNavigate(user)}>
-                        <td>
+                        <td data-label="ID">{user.id || "N/A"}</td>
+                        <td data-label="Name">
                           <UserCard
                             firstName={user.user?.first_name || "N/A"}
                             lastName={user.user?.last_name || "N/A"}
                             label={user.user?.position || "N/A"}
                           />
                         </td>
-                        <td>{user.id || "N/A"}</td>
-                        <td>{user.user?.email || "N/A"}</td>
-                        <td>{user?.phone_number || "N/A"}</td>
-                        <td>{user?.department?.name || "N/A"}</td>
-                        {/* <td>{user?.facility?.name || "N/A"}</td> */}
-                        <td>{formatDate(user.created_at)}</td>
+
+                        <td data-label="Email">{user.user?.email || "N/A"}</td>
+                        <td data-label="Phone Number">{user?.phone_number || "N/A"}</td>
+                        <td data-label="Department">{user?.department?.name || "N/A"}</td>
+                        <td data-label="Date Added">{formatDate(user.created_at)}</td>
                       </tr>
                     ))}
                     <tr></tr>

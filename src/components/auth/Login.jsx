@@ -1,13 +1,12 @@
 'use client';
 import '@/styles/_login.scss';
-import { Key, LoaderCircle, Mail } from "lucide-react";
+import { CheckSquare, Key, Mail, Square } from "lucide-react";
 import React, { useState } from "react";
 import Button from "../forms/Button";
 import { useAuthentication } from "@/context/authContext";
 import { authService } from "@/services/auth";
 
 const LoginPopup = () => {
-  const { login } = useAuthentication();
   // login form
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,6 +15,8 @@ const LoginPopup = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const { login } = useAuthentication();
 
   const handleSubmit = async () => {
     // validate form
@@ -33,17 +34,17 @@ const LoginPopup = () => {
       const result = await authService.login(username, password);
 
       if (result.success) {
+        // Use the auth context login method
         const loginSuccess = await login(result.accessToken, result.refreshToken);
 
         if (loginSuccess) {
           setSuccessMessage("Login successful!");
-          // The AuthContext will handle the authentication state
-          // No need to reload the page
+          // No need to reload the window, the auth context will handle the state update
         } else {
-          setErrorMessage("Failed to authenticate user. Please try again.");
+          setErrorMessage("Failed to authenticate user data. Please try again.");
         }
       } else {
-        setErrorMessage(result.error);
+        setErrorMessage(result.error || "Login failed. Please try again.");
       }
     } catch (error) {
       setErrorMessage("An unexpected error occurred. Please try again.");
@@ -78,7 +79,7 @@ const LoginPopup = () => {
                   className="form-control"
                   placeholder="Enter your email"
                 />
-                <Mail className="icon" />
+                <Mail size={20} className="icon" />
               </div>
             </div>
             <div className="form-control">
@@ -91,14 +92,16 @@ const LoginPopup = () => {
                   className="form-control"
                   placeholder="Enter your password"
                 />
-                <Key className="icon" />
+                <Key size={20} className="icon" />
               </div>
             </div>
 
             <div className="links">
               {/* remember me */}
-              <div className="remember-me">
-                <input type="checkbox" id="rememberMe" />
+              <div className="remember-me" onClick={() => setRememberMe(!rememberMe)}>
+                {
+                  rememberMe ? <CheckSquare size={20} /> : <Square size={20} />
+                }
                 <label htmlFor="rememberMe">Remember me</label>
               </div>
               {/* forgot password */}

@@ -292,7 +292,7 @@ const WorkplaceViolenceList = () => {
                         dateFormat="yyyy-MM-dd"
                       />
                     </div>
-                    <div className="pop-up-buttons">
+                    <div className="popup-buttons">
                       <button onClick={clearFilters} className="outline-button">
                         <X size={20} variant="stroke" />
                         Clear
@@ -364,33 +364,7 @@ const WorkplaceViolenceList = () => {
                       handleRowClick={handleRowClick}
                       setIncidentData={setSearchResults}
                     />
-                    <div className="mobile-table">
-                      <button
-                        onClick={() => handleSelectAll(searchResults)}
-                        type="button"
-                        className="tertiary-button"
-                      >
-                        {searchResults.every((item) =>
-                          selectedItems.some(
-                            (selected) => selected.id === item.id
-                          )
-                        ) ? (
-                          <SquareCheck />
-                        ) : (
-                          <Square />
-                        )}{" "}
-                        Select all
-                      </button>
-                      {currentSearchResults.map((incident, index) => (
-                        <IncidentTableCard
-                          key={index}
-                          incident={incident}
-                          handleRowClick={handleRowClick}
-                          selectedItems={selectedItems}
-                          handleSelectedItems={handleSelectedItems}
-                        />
-                      ))}
-                    </div>
+
                     <div className="pagination-controls">
                       <button
                         className="pagination-button"
@@ -436,31 +410,7 @@ const WorkplaceViolenceList = () => {
                   handleRowClick={handleRowClick}
                   setIncidentData={setIncidentData}
                 />
-                <div className="mobile-table">
-                  <button
-                    onClick={() => handleSelectAll(incidentData)}
-                    type="button"
-                    className="tertiary-button"
-                  >
-                    {incidentData.every((item) =>
-                      selectedItems.some((selected) => selected.id === item.id)
-                    ) ? (
-                      <SquareCheck />
-                    ) : (
-                      <Square />
-                    )}{" "}
-                    Select all
-                  </button>
-                  {currentIncidentData.map((incident, index) => (
-                    <IncidentTableCard
-                      key={index}
-                      incident={incident}
-                      handleRowClick={handleRowClick}
-                      selectedItems={selectedItems}
-                      handleSelectedItems={handleSelectedItems}
-                    />
-                  ))}
-                </div>
+
                 <div className="pagination-controls">
                   <button
                     className="pagination-button"
@@ -651,7 +601,7 @@ const WorkplaceViolenceTable = ({
               className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
                 }`}
             >
-              <td>
+              <td data-label="Select">
                 <div
                   onClick={() => handleSelectedItems(incident)}
                   className="icon"
@@ -663,11 +613,11 @@ const WorkplaceViolenceTable = ({
                   )}
                 </div>
               </td>
-              <td>{index + 1}</td>
-              <td>{incident.original_report || incident.id}</td>
-              <td>{incident.report_facility?.name || "Not provided"}</td>
-              <td>{incident.incident_type || "Not provided"}</td>
-              <td>
+              <td data-label="No">{index + 1}</td>
+              <td data-label="ID">{incident.original_report || incident.id}</td>
+              <td data-label="Facility">{incident.report_facility?.name || "Not provided"}</td>
+              <td data-label="Type of Incident">{incident.incident_type || "Not provided"}</td>
+              <td data-label="Physical Injury Description">
                 {SliceText ? (
                   <SliceText
                     text={
@@ -679,7 +629,7 @@ const WorkplaceViolenceTable = ({
                   incident.physical_injury_description || "Not provided"
                 )}
               </td>
-              <td>
+              <td data-label="Date & Time Reported">
                 {DateFormatter ? (
                   <DateFormatter dateString={incident.date_of_incident} />
                 ) : (
@@ -687,20 +637,21 @@ const WorkplaceViolenceTable = ({
                 )}
                 , {formatTime(incident.time_of_incident) || "Time not provided"}
               </td>
-              <td>{incident.severity_level || "Not provided"}</td>
-              <td>
+              <td data-label="Severity">{incident.severity_level || "Not provided"}</td>
+              <td data-label="Status">
                 <p
                   className={`follow-up ${incident.status === "Draft"
-                      ? "in-progress"
-                      : incident.status === "Closed"
-                        ? "closed"
-                        : "Open"
+                    ? "in-progress"
+                    : incident.status === "Closed"
+                      ? "closed"
+                      : "Open"
                     }`}
                 >
                   {incident.status || "Not specified"}
                 </p>
               </td>
               <td
+                data-label="Action"
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
               >
@@ -741,85 +692,5 @@ const WorkplaceViolenceTable = ({
   );
 };
 
-const IncidentTableCard = ({
-  incident,
-  handleRowClick,
-  selectedItems,
-  handleSelectedItems,
-}) => {
-  return (
-    <div
-      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
-        }`}
-    >
-      <div className="card-header">
-        <div className="id-number">
-          <div onClick={() => handleSelectedItems(incident)} className="icon">
-            {selectedItems.includes(incident) ? (
-              <SquareCheck color="orange" />
-            ) : (
-              <Square />
-            )}
-          </div>
-          <span>ID</span>
-          <span>{incident.original_report || incident.id}</span>
-        </div>
-        <div
-          onClick={() =>
-            handleRowClick(
-              incident.original_report ? incident.original_report : incident.id
-            )
-          }
-          className="card-actions"
-        >
-          <ViewIcon />
-          <span>View more</span>
-        </div>
-      </div>
-      <div className="card-content-items">
-        <div className="item">
-          <label htmlFor="">Facility: </label>
-          <span>{incident.report_facility?.name || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Incident Type: </label>
-          <span>{incident.incident_type || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Physical injury description: </label>
-          <span>{incident.physical_injury_description || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Incident Date & Time: </label>
-          <span>
-            {DateFormatter ? (
-              <DateFormatter dateString={incident.date_of_incident} />
-            ) : (
-              incident.date_of_incident
-            )}
-            , {formatTime(incident.time_of_incident) || "Time not provided"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Severity: </label>
-          <span>{incident.severity_level || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Status: </label>
-          <span
-            className={`follow-up ${incident.status === "Draft"
-                ? "in-progress"
-                : incident.status === "Closed"
-                  ? "closed"
-                  : "Open"
-              }`}
-          >
-            {incident.status || "Not specified"}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default WorkplaceViolenceList;

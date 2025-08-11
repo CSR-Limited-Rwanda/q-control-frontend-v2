@@ -265,7 +265,7 @@ const StaffIncidentList = () => {
                       />
                     </div>
 
-                    <div className="pop-up-buttons">
+                    <div className="popup-buttons">
                       <button onClick={clearFilters} className="outline-button">
                         <X size={20} variant="stroke" />
                         Clear
@@ -340,33 +340,7 @@ const StaffIncidentList = () => {
                       setIncidentData={setSearchResults}
                       navigateToModify={navigateToModify}
                     />
-                    <div className="mobile-table">
-                      <button
-                        onClick={() => handleSelectAll(searchResults)}
-                        type="button"
-                        className="tertiary-button"
-                      >
-                        {searchResults.every((item) =>
-                          selectedItems.some(
-                            (selected) => selected.id === item.id
-                          )
-                        ) ? (
-                          <SquareCheck />
-                        ) : (
-                          <Square />
-                        )}{" "}
-                        Select all
-                      </button>
-                      {currentSearchResults.map((incident, index) => (
-                        <IncidentTableCard
-                          key={index}
-                          incident={incident}
-                          handleRowClick={handleRowClick}
-                          handleSelectedItems={handleSelectedItems}
-                          selectedItems={selectedItems}
-                        />
-                      ))}
-                    </div>
+
                     <div className="pagination-controls">
                       <button
                         className="pagination-button"
@@ -412,31 +386,7 @@ const StaffIncidentList = () => {
                   handleSelectAll={handleSelectAll}
                   handleSelectedItems={handleSelectedItems}
                 />
-                <div className="mobile-table">
-                  <button
-                    onClick={() => handleSelectAll(incidentData)}
-                    type="button"
-                    className="tertiary-button"
-                  >
-                    {incidentData.every((item) =>
-                      selectedItems.some((selected) => selected.id === item.id)
-                    ) ? (
-                      <SquareCheck />
-                    ) : (
-                      <Square />
-                    )}{" "}
-                    Select all
-                  </button>
-                  {currentIncidentData.map((incident, index) => (
-                    <IncidentTableCard
-                      key={index}
-                      incident={incident}
-                      handleRowClick={handleRowClick}
-                      handleSelectedItems={handleSelectedItems}
-                      selectedItems={selectedItems}
-                    />
-                  ))}
-                </div>
+
                 <div className="pagination-controls">
                   <button
                     className="pagination-button"
@@ -574,31 +524,37 @@ const StaffTable = ({
             </div>
           </th>
           <th>No</th>
-          <th className="sort-cell">
-            ID
-            <SortByNumberIcon
-              setSortDesc={setSortDesc}
-              handleSortById={handleSortById}
-              sortDesc={sortDesc}
-            />
+          <th>
+            <div className="sort-cell">
+              ID
+              <SortByNumberIcon
+                setSortDesc={setSortDesc}
+                handleSortById={handleSortById}
+                sortDesc={sortDesc}
+              />
+            </div>
           </th>
           <th>Facility</th>
-          <th className="sort-cell">
-            Staff name
-            <SortNameIcon
-              handleSortById={handleSortByName}
-              sortDesc={nameAZ}
-              setSortDesc={setNameAZ}
-            />
+          <th>
+            <div className="sort-cell">
+              Staff name
+              <SortNameIcon
+                handleSortById={handleSortByName}
+                sortDesc={nameAZ}
+                setSortDesc={setNameAZ}
+              />
+            </div>
           </th>
           <th>Claims Notified</th>
-          <th className="sort-cell">
-            Injury Date & Time
-            <SortDateIcon
-              setSortDesc={setDateRecent}
-              handleSortById={handleFilterByDate}
-              sortDesc={dateRecent}
-            />
+          <th>
+            <div className="sort-cell">
+              Injury Date & Time
+              <SortDateIcon
+                setSortDesc={setDateRecent}
+                handleSortById={handleFilterByDate}
+                sortDesc={dateRecent}
+              />
+            </div>
           </th>
           <th>Claim contact & PH</th>
           <th>Status</th>
@@ -620,7 +576,7 @@ const StaffTable = ({
               className={`table-card ${selectedItems.includes(employee) ? "selected" : ""
                 }`}
             >
-              <td>
+              <td data-label="Select">
                 <div
                   onClick={() => handleSelectedItems(employee)}
                   className="icon"
@@ -632,17 +588,17 @@ const StaffTable = ({
                   )}
                 </div>
               </td>
-              <td>{index + 1}</td>
-              <td>{employee.original_report || employee.id}</td>
-              <td>{employee.report_facility?.name || "Not provided"}</td>
-              <td>
+              <td data-label="No">{index + 1}</td>
+              <td data-label="ID">{employee.original_report || employee.id}</td>
+              <td data-label="Facility">{employee.report_facility?.name || "Not provided"}</td>
+              <td data-label="Name">
                 {employee.patient_info?.last_name &&
                   employee.patient_info?.first_name
                   ? `${employee.patient_info?.last_name} ${employee.patient_info?.first_name}`
                   : "Not provided"}
               </td>
-              <td>{employee.claim || "Not Specified"}</td>
-              <td>
+              <td data-label="Claim">{employee.claim || "Not Specified"}</td>
+              <td data-label="Date & Time">
                 <div>
                   <DateFormatter
                     dateString={employee.date_of_injury_or_near_miss}
@@ -650,8 +606,8 @@ const StaffTable = ({
                   , {employee.time_of_injury_or_near_miss || "-"}
                 </div>
               </td>
-              <td>{employee.claim || "Not Specified"}</td>
-              <td>
+              <td data-label="Claim">{employee.claim || "Not Specified"}</td>
+              <td data-label="Status">
                 <p
                   className={`follow-up ${employee.status === "Draft"
                     ? "in-progress"
@@ -664,6 +620,7 @@ const StaffTable = ({
                 </p>
               </td>
               <td
+                data-label="Action"
                 onClick={(event) => handleNonClickableColumnClick(event)}
                 className="action-col"
               >
@@ -699,88 +656,6 @@ const StaffTable = ({
         )}
       </tbody>
     </table>
-  );
-};
-
-const IncidentTableCard = ({
-  incident,
-  handleRowClick,
-  handleSelectedItems,
-  selectedItems,
-}) => {
-  return (
-    <div
-      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
-        }`}
-    >
-      <div className="card-header">
-        <div className="id-number">
-          <div onClick={() => handleSelectedItems(incident)} className="icon">
-            {selectedItems.includes(incident) ? (
-              <SquareCheck color="orange" />
-            ) : (
-              <Square />
-            )}
-          </div>
-          <span>ID</span>
-          <span>{incident.original_report || incident.id}</span>
-        </div>
-        <div
-          onClick={() =>
-            handleRowClick(
-              incident.original_report ? incident.original_report : incident.id
-            )
-          }
-          className="card-actions"
-        >
-          <ViewIcon />
-          <span>View more</span>
-        </div>
-      </div>
-      <div className="card-content-items">
-        <div className="item">
-          <label htmlFor="">Facility: </label>
-          <span>{incident?.report_facility?.name || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Staff Name: </label>
-          <span>
-            {incident.patient_info?.last_name &&
-              incident.patient_info?.first_name
-              ? `${incident.patient_info?.last_name} ${incident.patient_info?.first_name}`
-              : "Not provided"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Injury Date & Time: </label>
-          <span>
-            <DateFormatter dateString={incident?.date_of_injury_or_near_miss} />
-            , {incident?.time_of_injury_or_near_miss || "-"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Claims Notified: </label>
-          <span>{incident?.claim || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Claims contact & PH: </label>
-          <span>{incident?.claim || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Status: </label>
-          <span
-            className={`follow-up ${incident?.status === "Draft"
-              ? "in-progress"
-              : incident?.status === "Closed"
-                ? "closed"
-                : "Open"
-              }`}
-          >
-            {incident?.status || "Not specified"}
-          </span>
-        </div>
-      </div>
-    </div>
   );
 };
 

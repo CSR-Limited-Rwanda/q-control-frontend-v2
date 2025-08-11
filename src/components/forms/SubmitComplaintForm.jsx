@@ -85,8 +85,8 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
       if (error.response) {
         setError(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error while submitting the complaint"
+          error.response.data.error ||
+          "Error while submitting the complaint"
         );
       } else {
         setError("Unknown error while submitting the complaint");
@@ -107,8 +107,8 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
         if (error.response) {
           setUserError(
             error.response.data.message ||
-              error.response.data.error ||
-              "We could no get a list of users"
+            error.response.data.error ||
+            "We could no get a list of users"
           );
         }
         console.error(error);
@@ -118,114 +118,113 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
     fetchStaff();
   }, []);
   return (
-    <div className={`user-complain-form ${hasHeight ? "has-height" : ""}`}>
-      <div className="form">
-        <h3>Submit a new complaint</h3>
-        <X className="close-popup" onClick={handleSubmitComplaint} />
-        <form action="" className="newIncidentForm">
+    <div className="form">
+      <h3>Submit a new complaint</h3>
+      <X className="close-popup" onClick={handleSubmitComplaint} />
+      <form action="" className="newIncidentForm">
+        <div className="field">
+          <label htmlFor="">Patient's name</label>
+          <input
+            type="text"
+            id="patientName"
+            value={patientName}
+            onChange={(e) => setPatientName(e.target.value)}
+            required
+            placeholder="Enter patient's"
+          />
+        </div>
+        <div className="half">
           <div className="field">
-            <label htmlFor="">Patient's name</label>
-            <input
-              type="text"
-              id="patientName"
-              value={patientName}
-              onChange={(e) => setPatientName(e.target.value)}
-              required
-              placeholder="Enter patient's"
+            <label htmlFor="">Date of complaint</label>
+            <CustomDatePicker
+              selectedDate={dateOfComplaint}
+              setSelectedDate={setDateOfComplaint}
             />
           </div>
-          <div className="half">
-            <div className="field">
-              <label htmlFor="">Date of complaint</label>
-              <CustomDatePicker
-                selectedDate={dateOfComplaint}
-                setSelectedDate={setDateOfComplaint}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="">Medical record number (if any)</label>
-              <input
-                type="text"
-                id="medicalRecordNumber"
-                value={medicalRecordNumber}
-                onChange={(e) => setMedicalRecordNumber(e.target.value)}
-                required
-                placeholder="Enter medical record number"
-              />
-            </div>
-          </div>
           <div className="field">
-            <label htmlFor="">Nature of complaint</label>
+            <label htmlFor="">Medical record number (if any)</label>
             <input
               type="text"
-              id="natureOfComplaint"
-              value={natureOfComplaint}
-              onChange={(e) => setNatureOfComplaint(e.target.value)}
+              id="medicalRecordNumber"
+              value={medicalRecordNumber}
+              onChange={(e) => setMedicalRecordNumber(e.target.value)}
               required
+              placeholder="Enter medical record number"
             />
           </div>
-          {/* <div className="field">
+        </div>
+        <div className="field">
+          <label htmlFor="">Nature of complaint</label>
+          <input
+            type="text"
+            id="natureOfComplaint"
+            value={natureOfComplaint}
+            onChange={(e) => setNatureOfComplaint(e.target.value)}
+            required
+          />
+        </div>
+        {/* <div className="field">
                         <label htmlFor="">Department</label>
                         <input type="text" id="department" value={department} onChange={(e) => setDepartment(e.target.value)} required />
                     </div> */}
-          <div className="field">
-            <label htmlFor="">Complaint type</label>
-            <input
-              type="text"
-              id="complaintType"
-              value={complaintType}
-              onChange={(e) => setComplaintType(e.target.value)}
-              required
-            />
+        <div className="field">
+          <label htmlFor="">Complaint type</label>
+          <input
+            type="text"
+            id="complaintType"
+            value={complaintType}
+            onChange={(e) => setComplaintType(e.target.value)}
+            required
+          />
+        </div>
+        <div className="field">
+          <label htmlFor="">Phone number</label>
+          <input
+            type="text"
+            id="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            required
+          />
+        </div>
+        <div className="field">
+          <div onClick={handleResolvedStaff} className="check-box">
+            {resolvedByStaff ? <CircleCheck /> : <Square />}
+            <p>Resolved by staff</p>
           </div>
-          <div className="field">
-            <label htmlFor="">Phone number</label>
-            <input
-              type="text"
-              id="phoneNumber"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              required
-            />
-          </div>
-          <div className="field">
-            <div onClick={handleResolvedStaff} className="check-box">
-              {resolvedByStaff ? <CircleCheck /> : <Square />}
-              <p>Resolved by staff</p>
+          {!resolvedByStaff && (
+            <div className="warning-message">
+              <small>
+                For concerns expressed by a patient or patient representative
+                that were not resolved by staff present, the concern should be
+                considered a Grievance. Please notify the House Supervisor,
+                Charge Nurse or the Administrator on Call (AOC)
+              </small>
             </div>
-            {!resolvedByStaff && (
-              <div className="warning-message">
-                <small>
-                  For concerns expressed by a patient or patient representative
-                  that were not resolved by staff present, the concern should be
-                  considered a Grievance. Please notify the House Supervisor,
-                  Charge Nurse or the Administrator on Call (AOC)
-                </small>
+          )}
+        </div>
+        <div className="field">
+          <label htmlFor="">How complaint was received</label>
+          <div className="check-boxes">
+            {howComplaintIsReceived.map((howComplaintIsReceived, index) => (
+              <div
+                key={index}
+                onClick={(e) =>
+                  setHowComplaintWasReceived(howComplaintIsReceived)
+                }
+                className="check-box"
+              >
+                {howComplaintWasReceived === howComplaintIsReceived ? (
+                  <CircleCheck />
+                ) : (
+                  <Square />
+                )}
+                <p>{howComplaintIsReceived}</p>
               </div>
-            )}
+            ))}
           </div>
-          <div className="field">
-            <label htmlFor="">How complaint was received</label>
-            <div className="check-boxes">
-              {howComplaintIsReceived.map((howComplaintIsReceived, index) => (
-                <div
-                  key={index}
-                  onClick={(e) =>
-                    setHowComplaintWasReceived(howComplaintIsReceived)
-                  }
-                  className="check-box"
-                >
-                  {howComplaintWasReceived === howComplaintIsReceived ? (
-                    <CircleCheck />
-                  ) : (
-                    <Square />
-                  )}
-                  <p>{howComplaintIsReceived}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* <div className="field">
+        </div>
+        {/* <div className="field">
                         <label htmlFor="">Assigned to staff</label>
                         {
                             assignedStaffList && assignedStaffList.length > 0
@@ -260,33 +259,32 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
                         }
                         <button onClick={handleAssignedStaffList}>Assign</button>
                     </div> */}
-          <div className="field">
-            <label htmlFor="">Complaint details</label>
-            <RichTexField
-              staffList={staffList}
-              value={complaintDetails}
-              onEditorChange={setComplaintDetails}
-            />
-          </div>
-        </form>
-        {error && <div className="error-message">{error}</div>}
-        {successMessage && (
-          <div className="success-message">{successMessage}</div>
-        )}
-        {resolvedByStaff && (
-          <button
-            onClick={handleSubmit}
-            className="primary-button"
-            type="button"
-          >
-            {isLoading ? (
-              <LoaderCircle size={18} className="loading-icon" />
-            ) : (
-              "Submit complaint"
-            )}
-          </button>
-        )}
-      </div>
+        <div className="field">
+          <label htmlFor="">Complaint details</label>
+          <RichTexField
+            staffList={staffList}
+            value={complaintDetails}
+            onEditorChange={setComplaintDetails}
+          />
+        </div>
+      </form>
+      {error && <div className="error-message">{error}</div>}
+      {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )}
+      {resolvedByStaff && (
+        <button
+          onClick={handleSubmit}
+          className="primary-button"
+          type="button"
+        >
+          {isLoading ? (
+            <LoaderCircle size={18} className="loading-icon" />
+          ) : (
+            "Submit complaint"
+          )}
+        </button>
+      )}
     </div>
   );
 };

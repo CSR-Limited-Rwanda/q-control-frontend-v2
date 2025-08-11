@@ -305,11 +305,6 @@
 .permission-matrix {
   overflow-x: auto;
 }
-
-.permission-table {
-  min-width: 600px;
-}
-
 .permission-checkbox {
   width: 20px;
   height: 20px;

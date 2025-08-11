@@ -11,16 +11,6 @@ export const ProfileContainer = () => {
     const [showProfile, setShowProfile] = useState(false);
     const { isAuth, logout, user } = useAuthentication();
     const router = useRouter();
-    const [userProfile, setUserProfile] = useState({});
-
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const storedProfile = localStorage.getItem("loggedInUserInfo");
-            if (storedProfile) {
-                setUserProfile(JSON.parse(storedProfile));
-            }
-        }
-    }, []);
 
     const goToProfile = () => {
         router.push(`/accounts/${user.profileId}`);
@@ -35,16 +25,13 @@ export const ProfileContainer = () => {
         router.push("/");
     };
 
-    // Use auth context user data as fallback, or localStorage data
-    const displayUser = userProfile?.first_name ? userProfile : user;
-
     return (
         <div className="header-popup">
             <div onClick={handleShowProfile} className="header-trigger">
                 <div className="name-initials avatar">
                     <span>
                         {splitName(
-                            `${displayUser?.first_name || displayUser?.firstName} ${displayUser?.last_name || displayUser?.lastName}`
+                            `${user?.first_name || user?.firstName} ${user?.last_name || user?.lastName}`
                         )}
                     </span>
                 </div>
@@ -54,9 +41,9 @@ export const ProfileContainer = () => {
                     <div className="dropdown__item">
                         <div className="card">
                             <UserCard
-                                firstName={displayUser?.first_name || displayUser?.firstName}
-                                lastName={displayUser?.last_name || displayUser?.lastName}
-                                label={displayUser?.email}
+                                firstName={user?.first_name || user?.firstName}
+                                lastName={user?.last_name || user?.lastName}
+                                label={user?.email}
                             />
                         </div>
                     </div>
