@@ -6,7 +6,6 @@ import api, { cleanedData, calculateAge } from "@/utils/api";
 import toast from "react-hot-toast";
 import { X, Eye, SaveAll, LoaderCircle, TextSearch } from "lucide-react";
 import RichTexField from "@/components/forms/RichTextField";
-import BackToPage from "../../backToPage";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
 import mediaAPI from "@/utils/mediaApi";
@@ -14,11 +13,12 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import UserPermissions from "@/components/accounts/profile/userPermissions";
 import { usePermission } from "@/context/PermissionsContext";
-import "../../../styles/_modifyincident.scss";
+import '@/styles/_modifyIncident.scss';
 import { useAuthentication } from "@/context/authContext";
+import BackToPage from "@/components/BackToPage";
 
 const ModifyLostFound = ({ data }) => {
-  const {user} = useAuthentication()
+  const { user } = useAuthentication()
   const { incidentId } = useParams();
   const [incident, setIncident] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
