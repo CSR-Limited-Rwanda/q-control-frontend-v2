@@ -13,13 +13,13 @@ import {
   errorTypes,
 } from "@/constants/constants";
 import { SquareCheck, SaveAll, LoaderCircle, Square } from "lucide-react";
-import BackToPage from "../../backToPage";
-import "../../../styles/_modifyincident.scss";
+import '@/styles/_modifyIncident.scss';
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
+import BackToPage from "@/components/BackToPage";
 const ModifyMedicalErrorForm = ({ data, incidentId }) => {
   const permission = usePermission();
   const department = useDepartments();
@@ -95,15 +95,15 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
     incident?.contributing_factors
   );
 
-const [category, setCategory] = useState(() => {
-  try {
-    return typeof incident?.error_category === "string"
-      ? JSON.parse(incident.error_category)
-      : incident?.error_category || {};
-  } catch {
-    return {};
-  }
-});
+  const [category, setCategory] = useState(() => {
+    try {
+      return typeof incident?.error_category === "string"
+        ? JSON.parse(incident.error_category)
+        : incident?.error_category || {};
+    } catch {
+      return {};
+    }
+  });
   const [selectedCategory, setSelectedCategory] = useState(category);
   const [medicationErrorIncidentId, setMedicationErrorIncidentId] = useState(
     localStorage.getItem("medicationErrorIncidentId")
@@ -381,10 +381,10 @@ const [category, setCategory] = useState(() => {
             Status :{" "}
             <span
               className={`follow-up ${status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
-                    ? "closed"
-                    : "Open"
+                ? "in-progress"
+                : status === "Closed"
+                  ? "closed"
+                  : "Open"
                 }`}
             >
               {status}
@@ -782,8 +782,8 @@ const [category, setCategory] = useState(() => {
                   <div
                     key={index}
                     className={`type full full-width-type ${selectedCategory.value === category.value
-                        ? "selected"
-                        : ""
+                      ? "selected"
+                      : ""
                       }`}
                     onClick={() =>
                       handleSelectedCategory({

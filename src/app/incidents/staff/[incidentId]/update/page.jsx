@@ -3,13 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import DashboardLayout from "@/app/dashboard/layout";
 import api from "@/utils/api";
-// import ModifyWorkplaceIncident from "../../../../../components/incidents/forms/modiy/workplaceIncident";
-// import { ArrowLeft01Icon, ArrowTurnBackwardIcon } from "hugeicons-react";
-// import BackToPage from "../../../../../components/incidents/backToPage";
-// import ModifyEmployeeIncident from "../../../../../components/incidents/forms/modiy/employeeIncident";
 import { ArrowRight } from "lucide-react";
-// import { FacilityBreadCrumbs } from "../../drugReactionincidents/modifyMedicalAdverseDrugReactionIncidentPage";
-// import NoResources from "../../../../../components/general/noResources";
 import ModifyStaffIncident from "@/components/incidents/modifyIncidents/ModifyStaffIncidentPage";
 
 const ModifyStaffIncidentPageContent = () => {

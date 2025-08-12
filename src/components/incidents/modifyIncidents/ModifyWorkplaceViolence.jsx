@@ -11,14 +11,14 @@ import CustomSelectInput from "@/components/CustomSelectInput";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import mediaAPI from "@/utils/mediaApi";
 import { CirclePlus, CircleMinus } from "lucide-react";
-import BackToPage from "../../backToPage";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
 import { useAuthentication } from "@/context/authContext";
-import "../../../styles/_modifyincident.scss";
+import '@/styles/_modifyIncident.scss';
+import BackToPage from "@/components/BackToPage";
 
 const ModifyWorkplaceIncident = ({ data }) => {
   const { user } = useAuthentication()
@@ -191,7 +191,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
   const [uploadingDocuments, setUploadingDocuments] = useState(false);
   const [witnesses, setWitnesses] = useState(
     incident?.incident_witness?.map((witness) => ({
-      
+
       first_name: witness?.first_name ?? "",
       last_name: witness?.last_name ?? "",
       email: witness?.email ?? "",

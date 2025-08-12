@@ -9,7 +9,6 @@ import {
 import CustomSelectInput from "@/components/CustomSelectInput";
 import api, { checkCurrentAccount, cleanedData } from "@/utils/api";
 import { SquareCheck, SaveAll, LoaderCircle, Square } from "lucide-react";
-import BackToPage from "../../backToPage";
 import mediaAPI from "@/utils/mediaApi";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
@@ -18,6 +17,7 @@ import { usePermission } from "@/context/PermissionsContext";
 import { useParams } from "react-router-dom";
 import CantModify from "@/components/CantModify";
 import { useAuthentication } from "@/context/authContext";
+import BackToPage from "@/components/BackToPage";
 
 // We need to resolve the issue with status prio to
 const ModifyGeneralIncidentForm = ({ data }) => {

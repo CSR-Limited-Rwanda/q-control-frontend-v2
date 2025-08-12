@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 // import GeneralFieldsForm from "./generalFields";
 // import IncidentTypeForm from "./incidentType";
 // import OutcomeForm from "./outcomeForm";
-import "../../../../../styles/_modifyIncident.scss"
+import '@/styles/_modifyIncident.scss';
 import ModifyGeneralIncidentForm from "@/components/incidents/modifyIncidents/ModifyGeneralIncidentPage"
 import { MoveRight } from 'lucide-react';
 import Link from "next/link";
