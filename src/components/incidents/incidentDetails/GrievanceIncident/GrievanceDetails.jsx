@@ -41,7 +41,6 @@ const GrievanceDetailsContent = () => {
         );
         setIncidentDetails(response.data); // Store the original data
         setCurrentIncidentData(response.data.incident); // Set current data for UI
-        console.log(response.data);
         setInvestigationDetails(response.data.investigation); //
       } else {
         // Fetch the latest modified version of the incident
@@ -69,7 +68,6 @@ const GrievanceDetailsContent = () => {
         `/incidents/grievance/${incidentId}/investigation/`
       )
       if (investigationRes.status === 200) {
-        console.log('staff investigation:', investigationRes.data)
         setInvestigationDetails(investigationRes.data)
       }
       setIsFetching(false);

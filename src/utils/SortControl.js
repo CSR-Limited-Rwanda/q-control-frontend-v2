@@ -10,7 +10,6 @@ const SortControl = ({
     ],
     defaultField = 'created_at',
     defaultDirection = 'desc',
-    onChange = (config) => console.log('Sort config:', config)
 }) => {
     const [sortConfig, setSortConfig] = useState({
         field: defaultField,

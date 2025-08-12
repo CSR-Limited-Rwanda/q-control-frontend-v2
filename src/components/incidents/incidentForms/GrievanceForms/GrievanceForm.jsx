@@ -473,7 +473,6 @@ const GrievanceForm = ({ togglePopup }) => {
   const handleCurrentFacility = (facilityId) => {
     const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
     setCurrentFacility(selectedFacility);
-    console.log(selectedFacility);
   };
 
   return (

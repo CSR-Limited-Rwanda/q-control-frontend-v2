@@ -3,7 +3,6 @@ import "../../../../styles/_medication_details.scss"
 import DateFormatter from "@/components/DateFormatter";
 
 const StaffInvestigationInfo = ({ data, incidentStatuses }) => {
-  console.log('data:', data);
   return data ? (
     <>
       {data.map((investigation) => (

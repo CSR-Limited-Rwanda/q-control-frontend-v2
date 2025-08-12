@@ -37,7 +37,6 @@ import { useAuthentication } from "@/context/authContext";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication()
-  console.log(user);
   const [currentFacility, setCurrentFacility] = useState(user.facility)
   const [restraintOn, setRestraintOn] = useState([]);
   const [specimen, setSpecimen] = useState([]);
@@ -830,7 +829,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   const handleCurrentFacility = (facilityId) => {
     const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
     setCurrentFacility(selectedFacility);
-    console.log(selectedFacility);
   };
 
   return (
