@@ -17,12 +17,14 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "../../CantModify";
 import CustomDatePicker from "../../CustomDatePicker";
+import { useAuthentication } from "@/context/authContext";
 
 import "@/styles/_modifyIncident.scss";
 
 const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const permission = usePermission();
   const department = useDepartments();
+  const { user } = useAuthentication()
   const [incident, setIncident] = useState(data);
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -216,6 +218,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
     const incidentData = {
       action: "modify",
+      report_facility: user.facility.id,
       incident_status: statusType || "Open",
       patient_info:
         firstName && lastName

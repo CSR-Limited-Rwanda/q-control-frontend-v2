@@ -15,11 +15,10 @@ import CustomDatePicker from "@/components/CustomDatePicker";
 import UserPermissions from "@/components/accounts/profile/userPermissions";
 import { usePermission } from "@/context/PermissionsContext";
 import "../../../styles/_modifyincident.scss";
-// import CantModify from "../../../general/cantModify";
-// import LostAndFoundInvestigation from "../../lostAndFoundInvestigation";
+import { useAuthentication } from "@/context/authContext";
 
 const ModifyLostFound = ({ data }) => {
-  const permission = usePermission();
+  const {user} = useAuthentication()
   const { incidentId } = useParams();
   const [incident, setIncident] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
@@ -179,6 +178,7 @@ const ModifyLostFound = ({ data }) => {
 
     const incidentData = {
       action: "modify",
+      report_facility: user.facility.id,
       property_name: propertyName,
       reported_by: {
         first_name: reporterFirstName || "",

@@ -43,7 +43,7 @@ const GeneralIncidentDetailsContent = () => {
             if (useOriginalVersion) {
                 response = await api.get(`${API_URL}/incidents/general-visitor/${incidentId}/`);
                 setIncidentDetails(response.data); // Store the original data
-                setCurrentIncidentData(response.data); // Set current data for UI
+                setCurrentIncidentData(response.data.incident); // Set current data for UI
             } else {
                 // Fetch the latest modified version of the incident
                 const res = await api.get(
@@ -63,7 +63,7 @@ const GeneralIncidentDetailsContent = () => {
                 }
 
                 setLatestIncidentDetails(response.data); // Store the latest modified version
-                setCurrentIncidentData(response.data); // Set current data for UI
+                setCurrentIncidentData(response.data.incident); // Set current data for UI
             }
 
             setIsFetching(false); // Stop loading state
