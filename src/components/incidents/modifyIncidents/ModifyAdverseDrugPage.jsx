@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import api, { cleanedData } from "@/utils/api";
 import BackToPage from "../../backToPage";
@@ -21,91 +21,90 @@ import mediaAPI from "@/utils/mediaApi";
 import { usePermission, useDepartments } from "@/context/PermissionsContext";
 import "../../../styles/_modifyincident.scss";
 import CantModify from "@/components/CantModify";
+import { useAuthentication } from "@/context/authContext";
 const ModifyAdverseDruReactionForm = ({ data }) => {
   const [savingDraft, setSavingDraft] = useState(false);
   const { incidentId } = useParams();
+  const { user } = useAuthentication()
   const [incident, setIncident] = useState(data);
   const [currentStep, setCurrentStep] = useState(1);
   const [status, setStatus] = useState(incident?.status);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
-  const [adverseDrugReactionId, setAdverseDrugReactionId] = useState(
-    localStorage.getItem("drugReactionId")
-  );
 
   // form
   const [outComeType, setOutComeType] = useState("mild");
   const [firstName, setFirstName] = useState(
     incident?.patient_name?.first_name
   );
-  const [lastName, setLastName] = useState(incident?.patient_name?.last_name);
-  const [sex, setSex] = useState(incident?.patient_name?.gender);
-  const [incidentDate, setIncidentDate] = useState(incident?.incident_date);
-  const [incidentTime, setIncidentTime] = useState(incident?.incident_time);
+  const [lastName, setLastName] = useState(incident?.patient_name?.last_name ?? "");
+  const [sex, setSex] = useState(incident?.patient_name?.gender ?? "");
+  const [incidentDate, setIncidentDate] = useState(incident?.incident_date ?? "");
+  const [incidentTime, setIncidentTime] = useState(incident?.incident_time ?? "");
   const [incidentMr, setIncidentMr] = useState(
     incident?.patient_name?.medical_record_number ?? ""
   );
-  const [address, setAddress] = useState(incident?.patient_name?.address);
-  const [state, setState] = useState(incident?.patient_name?.state);
-  const [zipCode, setZipCode] = useState(incident?.patient_name?.zip_code);
-  const [city, setCity] = useState(incident?.patient_name?.city);
+  const [address, setAddress] = useState(incident?.patient_name?.address ?? "");
+  const [state, setState] = useState(incident?.patient_name?.state ?? "");
+  const [zipCode, setZipCode] = useState(incident?.patient_name?.zip_code ?? "");
+  const [city, setCity] = useState(incident?.patient_name?.city ?? "");
   const [phoneNumber, setPhoneNumber] = useState(
-    incident?.patient_name?.phone_number
+    incident?.patient_name?.phone_number ?? ""
   );
   const [physicianNotifiedFirstName, setPhysicianNotifiedFirstName] = useState(
-    incident?.name_of_physician_notified?.first_name
+    incident?.name_of_physician_notified?.first_name ?? ""
   );
   const [physicianNotifiedLastName, setPhysicianNotifiedLastName] = useState(
-    incident?.name_of_physician_notified?.last_name
+    incident?.name_of_physician_notified?.last_name ?? ""
   );
   const [familyNotifiedFirstName, setFamilyNotifiedFirstName] = useState(
-    incident?.name_of_family_notified?.first_name
+    incident?.name_of_family_notified?.first_name ?? ""
   );
   const [familyNotifiedLastName, setFamilyNotifiedLastName] = useState(
-    incident?.name_of_family_notified?.last_name
+    incident?.name_of_family_notified?.last_name ?? ""
   );
-  const [victimType, setVictimType] = useState(incident?.patient_type);
+  const [victimType, setVictimType] = useState(incident?.patient_type ?? "");
   const [otherStatus, setOtherStatus] = useState("");
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [location, setLocation] = useState("");
   const [contributingDiagnosis, setContributingDiagnosis] = useState("");
   const [isIv, setIsIv] = useState(false);
   const [isReactionTreated, setIsReactionTreated] = useState(
-    incident?.reaction_was_treated
+    incident?.reaction_was_treated ?? ""
   );
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadingDocuments, setUploadingDocuments] = useState(false);
-  const [provider, setProvider] = useState(incident?.provider);
+  const [provider, setProvider] = useState(incident?.provider ?? "");
   const [observersFirstName, setObserversFirstName] = useState(
-    incident?.observers_name?.first_name
+    incident?.observers_name?.first_name ?? ""
   );
   const [observersLastName, setObserversLastName] = useState(
-    incident?.observers_name?.last_name
+    incident?.observers_name?.last_name ?? ""
   );
-  const [timeOfReport, setTimeOfReport] = useState(incident?.time_of_report);
-  const [dateOfReport, setDateOfReport] = useState(incident?.date_of_report);
-  const [eventDetails, setEventDetails] = useState(incident?.event_detail);
+  const [timeOfReport, setTimeOfReport] = useState(incident?.time_of_report ?? "");
+  const [dateOfReport, setDateOfReport] = useState(incident?.date_of_report ?? "");
+  const [eventDetails, setEventDetails] = useState(incident?.event_detail ?? "");
   const [suspectedMedication, setSuspectedMeedication] = useState(
-    incident?.suspected_medication
+    incident?.suspected_medication ?? ""
   );
-  const [dose, setDose] = useState(incident?.dose);
-  const [frequency, setFrequency] = useState(incident?.frequency);
-  const [route, setRoute] = useState(incident?.route);
+  const [dose, setDose] = useState(incident?.dose ?? "");
+  const [frequency, setFrequency] = useState(incident?.frequency ?? "");
+  const [route, setRoute] = useState(incident?.route ?? "");
   const [rateOfAdministration, setRateOfAdministration] = useState(
-    incident?.rate_of_administration
+    incident?.rate_of_administration ?? ""
   );
   const [dateOfMedicationOrder, setDateOfMedicationOrder] = useState(
-    incident?.date_of_medication_order
+    incident?.date_of_medication_order ?? ""
   );
   const [dateInformation, setDateInformation] = useState(
-    incident?.date_of_information
+    incident?.date_of_information ?? ""
   );
-  const [reaction, setReaction] = useState(incident?.information_reaction);
+  const [reaction, setReaction] = useState(incident?.information_reaction ?? "");
   const [adverseReactionDate, setAdverseReactionDate] = useState(
-    incident?.date_of_adverse_reaction
+    incident?.date_of_adverse_reaction ?? ""
   );
   const [reactionSetTime, setReactionSetTime] = useState(
-    incident?.reaction_on_settime
+    incident?.reaction_on_settime ?? ""
   );
   const [selectedAgreements, setSelectedAgreements] = useState(() => {
     return typeof incident.incident_type_classification === "string"
@@ -123,7 +122,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   );
   const [otherOutcome, setOtherOutcome] = useState("");
   const [familyDate, setFamilyDate] = useState(
-    incident?.date_family_was_notified
+    incident?.date_family_was_notified ?? ""
   );
   const [selectedDescription, setSelectedDescription] = useState(() => {
     return typeof incident.description === "string"
@@ -131,38 +130,45 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       : [];
   });
   const [familyTime, setFamilyTime] = useState(
-    incident?.time_family_was_notified
+    incident?.time_family_was_notified ?? ""
   );
   const [notifiedByFirstName, setNotifiedByFirstName] = useState(
-    incident?.notified_by?.first_name
+    incident?.notified_by?.first_name ?? ""
   );
   const [notifiedByLastName, setNotifiedByLastName] = useState(
-    incident?.notified_by?.last_name
+    incident?.notified_by?.last_name ?? ""
   );
   const [briefSummary, setBriefSummary] = useState(
-    incident?.brief_summary_incident
+    incident?.brief_summary_incident ?? ""
   );
   const [immediateActionsTaken, setImmediateActionsTaken] = useState(
-    incident?.immediate_actions_taken
+    incident?.immediate_actions_taken ?? ""
   );
   const [description, setDescription] = useState(
-    incident?.other_route_description
+    incident?.other_route_description ?? ""
   );
-  const [nurseNote, setNurseNote] = useState(incident?.nurse_note);
-  const [progressNote, setProgressNote] = useState(incident?.progress_note);
+  const [infoSource, setInfoSource] = useState(() => {
+    if (incident?.nurse_note) return "Nurse note"
+    if (incident?.progress_note) return "Progress note"
+    if (incident?.other_information_can_be_found_in) return "Other"
+    return ""
+  })
+
+  const [nurseNote, setNurseNote] = useState(!!incident?.nurse_note);
+  const [progressNote, setProgressNote] = useState(!!incident?.progress_note);
   const [otherNote, setOtherNote] = useState(
-    incident?.other_information_can_be_found_in
+    !!incident?.other_information_can_be_found_in
   );
   const [otherNoteDescription, setOtherNoteDescription] = useState(
-    incident?.other_information_description
+    incident?.other_information_description ?? ""
   );
   const [treatmentDescription, setTreatmentDescription] = useState(
-    incident?.treatment_description
+    incident?.treatment_description ?? ""
   );
   const [agreementDescription, setAgreementDescription] = useState("");
-  const [outcomeType, setOutcomeType] = useState(incident?.outcome_type);
+  const [outcomeType, setOutcomeType] = useState(incident?.outcome_type ?? "");
   const [outcomeDescription, setOutcomeDescription] = useState(
-    incident?.description
+    incident?.description ?? ""
   );
   const [adrOutcome, setAdrOutcome] = useState(() => {
     return typeof incident.anaphylaxis_outcome === "string"
@@ -170,7 +176,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       : [];
   });
   const [fdaReported, setFdaReported] = useState(
-    incident?.adverse_event_to_be_reported_to_FDA
+    incident?.adverse_event_to_be_reported_to_FDA ?? ""
   );
   const [severityRating, setSeverityRating] = useState(
     incident?.severity_rating ?? ""
@@ -178,12 +184,14 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   const permission = usePermission();
   const department = useDepartments();
 
+  const coerceBool = (v) => v === true || v === "true" || v === 1 || v === "1"
+
   useEffect(() => {
     // get documents
     const fetchIncidentDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/adverse-drug-reaction/${adverseDrugReactionId}/documents/`
+          `/incidents/adverse-drug-reaction/${incidentId}/documents/`
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
@@ -209,7 +217,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       setUploadingDocuments(true);
 
       const response = await mediaAPI.post(
-        `/incidents/adverse-drug-reaction/${adverseDrugReactionId}/documents/`,
+        `/incidents/adverse-drug-reaction/${incidentId}/documents/`,
         formData
       );
 
@@ -271,16 +279,32 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   };
 
   const handleProgressNote = (value) => {
-    setOtherNote(false);
-    setProgressNote(value);
-    setNurseNote(false);
-    setOtherNoteDescription("");
+    setInfoSource(value)
+    setNurseNote(value === "Nurse note")
+    setProgressNote(value === "Progress note")
+    const isOther = value === "Other" || value === "imaging reports"
+    setOtherNote(isOther)
+    setOtherNoteDescription(isOther && value === "imaging reports" ? "imaging reports" : "")
   };
 
   const handleModify = async (incidentStatus) => {
     setIsLoading(true);
+
+    let src = infoSource
+    if (!src) {
+      if (coerceBool(nurseNote)) src === "Nurse note"
+      else if (coerceBool(progressNote)) src = "Progress note"
+      else if (coerceBool(otherNote)) src = "Other"
+    }
+    const normalizedNurse = src === "Nurse note"
+    const normalizedProg = src === "Progress note"
+    const normalizedOther = src === "Other" || (otherNoteDescription || "").trim().length > 0
+
+    const normalizedOtherDesc = normalizedOther ? (otherNoteDescription || "") : ""
+
     const incidentData = {
       action: "modify",
+      report_facility: user.facility.id,
       patient_type: victimType,
       patient_name: {
         first_name: firstName,
@@ -324,10 +348,11 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       information_reaction: reaction,
       date_of_adverse_reaction: adverseReactionDate,
       reaction_on_settime: reactionSetTime,
-      nurse_note: nurseNote,
-      progress_note: progressNote,
-      other_information_can_be_found_in: otherNote,
-      other_information_description: otherNoteDescription,
+      nurse_note: normalizedNurse,
+      progress_note: normalizedProg,
+      other_information_can_be_found_in: normalizedOther,
+      other_information_description: normalizedOtherDesc,
+
       reaction_was_treated: isReactionTreated,
       treatment_description: treatmentDescription,
 
@@ -361,11 +386,11 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       status: incidentStatus,
       severity_rating: severityRating,
     };
-
+    // console.log('data', incidentData)
     try {
 
       const response = await api.patch(
-        `/incidents/adverse-drug-reaction/${adverseDrugReactionId}/`,
+        `/incidents/adverse-drug-reaction/${incidentId}/`,
         cleanedData(incidentData)
       );
       if (response.status === 200) {
@@ -377,6 +402,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
+      console.log('error:', error)
       if (error.response) {
 
         window.customToast.error(
@@ -450,10 +476,10 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
             Status :{" "}
             <span
               className={`follow-up ${status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
-                    ? "closed"
-                    : "Open"
+                ? "in-progress"
+                : status === "Closed"
+                  ? "closed"
+                  : "Open"
                 }`}
             >
               {status}
@@ -788,7 +814,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
                   "Other",
                 ]}
                 placeholder={"source"}
-                selected={progressNote}
+                selected={infoSource}
                 setSelected={handleProgressNote}
               />
             </div>

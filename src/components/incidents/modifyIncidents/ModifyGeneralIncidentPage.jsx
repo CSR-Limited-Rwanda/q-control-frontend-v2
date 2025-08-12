@@ -17,11 +17,12 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { usePermission } from "@/context/PermissionsContext";
 import { useParams } from "react-router-dom";
 import CantModify from "@/components/CantModify";
+import { useAuthentication } from "@/context/authContext";
 
 // We need to resolve the issue with status prio to
 const ModifyGeneralIncidentForm = ({ data }) => {
   const { incidentId } = useParams();
-  //   const permission = usePermission();
+  const { user } = useAuthentication()
   const [incident, setIncident] = useState(data);
   const [restraintOn, setRestraintOn] = useState(
     incident.fall_type_agreement || []
@@ -304,8 +305,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
 
   const handleModify = async (incidentStatus) => {
     const incidentData = {
-      facility_id: checkCurrentAccount(),
       action: "modify",
+      report_facility: user.facility.id,
       category: category,
       severity_rating: severityRating,
       patient_visitor: {
@@ -476,10 +477,10 @@ const ModifyGeneralIncidentForm = ({ data }) => {
               Status :{" "}
               <span
                 className={`follow-up ${status === "Draft"
-                    ? "in-progress"
-                    : status === "Closed"
-                      ? "closed"
-                      : "Open"
+                  ? "in-progress"
+                  : status === "Closed"
+                    ? "closed"
+                    : "Open"
                   }`}
               >
                 {status}
