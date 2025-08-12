@@ -13,8 +13,11 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { FacilityCard } from "@/components/DashboardContainer";
 import ErrorMessage from "@/components/messages/ErrorMessage";
 import DraftPopup from "@/components/DraftPopup";
+import { useAuthentication } from "@/context/authContext";
 
 const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
+  const { user } = useAuthentication()
+  const [currentFacility, setCurrentFacility] = useState(user.facility)
   const [facilityId, setFacilityId] = useState(localStorage.getItem('facilityId'))
   const [departmentId, setDepartmentId] = useState(localStorage.getItem('departmentId'))
   const [currentStep, setCurrentStep] = useState(1);
@@ -513,8 +516,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       if (isValid) {
         const data = {
           current_step: currentStep,
-          report_facility: facilityId,
-          department: departmentId,
+          facility_id: user.facility.id,
+          department: user.department.id,
+          report_facility_id: currentFacility?.id,
           reported_by: {
               first_name: reportedByFirstName,
               last_name: reportedByLastName,
@@ -974,6 +978,13 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const handlePreviousStep = () => {
     currentStep > 1 ? setCurrentStep(currentStep - 1) : setCurrentStep(1);
   };
+
+  const handleCurrentFacility = (facilityId) => {
+    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    setCurrentFacility(selectedFacility);
+    console.log(selectedFacility);
+  };
+
   return (
     <div className="forms-container">
       <div className="forms-header">
@@ -1045,12 +1056,23 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         ) : (
           " "
         )}
-        <FacilityCard />
         <DraftPopup
           incidentString="workplace_violence"
           incidentType="workplace_violence"
         />
       </div>
+      {currentStep === 1 && (
+        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
+          {
+            user?.accounts?.map((facility) => (
+              <option key={facility.id} value={facility.id}>
+                Submitting for {facility.name}
+              </option>
+            ))
+          }
+        </select>
+      )}
+
       {success ? (
         <FormCompleteMessage title="Workplace Violence" />
       ) : (

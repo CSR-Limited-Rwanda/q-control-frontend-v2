@@ -36,10 +36,10 @@ import { useAuthentication } from "@/context/authContext";
 // import RichTexField from "./inputs/richTexField";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
-  const {user} = useAuthentication()
-  console.log(user)
+  const { user } = useAuthentication()
+  console.log(user);
+  const [currentFacility, setCurrentFacility] = useState(user.facility)
   const [restraintOn, setRestraintOn] = useState([]);
-
   const [specimen, setSpecimen] = useState([]);
   const [showSpecimen, setshowSpecimen] = useState(false);
   const [showRestrainOptions, setShowRestrainOptions] = useState(false);
@@ -366,7 +366,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         // setErrorFetching(error?.response?.data?.error);
         window.customToast.error(
           error?.response?.data?.message ||
-            "Error while creating new incident, please try again"
+          "Error while creating new incident, please try again"
         );
         return;
       } else {
@@ -474,6 +474,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           category: category,
           incident_date: incidentDate,
           incident_time: incidentTime,
+          report_facility_id: currentFacility?.id,
           patient_visitor: {
             first_name: patientVisitorFirstName,
             last_name: patientVisitorLastName,
@@ -825,6 +826,13 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       setFilteredSuggestions(results);
     }
   };
+
+  const handleCurrentFacility = (facilityId) => {
+    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    setCurrentFacility(selectedFacility);
+    console.log(selectedFacility);
+  };
+
   return (
     <div className="forms-container">
       <div className="forms-header">
@@ -927,6 +935,20 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         {/* <FacilityCard /> */}
         <DraftPopup incidentString="general" incidentType="general_incident" />
       </div>
+
+      {currentStep === 1 && (
+        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
+          {
+            user?.accounts?.map((facility) => (
+              <option key={facility.id} value={facility.id}>
+                Submitting for  {facility.name}
+              </option>
+            ))
+          }
+        </select>
+      )}
+
+
       <form className="newIncidentForm">
         {currentStep === 1 ? (
           <div className="step incident-info">
@@ -983,9 +1005,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
             <div className="form-half">
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor first name</label>
                 <input
@@ -1000,9 +1021,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                 />
               </div>
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor last name</label>
                 <input
@@ -1174,8 +1194,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </label>
               <div
                 className="check-boxes check-boxes-row"
-                //  onChange={(e) => setRoute(e.target.value)}
-                //  value={route}
+              //  onChange={(e) => setRoute(e.target.value)}
+              //  value={route}
               >
                 {statusesPrionToIncident.map((status, index) => (
                   <div
@@ -1681,7 +1701,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                         style={{
                           display:
                             specialTypes.includes(type.name) &&
-                            otherTypes !== "Specimen"
+                              otherTypes !== "Specimen"
                               ? "none"
                               : "block",
                         }}
@@ -1940,9 +1960,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           >
             <span>{isLoading ? "Saving..." : "Save Incident"}</span>
             <i
-              className={`fa-solid fa-arrow-right ${
-                isLoading ? "loading" : ""
-              }`}
+              className={`fa-solid fa-arrow-right ${isLoading ? "loading" : ""
+                }`}
             ></i>
           </button>
         ) : currentStep < 7 ? (

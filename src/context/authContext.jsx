@@ -204,6 +204,7 @@ async function getUserInfoFromToken(token) {
       role: decodedToken.role || null,
       facility: decodedToken.facility || null,
       department: decodedToken.department || null,
+      accounts: decodedToken.accounts || null,
       profileId: decodedToken.profile_id,
     };
 
