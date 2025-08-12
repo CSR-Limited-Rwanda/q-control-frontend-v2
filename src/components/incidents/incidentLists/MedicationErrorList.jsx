@@ -342,33 +342,7 @@ const MedicationErrorList = () => {
                       handleSelectedItems={handleSelectedItems}
                       handleSelectAll={handleSelectAll}
                     />
-                    <div className="mobile-table">
-                      <button
-                        onClick={() => handleSelectAll(searchResults)}
-                        type="button"
-                        className="tertiary-button"
-                      >
-                        {searchResults.every((item) =>
-                          selectedItems.some(
-                            (selected) => selected.id === item.id
-                          )
-                        ) ? (
-                          <SquareCheck />
-                        ) : (
-                          <Square />
-                        )}{" "}
-                        Select all
-                      </button>
-                      {currentSearchResults.map((incident, index) => (
-                        <IncidentTableCard
-                          key={index}
-                          incident={incident}
-                          handleRowClick={handleRowClick}
-                          selectedItems={selectedItems}
-                          handleSelectedItems={handleSelectedItems}
-                        />
-                      ))}
-                    </div>
+
                     <div className="pagination-controls">
                       <button
                         className="pagination-button"
