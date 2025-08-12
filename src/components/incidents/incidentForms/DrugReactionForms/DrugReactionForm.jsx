@@ -588,30 +588,30 @@ const DrugReactionForm = ({ togglePopup }) => {
       if (isValid) {
         drugReactionData = {
           current_step: currentStep,
-   
-            outcome_type: outcomeType,
-            description: JSON.stringify(selectedDescription),
 
-            name_of_physician_notified: {
-              first_name: physicianNotifiedFirstName,
-              last_name: physicianNotifiedLastName,
-              profile_type: "Physician",
-            },
-            date_physician_was_notified: physcianDate,
-            time_physician_was_notified: physcianTime,
-            name_of_family_notified: {
-              first_name: familyNotifiedFirstName,
-              last_name: familyNotifiedLastName,
-              profile_type: "Family",
-            },
-            date_family_was_notified: familyDate,
-            time_family_was_notified: familyTime,
-            notified_by: {
-              first_name: notifiedByFirstName,
-              last_name: notifiedByLastName,
-              profile_type: "Nurse",
-            },
-          
+          outcome_type: outcomeType,
+          description: JSON.stringify(selectedDescription),
+
+          name_of_physician_notified: {
+            first_name: physicianNotifiedFirstName,
+            last_name: physicianNotifiedLastName,
+            profile_type: "Physician",
+          },
+          date_physician_was_notified: physcianDate,
+          time_physician_was_notified: physcianTime,
+          name_of_family_notified: {
+            first_name: familyNotifiedFirstName,
+            last_name: familyNotifiedLastName,
+            profile_type: "Family",
+          },
+          date_family_was_notified: familyDate,
+          time_family_was_notified: familyTime,
+          notified_by: {
+            first_name: notifiedByFirstName,
+            last_name: notifiedByLastName,
+            profile_type: "Nurse",
+          },
+
         };
 
         updateDrugAdverseReaction(drugReactionData);
@@ -1523,7 +1523,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="btns">
+      <div className="buttons">
         {currentStep > 1 && currentStep < 8 ? (
           <button
             onClick={handlePreviousStep}

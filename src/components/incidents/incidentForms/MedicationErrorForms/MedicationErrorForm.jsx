@@ -1101,8 +1101,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
                 <div
                   className={`type full-width-type ${descriptionerror.includes("PROCUREMENT & STORAGE")
-                      ? "selected"
-                      : ""
+                    ? "selected"
+                    : ""
                     }`}
                   onClick={() => handleTypeSelection("PROCUREMENT & STORAGE")}
                 >
@@ -1173,8 +1173,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
                 <div
                   className={`type full-width-type ${contributingfactors.includes("MEDICATION USE SYSTEM")
-                      ? "selected"
-                      : ""
+                    ? "selected"
+                    : ""
                     }`}
                   onClick={() =>
                     handleContributingFactor("MEDICATION USE SYSTEM")
@@ -1187,8 +1187,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
                 <div
                   className={`type full-width-type ${contributingfactors.includes("COMMUNICATION DYNAMICS")
-                      ? "selected"
-                      : ""
+                    ? "selected"
+                    : ""
                     }`}
                   onClick={() =>
                     handleContributingFactor("COMMUNICATION DYNAMICS")
@@ -1242,8 +1242,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
                   <div
                     key={index}
                     className={`type full full-width-type ${selectedCategory.value === category.value
-                        ? "selected"
-                        : ""
+                      ? "selected"
+                      : ""
                       }`}
                     onClick={() =>
                       handleSelectedCategory({
@@ -1281,7 +1281,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           <h1>Something ain't right</h1>
         )}
       </form>
-      <div className="btns">
+      <div className="buttons">
         {currentStep > 1 && currentStep < 9 ? (
           <button
             onClick={handlePreviousStep}

@@ -345,7 +345,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
           pageName={"Medication Error incidents"}
         />
         <h2 className="title">Modifying Medication Error</h2>
-        <div className="btns">
+        <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>

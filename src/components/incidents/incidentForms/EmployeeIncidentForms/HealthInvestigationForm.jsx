@@ -800,7 +800,7 @@ const HealthIncidentInvestigationForm = () => {
                             ""
                         )}
                     </form>
-                    <div className="btns">
+                    <div className="buttons">
                         {currentStep > 1 && currentStep < 4 ? (
                             <button
                                 onClick={handlePreviousStep}

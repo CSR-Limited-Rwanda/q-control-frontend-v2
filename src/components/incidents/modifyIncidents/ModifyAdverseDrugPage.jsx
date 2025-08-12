@@ -439,7 +439,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
           pageName={"ADR incidents"}
         />
         <h2 className="title">Modifying Adverse Drug Incident</h2>
-        <div className="btns">
+        <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>

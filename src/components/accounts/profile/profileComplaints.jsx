@@ -347,7 +347,7 @@ export const ComplainDetails = ({
           <h4>Complaint details</h4>
           <X className="close-icon" onClick={handleShowComplainDetails} />
 
-          <div className="btns">
+          <div className="buttons">
             <button type="button" className="tertiary-button">
               <Printer size={19} /> <span>Print</span>
             </button>
