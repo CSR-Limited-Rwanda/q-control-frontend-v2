@@ -386,7 +386,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       status: incidentStatus,
       severity_rating: severityRating,
     };
-    // console.log('data', incidentData)
     try {
 
       const response = await api.patch(
@@ -402,7 +401,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
-      console.log('error:', error)
       if (error.response) {
 
         window.customToast.error(

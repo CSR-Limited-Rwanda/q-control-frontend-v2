@@ -58,7 +58,6 @@ const EmployeeDetailsContent = () => {
       );
 
       if (investigationRes.status === 200) {
-        // console.log('staff investigation:', investigationRes.data)
         setInvestigationInfo(investigationRes.data);
       } else {
         setInvestigationInfo(null);

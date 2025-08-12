@@ -13,7 +13,6 @@ const IncidentDetails = ({
   hasInitiated = false,
 }) => {
 
-  console.log(data)
   return (
     <div className="patient-name-type">
       <div className="date">
