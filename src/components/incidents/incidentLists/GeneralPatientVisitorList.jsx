@@ -374,34 +374,7 @@ const GeneralPatientVisitorList = () => {
                           handleRowClick={handleRowClick}
                           setIncidentData={setSearchResults}
                         />
-                        <div className="mobile-table">
-                          <button
-                            onClick={() => handleSelectAll(searchResults)}
-                            type="button"
-                            className="tertiary-button"
-                          >
-                            {searchResults.every((item) =>
-                              selectedItems.some(
-                                (selected) => selected.id === item.id
-                              )
-                            ) ? (
-                              <SquareCheck />
-                            ) : (
-                              <Square />
-                            )}{" "}
-                            Select all
-                          </button>
-                          {currentSearchResults.map((incident, index) => (
-                            <IncidentTableCard
-                              key={index}
-                              incident={incident}
-                              navigateToModify={navigateToModify}
-                              handleRowClick={handleRowClick}
-                              selectedItems={selectedItems}
-                              handleSelectedItems={handleSelectedItems}
-                            />
-                          ))}
-                        </div>
+
                         <div className="pagination-controls">
                           <button
                             className="pagination-button"
@@ -450,34 +423,7 @@ const GeneralPatientVisitorList = () => {
                     navigateToModify={navigateToModify}
                     handleRowClick={handleRowClick}
                   />
-                  <div className="mobile-table">
-                    <button
-                      onClick={() => handleSelectAll(incidentData)}
-                      type="button"
-                      className="tertiary-button"
-                    >
-                      {incidentData.every((item) =>
-                        selectedItems.some(
-                          (selected) => selected.id === item.id
-                        )
-                      ) ? (
-                        <SquareCheck />
-                      ) : (
-                        <Square />
-                      )}{" "}
-                      Select all
-                    </button>
-                    {currentIncidentData.map((incident, index) => (
-                      <IncidentTableCard
-                        key={index}
-                        incident={incident}
-                        navigateToModify={navigateToModify}
-                        handleRowClick={handleRowClick}
-                        selectedItems={selectedItems}
-                        handleSelectedItems={handleSelectedItems}
-                      />
-                    ))}
-                  </div>
+
                   <div className="pagination-controls">
                     <button
                       className="pagination-button"
@@ -756,93 +702,5 @@ const GeneralIncidentTable = ({
   );
 };
 
-const IncidentTableCard = ({
-  incident,
-  selectedItems,
-  handleSelectedItems,
-  navigateToModify,
-  handleRowClick,
-}) => {
-  return (
-    <div
-      className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
-        }`}
-    >
-      <div className="card-header">
-        <div className="id-number">
-          <div onClick={() => handleSelectedItems(incident)} className="icon">
-            {selectedItems.includes(incident) ? (
-              <SquareCheck color="orange" />
-            ) : (
-              <Square />
-            )}
-          </div>
-          <span>ID</span>
-          <span>{incident.original_report || incident.id}</span>
-        </div>
-        <div
-          onClick={() =>
-            handleRowClick(
-              incident.original_report ? incident.original_report : incident.id
-            )
-          }
-          className="card-actions"
-        >
-          <ViewIcon />
-          <span>View more</span>
-        </div>
-      </div>
-      <div className="card-content-items">
-        <div className="item">
-          <label htmlFor="">Facility: </label>
-          <span>{incident.report_facility?.name || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Name: </label>
-          <span>
-            {incident.patient_visitor?.last_name &&
-              incident.patient_visitor?.first_name
-              ? `${incident.patient_visitor?.last_name} ${incident.patient_visitor?.first_name}`
-              : "Not provided"}
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Type of incident: </label>
-          <span>{incident.incident_type || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Date & Time: </label>
-          <span>
-            <span>
-              <DateFormatter dateString={incident?.incident_date} />,{" "}
-              {incident?.incident_time || "-"}
-            </span>
-          </span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Severity: </label>
-          <span>{incident?.severity_rating || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Care level: </label>
-          <span>{incident?.category || "Not provided"}</span>
-        </div>
-        <div className="item">
-          <label htmlFor="">Status: </label>
-          <span
-            className={`follow-up ${incident.status === "Draft"
-              ? "in-progress"
-              : incident.status === "Closed"
-                ? "closed"
-                : "Open"
-              }`}
-          >
-            {incident?.status || "Not specified"}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default GeneralPatientVisitorList;
