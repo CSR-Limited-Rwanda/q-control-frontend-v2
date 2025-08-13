@@ -504,16 +504,15 @@
 .modal-content {
   background: white;
   border-radius: 0.5rem;
-  padding: 1.5rem;
-  max-width: 28rem;
+  padding: 1.5rem !important;
+  max-width: 35rem !important;
   width: 100%;
   position: relative;
 }
 
-.close-icon {
+.close-popup {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  right: 1.5rem !important;
   cursor: pointer;
   color: #4b5563;
   transition: color 0.2s ease;
@@ -568,7 +567,7 @@
 }
 
 .department-list {
-  max-height: 2rem;
+  max-height: 8rem;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;

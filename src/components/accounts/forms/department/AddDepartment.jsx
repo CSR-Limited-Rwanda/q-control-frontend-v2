@@ -5,6 +5,7 @@ import api from "@/utils/api";
 import { X } from "lucide-react";
 import ErrorMessage from "@/components/messages/ErrorMessage";
 import "../../../../styles/facilities/_facilities.scss";
+import CloseIcon from "@/components/CloseIcon";
 const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -28,7 +29,6 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
           setUsers(response.data.results);
         }
       } catch (error) {
-
         setError("Failed to fetch users");
       } finally {
         setIsLoading(false);
@@ -82,9 +82,8 @@ const AddDepartment = ({ facilityId, onClose, onDepartmentAdded }) => {
   return (
     <div className="popup">
       <div className="popup-content">
-        <div className="close-icon" onClick={onClose}>
-          <X size={34} />
-        </div>
+        <CloseIcon onClick={onClose} />
+
         <h2>Add Department</h2>
         {error && <ErrorMessage message={error} />}
         <form onSubmit={handleSubmit}>

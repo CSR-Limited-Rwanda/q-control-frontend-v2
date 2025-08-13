@@ -21,6 +21,7 @@ import EditComplaintForm from "@/components/forms/EditComplaintForm";
 import SubmitComplaintForm from "@/components/forms/SubmitComplaintForm";
 import SendComplaintToDepartment from "@/components/forms/SendComplaintToDepartment";
 import { useParams } from "next/navigation";
+import CloseIcon from "@/components/CloseIcon";
 
 const UserComplaints = () => {
   const { accountId } = useParams();
@@ -344,7 +345,7 @@ export const ComplainDetails = ({
       ) : (
         <div className="complaint-details">
           <h4>Complaint details</h4>
-          <X className="close-icon" onClick={handleShowComplainDetails} />
+          <CloseIcon onClick={handleShowComplainDetails} />
 
           <div className="buttons">
             <button type="button" className="tertiary-button">

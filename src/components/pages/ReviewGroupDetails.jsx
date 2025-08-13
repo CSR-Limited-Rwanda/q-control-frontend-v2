@@ -20,6 +20,7 @@ import AddMembersToReviewGroup from "../forms/AddMembersToReviewGroup";
 import { useRouter } from "next/navigation";
 import DeleteReviewGroup from "../accounts/forms/reviewGroups/DeleteReviewGroup";
 import EditReviewGroup from "../accounts/forms/reviewGroups/EditReviewGroup";
+import CloseIcon from "../CloseIcon";
 
 const ReviewGroupsDetailsContent = () => {
   const [members, setMembers] = useState([]);
@@ -48,8 +49,8 @@ const ReviewGroupsDetailsContent = () => {
       } catch (error) {
         setErrorMessage(
           error.response.data?.message ||
-          error.response.data?.error ||
-          "Failed to get review group"
+            error.response.data?.error ||
+            "Failed to get review group"
         );
       }
     };
@@ -76,8 +77,8 @@ const ReviewGroupsDetailsContent = () => {
         if (error.response) {
           setErrorMessage(
             error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get review group members"
+              error.response.data?.error ||
+              "Failed to get review group members"
           );
         } else if (error.request) {
           setErrorMessage("No response from server");
@@ -117,8 +118,8 @@ const ReviewGroupsDetailsContent = () => {
       console.error("Delete error:", error);
       setDeleteError(
         error.response?.data?.message ||
-        error.response?.data?.error ||
-        "Error deleting department"
+          error.response?.data?.error ||
+          "Error deleting department"
       );
     } finally {
       setIsDeleting(false);
@@ -150,13 +151,8 @@ const ReviewGroupsDetailsContent = () => {
           <div className="new-user-form-popup">
             <div className="popup">
               <div className="popup-content">
-                <div className="close">
-                  <X
-                    onClick={handleShowNewUserForm}
-                    className="close-icon"
-                    size={34}
-                  />
-                </div>
+                <CloseIcon onClick={handleShowNewUserForm} />
+
                 <div className="form">
                   <AddMembersToReviewGroup
                     groupId={reviewId}
@@ -203,7 +199,9 @@ const ReviewGroupsDetailsContent = () => {
           <div className="review-group-details-contents">
             <div className="row">
               <div className="col">
-                <h4 className="review-title">{reviewGroup.title || 'Not provided'}</h4>
+                <h4 className="review-title">
+                  {reviewGroup.title || "Not provided"}
+                </h4>
                 <p className="review-date">
                   <DateFormatter dateString={reviewGroup.created_at || "N/A"} />
                 </p>
@@ -304,8 +302,8 @@ const ReviewGroupsDetailsContent = () => {
                     <td>
                       {member?.access_to_department?.length > 0
                         ? member.access_to_department
-                          .map((dept) => dept.name)
-                          .join(", ")
+                            .map((dept) => dept.name)
+                            .join(", ")
                         : "No department"}
                     </td>
                   </tr>

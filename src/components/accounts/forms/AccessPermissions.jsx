@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Square, SquareCheck, X } from "lucide-react";
 import api from "@/utils/api";
 import { SearchInput } from "@/components/forms/Search";
+import CloseIcon from "@/components/CloseIcon";
 
 const AccessPermissions = ({
   formData,
@@ -133,9 +134,7 @@ const AccessPermissions = ({
       setIsLoading(true);
       const response = await api.put(`/users/${userId}/`, payload);
       if (response.status === 200) {
-
         window.location.reload();
-
       }
     } catch (error) {
       console.error("Failed to save:", error);
@@ -171,9 +170,8 @@ const AccessPermissions = ({
     <div className="popup">
       <div className="popup-content">
         <h3>Edit Access Permissions</h3>
-        <div className="close" onClick={handleClose}>
-          <X size={32} />
-        </div>
+        <CloseIcon onClick={handleClose} />
+
         <div className="card">
           <div className="form-group">
             <label>Access to facilities</label>

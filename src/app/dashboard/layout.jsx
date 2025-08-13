@@ -27,6 +27,7 @@ import { ProfileContainer } from "@/components/accounts/ProfileContainer";
 import { ProfileMessages } from "@/components/accounts/ProfileMessages";
 import { ProfileNotification } from "@/components/accounts/ProfileNotification";
 import { MenuItem } from "./MenuItem";
+import CloseIcon from "@/components/CloseIcon";
 
 const DashboardLayout = ({ children }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -39,9 +40,6 @@ const DashboardLayout = ({ children }) => {
   const handleMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
   };
-
-
-
 
   const toggleFormChoicesOpen = () => {
     setIsFormCHoicesOpen(!isFormChoicesOpen);
@@ -67,13 +65,14 @@ const DashboardLayout = ({ children }) => {
     <div className="dashboard">
       {/* Sidebar */}
       <aside
-        className={`sidebar ${isSidebarCollapsed ? "collapsed" : ""
-          } ${showMobileMenu ? "mobile-open" : ""}`}
+        className={`sidebar ${isSidebarCollapsed ? "collapsed" : ""} ${
+          showMobileMenu ? "mobile-open" : ""
+        }`}
       >
         <div className="logo">
           <Image src={"/logo.svg"} width={52} height={32} alt="logo" />
           <h2 className="brand-name">Q-Control</h2>
-          <X onClick={handleMobileMenu} className="close-mobile" />
+          <CloseIcon onClick={handleMobileMenu} />
         </div>
         <nav className="sidebar-nav">
           {menuItems.map((item, index) => (
@@ -83,10 +82,7 @@ const DashboardLayout = ({ children }) => {
       </aside>
 
       {/* Main Content Area */}
-      <main
-        className={`main ${isSidebarCollapsed ? "sidebar-collapsed" : ""
-          }`}
-      >
+      <main className={`main ${isSidebarCollapsed ? "sidebar-collapsed" : ""}`}>
         {/* Header */}
         <header className="header">
           <div className="header-left">
@@ -102,14 +98,8 @@ const DashboardLayout = ({ children }) => {
             </div>
 
             <div className="mobile-menu" onClick={handleMobileMenu}>
-              {
-                showMobileMenu ?
-                  <X /> :
-                  <Menu />
-              }
+              {showMobileMenu ? <X /> : <Menu />}
             </div>
-
-
           </div>
 
           <div className="header-actions">
@@ -132,14 +122,13 @@ const DashboardLayout = ({ children }) => {
             <ProfileNotification />
             <ProfileContainer />
           </div>
-
         </header>
 
         {/* Page Content */}
         <div className="content">
           {isPopupOpen ? (
             <PopUp
-              spacialClass={'has-header'}
+              spacialClass={"has-header"}
               togglePopup={togglePopup}
               isPopupOpen={isPopupOpen}
               popupContent={
@@ -158,9 +147,7 @@ const DashboardLayout = ({ children }) => {
                 ) : selectedForm === "workPlaceViolence" ? (
                   <WorkplaceViolenceIncidentForm togglePopup={togglePopup} />
                 ) : selectedForm === "healthIncident" ? (
-                  <HealthIncidentInvestigationForm
-                    togglePopup={togglePopup}
-                  />
+                  <HealthIncidentInvestigationForm togglePopup={togglePopup} />
                 ) : selectedForm === "verbalComplaint" ? (
                   <VerbalComplaintForm />
                 ) : selectedForm === "grievanceInvestigation" ? (
@@ -179,7 +166,6 @@ const DashboardLayout = ({ children }) => {
             ""
           )}
           {children}
-
         </div>
       </main>
     </div>
@@ -187,5 +173,3 @@ const DashboardLayout = ({ children }) => {
 };
 
 export default DashboardLayout;
-
-

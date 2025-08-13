@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "@/utils/api";
 import { ArrowLeft, LoaderCircle, Send, X } from "lucide-react";
+import CloseIcon from "../CloseIcon";
 // import "./SendComplaintToDepartment.scss";
 
 const SendComplaintToDepartment = ({ complaint, onClose }) => {
@@ -107,9 +108,10 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
   };
 
   return (
-    <div className="complaint-modal">
-      <div className="modal-content">
-        <X className="close-icon" onClick={onClose} />
+    <div className="complaint-modal popup">
+      <div className="modal-content popup-content">
+        <CloseIcon onClick={onClose} />
+
         <h2 className="modal-title">
           {step === 1 ? "Select Facility and Department" : "Add Details"}
         </h2>

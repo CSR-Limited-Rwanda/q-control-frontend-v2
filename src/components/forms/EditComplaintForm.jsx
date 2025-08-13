@@ -12,6 +12,7 @@ import {
   SquareCheck,
   X,
 } from "lucide-react";
+import CloseIcon from "../CloseIcon";
 
 const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
   const [error, setError] = useState("");
@@ -60,7 +61,6 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
   };
 
   const handleAssignedStaffList = (staff) => {
-
     if (!assignedStaffList.includes(staff)) {
       setAssignedStaffList((prevList) => [...prevList, staff]);
     } else {
@@ -140,7 +140,8 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
     <div className="user-complain-form">
       <div className="form">
         <h3>Edit your complaint</h3>
-        <X className="close-popup close-icon" onClick={handleSubmitComplaint} />
+        <CloseIcon onClick={handleSubmitComplaint} />
+
         <form action="">
           <div className="field">
             <label htmlFor="">Patient's name</label>

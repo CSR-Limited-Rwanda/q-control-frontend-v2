@@ -29,6 +29,7 @@ import EditTaskForm from "../forms/EditTaskForm";
 import DeletePopup from "../forms/DeletePopup";
 import EditReviewTemplateForm from "../forms/EditReviewTemplateForm";
 import TaskDetailsPopup from "../forms/TaskDetailsPopup";
+import CloseIcon from "../CloseIcon";
 
 const ReviewTemplatesDetailsContent = () => {
   const [tasks, setTasks] = useState([]);
@@ -56,13 +57,12 @@ const ReviewTemplatesDetailsContent = () => {
         );
         if (response.status === 200) {
           setReviewTemplate(response.data);
-
         }
       } catch (error) {
         setErrorMessage(
           error.response.data?.message ||
-          error.response.data?.error ||
-          "Failed to get review group members"
+            error.response.data?.error ||
+            "Failed to get review group members"
         );
       } finally {
         setIsLoading(false);
@@ -89,12 +89,11 @@ const ReviewTemplatesDetailsContent = () => {
           }
         }
       } catch (error) {
-
         if (error.response) {
           setErrorMessage(
             error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get tasks"
+              error.response.data?.error ||
+              "Failed to get tasks"
           );
         } else if (error.request) {
           setErrorMessage("No response from server");
@@ -131,15 +130,13 @@ const ReviewTemplatesDetailsContent = () => {
 
       if (response.status === 200) {
         setTask(response.data);
-
       }
     } catch (error) {
-
       if (error.response) {
         setErrorMessage(
           error.response.data?.message ||
-          error.response.data?.error ||
-          "Failed to get tasks"
+            error.response.data?.error ||
+            "Failed to get tasks"
         );
       } else if (error.request) {
         setErrorMessage("No response from server");
@@ -166,11 +163,7 @@ const ReviewTemplatesDetailsContent = () => {
         <div className="new-user-form-popup">
           <div className="popup">
             <div className="popup-content">
-              <X
-                onClick={handleShowAddTaskForm}
-                size={34}
-                className="close-icon"
-              />
+              <CloseIcon onClick={handleShowAddTaskForm} />
 
               <div className="form">
                 <AddTaskForm
@@ -189,13 +182,7 @@ const ReviewTemplatesDetailsContent = () => {
         <div className="new-user-form-popup">
           <div className="popup">
             <div className="popup-content">
-              <div className="close">
-                <X
-                  onClick={handleShowEditTemplateForm}
-                  className="close-icon"
-                  size={34}
-                />
-              </div>
+              <CloseIcon onClick={handleShowEditTemplateForm} />
 
               <div className="form">
                 <EditReviewTemplateForm
@@ -211,13 +198,8 @@ const ReviewTemplatesDetailsContent = () => {
         <div className="new-user-form-popup">
           <div className="popup">
             <div className="popup-content">
-              <div className="close">
-                <X
-                  onClick={handleShowEditTaskForm}
-                  className="close-icon"
-                  size={34}
-                />
-              </div>
+              <CloseIcon onClick={handleShowEditTaskForm} />
+
               <div className="form">
                 <EditTaskForm
                   showTaskDetails={handleShowTaskDetailsPopup}
@@ -233,11 +215,7 @@ const ReviewTemplatesDetailsContent = () => {
         <div className="new-user-form-popup">
           <div className="popup">
             <div className="popup-content">
-              <X
-                onClick={handleShowTaskDetailsPopup}
-                className="close-icon"
-                size={34}
-              />
+              <CloseIcon onClick={handleShowTaskDetailsPopup} />
 
               <div className="form">
                 <TaskDetailsPopup
@@ -287,16 +265,19 @@ const ReviewTemplatesDetailsContent = () => {
               <p className="review-created">Created by</p>
               <p className="review-created-by-name">
                 {reviewTemplate.created_by
-                  ? `${reviewTemplate.created_by.first_name || "N/A"} ${reviewTemplate.created_by.last_name || "N/A"}`
+                  ? `${reviewTemplate.created_by.first_name || "N/A"} ${
+                      reviewTemplate.created_by.last_name || "N/A"
+                    }`
                   : "N/A"}
               </p>
-
             </div>
             <div className="col">
               <p className="review-update">Last updated by</p>
               <p>
                 {reviewTemplate.updated_by
-                  ? `${reviewTemplate.updated_by.first_name || "N/A"} ${reviewTemplate.updated_by.last_name}`
+                  ? `${reviewTemplate.updated_by.first_name || "N/A"} ${
+                      reviewTemplate.updated_by.last_name
+                    }`
                   : "N/A"}
               </p>
             </div>

@@ -5,6 +5,7 @@ import { X, CircleCheck, LoaderCircle, Square } from "lucide-react";
 import CustomDatePicker from "../CustomDatePicker";
 import { howComplaintIsReceived } from "@/constants/constants";
 import RichTexField from "./RichTextField";
+import CloseIcon from "../CloseIcon";
 
 const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
   const [error, setError] = useState("");
@@ -44,7 +45,6 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
   };
 
   const handleAssignedStaffList = (staff) => {
-
     if (!assignedStaffList.includes(staff)) {
       setAssignedStaffList((prevList) => [...prevList, staff]);
     } else {
@@ -85,8 +85,8 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
       if (error.response) {
         setError(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while submitting the complaint"
+            error.response.data.error ||
+            "Error while submitting the complaint"
         );
       } else {
         setError("Unknown error while submitting the complaint");
@@ -107,8 +107,8 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
         if (error.response) {
           setUserError(
             error.response.data.message ||
-            error.response.data.error ||
-            "We could no get a list of users"
+              error.response.data.error ||
+              "We could no get a list of users"
           );
         }
         console.error(error);
@@ -120,7 +120,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
   return (
     <div className="form">
       <h3>Submit a new complaint</h3>
-      <X className="close-popup" onClick={handleSubmitComplaint} />
+      <CloseIcon onClick={handleSubmitComplaint} />
       <form action="" className="newIncidentForm">
         <div className="field">
           <label htmlFor="">Patient's name</label>
@@ -273,11 +273,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
         <div className="success-message">{successMessage}</div>
       )}
       {resolvedByStaff && (
-        <button
-          onClick={handleSubmit}
-          className="primary-button"
-          type="button"
-        >
+        <button onClick={handleSubmit} className="primary-button" type="button">
           {isLoading ? (
             <LoaderCircle size={18} className="loading-icon" />
           ) : (

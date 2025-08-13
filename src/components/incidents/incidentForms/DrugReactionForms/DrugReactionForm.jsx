@@ -26,6 +26,7 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 import { useAuthentication } from "@/context/authContext";
+import CloseIcon from "@/components/CloseIcon";
 
 const DrugReactionForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
@@ -647,7 +648,8 @@ const DrugReactionForm = ({ togglePopup }) => {
   return (
     <div className="form-container">
       <div className="forms-header">
-        <X className="close-popup" onClick={togglePopup} />
+        <CloseIcon onClick={togglePopup} />
+
         <h2>Anaphylaxis/Adverse Drug Reaction Report</h2>
         {currentStep < 5 ? (
           <div className="form-steps">

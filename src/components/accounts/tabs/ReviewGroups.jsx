@@ -18,6 +18,7 @@ import { SearchInput } from "@/components/forms/Search";
 import { openDropdown } from "@/utils/dropdownUtils";
 import SortableHeader from "@/components/SortableHeader";
 import useSorting from "@/hooks/useSorting";
+import CloseIcon from "@/components/CloseIcon";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -170,13 +171,8 @@ const ReviewGroups = () => {
         <div className="new-user-form-popup">
           <div className="popup">
             <div className="popup-content">
-              <div className="close">
-                <X
-                  onClick={handleShowNewUserForm}
-                  className="close-icon"
-                  size={34}
-                />
-              </div>
+              <CloseIcon onClick={handleShowNewUserForm} />
+
               <div className="form">
                 <NewReviewGroupForm />
               </div>
@@ -277,7 +273,9 @@ const ReviewGroups = () => {
                     <tr key={group.id} onClick={() => handleRowClick(group.id)}>
                       <td data-label="ID">{group.id || "N/A"}</td>
                       <td data-label="Group Name">{group.title || "N/A"}</td>
-                      <td data-label="Description">{group.description || "N/A"}</td>
+                      <td data-label="Description">
+                        {group.description || "N/A"}
+                      </td>
                       <td data-label="Date Created">
                         <DateFormatter dateString={group.created_at} />
                       </td>
@@ -348,8 +346,9 @@ const ReviewGroups = () => {
                 {total_pages > 1 && (
                   <button
                     onClick={() => handlePageChange(total_pages)}
-                    className={`pagination-button ${total_pages === page ? "active" : ""
-                      }`}
+                    className={`pagination-button ${
+                      total_pages === page ? "active" : ""
+                    }`}
                   >
                     {total_pages}
                   </button>
