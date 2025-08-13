@@ -18,6 +18,7 @@ import { X, CircleCheck, MoveRight, MoveLeft } from "lucide-react";
 import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 import { useAuthentication } from "@/context/authContext";
+import CloseIcon from "@/components/CloseIcon";
 
 const GrievanceForm = ({ togglePopup }) => {
   const { user } = useAuthentication()
@@ -178,8 +179,8 @@ const GrievanceForm = ({ togglePopup }) => {
         selectedOption === "other"
           ? otherInput
           : selectedOption
-          ? selectedOption
-          : null,
+            ? selectedOption
+            : null,
     };
 
     try {
@@ -203,8 +204,8 @@ const GrievanceForm = ({ togglePopup }) => {
       if (error.response) {
         window.customToast.error(
           error.response?.data.message ||
-            error.response?.data.error ||
-            "Error while saving incident"
+          error.response?.data.error ||
+          "Error while saving incident"
         );
       } else {
         window.customToast.error("Unknown error while saving incident");
@@ -347,8 +348,8 @@ const GrievanceForm = ({ togglePopup }) => {
               selectedOption === "other"
                 ? otherInput
                 : selectedOption
-                ? selectedOption
-                : null,
+                  ? selectedOption
+                  : null,
           });
         }
       }
@@ -476,16 +477,13 @@ const GrievanceForm = ({ togglePopup }) => {
   };
 
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Patient/Patient Representative Grievance Form</h2>
-        <X
-          className="close-popup"
-          onClick={() => {
-            togglePopup();
-            localStorage.setItem("updateNewIncident", "false");
-          }}
-        />
+        <CloseIcon onClick={() => {
+          togglePopup();
+          localStorage.setItem("updateNewIncident", "false");
+        }} />
 
         {currentStep < 4 ? (
           <div className="form-steps">

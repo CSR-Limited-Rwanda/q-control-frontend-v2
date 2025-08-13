@@ -104,8 +104,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response) {
         setError(
           error.response.message ||
-            error.response.error ||
-            "Error uploading files"
+          error.response.error ||
+          "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -138,8 +138,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response) {
         setError(
           error.response.message ||
-            error.response.error ||
-            "Error uploading files"
+          error.response.error ||
+          "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -273,7 +273,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response.data) {
         window.customToast.error(
           error.response.data.message ||
-            "Error saving the grievance investigation"
+          "Error saving the grievance investigation"
         );
       } else {
         window.customToast.error(
@@ -306,7 +306,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response.data) {
         window.customToast.error(
           error.response.data.message ||
-            "Error updating the grievance investigation"
+          "Error updating the grievance investigation"
         );
       } else {
         window.customToast.error(
@@ -388,7 +388,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   };
 
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <h2>Grievance Investigation Form</h2>
       {currentStep < 4 ? (
         <div className="form-steps">

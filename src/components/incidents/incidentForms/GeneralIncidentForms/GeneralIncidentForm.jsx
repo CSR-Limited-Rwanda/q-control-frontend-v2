@@ -33,6 +33,7 @@ import DraftPopup from "@/components/DraftPopup";
 import "../../../../styles/_forms.scss";
 import "../../../../styles/generalIncident.scss";
 import { useAuthentication } from "@/context/authContext";
+import CloseIcon from "@/components/CloseIcon";
 // import RichTexField from "./inputs/richTexField";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
@@ -832,17 +833,14 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   };
 
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Add new incident</h2>
-        <X
+        <CloseIcon
           onClick={() => {
             togglePopup();
             localStorage.setItem("updateNewIncident", "false");
-          }}
-          className="close-icon"
-        />
-
+          }} />
         {errorFetching && <ErrorMessage errorFetching={errorFetching} />}
 
         <div className="form-steps">
@@ -1935,7 +1933,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="btns">
+      <div className="buttons">
         {currentStep > 1 && currentStep < 7 ? (
           <button
             onClick={handlePreviousStep}

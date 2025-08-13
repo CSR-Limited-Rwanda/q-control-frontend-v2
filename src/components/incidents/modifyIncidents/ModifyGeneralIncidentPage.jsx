@@ -441,7 +441,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
           pageName={"General incidents"}
         />
         <h2 className="title">Modifying General Incident</h2>
-        <div className="btns">
+        <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>

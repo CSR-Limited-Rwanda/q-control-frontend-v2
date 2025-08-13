@@ -139,6 +139,7 @@ const DashboardLayout = ({ children }) => {
         <div className="content">
           {isPopupOpen ? (
             <PopUp
+              spacialClass={'has-header'}
               togglePopup={togglePopup}
               isPopupOpen={isPopupOpen}
               popupContent={

@@ -326,7 +326,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
           </button>
         )}
 
-        <div className="btns">
+        <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
