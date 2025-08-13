@@ -19,6 +19,8 @@ const HealthIncidentInvestigationForm = () => {
     const [savingDraft, setSavingDraft] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
     const [showWitnessList, setShowWitnessList] = useState(false);
     // const [safetyRegulationsUser, setSafetyRegulationsUser] = useState("")
     const [employeeSeenDoctor, setEmployeeSeenDoctor] = useState(false);

@@ -25,8 +25,13 @@ import "../../../../styles/_forms.scss";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
 import MessageComponent from "@/components/MessageComponet";
+import MessageComponent from "@/components/MessageComponet";
 
 const LostAndFoundForm = ({ togglePopup }) => {
+  const { user } = useAuthentication();
+  const [currentFacility, setCurrentFacility] = useState(user.facility);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const { user } = useAuthentication();
   const [currentFacility, setCurrentFacility] = useState(user.facility);
   const [currentStep, setCurrentStep] = useState(1);

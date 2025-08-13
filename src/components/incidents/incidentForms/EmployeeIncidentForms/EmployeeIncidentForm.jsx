@@ -31,6 +31,8 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
   const [currentFacility, setCurrentFacility] = useState(user.facility);
 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [statusType, setStatusType] = useState("Select Status");

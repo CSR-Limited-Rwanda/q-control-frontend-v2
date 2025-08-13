@@ -33,6 +33,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [conductedBy, setConductedBy] = useState({
     first_name: "",
     last_name: "",
