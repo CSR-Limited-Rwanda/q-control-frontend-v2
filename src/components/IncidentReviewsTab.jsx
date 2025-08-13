@@ -8,6 +8,7 @@ import UserCard from './UserCard';
 import ProfilePlaceHolder from './ProfilePlaceHolder';
 import { formatDateTime } from '@/utils/api';
 import RichTextField from './RichTextField';
+import PositionCard from './PositionCard';
 
 const IncidentReviewsTab = ({ incidentId, apiLink, setCount = 0 }) => {
     const [isLoading, setIsLoading] = useState(true);
