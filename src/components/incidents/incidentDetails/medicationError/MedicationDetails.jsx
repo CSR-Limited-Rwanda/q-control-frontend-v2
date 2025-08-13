@@ -176,6 +176,7 @@ const MedicationDetailsContent = () => {
               reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"medication-error"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
               reviewsCount={reviewsCount}
+              incidentDocumentHistoryCount={activitiesCount}
             />
           </div>
         </div>
