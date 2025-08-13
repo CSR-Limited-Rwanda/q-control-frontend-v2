@@ -16,6 +16,7 @@ import DraftPopup from "@/components/DraftPopup";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
 import MessageDisplay from "@/components/MessageDisplay";
+import MessageComponent from "@/components/MessageComponet";
 
 const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication()

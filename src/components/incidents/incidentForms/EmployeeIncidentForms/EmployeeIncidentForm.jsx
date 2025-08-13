@@ -24,8 +24,11 @@ import DraftPopup from "@/components/DraftPopup";
 import "@/styles/_forms.scss";
 import "@/styles/_employeeIncidentForm.scss";
 import CloseIcon from "@/components/CloseIcon";
+import MessageComponent from "@/components/MessageComponet";
 
 const EmployeeIncidentForm = ({ togglePopup }) => {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [statusType, setStatusType] = useState("Select Status");

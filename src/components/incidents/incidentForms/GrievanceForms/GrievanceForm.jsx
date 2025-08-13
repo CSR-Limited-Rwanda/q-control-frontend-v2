@@ -19,10 +19,13 @@ import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
+import MessageComponent from "@/components/MessageComponet";
 
 const GrievanceForm = ({ togglePopup }) => {
-  const { user } = useAuthentication()
-  const [currentFacility, setCurrentFacility] = useState(user.facility)
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const { user } = useAuthentication();
+  const [currentFacility, setCurrentFacility] = useState(user.facility);
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [userId, setUserId] = useState();

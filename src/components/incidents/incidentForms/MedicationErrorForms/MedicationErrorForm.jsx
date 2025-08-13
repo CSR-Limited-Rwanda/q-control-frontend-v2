@@ -24,6 +24,7 @@ import CustomDatePicker from "@/components/CustomDatePicker";
 import DraftPopup from "@/components/DraftPopup";
 import CloseIcon from "@/components/CloseIcon";
 import MessageDisplay from "@/components/MessageDisplay";
+import MessageComponent from "@/components/MessageComponet";
 
 const MedicationErrorForm = ({ togglePopup }) => {
   const [currentStep, setCurrentStep] = useState(1);

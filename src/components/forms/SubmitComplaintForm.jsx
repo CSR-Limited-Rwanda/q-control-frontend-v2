@@ -5,6 +5,7 @@ import { X, CircleCheck, LoaderCircle, Square } from "lucide-react";
 import CustomDatePicker from "../CustomDatePicker";
 import { howComplaintIsReceived } from "@/constants/constants";
 import RichTexField from "./RichTextField";
+import CloseIcon from "../CloseIcon";
 
 const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
   const [error, setError] = useState("");
@@ -120,7 +121,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
   return (
     <div className="form">
       <h3>Submit a new complaint</h3>
-      <X className="close-popup" onClick={handleSubmitComplaint} />
+      <CloseIcon onClick={handleSubmitComplaint} />
       <form action="" className="newIncidentForm">
         <div className="field">
           <label htmlFor="">Patient's name</label>
