@@ -24,6 +24,7 @@ import { usePermission } from "@/context/PermissionsContext";
 import ReviewForm from "../incidentForms/ReviewForm";
 import Link from "next/link";
 import SendForReview from "./sendForReview/sendForReview";
+import { NewReviewForm } from "@/components/IncidentReviewsTab";
 // import GenerateReport from "../../../../components/general/popups/generateReport";
 
 const IncidentDetailsHeader = ({
@@ -300,17 +301,12 @@ const IncidentDetailsHeader = ({
         ""
       )}
       {showReviewForm ? (
-        <div className="popup">
-          <div className="popup-content review-popup-content">
-            <h3>Add a comment</h3>
-            <p>
-              Your comments will be visible for anyone who can access this
-              incident.
-            </p>
-            <ReviewForm
+        <div className="popup has-header review-popup">
+          <div className="popup-content">
+            <NewReviewForm
               incidentId={incidentDetailsId}
-              toggleReviewForm={toggleShowReviewForm}
-              incidentName={apiLink}
+              handleClose={toggleShowReviewForm}
+              apiLink={apiLink}
             />
           </div>
         </div>
