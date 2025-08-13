@@ -23,6 +23,7 @@ import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 import "../../../../styles/_forms.scss";
 import { useAuthentication } from "@/context/authContext";
+import CloseIcon from "@/components/CloseIcon";
 
 const LostAndFoundForm = ({ togglePopup }) => {
   const { user } = useAuthentication()
@@ -340,16 +341,13 @@ const LostAndFoundForm = ({ togglePopup }) => {
   };
 
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Lost and Found Property Report</h2>
-        <X
-          className="close-popup"
-          onClick={() => {
-            togglePopup();
-            localStorage.setItem("updateNewIncident", "false");
-          }}
-        />
+        <CloseIcon onClick={() => {
+          togglePopup();
+          localStorage.setItem("updateNewIncident", "false");
+        }} />
         {currentStep < 3 ? (
           <div className="form-steps">
             <div className={currentStep === 1 ? "step current-step" : "step"}>

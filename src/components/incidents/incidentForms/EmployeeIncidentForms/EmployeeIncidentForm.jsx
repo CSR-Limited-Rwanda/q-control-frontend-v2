@@ -23,6 +23,7 @@ import DraftPopup from "@/components/DraftPopup";
 
 import "@/styles/_forms.scss";
 import "@/styles/_employeeIncidentForm.scss";
+import CloseIcon from "@/components/CloseIcon";
 
 const EmployeeIncidentForm = ({ togglePopup }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -474,10 +475,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     currentStep > 1 ? setCurrentStep(currentStep - 1) : setCurrentStep(1);
   };
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Staff Incident</h2>
-        <X className="close-popup" onClick={togglePopup} />
+        <CloseIcon onClick={togglePopup} />
         <div className="form-steps">
           <div className={currentStep === 1 ? "step current-step" : "step"}>
             <div className="icon">

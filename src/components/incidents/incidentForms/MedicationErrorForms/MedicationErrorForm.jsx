@@ -25,6 +25,7 @@ import { X, CheckSquare, Square, SquareIcon } from "lucide-react";
 import { FacilityCard } from "@/components/DashboardContainer";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import DraftPopup from "@/components/DraftPopup";
+import CloseIcon from "@/components/CloseIcon";
 
 const MedicationErrorForm = ({ togglePopup }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -597,11 +598,11 @@ const MedicationErrorForm = ({ togglePopup }) => {
     currentStep > 1 ? setCurrentStep(currentStep - 1) : setCurrentStep(1);
   };
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Medication Error</h2>
 
-        <X className="close-popup" onClick={togglePopup} />
+        <CloseIcon onClick={togglePopup} />
         {currentStep < 5 ? (
           <div className="form-steps">
             <div className={currentStep === 1 ? "step current-step" : "step"}>

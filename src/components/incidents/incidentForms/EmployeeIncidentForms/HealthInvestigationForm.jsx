@@ -355,7 +355,7 @@ const HealthIncidentInvestigationForm = () => {
         }
     };
     return (
-        <div className="forms-container">
+        <div className="form-container">
             <h2>Employee Health Incident Investigation</h2>
             {success ? (
                 <FormCompleteMessage title="Health Incident Investigation" />

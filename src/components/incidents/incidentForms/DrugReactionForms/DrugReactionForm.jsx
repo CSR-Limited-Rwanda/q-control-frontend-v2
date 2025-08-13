@@ -640,7 +640,7 @@ const DrugReactionForm = ({ togglePopup }) => {
   };
 
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <X className="close-popup" onClick={togglePopup} />
         <h2>Anaphylaxis/Adverse Drug Reaction Report</h2>
