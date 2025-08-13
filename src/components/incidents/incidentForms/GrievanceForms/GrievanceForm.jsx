@@ -27,8 +27,7 @@ const GrievanceForm = ({ togglePopup }) => {
   const [currentFacility, setCurrentFacility] = useState(user.facility);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const { user } = useAuthentication();
-  const [currentFacility, setCurrentFacility] = useState(user.facility);
+
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [userId, setUserId] = useState();
@@ -73,8 +72,6 @@ const GrievanceForm = ({ togglePopup }) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadingDocuments, setUploadingDocuments] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const handleAdversePatientOutcome = () => {
     setAdversePatientOutcome((prev) => !prev);

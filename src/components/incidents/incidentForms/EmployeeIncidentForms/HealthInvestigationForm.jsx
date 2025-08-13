@@ -64,8 +64,6 @@ const HealthIncidentInvestigationForm = () => {
     const [success, setSuccess] = useState(false);
     const [witnessNameArray, setwitnessNameArray] = useState([]);
     const [staffIncidentId, setStaffIncidentId] = useState(localStorage.getItem("staffIncidentId"))
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         currentStepRef.current = currentStep;

@@ -32,8 +32,6 @@ const LostAndFoundForm = ({ togglePopup }) => {
   const [currentFacility, setCurrentFacility] = useState(user.facility);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const { user } = useAuthentication();
-  const [currentFacility, setCurrentFacility] = useState(user.facility);
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,8 +66,6 @@ const LostAndFoundForm = ({ togglePopup }) => {
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
   );
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   function formatTime(time) {
     if (!time) return undefined;

@@ -79,8 +79,6 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   const [dateClosed, setDateClosed] = useState();
   const responseLetterFileInputRef = useRef("");
   const extensionLetterFileInputRef = useRef("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const handleExtensionLetter = async (event) => {
     const grievanceInvestigationId = localStorage.getItem(

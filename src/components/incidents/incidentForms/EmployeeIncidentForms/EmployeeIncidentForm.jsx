@@ -73,8 +73,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const currentStepRef = useRef(currentStep);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [facilityId, setFacilityId] = useState(user.facility.id);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
   );
