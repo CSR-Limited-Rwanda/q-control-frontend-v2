@@ -1,17 +1,18 @@
-export const validateStep = (fieldsObject) => {
-    const missingFields = [];
-  
-    for (const field in fieldsObject) {
-      if (!fieldsObject[field]) {
-        missingFields.push(field);
-      }
+export const validateStep = (fieldsObject, onError = null) => {
+  const missingFields = [];
+
+  for (const field in fieldsObject) {
+    if (!fieldsObject[field]) {
+      missingFields.push(field);
     }
-  
-    if (missingFields.length > 0) {
-      const message = `Please enter : ${missingFields.join(", ")}`;
-      window.customToast.error(message);
-  
-      return false;
+  }
+
+  if (missingFields.length > 0) {
+    const message = `Please enter : ${missingFields.join(", ")}`;
+    if (onError) {
+      onError(message);
     }
-    return true;
-  };
+    return false;
+  }
+  return true;
+};

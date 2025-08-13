@@ -199,6 +199,9 @@ const HealthIncidentInvestigationForm = () => {
 
                 handleStepOneSubmit();
             }
+            else {
+                setErrorMessage("Please fill in all required fields.");
+            }
         } else if (currentStep === 2) {
             const isValid = validateStep({
                 "Enter description": activityPriorToEvent,
@@ -217,7 +220,7 @@ const HealthIncidentInvestigationForm = () => {
 
                 handleStepTwoSubmit();
             } else {
-                return;
+                setErrorMessage("Please fill in all required fields.");
             }
         }
     };
@@ -800,6 +803,10 @@ const HealthIncidentInvestigationForm = () => {
                             ""
                         )}
                     </form>
+                    <MessageComponent
+                        errorMessage={errorMessage}
+                        successMessage={successMessage}
+                    />
                     <div className="buttons">
                         {currentStep > 1 && currentStep < 4 ? (
                             <button
