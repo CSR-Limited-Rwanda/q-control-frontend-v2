@@ -337,3 +337,20 @@ form button {
     color-scheme: dark;
   }
 }
+
+
+@media screen and (max-width: 1200px) {
+  body ::after {
+    content: "Quality Control Does not support this screen size yet.";
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background-color: white;
+    z-index: 100000000;
+    padding: 3rem;
+    text-align: center;
+  }
+}

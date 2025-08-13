@@ -1,3 +1,4 @@
+import CloseIcon from "@/components/CloseIcon"
 import Button from "@/components/forms/Button"
 import { completeTask, fetchTaskById } from "@/hooks/fetchTasks"
 import { Calendar, Eye, FileText, Flag, X } from "lucide-react"
@@ -64,9 +65,7 @@ export const TaskDetails = ({ taskId, handleClose }) => {
     return (
         <div className='popup'>
             <div className="popup-content" ref={popupRef}>
-                <div className="close-icon" onClick={handleClose}>
-                    <X />
-                </div>
+                <CloseIcon onClick={handleClose} />
                 <h2>Task Details</h2>
                 {isLoading && <p>Loading task details...</p>}
                 {taskDetails && (
