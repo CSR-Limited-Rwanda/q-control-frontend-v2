@@ -148,30 +148,39 @@ const ProfileDetailsPage = () => {
               {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
               <div className="actions-list">
                 <div
-                  className="action"
+                  className="profile-action"
                   onClick={() => setShowUpdateUserForm(true)}
                 >
                   <SquarePen />
                   <span>Edit user</span>
                 </div>
                 <hr />
-                <div className="action" onClick={handleShowActivateUserForm}>
+                <div
+                  className="profile-action"
+                  onClick={handleShowActivateUserForm}
+                >
                   <UserCheck />
                   <span>Activate user</span>
                 </div>
                 <hr />
-                <div className="action" onClick={handleShowDeactivateUserForm}>
+                <div
+                  className="profile-action"
+                  onClick={handleShowDeactivateUserForm}
+                >
                   <UserX />
                   <span>Deactivate user</span>
                 </div>
                 <hr />
-                <div className="action" onClick={handleShowDeleteUserForm}>
+                <div
+                  className="profile-action"
+                  onClick={handleShowDeleteUserForm}
+                >
                   <Trash2 />
                   <span>Delete user</span>
                 </div>
                 <hr />
                 <div
-                  className="action"
+                  className="profile-action"
                   onClick={handleShowAccessPermissionsForm}
                 >
                   <Key />

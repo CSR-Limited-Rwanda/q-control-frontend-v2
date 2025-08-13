@@ -111,7 +111,7 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
       <div className="modal-content">
         <X className="close-icon" onClick={onClose} />
         <h2 className="modal-title">
-          {step === 1 ? "Select Department" : "Add Details"}
+          {step === 1 ? "Select Facility and Department" : "Add Details"}
         </h2>
 
         {step === 1 && (

@@ -28,9 +28,7 @@ const ProfileReports = () => {
       try {
         setError("");
         setIsLoading(true);
-        const response = await api.get(
-          `users/${accountId}/incidents/`
-        );
+        const response = await api.get(`users/${accountId}/incidents/`);
         setReports(response.data);
 
         setIsLoading(false);
@@ -38,8 +36,8 @@ const ProfileReports = () => {
         if (error.response) {
           setError(
             error.response.data.message ||
-            error.response.data.error ||
-            "Error fetching reports data"
+              error.response.data.error ||
+              "Error fetching reports data"
           );
         } else {
           setError("Unknown fetching reports data");
@@ -54,7 +52,6 @@ const ProfileReports = () => {
 
   const navigateToModify = (incidentId, reportName) => {
     if (!reportName) {
-
       router.push(`/incidents/general/${incidentId}/update/`);
       localStorage.setItem("generalIncidentId", incidentId);
       return;
@@ -90,7 +87,6 @@ const ProfileReports = () => {
         localStorage.setItem("grievanceId", incidentId);
         break;
       default:
-
         router.push(`/incidents/general/${incidentId}/update/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
@@ -99,7 +95,6 @@ const ProfileReports = () => {
 
   const handleRowClick = (incidentId, reportName) => {
     if (!reportName) {
-
       router.push(`/incidents/general/${incidentId}/`);
       localStorage.setItem("generalIncidentId", incidentId);
       return;
@@ -135,7 +130,6 @@ const ProfileReports = () => {
         localStorage.setItem("grievanceId", incidentId);
         break;
       default:
-
         router.push(`/incidents/general/${incidentId}/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
@@ -170,13 +164,13 @@ const ProfileReports = () => {
   const indexOfFirstReport = indexOfLastReport - reportsPerPage;
   const currentReports = reports
     ? reports
-      .flatMap((report) =>
-        report.incidents.map((incident) => ({
-          ...incident,
-          reportName: report.name,
-        }))
-      )
-      .slice(indexOfFirstReport, indexOfLastReport)
+        .flatMap((report) =>
+          report.incidents.map((incident) => ({
+            ...incident,
+            reportName: report.name,
+          }))
+        )
+        .slice(indexOfFirstReport, indexOfLastReport)
     : [];
 
   // Calculate total pages
@@ -216,8 +210,9 @@ const ProfileReports = () => {
           {currentReports.map((incident, index) => (
             <div
               key={index}
-              className={`user-report ${incident.status === "Draft" ? "draft" : ""
-                }`}
+              className={`user-report ${
+                incident.status === "Draft" ? "draft" : ""
+              }`}
             >
               <div className="row">
                 {incident.status === "Draft" ? (
@@ -245,18 +240,19 @@ const ProfileReports = () => {
               <div className="col">
                 <span className="title">Follow up</span>
                 <span
-                  className={`follow-up ${incident?.status === "Draft"
-                    ? "in-progress"
-                    : incident?.status === "Closed"
+                  className={`follow-up ${
+                    incident?.status === "Draft"
+                      ? "in-progress"
+                      : incident?.status === "Closed"
                       ? "closed"
                       : "Open"
-                    }`}
+                  }`}
                 >
                   {incident?.status}
                 </span>
               </div>
               <div
-                className="action"
+                className="profile-report-action"
                 ref={(el) => (actionRefs.current[index] = el)}
                 onClick={(e) => handleActionClick(index, e)}
                 style={{ cursor: "pointer" }}

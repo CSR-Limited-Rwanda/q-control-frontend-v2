@@ -72,8 +72,8 @@ const UserComplaints = () => {
       setIsDeleting(false);
       setError(
         error.response?.data?.message ||
-        error.response?.data?.error ||
-        "Error deleting complaint"
+          error.response?.data?.error ||
+          "Error deleting complaint"
       );
       console.error(error);
     }
@@ -92,8 +92,8 @@ const UserComplaints = () => {
         if (error.response) {
           setError(
             error.response.data.message ||
-            error.response.data.error ||
-            "Error fetching complaints data"
+              error.response.data.error ||
+              "Error fetching complaints data"
           );
         } else {
           setError("Unknown fetching complaints data");
@@ -141,8 +141,9 @@ const UserComplaints = () => {
             complaints.map((complaint, index) => (
               <div
                 key={index}
-                className={`user-complaint ${complaint.status === "Open" ? "open" : ""
-                  }`}
+                className={`user-complaint ${
+                  complaint.status === "Open" ? "open" : ""
+                }`}
               >
                 <div className="complaint-content">
                   <div className="col">
@@ -187,7 +188,7 @@ const UserComplaints = () => {
                 </div>
 
                 <div
-                  className="action"
+                  className="complaint-action"
                   ref={(el) => (actionRefs.current[index] = el)}
                 >
                   <EllipsisVertical
@@ -328,13 +329,11 @@ export const ComplainDetails = ({
           handleSubmitComplaint={handleShowEditForm}
         />
       ) : showSendToDepartmentForm ? (
-        <div className="complaint-details">
-          <SendToDepartmentForm
-            closeForm={handleShowSendToDepartment}
-            apiLink={`complaints/${complaint.id}/send-to-department`}
-            complaint={true}
-          />
-        </div>
+        <SendComplaintToDepartment
+          closeForm={handleShowSendToDepartment}
+          apiLink={`complaints/${complaint.id}/send-to-department`}
+          complaint={true}
+        />
       ) : showDeletePopup ? (
         <DeleteComplaintForm
           setShowDeleteConfirm={setShowDeletePopup}
@@ -365,16 +364,22 @@ export const ComplainDetails = ({
                 </>
               </div>
               {showActions && (
-                <div className="actions">
-                  <div onClick={handleShowEditForm} className="action">
+                <div className="details-actions">
+                  <div onClick={handleShowEditForm} className="details-action">
                     <Pencil size={16} /> <span>Edit complaint</span>
                   </div>
 
-                  <div onClick={handleShowSendToDepartment} className="action">
+                  <div
+                    onClick={handleShowSendToDepartment}
+                    className="details-action"
+                  >
                     <SendHorizontal size={16} /> <span>Send to department</span>
                   </div>
 
-                  <div onClick={handleShowDeletePopup} className="action">
+                  <div
+                    onClick={handleShowDeletePopup}
+                    className="details-action"
+                  >
                     <Trash size={16} /> <span>Delete complaint</span>
                   </div>
                 </div>
