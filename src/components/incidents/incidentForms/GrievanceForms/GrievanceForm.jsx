@@ -20,7 +20,6 @@ import DraftPopup from "@/components/DraftPopup";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
 import MessageComponent from "@/components/MessageComponet";
-import MessageComponent from "@/components/MessageComponet";
 
 const GrievanceForm = ({ togglePopup }) => {
   const { user } = useAuthentication();

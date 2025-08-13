@@ -97,122 +97,128 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding-bottom: 1rem !important;
 
   .complaint-details {
-    h4 {
-      font-size: 18px;
-    }
-
-    .items-group {
-      border: 1px solid rgb(230, 230, 230);
-      padding: 1rem;
-      border-radius: 0.5rem;
-
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-
-      .full {
-        grid-column: span 2;
-      }
-
-      .item {
-        small {
-          font-size: 14px;
-        }
-      }
-
-      .row {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-
-        .icon {
-          padding: 10px;
-          background-color: #ebf5ff;
-          color: $primary-color;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-items: center;
-        }
-      }
-
-      .phone-number {
-        padding-left: 55px;
-      }
-    }
-
-    .close-icon {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-    }
-
-    .buttons {
-      width: 100%;
-      justify-content: end;
-    }
-
-    .send-to-department {
-      width: 100%;
-    }
-
-    .btns {
+    .complaint-details-content {
       display: flex;
+      flex-direction: column;
       gap: 10px;
-      justify-content: flex-end;
-
-      .tertiary-button {
-        border-radius: 24px;
+      height: fit-content;
+      padding-bottom: 1.5rem;
+      h4 {
+        font-size: 18px;
       }
 
-      .action-btn-container {
-        position: relative;
-      }
+      .items-group {
+        border: 1px solid rgb(230, 230, 230);
+        padding: 1rem;
+        border-radius: 0.5rem;
 
-      .actions-button {
-        width: fit-content;
-        align-self: flex-end;
-        border-radius: 24px;
-      }
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
 
-      .chevron {
-        transition: 0.4s ease;
-      }
+        .full {
+          grid-column: span 2;
+        }
 
-      .details-actions {
-        position: absolute;
-        top: 60px;
-        right: 0;
-        display: flex;
-        flex-direction: column;
-        background-color: $body-background-color;
-        border: 1px solid var(--border);
-        width: 180px;
-        align-items: flex-start;
-        z-index: 100;
-        gap: 0;
-        border-radius: var(--base-border-radius);
+        .item {
+          small {
+            font-size: 14px;
+          }
+        }
 
-        .details-action {
+        .row {
           display: flex;
           gap: 10px;
           align-items: center;
-          font-size: 14px;
-          cursor: pointer;
-          padding: 10px;
-          width: 100%;
 
-          &:hover {
-            background-color: var(--gray-color);
+          .icon {
+            padding: 10px;
+            background-color: #ebf5ff;
+            color: $primary-color;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-items: center;
           }
+        }
+
+        .phone-number {
+          padding-left: 55px;
         }
       }
 
-      .action-active {
-        transform: rotate(-90deg);
+      .close-icon {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+      }
+
+      .buttons {
+        width: 100%;
+        justify-content: end;
+      }
+
+      .send-to-department {
+        width: 100%;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+
+        .tertiary-button {
+          border-radius: 24px;
+        }
+
+        .action-btn-container {
+          position: relative;
+        }
+
+        .actions-button {
+          width: fit-content;
+          align-self: flex-end;
+          border-radius: 24px;
+        }
+
+        .chevron {
+          transition: 0.4s ease;
+        }
+
+        .details-actions {
+          position: absolute;
+          top: 60px;
+          right: 0;
+          display: flex;
+          flex-direction: column;
+          background-color: $body-background-color;
+          border: 1px solid var(--border);
+          width: 180px;
+          align-items: flex-start;
+          z-index: 100;
+          gap: 0;
+          border-radius: var(--base-border-radius);
+
+          .details-action {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+
+            &:hover {
+              background-color: var(--gray-color);
+            }
+          }
+        }
+
+        .action-active {
+          transform: rotate(-90deg);
+        }
       }
     }
   }
@@ -497,6 +503,7 @@
   max-width: 35rem !important;
   width: 100%;
   position: relative;
+  height: fit-content !important;
 }
 
 .close-popup {

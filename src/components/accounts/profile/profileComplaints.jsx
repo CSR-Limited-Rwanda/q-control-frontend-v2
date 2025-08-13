@@ -331,7 +331,7 @@ export const ComplainDetails = ({
         />
       ) : showSendToDepartmentForm ? (
         <SendComplaintToDepartment
-          closeForm={handleShowSendToDepartment}
+          onClose={handleShowSendToDepartment}
           apiLink={`complaints/${complaint.id}/send-to-department`}
           complaint={true}
         />
@@ -344,7 +344,7 @@ export const ComplainDetails = ({
         />
       ) : (
         <div className="complaint-details popup">
-          <div className="popup-content">
+          <div className="popup-content complaint-details-content">
             <h4>Complaint details</h4>
             <CloseIcon onClick={handleShowComplainDetails} />
 

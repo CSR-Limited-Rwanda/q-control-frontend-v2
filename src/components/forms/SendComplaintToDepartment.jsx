@@ -11,7 +11,7 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
   const [selectedFacility, setSelectedFacility] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [comment, setComment] = useState("");
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -57,7 +57,8 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
   }, [selectedFacility]);
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFiles = Array.from(e.target.files);
+    setFiles(selectedFiles);
   };
 
   const handleSubmit = async () => {
@@ -73,10 +74,10 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
     try {
       // First, upload the file if it exists
       let documentUrl = "";
-      if (file) {
+      if (files.length > 0) {
         const formData = new FormData();
-        formData.append("file", file);
-        const uploadResponse = await api.post("/upload/", formData);
+        formData.append("files", files);
+        const uploadResponse = await api.post("/documents/", formData);
         documentUrl = uploadResponse.data.url;
       }
 
@@ -173,6 +174,7 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
                 type="file"
                 onChange={handleFileChange}
                 className="form-input"
+                multiple
               />
             </div>
           </div>
