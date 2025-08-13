@@ -69,25 +69,25 @@ const IncidentDetailsHeader = ({
   const sortedVersions = data?.modifications?.versions?.map((mod, index) =>
     mod.original === true // Define the original version
       ? {
-          label: `<span style="font-weight: bold; margin-right: 10px;">Original</span> <span style="color: gray;">${formatDate(
-            mod.date
-          )}</span>`,
-          value: "Original Version",
-          id: incidentDetailsId,
-          isOriginal: true,
-          isMostRecent: mod.latest,
-          date: mod.date,
-        }
+        label: `<span style="font-weight: bold; margin-right: 10px;">Original</span> <span style="color: gray;">${formatDate(
+          mod.date
+        )}</span>`,
+        value: "Original Version",
+        id: incidentDetailsId,
+        isOriginal: true,
+        isMostRecent: mod.latest,
+        date: mod.date,
+      }
       : {
-          label: `<span style="font-weight: bold; margin-right: 10px;">Modified</span> <span style="color: gray;">${formatDate(
-            mod.date
-          )}</span>`,
-          value: `Modified Version ${index}`,
-          id: mod.id,
-          date: mod.date,
-          isOriginal: false,
-          isMostRecent: mod.latest,
-        }
+        label: `<span style="font-weight: bold; margin-right: 10px;">Modified</span> <span style="color: gray;">${formatDate(
+          mod.date
+        )}</span>`,
+        value: `Modified Version ${index}`,
+        id: mod.id,
+        date: mod.date,
+        isOriginal: false,
+        isMostRecent: mod.latest,
+      }
   );
 
   // Identify the most recent version
@@ -300,7 +300,7 @@ const IncidentDetailsHeader = ({
         ""
       )}
       {showReviewForm ? (
-        <div className="incident-popup">
+        <div className="popup">
           <div className="popup-content review-popup-content">
             <h3>Add a comment</h3>
             <p>
