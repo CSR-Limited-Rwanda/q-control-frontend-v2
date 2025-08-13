@@ -49,7 +49,7 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
         ) : (
           <p>Are you sure you want to mark this incident as closed?</p>
         )}
-        <div className="btns">
+        <div className="buttons">
           {resolved ? (
             ""
           ) : (

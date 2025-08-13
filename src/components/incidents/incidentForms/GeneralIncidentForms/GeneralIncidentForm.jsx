@@ -33,11 +33,11 @@ import DraftPopup from "@/components/DraftPopup";
 import "../../../../styles/_forms.scss";
 import "../../../../styles/generalIncident.scss";
 import { useAuthentication } from "@/context/authContext";
+import CloseIcon from "@/components/CloseIcon";
 // import RichTexField from "./inputs/richTexField";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication()
-  console.log(user);
   const [currentFacility, setCurrentFacility] = useState(user.facility)
   const [restraintOn, setRestraintOn] = useState([]);
   const [specimen, setSpecimen] = useState([]);
@@ -842,21 +842,17 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   const handleCurrentFacility = (facilityId) => {
     const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
     setCurrentFacility(selectedFacility);
-    console.log(selectedFacility);
   };
 
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Add new incident</h2>
-        <X
+        <CloseIcon
           onClick={() => {
             togglePopup();
             localStorage.setItem("updateNewIncident", "false");
-          }}
-          className="close-icon"
-        />
-
+          }} />
         {errorFetching && <ErrorMessage errorFetching={errorFetching} />}
 
         <div className="form-steps">
@@ -948,15 +944,19 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         <DraftPopup incidentString="general" incidentType="general_incident" />
       </div>
 
-      <select name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
-        {
-          user?.accounts?.map((facility) => (
-            <option key={facility.id} value={facility.id}>
-              Submitting for  {facility.name}
-            </option>
-          ))
-        }
-      </select>
+      {currentStep === 1 && (
+        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
+          {
+            user?.accounts?.map((facility) => (
+              <option key={facility.id} value={facility.id}>
+                Submitting for  {facility.name}
+              </option>
+            ))
+          }
+        </select>
+      )}
+
+
       <form className="newIncidentForm">
         {currentStep === 1 ? (
           <div className="step incident-info">
@@ -1945,7 +1945,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="btns">
+      <div className="buttons">
         {currentStep > 1 && currentStep < 7 ? (
           <button
             onClick={handlePreviousStep}

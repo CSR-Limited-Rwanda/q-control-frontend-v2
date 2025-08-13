@@ -1,12 +1,10 @@
 'use client'
 import '@/styles/sendForReview.scss';
-import { fetchReviewTemplates, fetchReviewTemplateTasks } from '@/hooks/fetchReviewTemplates';
 import api from '@/utils/api';
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { ArrowLeft, ArrowRight, CheckSquare, CheckSquare2, Square, X } from 'lucide-react';
 import Button from '@/components/forms/Button';
 import { ReviewTemplates } from './ReviewTemplates';
-import UsersList from './usersList';
 
 const SendForReview = ({ path, incidentID, handleClose }) => {
     // template related fields

@@ -13,13 +13,13 @@ import {
   errorTypes,
 } from "@/constants/constants";
 import { SquareCheck, SaveAll, LoaderCircle, Square } from "lucide-react";
-import BackToPage from "../../backToPage";
-import "../../../styles/_modifyincident.scss";
+import '@/styles/_modifyIncident.scss';
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
+import BackToPage from "@/components/BackToPage";
 const ModifyMedicalErrorForm = ({ data, incidentId }) => {
   const permission = usePermission();
   const department = useDepartments();
@@ -94,9 +94,16 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
   const [contributingfactors, setContributingFactors] = useState(
     incident?.contributing_factors
   );
-  const [category, setCategory] = useState(
-    incident?.error_category ? JSON.parse(incident?.error_category) : {}
-  );
+
+  const [category, setCategory] = useState(() => {
+    try {
+      return typeof incident?.error_category === "string"
+        ? JSON.parse(incident.error_category)
+        : incident?.error_category || {};
+    } catch {
+      return {};
+    }
+  });
   const [selectedCategory, setSelectedCategory] = useState(category);
   const [medicationErrorIncidentId, setMedicationErrorIncidentId] = useState(
     localStorage.getItem("medicationErrorIncidentId")
@@ -338,7 +345,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
           pageName={"Medication Error incidents"}
         />
         <h2 className="title">Modifying Medication Error</h2>
-        <div className="btns">
+        <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
               <>
@@ -374,10 +381,10 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
             Status :{" "}
             <span
               className={`follow-up ${status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
-                    ? "closed"
-                    : "Open"
+                ? "in-progress"
+                : status === "Closed"
+                  ? "closed"
+                  : "Open"
                 }`}
             >
               {status}
@@ -775,8 +782,8 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                   <div
                     key={index}
                     className={`type full full-width-type ${selectedCategory.value === category.value
-                        ? "selected"
-                        : ""
+                      ? "selected"
+                      : ""
                       }`}
                     onClick={() =>
                       handleSelectedCategory({

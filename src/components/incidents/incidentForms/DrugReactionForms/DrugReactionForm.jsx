@@ -645,7 +645,7 @@ const DrugReactionForm = ({ togglePopup }) => {
     console.log(selectedFacility);
   };
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <X className="close-popup" onClick={togglePopup} />
         <h2>Anaphylaxis/Adverse Drug Reaction Report</h2>
@@ -1543,7 +1543,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="btns">
+      <div className="buttons">
         {currentStep > 1 && currentStep < 8 ? (
           <button
             onClick={handlePreviousStep}

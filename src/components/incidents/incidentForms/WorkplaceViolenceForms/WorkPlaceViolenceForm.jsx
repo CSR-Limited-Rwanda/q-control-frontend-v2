@@ -13,8 +13,12 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { FacilityCard } from "@/components/DashboardContainer";
 import ErrorMessage from "@/components/messages/ErrorMessage";
 import DraftPopup from "@/components/DraftPopup";
+import { useAuthentication } from "@/context/authContext";
+import CloseIcon from "@/components/CloseIcon";
 
 const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
+  const { user } = useAuthentication()
+  const [currentFacility, setCurrentFacility] = useState(user.facility)
   const [facilityId, setFacilityId] = useState(localStorage.getItem('facilityId'))
   const [departmentId, setDepartmentId] = useState(localStorage.getItem('departmentId'))
   const [currentStep, setCurrentStep] = useState(1);
@@ -513,12 +517,13 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       if (isValid) {
         const data = {
           current_step: currentStep,
-          report_facility: facilityId,
-          department: departmentId,
+          facility_id: user.facility.id,
+          department: user.department.id,
+          report_facility_id: currentFacility?.id,
           reported_by: {
-              first_name: reportedByFirstName,
-              last_name: reportedByLastName,
-              profile_type: "Staff"
+            first_name: reportedByFirstName,
+            last_name: reportedByLastName,
+            profile_type: "Staff"
           },
           reported_by_title: reportedTitle,
           date_reported: dateReported,
@@ -564,7 +569,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
     const handleNewWorkPlaceViolence = async (incidentData) => {
 
       try {
-        setIsLoading(true);        
+        setIsLoading(true);
         // return
         const payload = {
           department: checkCurrentAccount(),
@@ -847,10 +852,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         injuryData = {
           there_were_injuries: injuryCheck,
           persons_injured: injuries.map((injury) => ({
-              profile_type: "Victim",
-              first_name: injury.user_data.first_name,
-              last_name: injury.user_data.last_name,
-       
+            profile_type: "Victim",
+            first_name: injury.user_data.first_name,
+            last_name: injury.user_data.last_name,
+
             injury_description: injury.injury_description,
           })),
           current_step: currentStep,
@@ -886,10 +891,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       incidentPostData = {
         notification: securityalert,
         incident_witnesses: witnesses.map((witness) => ({
-            first_name: witness.user_data.first_name,
-            last_name: witness.user_data.last_name,
-            profile_type: "Witness",
-            phone_number: witness.profile_data.phone_number,
+          first_name: witness.user_data.first_name,
+          last_name: witness.user_data.last_name,
+          profile_type: "Witness",
+          phone_number: witness.profile_data.phone_number,
           address: witness.address,
         })),
         current_step: currentStep,
@@ -943,9 +948,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData = {
             immediate_supervisor: departmentManagerNotified,
             name_of_supervisor: {
-                first_name: firstName,
-                last_name: lastName,
-                profile_type: "Supervisor"
+              first_name: firstName,
+              last_name: lastName,
+              profile_type: "Supervisor"
             },
             title_of_supervisor: title,
             date_notified: notificationDate,
@@ -974,11 +979,17 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const handlePreviousStep = () => {
     currentStep > 1 ? setCurrentStep(currentStep - 1) : setCurrentStep(1);
   };
+
+  const handleCurrentFacility = (facilityId) => {
+    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    setCurrentFacility(selectedFacility);
+  };
+
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Workplace Violence Incident</h2>
-        <X className="close-popup" onClick={togglePopup} />
+        <CloseIcon onClick={togglePopup} />
         {errorFetching.length > 0 && (
           <ErrorMessage errorFetching={errorFetching} />
         )}
@@ -1045,12 +1056,23 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         ) : (
           " "
         )}
-        <FacilityCard />
         <DraftPopup
           incidentString="workplace_violence"
           incidentType="workplace_violence"
         />
       </div>
+      {currentStep === 1 && (
+        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
+          {
+            user?.accounts?.map((facility) => (
+              <option key={facility.id} value={facility.id}>
+                Submitting for {facility.name}
+              </option>
+            ))
+          }
+        </select>
+      )}
+
       {success ? (
         <FormCompleteMessage title="Workplace Violence" />
       ) : (

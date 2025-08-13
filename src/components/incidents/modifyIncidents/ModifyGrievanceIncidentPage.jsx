@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { sourcesOfInformation } from "@/constants/constants";
 import RichTexField from "@/components/forms/RichTextField";
-import BackToPage from "../../backToPage";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import mediaAPI from "@/utils/mediaApi";
 import { format } from "date-fns";
@@ -23,7 +22,8 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import CantModify from "@/components/CantModify";
-import "../../../styles/_modifyIncident.scss";
+import '@/styles/_modifyIncident.scss';
+import BackToPage from "@/components/BackToPage";
 
 const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
   const permission = usePermission();
@@ -374,10 +374,10 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
             Status :{" "}
             <span
               className={`follow-up ${status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
-                    ? "closed"
-                    : "Open"
+                ? "in-progress"
+                : status === "Closed"
+                  ? "closed"
+                  : "Open"
                 }`}
             >
               {status}

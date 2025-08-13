@@ -85,10 +85,17 @@
     }
 
     .close-popup {
+      height: 42px;
+      width: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid gray;
+      border-radius: 50%;
       cursor: pointer;
       position: absolute;
-      top: 24px;
-      right: 24px;
+      top: 1rem;
+      right: 0;
       z-index: 999;
 
       i {

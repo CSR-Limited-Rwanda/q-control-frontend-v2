@@ -11,22 +11,19 @@ import CustomSelectInput from "@/components/CustomSelectInput";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import mediaAPI from "@/utils/mediaApi";
 import { CirclePlus, CircleMinus } from "lucide-react";
-import BackToPage from "../../backToPage";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
-import "../../../styles/_modifyincident.scss";
+import { useAuthentication } from "@/context/authContext";
+import '@/styles/_modifyIncident.scss';
+import BackToPage from "@/components/BackToPage";
 
 const ModifyWorkplaceIncident = ({ data }) => {
-  const permission = usePermission();
-  const department = useDepartments();
+  const { user } = useAuthentication()
   const { incidentId } = useParams();
   const [incident, setIncident] = useState(data);
-  const [facilityId, setFacilityId] = useState(
-    localStorage.getItem("facilityId")
-  );
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
   );
@@ -194,7 +191,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
   const [uploadingDocuments, setUploadingDocuments] = useState(false);
   const [witnesses, setWitnesses] = useState(
     incident?.incident_witness?.map((witness) => ({
-      id: witness.id ?? null,
+
       first_name: witness?.first_name ?? "",
       last_name: witness?.last_name ?? "",
       email: witness?.email ?? "",
@@ -594,8 +591,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
 
     const incidentData = {
       action: "modify",
-      report_facility: facilityId,
-      department: departmentId,
+      report_facility: user.facility.id,
+      department: user.department.id,
       injuryData,
       victim_has_contact_with_assailant: previousContact,
       type_of_incident: jsonData,

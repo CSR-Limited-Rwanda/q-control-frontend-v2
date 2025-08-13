@@ -22,8 +22,12 @@ import {
 import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
 import "../../../../styles/_forms.scss";
+import { useAuthentication } from "@/context/authContext";
+import CloseIcon from "@/components/CloseIcon";
 
 const LostAndFoundForm = ({ togglePopup }) => {
+  const { user } = useAuthentication()
+  const [currentFacility, setCurrentFacility] = useState(user.facility)
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
@@ -139,8 +143,9 @@ const LostAndFoundForm = ({ togglePopup }) => {
   async function postStepOne() {
     const data = {
       current_step: currentStep,
-      facility: checkCurrentAccount(),
+      facility_id: user.facility.id,
       department: departmentId,
+      report_facility_id: currentFacility?.id,
       reported_by: {
         first_name: reporterFirstName,
         last_name: reporterLastName,
@@ -330,17 +335,19 @@ const LostAndFoundForm = ({ togglePopup }) => {
     setCheckboxReturnedChecked(!checkboxReturnedChecked);
   };
 
+  const handleCurrentFacility = (facilityId) => {
+    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    setCurrentFacility(selectedFacility);
+  };
+
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Lost and Found Property Report</h2>
-        <X
-          className="close-popup"
-          onClick={() => {
-            togglePopup();
-            localStorage.setItem("updateNewIncident", "false");
-          }}
-        />
+        <CloseIcon onClick={() => {
+          togglePopup();
+          localStorage.setItem("updateNewIncident", "false");
+        }} />
         {currentStep < 3 ? (
           <div className="form-steps">
             <div className={currentStep === 1 ? "step current-step" : "step"}>
@@ -372,6 +379,17 @@ const LostAndFoundForm = ({ togglePopup }) => {
           incidentType="lost_and_found"
         />
       </div>
+      {currentStep === 1 && (
+        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
+          {
+            user?.accounts?.map((facility) => (
+              <option key={facility.id} value={facility.id}>
+                Submitting for  {facility.name}
+              </option>
+            ))
+          }
+        </select>
+      )}
 
       <form className="newIncidentForm">
         {currentStep === 1 && (

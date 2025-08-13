@@ -23,6 +23,7 @@ import DraftPopup from "@/components/DraftPopup";
 
 import "@/styles/_forms.scss";
 import "@/styles/_employeeIncidentForm.scss";
+import CloseIcon from "@/components/CloseIcon";
 import { useAuthentication } from "@/context/authContext";
 
 const EmployeeIncidentForm = ({ togglePopup }) => {
@@ -479,10 +480,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     console.log(selectedFacility);
   };
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Staff Incident</h2>
-        <X className="close-popup" onClick={togglePopup} />
+        <CloseIcon onClick={togglePopup} />
         <div className="form-steps">
           <div className={currentStep === 1 ? "step current-step" : "step"}>
             <div className="icon">
@@ -930,7 +931,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <div className="btns">
+      <div className="buttons">
         {currentStep > 1 && currentStep < 5 ? (
           <button
             onClick={handlePreviousStep}

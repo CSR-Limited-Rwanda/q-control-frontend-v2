@@ -17,8 +17,12 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { X, CircleCheck, MoveRight, MoveLeft } from "lucide-react";
 import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
+import { useAuthentication } from "@/context/authContext";
+import CloseIcon from "@/components/CloseIcon";
 
 const GrievanceForm = ({ togglePopup }) => {
+  const { user } = useAuthentication()
+  const [currentFacility, setCurrentFacility] = useState(user.facility)
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [userId, setUserId] = useState();
@@ -143,8 +147,9 @@ const GrievanceForm = ({ togglePopup }) => {
   async function postStepOne() {
     const data = {
       current_step: currentStep,
-      report_facility: checkCurrentAccount(),
-      department: departmentId,
+      facility_id: user.facility.id,
+      department: user.department.id,
+      report_facility_id: currentFacility?.id,
       date: incidentDate,
       patient_name: {
         first_name: patientFirstName,
@@ -174,8 +179,8 @@ const GrievanceForm = ({ togglePopup }) => {
         selectedOption === "other"
           ? otherInput
           : selectedOption
-          ? selectedOption
-          : null,
+            ? selectedOption
+            : null,
     };
 
     try {
@@ -199,8 +204,8 @@ const GrievanceForm = ({ togglePopup }) => {
       if (error.response) {
         window.customToast.error(
           error.response?.data.message ||
-            error.response?.data.error ||
-            "Error while saving incident"
+          error.response?.data.error ||
+          "Error while saving incident"
         );
       } else {
         window.customToast.error("Unknown error while saving incident");
@@ -343,8 +348,8 @@ const GrievanceForm = ({ togglePopup }) => {
               selectedOption === "other"
                 ? otherInput
                 : selectedOption
-                ? selectedOption
-                : null,
+                  ? selectedOption
+                  : null,
           });
         }
       }
@@ -465,17 +470,20 @@ const GrievanceForm = ({ togglePopup }) => {
 
     }
   };
+
+  const handleCurrentFacility = (facilityId) => {
+    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    setCurrentFacility(selectedFacility);
+  };
+
   return (
-    <div className="forms-container">
+    <div className="form-container">
       <div className="forms-header">
         <h2>Patient/Patient Representative Grievance Form</h2>
-        <X
-          className="close-popup"
-          onClick={() => {
-            togglePopup();
-            localStorage.setItem("updateNewIncident", "false");
-          }}
-        />
+        <CloseIcon onClick={() => {
+          togglePopup();
+          localStorage.setItem("updateNewIncident", "false");
+        }} />
 
         {currentStep < 4 ? (
           <div className="form-steps">
@@ -520,6 +528,19 @@ const GrievanceForm = ({ togglePopup }) => {
           incidentType="grievance_incident"
         />
       </div>
+
+      {currentStep === 1 && (
+        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
+          {
+            user?.accounts?.map((facility) => (
+              <option key={facility.id} value={facility.id}>
+                Submitting for  {facility.name}
+              </option>
+            ))
+          }
+        </select>
+      )}
+
       <form className="newIncidentForm">
         {currentStep === 1 ? (
           <div className="step">
@@ -670,7 +691,7 @@ const GrievanceForm = ({ togglePopup }) => {
                   type="text"
                   name="patientRelationship"
                   id="patientRelationship"
-                  placeholder="Enter   relationship"
+                  placeholder="Enter relationship"
                 />
               </div>
             </div>

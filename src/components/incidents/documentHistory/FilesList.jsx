@@ -75,7 +75,7 @@ const FilesList = ({
 
   const indexOfLastDocument = currentPage * documentsPerPage;
   const indexOfFirstDocument = indexOfLastDocument - documentsPerPage;
-  const currentDocuments = documents
+  const currentDocuments = Array.isArray(documents) 
     ? documents.slice(indexOfFirstDocument, indexOfLastDocument)
     : [];
 

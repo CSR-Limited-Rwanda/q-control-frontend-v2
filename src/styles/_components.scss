@@ -210,6 +210,8 @@ form,
   gap: 1rem;
 }
 
+// popup styles
+
 .popup {
   position: fixed;
   top: 0;
@@ -254,6 +256,18 @@ form,
       max-width: 100%;
       width: 100%;
     }
+  }
+}
+
+// pop up that has a header
+.has-header {
+  .popup-content {
+    padding-top: 0;
+
+  }
+
+  .forms-header {
+    padding-top: 2rem;
   }
 }
 
