@@ -75,7 +75,7 @@ const WorkPlaceDetailsContentTab = ({ data }) => {
             Incident Directed at and Initiated/ <br /> Committed
           </h3>
         </div>
-        {data.incident.involved_parties &&
+        {data.incident?.involved_parties &&
           data.incident.involved_parties.map((person, index) => (
             <div key={person.id || index}>
               <h3>Assailant {index + 1}</h3>

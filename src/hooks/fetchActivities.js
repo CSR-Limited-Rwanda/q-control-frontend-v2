@@ -3,7 +3,7 @@ import api from "@/utils/api";
 export const fetchActivities = async (id, type) => {
     try {
         const response = await api.get(`/activities/list/${id}/?incident_type=${type}`);
-        console.log('activities:', response)
+        // console.log('activities:', response)
 
         if (response.status === 200) {
             const { data = [], count } = response.data
