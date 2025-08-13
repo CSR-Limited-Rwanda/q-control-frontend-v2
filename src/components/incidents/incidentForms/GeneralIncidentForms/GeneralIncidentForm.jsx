@@ -35,6 +35,7 @@ import "../../../../styles/generalIncident.scss";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
 import MessageDisplay from "@/components/MessageDisplay";
+import MessageComponent from "@/components/MessageComponet";
 // import RichTexField from "./inputs/richTexField";
 
 const GeneralIncidentForm = ({ togglePopup }) => {

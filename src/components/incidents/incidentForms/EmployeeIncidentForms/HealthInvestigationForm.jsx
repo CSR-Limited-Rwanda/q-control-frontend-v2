@@ -11,6 +11,7 @@ import RichTexField from "@/components/forms/RichTextField.jsx";
 import { CircleMinus } from 'lucide-react';
 import CustomTimeInput from "@/components/CustomTimeInput.jsx";
 import { Form } from "react-router-dom";
+import MessageComponent from "@/components/MessageComponet.jsx";
 
 const HealthIncidentInvestigationForm = () => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -18,6 +19,8 @@ const HealthIncidentInvestigationForm = () => {
     const [savingDraft, setSavingDraft] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
     const [showWitnessList, setShowWitnessList] = useState(false);
     // const [safetyRegulationsUser, setSafetyRegulationsUser] = useState("")
     const [employeeSeenDoctor, setEmployeeSeenDoctor] = useState(false);

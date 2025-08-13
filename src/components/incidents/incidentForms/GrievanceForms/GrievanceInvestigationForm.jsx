@@ -6,6 +6,7 @@ import CustomDatePicker from "@/components/CustomDatePicker";
 import RichTexField from "@/components/forms/RichTextField";
 import { X } from "lucide-react";
 import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
+import MessageComponent from "@/components/MessageComponet";
 
 const PartiesInvolved = ({ data, handleRemovePartyInvolved }) => {
   return data && data.length > 0 ? (
@@ -32,6 +33,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [conductedBy, setConductedBy] = useState({
     first_name: "",
     last_name: "",
