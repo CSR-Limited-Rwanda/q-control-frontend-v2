@@ -24,10 +24,11 @@ import DraftPopup from "@/components/DraftPopup";
 import "../../../../styles/_forms.scss";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
+import MessageComponent from "@/components/MessageComponet";
 
 const LostAndFoundForm = ({ togglePopup }) => {
-  const { user } = useAuthentication()
-  const [currentFacility, setCurrentFacility] = useState(user.facility)
+  const { user } = useAuthentication();
+  const [currentFacility, setCurrentFacility] = useState(user.facility);
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +62,9 @@ const LostAndFoundForm = ({ togglePopup }) => {
   const [actionTaken, setActionTaken] = useState("");
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
-  )
+  );
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   function formatTime(time) {
     if (!time) return undefined;
@@ -274,6 +277,8 @@ const LostAndFoundForm = ({ togglePopup }) => {
       if (isValid) {
         setIsLoading(true);
         patchData(data);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -319,6 +324,8 @@ const LostAndFoundForm = ({ togglePopup }) => {
             status: "Draft",
           });
         }
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -336,7 +343,9 @@ const LostAndFoundForm = ({ togglePopup }) => {
   };
 
   const handleCurrentFacility = (facilityId) => {
-    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    const selectedFacility = user?.accounts?.find(
+      (facility) => facility.id === parseInt(facilityId)
+    );
     setCurrentFacility(selectedFacility);
   };
 
@@ -344,10 +353,12 @@ const LostAndFoundForm = ({ togglePopup }) => {
     <div className="form-container">
       <div className="forms-header">
         <h2>Lost and Found Property Report</h2>
-        <CloseIcon onClick={() => {
-          togglePopup();
-          localStorage.setItem("updateNewIncident", "false");
-        }} />
+        <CloseIcon
+          onClick={() => {
+            togglePopup();
+            localStorage.setItem("updateNewIncident", "false");
+          }}
+        />
         {currentStep < 3 ? (
           <div className="form-steps">
             <div className={currentStep === 1 ? "step current-step" : "step"}>
@@ -380,14 +391,18 @@ const LostAndFoundForm = ({ togglePopup }) => {
         />
       </div>
       {currentStep === 1 && (
-        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
-          {
-            user?.accounts?.map((facility) => (
-              <option key={facility.id} value={facility.id}>
-                Submitting for  {facility.name}
-              </option>
-            ))
-          }
+        <select
+          className="facility-card"
+          name="facility"
+          id="facility"
+          value={currentFacility?.id || ""}
+          onChange={(e) => handleCurrentFacility(e.target.value)}
+        >
+          {user?.accounts?.map((facility) => (
+            <option key={facility.id} value={facility.id}>
+              Submitting for {facility.name}
+            </option>
+          ))}
         </select>
       )}
 
@@ -650,6 +665,10 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
         {currentStep === 3 && <FormCompleteMessage />}
       </form>
+      <MessageComponent
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
       <div className="incident-form-buttons">
         {currentStep > 1 && currentStep <= 2 && (
           <button

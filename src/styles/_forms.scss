@@ -167,7 +167,6 @@ input[type="number"]:focus {
   }
 }
 
-
 .form-steps {
   display: flex;
   justify-content: space-between;
@@ -293,7 +292,7 @@ input[type="number"]:focus {
     display: none;
   }
 
-  input[type="checkbox"]:checked+label {
+  input[type="checkbox"]:checked + label {
     background-color: #f87c47;
     color: white;
   }
@@ -625,7 +624,7 @@ form {
 //Staff Incident Report Step 2
 
 .step-2-status {
-  >select {
+  > select {
     font-size: 14px;
     font-weight: 500;
   }
@@ -738,7 +737,7 @@ form {
 }
 
 .step-2-status {
-  >select {
+  > select {
     border-color: $gray-color-shade;
     color: $dark-gray-color-shade;
   }
@@ -788,7 +787,7 @@ form {
   }
 
   .step-2-status {
-    >select {
+    > select {
       border-color: $gray-color-shade;
       color: $dark-gray-color-shade;
     }
@@ -817,7 +816,7 @@ form {
           color: white;
         }
 
-        input[type="checkbox"]:checked+label {
+        input[type="checkbox"]:checked + label {
           background-color: #f87c47;
           color: white;
         }
@@ -972,7 +971,7 @@ form {
   display: grid !important;
   grid-template-columns: 1fr 1fr 1fr;
 
-  >div {
+  > div {
     height: 100% !important;
   }
 }
@@ -1471,11 +1470,11 @@ form {
   .form {
     background-color: $body-background-color;
 
-    >h3 {
+    > h3 {
       padding: 24px 24px 0 0;
     }
 
-    >button {
+    > button {
       margin-inline: 24px;
       margin-bottom: 24px;
     }

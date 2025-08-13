@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
-import api, {
-  API_URL,
-  checkCurrentAccount,
-  calculateAge,
-  cleanedData,
-} from "@/utils/api";
-import toast from "react-hot-toast";
+import api, { API_URL, cleanedData } from "@/utils/api";
 import "@/styles/_drugReactionIncidentForm.scss";
 
 import { X, CheckSquare, Square, SquareIcon } from "lucide-react";
@@ -25,6 +19,7 @@ import {
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
+import MessageComponent from "@/components/MessageComponet";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
 
@@ -34,9 +29,10 @@ const DrugReactionForm = ({ togglePopup }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   // form
-  const [outComeType, setOutComeType] = useState("mild");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [sex, setSex] = useState("");
@@ -51,15 +47,12 @@ const DrugReactionForm = ({ togglePopup }) => {
   const [victimType, setVictimType] = useState("");
   const [otherStatus, setOtherStatus] = useState("");
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const [location, setLocation] = useState("");
-  const [contributingDiagnosis, setContributingDiagnosis] = useState("");
-  const [isIv, setIsIv] = useState(false);
+
   const [isReactionTreated, setIsReactionTreated] = useState(false);
   const [provider, setProvider] = useState("");
   const [observersFirstName, setObserversFirstName] = useState("");
   const [observersLastName, setObserversLastName] = useState("");
 
-  const [observersNameArray, setObserversNameArray] = useState([]);
   const [timeOfReport, setTimeOfReport] = useState("");
   const [dateOfReport, setDateOfReport] = useState("");
   const [eventDetails, setEventDetails] = useState("");
@@ -82,7 +75,6 @@ const DrugReactionForm = ({ togglePopup }) => {
   const [physcianTime, setPhyscianTime] = useState("");
   const [familyNotifiedFirstName, setFamilyNotifiedFirstName] = useState("");
   const [familyNotifiedLastName, setFamilyNotifiedLastName] = useState("");
-  const [otherOutcome, setOtherOutcome] = useState("");
   const [familyDate, setFamilyDate] = useState("");
   const [familyTime, setFamilyTime] = useState("");
   const [notifiedByFirstName, setNotifiedByFirstName] = useState("");
@@ -171,7 +163,16 @@ const DrugReactionForm = ({ togglePopup }) => {
           );
         }
       } catch (error) {
-        window.customToast.error(error.message);
+        let errorMessage = "Something went wrong. Try again later.";
+        if (error?.response?.data) {
+          errorMessage =
+            error.response.data.message ||
+            error.response.data.error ||
+            errorMessage;
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+        setErrorMessage(errorMessage);
         console.error(error);
       }
     };
@@ -234,20 +235,6 @@ const DrugReactionForm = ({ togglePopup }) => {
     }
   };
 
-  const handleRouteChange = (e) => {
-    setRoute(e.target.value);
-  };
-  const handleAgreementChange = (e) => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setSelectedAgreements([...selectedAgreements, value]);
-    } else {
-      setSelectedAgreements(
-        selectedAgreements.filter((agreement) => agreement !== value)
-      );
-    }
-  };
-
   const handleSelection = (agreementName) => {
     setSelectedAgreements((prevSelected) => {
       if (prevSelected.includes(agreementName)) {
@@ -262,6 +249,8 @@ const DrugReactionForm = ({ togglePopup }) => {
 
   async function handleNewDrugAdverseReaction(drugReactionData) {
     try {
+      setErrorMessage("");
+      setSuccessMessage("");
       setIsLoading(true);
       const response = await api.post(
         `${API_URL}/incidents/adverse-drug-reaction/`,
@@ -276,7 +265,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         const id = response.data.id;
         localStorage.setItem("drugReactionId", id.toString());
         localStorage.setItem("updateNewIncident", "true");
-        window.customToast.success("Successfully posted data");
+        setSuccessMessage("Incident Created Successfully");
         setCurrentStep(currentStep + 1);
 
         postDocumentHistory(id, "added a new incident", "create");
@@ -291,6 +280,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         window.customToast.error("Something went wrong");
       }
       console.error(error);
+
       return;
     } finally {
       setIsLoading(false);
@@ -299,6 +289,8 @@ const DrugReactionForm = ({ togglePopup }) => {
 
   async function updateDrugAdverseReaction(drugReactionData) {
     try {
+      setErrorMessage("");
+      setSuccessMessage("");
       setIsLoading(true);
       const id = localStorage.getItem("drugReactionId");
 
@@ -313,13 +305,13 @@ const DrugReactionForm = ({ togglePopup }) => {
       );
       if (response.status === 200) {
         if (currentStep === 8) {
-          window.customToast.success("Incident Saved Successfully");
+          setSuccessMessage("Incident Saved Successfully");
           setCurrentStep(currentStep + 1);
 
           postDocumentHistory(id, "added a new incident", "create");
         } else {
           setCurrentStep(currentStep + 1);
-          window.customToast.success("Data posted Successfully");
+          setSuccessMessage("Data posted Successfully");
         }
         if (currentStep === 9) {
           localStorage.setItem("updateNewIncident", "false");
@@ -335,6 +327,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         window.customToast.error("Something went wrong");
       }
       console.error(error);
+
       return;
     } finally {
       setIsLoading(false);
@@ -342,6 +335,10 @@ const DrugReactionForm = ({ togglePopup }) => {
   }
 
   const handleNextStep = () => {
+    // Clear previous messages
+    setErrorMessage("");
+    setSuccessMessage("");
+
     let isValid = true;
     let drugReactionData;
 
@@ -394,6 +391,8 @@ const DrugReactionForm = ({ togglePopup }) => {
         if (localStorage.getItem("updateNewIncident") === "true") {
           updateDrugAdverseReaction(cleanedData(drugReactionData));
         }
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
     if (currentStep === 2) {
@@ -420,6 +419,8 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
 
         updateDrugAdverseReaction(drugReactionData);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
     if (currentStep === 3) {
@@ -457,6 +458,8 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
 
         updateDrugAdverseReaction(drugReactionData);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
     if (currentStep === 4) {
@@ -514,6 +517,8 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
 
         updateDrugAdverseReaction(drugReactionData);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
     if (currentStep === 5) {
@@ -527,7 +532,7 @@ const DrugReactionForm = ({ togglePopup }) => {
       }
 
       if (!isAnySelected) {
-        window.customToast.error("Please select at least one option");
+        setErrorMessage("Please select at least one option");
         isValid = false;
       }
 
@@ -571,6 +576,8 @@ const DrugReactionForm = ({ togglePopup }) => {
           adverse_event_to_be_reported_to_FDA: fdaReported,
         };
         updateDrugAdverseReaction(drugReactionData);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
 
@@ -614,6 +621,8 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
 
         updateDrugAdverseReaction(drugReactionData);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
     if (currentStep === 8) {
@@ -631,6 +640,8 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
 
         updateDrugAdverseReaction(drugReactionData);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -1544,7 +1555,10 @@ const DrugReactionForm = ({ togglePopup }) => {
           />
         )}
       </form>
-
+      <MessageComponent
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
       <div className="buttons">
         {currentStep > 1 && currentStep < 8 ? (
           <button

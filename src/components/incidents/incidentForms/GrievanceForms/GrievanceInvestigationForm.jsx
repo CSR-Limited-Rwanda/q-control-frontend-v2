@@ -6,6 +6,7 @@ import CustomDatePicker from "@/components/CustomDatePicker";
 import RichTexField from "@/components/forms/RichTextField";
 import { X } from "lucide-react";
 import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
+import MessageComponent from "@/components/MessageComponet";
 
 const PartiesInvolved = ({ data, handleRemovePartyInvolved }) => {
   return data && data.length > 0 ? (
@@ -76,7 +77,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   const [dateClosed, setDateClosed] = useState();
   const responseLetterFileInputRef = useRef("");
   const extensionLetterFileInputRef = useRef("");
-  const [error, setError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleExtensionLetter = async (event) => {
     const grievanceInvestigationId = localStorage.getItem(
@@ -97,15 +99,14 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
 
       if (response.status === 200) {
         setResponseLaterFile(response.data.document);
-
       }
     } catch (error) {
       console.error(error);
       if (error.response) {
         setError(
           error.response.message ||
-          error.response.error ||
-          "Error uploading files"
+            error.response.error ||
+            "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -131,15 +132,14 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
 
       if (response.status === 200) {
         setResponseLaterFile(response.data.document);
-
       }
     } catch (error) {
       console.error(error);
       if (error.response) {
         setError(
           error.response.message ||
-          error.response.error ||
-          "Error uploading files"
+            error.response.error ||
+            "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -259,7 +259,6 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
         data
       );
       if (response.status === 201) {
-
         window.customToast.success(
           "Grievance investigation saved successfully"
         );
@@ -273,7 +272,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response.data) {
         window.customToast.error(
           error.response.data.message ||
-          "Error saving the grievance investigation"
+            "Error saving the grievance investigation"
         );
       } else {
         window.customToast.error(
@@ -306,7 +305,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response.data) {
         window.customToast.error(
           error.response.data.message ||
-          "Error updating the grievance investigation"
+            "Error updating the grievance investigation"
         );
       } else {
         window.customToast.error(
@@ -677,7 +676,10 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
           ""
         )}
       </form>
-
+      <MessageComponent
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
       <div className="form-buttons buttons">
         {currentStep > 1 && currentStep < 4 ? (
           <button

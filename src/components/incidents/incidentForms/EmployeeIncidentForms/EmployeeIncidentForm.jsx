@@ -25,6 +25,7 @@ import "@/styles/_forms.scss";
 import "@/styles/_employeeIncidentForm.scss";
 import CloseIcon from "@/components/CloseIcon";
 import { useAuthentication } from "@/context/authContext";
+import MessageComponent from "@/components/MessageComponet";
 
 const EmployeeIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
@@ -70,6 +71,8 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const currentStepRef = useRef(currentStep);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [facilityId, setFacilityId] = useState(user.facility.id);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
   );
@@ -340,7 +343,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         }
         setSuccess(true);
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -452,6 +455,8 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             })
           );
         }
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 3) {
       const isValid = validateStep({
@@ -464,6 +469,8 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         setIsLoading(true);
 
         handleStepThreeSubmit();
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -899,30 +906,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
                 />
               </div>
             )}
-
-            {/* <div className="types">
-              <div className="type">
-                <input
-                  onChange={(e) => handleIsAnonymous(e.target.value)}
-                  type="radio"
-                  name="isAnonymous"
-                  id="yes"
-                  value={true}
-                />
-                <label htmlFor="yes">Yes</label>
-              </div>
-
-              <div className="type">
-                <input
-                  onChange={(e) => handleIsAnonymous(e.target.value)}
-                  type="radio"
-                  name="isAnonymous"
-                  id="no"
-                  value={false}
-                />
-                <label htmlFor="no">No</label>
-              </div>
-            </div> */}
           </div>
         ) : currentStep === 5 ? (
           <FormCompleteMessage />
@@ -930,7 +913,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           <h1>Something ain't right</h1>
         )}
       </form>
-
+      <MessageComponent
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
       <div className="buttons">
         {currentStep > 1 && currentStep < 5 ? (
           <button

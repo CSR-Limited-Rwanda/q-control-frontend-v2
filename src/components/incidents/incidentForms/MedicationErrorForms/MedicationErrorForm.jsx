@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import toast from "react-hot-toast";
 import { useRef } from "react";
-
-// import { stepOne, stepTwo } from "../validators/medicationErrorForm";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 import "@/styles/_forms.scss";
 import api, {
@@ -26,7 +23,9 @@ import { FacilityCard } from "@/components/DashboardContainer";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import DraftPopup from "@/components/DraftPopup";
 import CloseIcon from "@/components/CloseIcon";
+import MessageDisplay from "@/components/MessageDisplay";
 import { useAuthentication } from "@/context/authContext";
+import MessageComponent from "@/components/MessageComponet";
 
 const MedicationErrorForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
@@ -36,6 +35,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [physicianFirstName, setPhysicianFirstName] = useState("");
@@ -318,7 +319,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("medication_id", response.data.id);
-        window.customToast.success("Data posted successfully");
+        setErrorMessage("");
+        setSuccessMessage("Data posted successfully");
         if (currentStep <= 7) {
           setCurrentStep(currentStep + 1);
           setIsLoading(false);
@@ -328,8 +330,12 @@ const MedicationErrorForm = ({ togglePopup }) => {
     } catch (error) {
       console.error(error);
       setIsLoading(false);
-      window.customToast.error("Failed to post data");
-      window.customToast.error(error.message);
+      setSuccessMessage("");
+      let errorMsg = "Failed to post data";
+      if (error.message) {
+        errorMsg = error.message;
+      }
+      setErrorMessage(errorMsg);
     }
   }
 
@@ -343,7 +349,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        window.customToast.success("Data saved successfully");
+        setErrorMessage("");
+        setSuccessMessage("Data saved successfully");
         if (currentStep <= 8) {
           setCurrentStep(currentStep + 1);
         }
@@ -358,8 +365,12 @@ const MedicationErrorForm = ({ togglePopup }) => {
     } catch (error) {
       console.error(error);
       setIsLoading(false);
-      window.customToast.error("Failed to post data");
-      window.customToast.error(error.message);
+      setSuccessMessage("");
+      let errorMsg = "Failed to post data";
+      if (error.message) {
+        errorMsg = error.message;
+      }
+      setErrorMessage(errorMsg);
     }
   }
 
@@ -429,6 +440,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
           actions_taken: actionTaken,
           status: "Open",
         });
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -472,7 +485,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           });
         }
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     }
 
@@ -507,7 +520,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
             staffStatus === "Other" ? otherStaffStatus : staffStatus,
         });
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     }
 
@@ -524,7 +537,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
         postStepThree();
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     }
 
@@ -539,7 +552,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
         postStepFour();
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     }
 
@@ -556,7 +569,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           description_of_error: descriptionerror,
         });
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     }
 
@@ -573,7 +586,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           contributing_factors: contributingfactors.join(", "),
         });
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     }
 
@@ -588,6 +601,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           error_category: JSON.stringify(selectedCategory),
         });
       } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
     setIsLoading(true);
@@ -1315,6 +1329,12 @@ const MedicationErrorForm = ({ togglePopup }) => {
           <h1>Something ain't right</h1>
         )}
       </form>
+
+      <MessageComponent
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
+
       <div className="buttons">
         {currentStep > 1 && currentStep < 9 ? (
           <button

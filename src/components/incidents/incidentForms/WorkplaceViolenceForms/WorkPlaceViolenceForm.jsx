@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 import api, { API_URL, checkCurrentAccount, cleanedData } from "@/utils/api";
@@ -6,7 +6,14 @@ import CustomSelectInput from "@/components/CustomSelectInput";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import RichTexField from "@/components/forms/RichTextField";
 import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
-import { CirclePlus, X, Minus, CircleCheck, MoveRight, MoveLeft } from 'lucide-react';
+import {
+  CirclePlus,
+  X,
+  Minus,
+  CircleCheck,
+  MoveRight,
+  MoveLeft,
+} from "lucide-react";
 import postDocumentHistory from "../../documentHistory/postDocumentHistory";
 import { injuresTypes } from "@/constants/constants";
 import CustomTimeInput from "@/components/CustomTimeInput";
@@ -15,14 +22,22 @@ import ErrorMessage from "@/components/messages/ErrorMessage";
 import DraftPopup from "@/components/DraftPopup";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
+import MessageDisplay from "@/components/MessageDisplay";
+import MessageComponent from "@/components/MessageComponet";
 
 const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
-  const { user } = useAuthentication()
-  const [currentFacility, setCurrentFacility] = useState(user.facility)
-  const [facilityId, setFacilityId] = useState(localStorage.getItem('facilityId'))
-  const [departmentId, setDepartmentId] = useState(localStorage.getItem('departmentId'))
+  const { user } = useAuthentication();
+  const [currentFacility, setCurrentFacility] = useState(user.facility);
+  const [facilityId, setFacilityId] = useState(
+    localStorage.getItem("facilityId")
+  );
+  const [departmentId, setDepartmentId] = useState(
+    localStorage.getItem("departmentId")
+  );
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [victimAlone, setVictimAlone] = useState(false);
   const [errorFetching, setErrorFetching] = useState([]);
   // forms
@@ -202,7 +217,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   // };
 
   const handleAddInjury = () => {
-
     if (
       currentInjury.user_data.first_name &&
       currentInjury.user_data.last_name &&
@@ -256,7 +270,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         profile_data: { phone_number: "" },
         address: "",
       });
-
     }
   };
 
@@ -325,7 +338,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   };
 
   const validateInputFields = () => {
-
     const isAssailantFieldsFilled = parties["Assailant"].length > 0;
     const isVictimFieldsFilled = parties["Victim"].length > 0;
     const isBackgroundFieldsFilled = selectedBackground.length > 0;
@@ -523,7 +535,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           reported_by: {
             first_name: reportedByFirstName,
             last_name: reportedByLastName,
-            profile_type: "Staff"
+            profile_type: "Staff",
           },
           reported_by_title: reportedTitle,
           date_reported: dateReported,
@@ -542,14 +554,14 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             window.customToast.success("Data posted successfully");
             setIsLoading(false);
             setSuccess(true);
-
           }
         } catch (error) {
           window.customToast.error("Error posting data please try again");
           setIsLoading(false);
           console.error(error);
-
         }
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -567,13 +579,12 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
 
     let incidentPostData = {};
     const handleNewWorkPlaceViolence = async (incidentData) => {
-
       try {
         setIsLoading(true);
         // return
         const payload = {
           department: checkCurrentAccount(),
-          ...incidentData
+          ...incidentData,
         };
 
         const response = await api.post(
@@ -581,10 +592,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           cleanedData(payload)
         );
         if (response.status === 201) {
-          localStorage.setItem(
-            "workplaceViolenceId",
-            response.data.id
-          );
+          localStorage.setItem("workplaceViolenceId", response.data.id);
           removeError(errorFetching);
 
           setCurrentStep(currentStep + 1);
@@ -605,7 +613,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           appendError(error.message);
           window.customToast.error(
             error.message ||
-            "Error while creating new incident, please try again"
+              "Error while creating new incident, please try again"
           );
           return;
         } else {
@@ -617,7 +625,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
     };
 
     const updateIncident = async (incidentPostData, incidentId) => {
-
       try {
         setIsLoading(true);
         const response = await api.put(
@@ -629,7 +636,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           setCurrentStep(currentStep + 1);
           window.customToast.success("Data posted successfully");
           setIsLoading(false);
-
         }
       } catch (error) {
         setIsLoading(false);
@@ -689,6 +695,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         };
 
         handleNewWorkPlaceViolence(incidentData);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 2) {
       isValid = validateStep({
@@ -704,6 +712,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 3) {
       isValid = validateStep({
@@ -723,9 +733,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 4) {
-
       const {
         isAssailantFieldsFilled,
         isVictimFieldsFilled,
@@ -798,7 +809,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             incidentPostData,
             localStorage.getItem("workplaceViolenceId")
           );
-
         }
       } else {
         if (!isAssailantFieldsFilled) {
@@ -832,8 +842,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
-
     } else if (currentStep === 6) {
       if (injuryCheck === null) {
         window.customToast.error("Please select whether there were injuries");
@@ -860,13 +871,11 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           })),
           current_step: currentStep,
         };
-
       } else {
         injuryData = {
           there_were_injuries: injuryCheck,
           current_step: currentStep,
         };
-
       }
 
       updateIncident(injuryData, localStorage.getItem("workplaceViolenceId"));
@@ -920,6 +929,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 9) {
       if (departmentManagerNotified === null) {
@@ -931,17 +942,17 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       isValid = validateStep(
         departmentManagerNotified
           ? {
-            "First name": firstName,
-            "Last name": lastName,
-            "Title/Department": title,
-            Date: notificationDate,
-            Time: notificationTime,
-            "Enter action taken": action,
-            "Enter suggestions": suggestions,
-          }
+              "First name": firstName,
+              "Last name": lastName,
+              "Title/Department": title,
+              Date: notificationDate,
+              Time: notificationTime,
+              "Enter action taken": action,
+              "Enter suggestions": suggestions,
+            }
           : {
-            "Enter suggestions": suggestions,
-          }
+              "Enter suggestions": suggestions,
+            }
       );
       if (isValid) {
         if (departmentManagerNotified) {
@@ -950,7 +961,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             name_of_supervisor: {
               first_name: firstName,
               last_name: lastName,
-              profile_type: "Supervisor"
+              profile_type: "Supervisor",
             },
             title_of_supervisor: title,
             date_notified: notificationDate,
@@ -972,6 +983,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -981,7 +994,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   };
 
   const handleCurrentFacility = (facilityId) => {
-    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    const selectedFacility = user?.accounts?.find(
+      (facility) => facility.id === parseInt(facilityId)
+    );
     setCurrentFacility(selectedFacility);
   };
 
@@ -1062,14 +1077,18 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         />
       </div>
       {currentStep === 1 && (
-        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
-          {
-            user?.accounts?.map((facility) => (
-              <option key={facility.id} value={facility.id}>
-                Submitting for {facility.name}
-              </option>
-            ))
-          }
+        <select
+          className="facility-card"
+          name="facility"
+          id="facility"
+          value={currentFacility?.id || ""}
+          onChange={(e) => handleCurrentFacility(e.target.value)}
+        >
+          {user?.accounts?.map((facility) => (
+            <option key={facility.id} value={facility.id}>
+              Submitting for {facility.name}
+            </option>
+          ))}
         </select>
       )}
 
@@ -1169,8 +1188,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                   {injuresTypes.map((injury) => (
                     <div
                       key={injury}
-                      className={`type ${selectedInjuries.includes(injury) ? "selected" : ""
-                        }`}
+                      className={`type ${
+                        selectedInjuries.includes(injury) ? "selected" : ""
+                      }`}
                       onClick={() => handleTypeSelection(injury)}
                     >
                       <p>{injury}</p>
@@ -1202,8 +1222,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                 <h4>Select Incident type</h4>
                 <div className="types">
                   <div
-                    className={`type full-width-type ${selectedType === "Type 1" ? "selected" : ""
-                      }`}
+                    className={`type full-width-type ${
+                      selectedType === "Type 1" ? "selected" : ""
+                    }`}
                     onClick={() => handleSelection("Type 1")}
                   >
                     <h5>Type 1 (Criminal Intent/External)</h5>
@@ -1212,8 +1233,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                   </div>
 
                   <div
-                    className={`type full-width-type ${selectedType === "Type 2" ? "selected" : ""
-                      }`}
+                    className={`type full-width-type ${
+                      selectedType === "Type 2" ? "selected" : ""
+                    }`}
                     onClick={() => handleSelection("Type 2")}
                   >
                     <h5>Type 2 (Patient/Family/Guest)</h5>
@@ -1222,8 +1244,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                   </div>
 
                   <div
-                    className={`type full-width-type ${selectedType === "Type 3" ? "selected" : ""
-                      }`}
+                    className={`type full-width-type ${
+                      selectedType === "Type 3" ? "selected" : ""
+                    }`}
                     onClick={() => handleSelection("Type 3")}
                   >
                     <h5>Type 3 (Worker on Worker)</h5>
@@ -1232,8 +1255,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                   </div>
 
                   <div
-                    className={`type full-width-type ${selectedType === "Type 4" ? "selected" : ""
-                      }`}
+                    className={`type full-width-type ${
+                      selectedType === "Type 4" ? "selected" : ""
+                    }`}
                     onClick={() => handleSelection("Type 4")}
                   >
                     <h5>Type 4 (Domestic/Intimate Parter)</h5>
@@ -1243,8 +1267,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                   </div>
 
                   <div
-                    className={`type full-width-type ${selectedType === "Type 5" ? "selected" : ""
-                      }`}
+                    className={`type full-width-type ${
+                      selectedType === "Type 5" ? "selected" : ""
+                    }`}
                     onClick={() => handleSelection("Type 5")}
                   >
                     <h5>Type 5 (ideological)</h5>
@@ -1287,8 +1312,9 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                       <div
                         key={type}
                         onClick={() => setPartiesType(type)}
-                        className={`type ${currentType === type ? "selected" : ""
-                          }`}
+                        className={`type ${
+                          currentType === type ? "selected" : ""
+                        }`}
                       >
                         {type}
                       </div>
@@ -1437,10 +1463,11 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                         ].map((relationship) => (
                           <div
                             key={relationship}
-                            className={`type ${selectedRelationship.includes(relationship)
-                              ? "selected"
-                              : ""
-                              }`}
+                            className={`type ${
+                              selectedRelationship.includes(relationship)
+                                ? "selected"
+                                : ""
+                            }`}
                             onClick={() => {
                               handleRelationshipVictim(relationship);
                               if (relationship === "Other (explain)")
@@ -1633,10 +1660,11 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                         ].map((type) => (
                           <div
                             key={type}
-                            className={`type ${selectedBackground.includes(type)
-                              ? "selected"
-                              : ""
-                              }`}
+                            className={`type ${
+                              selectedBackground.includes(type)
+                                ? "selected"
+                                : ""
+                            }`}
                             onClick={() => {
                               handleBackground(type);
                               if (type === "Other (explain)")
@@ -1645,7 +1673,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                           >
                             <p>
                               {type ===
-                                "Consequences of patient condition/disability"
+                              "Consequences of patient condition/disability"
                                 ? "Consequences of patient condition/disability"
                                 : type}
                             </p>
@@ -1968,16 +1996,16 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                     >
                       {injuries.length > 0
                         ? injuries.map((injury, index) => (
-                          <button
-                            key={index}
-                            className="new-party"
-                            onClick={() => handleRemoveInjury(index)}
-                          >
-                            {injury.user_data.first_name}{" "}
-                            {injury.user_data.last_name}
-                            <Minus />
-                          </button>
-                        ))
+                            <button
+                              key={index}
+                              className="new-party"
+                              onClick={() => handleRemoveInjury(index)}
+                            >
+                              {injury.user_data.first_name}{" "}
+                              {injury.user_data.last_name}
+                              <Minus />
+                            </button>
+                          ))
                         : null}
                     </div>
                     <label htmlFor="personInjured">Who was injured</label>
@@ -2069,16 +2097,16 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                     >
                       {witnesses.length > 0
                         ? witnesses.map((witness, index) => (
-                          <button
-                            key={index}
-                            className="new-party"
-                            onClick={() => handleRemoveWitness(witness)}
-                          >
-                            {witness.user_data.first_name}{" "}
-                            {witness.user_data.last_name}
-                            <Minus />
-                          </button>
-                        ))
+                            <button
+                              key={index}
+                              className="new-party"
+                              onClick={() => handleRemoveWitness(witness)}
+                            >
+                              {witness.user_data.first_name}{" "}
+                              {witness.user_data.last_name}
+                              <Minus />
+                            </button>
+                          ))
                         : null}
                     </div>
                     <label htmlFor="witnessName">Witness</label>
@@ -2534,7 +2562,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
               ""
             )}
           </form>
-
+          <MessageComponent
+            errorMessage={errorMessage}
+            successMessage={successMessage}
+          />
           <div className="incident-form-buttons">
             {currentStep > 1 && currentStep <= 10 ? (
               <button

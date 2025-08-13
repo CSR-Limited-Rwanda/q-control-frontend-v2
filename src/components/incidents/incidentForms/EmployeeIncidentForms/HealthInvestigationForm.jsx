@@ -11,6 +11,7 @@ import RichTexField from "@/components/forms/RichTextField.jsx";
 import { CircleMinus } from 'lucide-react';
 import CustomTimeInput from "@/components/CustomTimeInput.jsx";
 import { Form } from "react-router-dom";
+import MessageComponent from "@/components/MessageComponet.jsx";
 
 const HealthIncidentInvestigationForm = () => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -61,6 +62,8 @@ const HealthIncidentInvestigationForm = () => {
     const [success, setSuccess] = useState(false);
     const [witnessNameArray, setwitnessNameArray] = useState([]);
     const [staffIncidentId, setStaffIncidentId] = useState(localStorage.getItem("staffIncidentId"))
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         currentStepRef.current = currentStep;
@@ -199,6 +202,9 @@ const HealthIncidentInvestigationForm = () => {
 
                 handleStepOneSubmit();
             }
+            else {
+                setErrorMessage("Please fill in all required fields.");
+            }
         } else if (currentStep === 2) {
             const isValid = validateStep({
                 "Enter description": activityPriorToEvent,
@@ -217,7 +223,7 @@ const HealthIncidentInvestigationForm = () => {
 
                 handleStepTwoSubmit();
             } else {
-                return;
+                setErrorMessage("Please fill in all required fields.");
             }
         }
     };
@@ -800,6 +806,10 @@ const HealthIncidentInvestigationForm = () => {
                             ""
                         )}
                     </form>
+                    <MessageComponent
+                        errorMessage={errorMessage}
+                        successMessage={successMessage}
+                    />
                     <div className="buttons">
                         {currentStep > 1 && currentStep < 4 ? (
                             <button
