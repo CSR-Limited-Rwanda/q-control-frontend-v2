@@ -294,6 +294,20 @@ form,
   }
 }
 
+// mark resolved popup
+.mark-resolved-popup {
+  .popup-content {
+    height: 200px;
+  }
+}
+
+// review popup 
+.review-popup {
+  .popup-content {
+    height: 400px;
+  }
+}
+
 // messages
 
 .message {

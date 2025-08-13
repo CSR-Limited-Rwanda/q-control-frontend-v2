@@ -37,9 +37,9 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
     window.location.reload();
   };
   return (
-    <div className="popup">
-      <div className="popup-content mark-resolved">
-        {resolved ? <h1>Closed</h1> : <h3>Mark As Close</h3>}
+    <div className="popup mark-resolved-popup">
+      <div className="popup-content">
+        {resolved ? <h1>Closed</h1> : <h3>Mark As Closed</h3>}
 
         {resolved ? (
           <p>
