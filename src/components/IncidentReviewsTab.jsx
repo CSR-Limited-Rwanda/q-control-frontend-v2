@@ -6,7 +6,6 @@ import Button from './forms/Button';
 import { ArrowRight, Plus, Send, X } from 'lucide-react';
 import UserCard from './UserCard';
 import ProfilePlaceHolder from './ProfilePlaceHolder';
-import PositionCard from './toastManager/PositionCard';
 import { formatDateTime } from '@/utils/api';
 import RichTextField from './RichTextField';
 

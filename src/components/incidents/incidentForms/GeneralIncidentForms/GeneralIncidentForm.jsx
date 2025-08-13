@@ -34,6 +34,7 @@ import "../../../../styles/_forms.scss";
 import "../../../../styles/generalIncident.scss";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
+import MessageDisplay from "@/components/MessageDisplay";
 // import RichTexField from "./inputs/richTexField";
 
 const GeneralIncidentForm = ({ togglePopup }) => {
@@ -135,6 +136,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   };
 
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   // form
   const [category, setCategory] = useState("");
@@ -310,23 +313,21 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
       if (response.status === 200) {
         setCurrentStep(currentStep + 1);
-
-        window.customToast.success("Data posted successfully");
+        setErrorMessage("");
+        setSuccessMessage("Data posted successfully");
       } else {
-
-        window.customToast.error(`Unexpected status code: ${response.status}`);
+        setSuccessMessage("");
+        setErrorMessage(`Unexpected status code: ${response.status}`);
       }
     } catch (error) {
       if (error.response) {
         console.error("API error:", error.response.data);
-
-        // setErrorFetching(error.response.data.error);
-        window.customToast.error(
-          error.response.data.message || "API error occurred"
-        );
+        setSuccessMessage("");
+        setErrorMessage(error.response.data.message || "API error occurred");
       } else {
         console.error("Unexpected error:", error);
-        window.customToast.error("Something went wrong");
+        setSuccessMessage("");
+        setErrorMessage("Something went wrong");
         // setErrorFetching("An error occurred while posting incident data.");
       }
     } finally {
@@ -505,7 +506,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           );
         }
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 2) {
       isValid = validateStep({
@@ -546,7 +547,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("generalIncidentId")
         );
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 3) {
       if (incidentType === "Fall related") {
@@ -596,7 +597,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             localStorage.getItem("generalIncidentId")
           );
         } else {
-          return;
+          setErrorMessage("Please fill in all required fields.");
         }
       } else if (incidentType === "Treatment related") {
         const type = "treatment";
@@ -617,7 +618,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             localStorage.getItem("generalIncidentId")
           );
         } else {
-          return;
+          setErrorMessage("Please fill in all required fields.");
         }
       } else if (incidentType === "equipment malfunction") {
         const type = "equipment";
@@ -650,10 +651,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             localStorage.getItem("generalIncidentId")
           );
         } else {
-          window.customToast.error(
-            "Please fill in all required fields for equipment malfunction."
-          );
-          return;
+          setErrorMessage("Please fill in all required fields.");
         }
       } else if (incidentType === "Other") {
         setIncidentType("Other");
@@ -674,7 +672,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             localStorage.getItem("generalIncidentId")
           );
         } else {
-          return;
+          setErrorMessage("Please fill in all required fields.");
         }
       }
     } else if (currentStep === 4) {
@@ -707,7 +705,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("generalIncidentId")
         );
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 5) {
       isValid = validateStep({
@@ -753,7 +751,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("generalIncidentId")
         );
       } else {
-        return;
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -1932,7 +1930,10 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           ""
         )}
       </form>
-
+      <MessageComponent
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
       <div className="buttons">
         {currentStep > 1 && currentStep < 7 ? (
           <button

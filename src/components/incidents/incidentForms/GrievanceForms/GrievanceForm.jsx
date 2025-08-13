@@ -251,28 +251,7 @@ const GrievanceForm = ({ togglePopup }) => {
       setPhoneNumber(newValue);
     }
   };
-  const handleSaveChange = () => {
-    if (currentStep === 3) {
-      const isValid = validateStep({
-        "Administrator first name": administratorFirstName,
-        "Administrator last name": administratorLastName,
-        "Grivance Date": grivanceDate,
-        "Grivance Time": grivanceTime,
-      });
 
-      if (isValid) {
-        // postStepThree();
-      }
-      if (isValid) {
-        setIsLoading(true);
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-      } else {
-        return;
-      }
-    }
-  };
 
   const handleNextStep = () => {
     let isValid = true;
@@ -352,6 +331,8 @@ const GrievanceForm = ({ togglePopup }) => {
                   : null,
           });
         }
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
 
     } else if (currentStep === 2) {
@@ -377,6 +358,7 @@ const GrievanceForm = ({ togglePopup }) => {
           outcome: outcome,
         });
       } else {
+        setErrorMessage("Please fill in all required fields.");
         return;
       }
     } else if (currentStep === 3) {
@@ -403,6 +385,8 @@ const GrievanceForm = ({ togglePopup }) => {
             notification_time: grivanceTime,
             status: "Open",
           });
+        } else {
+          setErrorMessage("Please fill in all required fields.");
         }
       } else {
         patchData({
@@ -968,7 +952,10 @@ const GrievanceForm = ({ togglePopup }) => {
           ""
         )}
       </form>
-
+      <MessageComponent
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
       <div className="incident-form-buttons">
         {currentStep > 1 && currentStep < 4 ? (
           <button onClick={handlePreviousStep} className="incident-back-btn">

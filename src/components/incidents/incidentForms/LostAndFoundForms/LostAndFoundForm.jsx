@@ -274,6 +274,8 @@ const LostAndFoundForm = ({ togglePopup }) => {
       if (isValid) {
         setIsLoading(true);
         patchData(data);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -319,6 +321,9 @@ const LostAndFoundForm = ({ togglePopup }) => {
             status: "Draft",
           });
         }
+      }
+      else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -650,6 +655,10 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
         {currentStep === 3 && <FormCompleteMessage />}
       </form>
+      <MessageComponent
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
       <div className="incident-form-buttons">
         {currentStep > 1 && currentStep <= 2 && (
           <button
