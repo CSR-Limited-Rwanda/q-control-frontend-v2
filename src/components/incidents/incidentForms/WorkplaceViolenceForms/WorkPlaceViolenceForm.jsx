@@ -15,6 +15,7 @@ import ErrorMessage from "@/components/messages/ErrorMessage";
 import DraftPopup from "@/components/DraftPopup";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
+import MessageDisplay from "@/components/MessageDisplay";
 
 const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication()
@@ -23,6 +24,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const [departmentId, setDepartmentId] = useState(localStorage.getItem('departmentId'))
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [victimAlone, setVictimAlone] = useState(false);
   const [errorFetching, setErrorFetching] = useState([]);
   // forms
@@ -550,6 +553,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           console.error(error);
 
         }
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -689,6 +694,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         };
 
         handleNewWorkPlaceViolence(incidentData);
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 2) {
       isValid = validateStep({
@@ -704,6 +711,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 3) {
       isValid = validateStep({
@@ -723,6 +732,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 4) {
 
@@ -832,6 +843,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
 
     } else if (currentStep === 6) {
@@ -920,6 +933,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     } else if (currentStep === 9) {
       if (departmentManagerNotified === null) {
@@ -972,6 +987,8 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           incidentPostData,
           localStorage.getItem("workplaceViolenceId")
         );
+      } else {
+        setErrorMessage("Please fill in all required fields.");
       }
     }
   };
@@ -2534,7 +2551,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
               ""
             )}
           </form>
-
+          <MessageComponent
+            errorMessage={errorMessage}
+            successMessage={successMessage}
+          />
           <div className="incident-form-buttons">
             {currentStep > 1 && currentStep <= 10 ? (
               <button

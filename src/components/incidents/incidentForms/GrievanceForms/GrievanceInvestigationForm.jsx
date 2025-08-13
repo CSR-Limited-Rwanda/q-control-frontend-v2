@@ -677,7 +677,10 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
           ""
         )}
       </form>
-
+      <MessageComponent
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+      />
       <div className="form-buttons buttons">
         {currentStep > 1 && currentStep < 4 ? (
           <button
