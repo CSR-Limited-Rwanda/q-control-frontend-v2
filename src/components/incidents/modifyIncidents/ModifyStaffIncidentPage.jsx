@@ -18,13 +18,16 @@ import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "../../CantModify";
 import CustomDatePicker from "../../CustomDatePicker";
 import { useAuthentication } from "@/context/authContext";
+import PermissionsGuard from "@/components/PermissionsGuard";
+
 
 import "@/styles/_modifyIncident.scss";
 import CloseIcon from "@/components/CloseIcon";
 
+import { useGetPermissions } from "@/hooks/fetchPermissions";
+
 const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
-  const permission = usePermission();
-  const department = useDepartments();
+  const { permissions } = useGetPermissions()
   const { user } = useAuthentication();
   const [incident, setIncident] = useState(data);
   const [currentStep, setCurrentStep] = useState(1);
@@ -142,7 +145,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
         }
-      } catch (error) {}
+      } catch (error) { }
     };
 
     fetchIncidentDocuments();
@@ -217,12 +220,12 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       patient_info:
         firstName && lastName
           ? {
-              first_name: firstName,
-              last_name: lastName,
-              age: age,
-              date_of_birth: dateBirth,
-              profile_type: "Patient",
-            }
+            first_name: firstName,
+            last_name: lastName,
+            age: age,
+            date_of_birth: dateBirth,
+            profile_type: "Patient",
+          }
           : null,
       job_title: jobTitle,
       supervisor: {
@@ -244,11 +247,11 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       doctor_consulted_info:
         doctorFirstName && doctorLastName
           ? {
-              first_name: doctorFirstName,
-              last_name: doctorLastName,
-              phone_number: doctorPhone || "",
-              profile_type: "Physician",
-            }
+            first_name: doctorFirstName,
+            last_name: doctorLastName,
+            phone_number: doctorPhone || "",
+            profile_type: "Physician",
+          }
           : null,
       previous_injury: injuredBody,
       previous_injury_date: whenInjured || null,
@@ -274,8 +277,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error while updating the incident"
+          error.response.data.error ||
+          "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -299,25 +302,34 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         <BackToPage link={"/incidents/staff/"} pageName={"Staff incidents"} />
         <h2 className="title">Modifying Staff Incident</h2>
         {investigation ? (
-          <Link
+          <>
+          {permissions?.staff_incident_reports?.includes("view_staffincidentinvestigation") && (
+            <Link
             href={`/incidents/staff/${staffIncidentId}`}
             onClick={() => {
               localStorage.setItem("activate_investigation_tab", true);
             }}
           >
             <button type="button" className="tertiary-button">
-              <span>View investigation</span>
-              <Eye size={18} />
-            </button>
+                <span>View investigation</span>
+                <Eye size={18} />
+              </button>
+
           </Link>
+          )}
+          </>
         ) : (
-          <button
-            onClick={handleShowInvestigationForm}
-            className="tertiary-button"
-          >
-            <span>Add investigation</span>
-            <TextSearch />
-          </button>
+          <>
+            {permissions?.staff_incident_reports?.includes("add_staffincidentinvestigation") && (
+              <button
+                onClick={handleShowInvestigationForm}
+                className="tertiary-button"
+              >
+                <span>Add investigation</span>
+                <TextSearch />
+              </button>
+            )}
+          </>
         )}
 
         <div className="buttons">
@@ -355,13 +367,12 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${
-                  status === "Draft"
-                    ? "in-progress"
-                    : status === "Closed"
+                className={`follow-up ${status === "Draft"
+                  ? "in-progress"
+                  : status === "Closed"
                     ? "closed"
                     : "Open"
-                }`}
+                  }`}
               >
                 {status}
               </span>

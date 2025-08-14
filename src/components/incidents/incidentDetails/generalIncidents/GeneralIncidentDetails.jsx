@@ -91,6 +91,7 @@ const GeneralIncidentDetailsContent = () => {
                         useOriginalVersion={useOriginalVersion}
                         setCurrentIncidentData={setCurrentIncidentData} // Update UI on toggle
                         showClosedManager={false}
+                        model={"general_patient_visitor"}
                     />
                     <div className="details">
                         <IncidentDetails
