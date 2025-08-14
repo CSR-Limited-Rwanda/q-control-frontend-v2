@@ -1,6 +1,13 @@
 "use client";
 import api, { createUrlParams } from "@/utils/api";
-import { LoaderCircle, CirclePlus, ChevronDown, Ellipsis, ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
+import {
+  LoaderCircle,
+  CirclePlus,
+  ChevronDown,
+  Ellipsis,
+  ArrowDownNarrowWide,
+  ArrowUpNarrowWide,
+} from "lucide-react";
 import React, { useEffect, useState, useCallback } from "react";
 import PrimaryButton from "@/components/PrimaryButton";
 import UserCard from "@/components/UserCard";
@@ -12,7 +19,7 @@ import { openDropdown } from "@/utils/dropdownUtils";
 import SortableHeader from "@/components/SortableHeader";
 import useSorting from "@/hooks/useSorting";
 
-const DEFAULT_PAGE_SIZE = 10
+const DEFAULT_PAGE_SIZE = 10;
 
 const Accounts = ({ permissions }) => {
   const router = useRouter();
@@ -23,8 +30,8 @@ const Accounts = ({ permissions }) => {
     page_size: DEFAULT_PAGE_SIZE,
     total_pages: 1,
     has_next: false,
-    has_previous: false
-  })
+    has_previous: false,
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [showNewUserForm, setShowNewUserForm] = useState(false);
@@ -32,74 +39,74 @@ const Accounts = ({ permissions }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
 
-  const { sortField, sortOrder, handleSort, getSortParams } = useSorting()
-  const { results: users, page, page_size, count, total_pages } = usersData
+  const { sortField, sortOrder, handleSort, getSortParams } = useSorting();
+  const { results: users, page, page_size, count, total_pages } = usersData;
 
-  const fetchUsers = useCallback(async (params = '') => {
-    const sortParams = getSortParams()
-    const fullParams = `${params}&${createUrlParams(sortParams)}`
-    setIsLoading(true)
+  const fetchUsers = useCallback(async (params = "") => {
+    const sortParams = getSortParams();
+    const fullParams = `${params}&${createUrlParams(sortParams)}`;
+    setIsLoading(true);
     try {
-      const response = await api.get(`/users/?${params}`)
+      const response = await api.get(`/users/?${params}`);
       if (response.status === 200) {
-        setUsersData(response.data)
+        setUsersData(response.data);
       } else {
-        setErrorMessage("Error fetching users.")
+        setErrorMessage("Error fetching users.");
       }
     } catch (error) {
-      console.error("Error fetching users:", error)
-      setErrorMessage("Error fetching users")
+      console.error("Error fetching users:", error);
+      setErrorMessage("Error fetching users");
     } finally {
-      setIsLoading(false)
-      setIsSearching(false)
+      setIsLoading(false);
+      setIsSearching(false);
     }
-  }, [])
+  }, []);
 
   const handleSearch = useCallback(() => {
     // Allow empty search or minimum 3 characters
     if (searchQuery.length >= 3 || searchQuery.length === 0) {
-      setIsSearching(true)
+      setIsSearching(true);
       const params = createUrlParams({
         q: searchQuery.trim(),
         page: 1,
         page_size: page_size,
         sort_by: sortField,
-        sort_order: sortOrder
-      })
-      fetchUsers(params)
+        sort_order: sortOrder,
+      });
+      fetchUsers(params);
     }
-  }, [searchQuery, page_size, fetchUsers])
+  }, [searchQuery, page_size, fetchUsers]);
 
   const handleApplyFilters = () => {
-    setShowFilters(false)
+    setShowFilters(false);
   };
 
   const handlePageChange = (newPage) => {
-    if (newPage < 1 || newPage > total_pages) return
+    if (newPage < 1 || newPage > total_pages) return;
 
     const params = createUrlParams({
       q: searchQuery.trim(),
       page: newPage,
-      page_size: page_size
-    })
-    fetchUsers(params)
-  }
+      page_size: page_size,
+    });
+    fetchUsers(params);
+  };
 
   const handlePageSizeChange = (newSize) => {
-    setUsersData(prev => ({
+    setUsersData((prev) => ({
       ...prev,
-      page_size: newSize
-    }))
+      page_size: newSize,
+    }));
 
     const params = createUrlParams({
       q: searchQuery.trim(),
       page: 1,
       page_size: newSize,
       sort_by: sortField,
-      sort_order: sortOrder
-    })
-    fetchUsers(params)
-  }
+      sort_order: sortOrder,
+    });
+    fetchUsers(params);
+  };
 
   const handleShowFilters = () => {
     setShowFilters(!showFilters);
@@ -108,33 +115,32 @@ const Accounts = ({ permissions }) => {
   const handleNavigate = (user) => {
     if (permissions && permissions.accounts?.includes("view_profile")) {
       router.push(`/accounts/${user?.id}`);
-    }
-    else {
-      return
+    } else {
+      return;
     }
   };
 
   // Fixed debouncing effect - now properly watches searchQuery changes
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
-      handleSearch()
-    }, 300)
+      handleSearch();
+    }, 300);
 
-    return () => clearTimeout(debounceTimeout)
-  }, [searchQuery, handleSearch]) // Added proper dependencies
+    return () => clearTimeout(debounceTimeout);
+  }, [searchQuery, handleSearch]); // Added proper dependencies
 
   // Initial load - only runs once on mount
   useEffect(() => {
     const params = createUrlParams({
       sort_by: sortField,
-      sort_order: sortOrder
-    })
+      sort_order: sortOrder,
+    });
     fetchUsers(params);
   }, [fetchUsers, sortField, sortOrder]);
 
   // formatting date
   function formatDate(isoString) {
-    return format(new Date(isoString), 'dd/MM/yyyy')
+    return format(new Date(isoString), "dd/MM/yyyy");
   }
 
   return (
@@ -159,7 +165,9 @@ const Accounts = ({ permissions }) => {
                 <div className="form-group">
                   <select
                     value={page_size}
-                    onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                    onChange={(e) =>
+                      handlePageSizeChange(Number(e.target.value))
+                    }
                     name="pageSize"
                     id="pageSize"
                   >
@@ -168,19 +176,22 @@ const Accounts = ({ permissions }) => {
                     <option value="20">20</option>
                     <option value="50">50</option>
                   </select>
-                  <ChevronDown size={24} onClick={() => openDropdown('pageSize')} className="filter-icon" />
+                  <ChevronDown
+                    size={24}
+                    onClick={() => openDropdown("pageSize")}
+                    className="filter-icon"
+                  />
                 </div>
               </div>
             </form>
-            {
-              permissions && permissions.accounts?.includes("add_profile") &&
+            {permissions && permissions.accounts?.includes("add_profile") && (
               <PrimaryButton
                 onClick={() => setShowNewUserForm(true)}
                 span="New User"
                 prefixIcon={<CirclePlus />}
                 customClass={"sticky-button"}
               />
-            }
+            )}
           </div>
         </div>
         {isLoading && users.length < 1 ? (
@@ -197,53 +208,57 @@ const Accounts = ({ permissions }) => {
                   <thead>
                     <tr>
                       <th>
-                        <div className="sort-cell" onClick={() => handleSort('id')}>
+                        <div
+                          className="sort-cell"
+                          onClick={() => handleSort("id")}
+                        >
                           ID
-                          {sortField === 'id' && sortOrder === 'asc' ? (
+                          {sortField === "id" && sortOrder === "asc" ? (
                             <ArrowDownNarrowWide size={18} />
-                          ) : sortField === 'id' && sortOrder === 'desc' ? (
+                          ) : sortField === "id" && sortOrder === "desc" ? (
                             <ArrowUpNarrowWide size={18} />
                           ) : (
                             <ArrowDownNarrowWide size={18} />
                           )}
                         </div>
-
                       </th>
                       <th>
-                        <div className="sort-cell" onClick={() => handleSort('first_name')}>
+                        <div
+                          className="sort-cell"
+                          onClick={() => handleSort("first_name")}
+                        >
                           Name
-                          {sortField === 'first_name' && sortOrder === 'asc' ? (
+                          {sortField === "first_name" && sortOrder === "asc" ? (
                             <ArrowDownNarrowWide size={18} />
-                          ) : sortField === 'first_name' && sortOrder === 'desc' ? (
+                          ) : sortField === "first_name" &&
+                            sortOrder === "desc" ? (
                             <ArrowUpNarrowWide size={18} />
                           ) : (
                             <ArrowDownNarrowWide size={18} />
                           )}
-
                         </div>
                       </th>
 
                       <th>
                         <div className="sort-cell">
                           Email
-                          {sortField === 'email' && sortOrder === 'asc' ? (
+                          {sortField === "email" && sortOrder === "asc" ? (
                             <ArrowDownNarrowWide size={18} />
-                          ) : sortField === 'email' && sortOrder === 'desc' ? (
+                          ) : sortField === "email" && sortOrder === "desc" ? (
                             <ArrowUpNarrowWide size={18} />
                           ) : (
                             <ArrowDownNarrowWide size={18} />
                           )}
                         </div>
                       </th>
-                      <th>
-                        Phone number
-                      </th>
+                      <th>Phone number</th>
                       <th>
                         <div className="sort-cell">
                           Department
-                          {sortField === 'department' && sortOrder === 'asc' ? (
+                          {sortField === "department" && sortOrder === "asc" ? (
                             <ArrowDownNarrowWide size={18} />
-                          ) : sortField === 'department' && sortOrder === 'desc' ? (
+                          ) : sortField === "department" &&
+                            sortOrder === "desc" ? (
                             <ArrowUpNarrowWide size={18} />
                           ) : (
                             <ArrowDownNarrowWide size={18} />
@@ -253,16 +268,16 @@ const Accounts = ({ permissions }) => {
                       <th>
                         <div className="sort-cell">
                           Date Added
-                          {sortField === 'created_at' && sortOrder === 'asc' ? (
+                          {sortField === "created_at" && sortOrder === "asc" ? (
                             <ArrowDownNarrowWide size={18} />
-                          ) : sortField === 'created_at' && sortOrder === 'desc' ? (
+                          ) : sortField === "created_at" &&
+                            sortOrder === "desc" ? (
                             <ArrowUpNarrowWide size={18} />
                           ) : (
                             <ArrowDownNarrowWide size={18} />
                           )}
                         </div>
                       </th>
-
                     </tr>
                   </thead>
                   <tbody className={`${isSearching && "is-searching"}`}>
@@ -278,9 +293,15 @@ const Accounts = ({ permissions }) => {
                         </td>
 
                         <td data-label="Email">{user.user?.email || "N/A"}</td>
-                        <td data-label="Phone Number">{user?.phone_number || "N/A"}</td>
-                        <td data-label="Department">{user?.department?.name || "N/A"}</td>
-                        <td data-label="Date Added">{formatDate(user.created_at)}</td>
+                        <td data-label="Phone Number">
+                          {user?.phone_number || "N/A"}
+                        </td>
+                        <td data-label="Department">
+                          {user?.department?.name || "N/A"}
+                        </td>
+                        <td data-label="Date Added">
+                          {formatDate(user.created_at)}
+                        </td>
                       </tr>
                     ))}
                     <tr></tr>
@@ -298,13 +319,19 @@ const Accounts = ({ permissions }) => {
                   {/* Always show first page */}
                   <button
                     onClick={() => handlePageChange(1)}
-                    className={`pagination-button ${1 === page ? 'active' : ''}`}
+                    className={`pagination-button ${
+                      1 === page ? "active" : ""
+                    }`}
                   >
                     1
                   </button>
 
                   {/* Show ellipsis if current page is far from start */}
-                  {page > 3 && <span className="pagination-ellipsis"><Ellipsis /></span>}
+                  {page > 3 && (
+                    <span className="pagination-ellipsis">
+                      <Ellipsis />
+                    </span>
+                  )}
 
                   {/* Show one page before current if needed */}
                   {page > 2 && (
@@ -337,13 +364,17 @@ const Accounts = ({ permissions }) => {
                   )}
 
                   {/* Show ellipsis if current page is far from end */}
-                  {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
+                  {page < total_pages - 2 && (
+                    <span className="pagination-ellipsis">...</span>
+                  )}
 
                   {/* Always show last page if it's not the first page */}
                   {total_pages > 1 && (
                     <button
                       onClick={() => handlePageChange(total_pages)}
-                      className={`pagination-button ${total_pages === page ? 'active' : ''}`}
+                      className={`pagination-button ${
+                        total_pages === page ? "active" : ""
+                      }`}
                     >
                       {total_pages}
                     </button>
