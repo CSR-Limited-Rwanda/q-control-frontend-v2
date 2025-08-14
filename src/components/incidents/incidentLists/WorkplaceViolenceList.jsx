@@ -21,6 +21,7 @@ import {
   SortDateIcon,
   SortNameIcon,
 } from "./StaffIncidentList";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 // Debugging check for imported components
 if (
@@ -234,10 +235,12 @@ const WorkplaceViolenceList = () => {
     fetchFilteredData(filters);
   }, []);
 
-  return isFetching ? (
-    <ModifyPageLoader />
-  ) : (
-    <div>
+  return (
+    <PermissionsGuard model={"workplace_violence_reports"} codename={"view_list"}>
+      {isFetching ? (
+        <ModifyPageLoader />
+      ) : (
+        <div>
       {errorFetching ? (
         <div className="error-message">
           <p>{errorFetching}</p>
@@ -443,6 +446,8 @@ const WorkplaceViolenceList = () => {
         </div>
       )}
     </div>
+      )}
+    </PermissionsGuard>
   );
 };
 

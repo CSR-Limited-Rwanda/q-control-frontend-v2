@@ -17,6 +17,7 @@ import {
   ViewIcon,
   X,
 } from "lucide-react";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -203,10 +204,12 @@ const StaffIncidentList = () => {
     fetchFilteredData(filters);
   }, []);
 
-  return isFetching ? (
-    <ModifyPageLoader />
-  ) : (
-    <div>
+  return (
+    <PermissionsGuard model={"staff_incident_reports"} codename={"view_list"}>
+      {isFetching ? (
+        <ModifyPageLoader />
+      ) : (
+        <div>
       {errorFetching ? (
         <div className="error-message">
           <p>{errorFetching}</p>
@@ -419,6 +422,8 @@ const StaffIncidentList = () => {
         </div>
       )}
     </div>
+      )}
+    </PermissionsGuard>
   );
 };
 
