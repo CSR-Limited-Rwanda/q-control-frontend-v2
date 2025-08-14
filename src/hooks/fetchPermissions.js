@@ -104,3 +104,11 @@ export const getPermissions = async () => {
         return result.success ? result.data : null;
     }
 }
+
+// export const userHasPermissions = (permissions, app, codename) => {
+//     if (!permissions || !permissions[app]) return false
+
+//     return permissions[app].some(
+//         (permission) => permission.codename === codename
+//     )
+// }
