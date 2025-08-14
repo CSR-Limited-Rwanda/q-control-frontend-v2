@@ -16,6 +16,7 @@ import FilesList from "../../documentHistory/FilesList"
 import { MoveRight } from 'lucide-react'
 import Link from "next/link"
 import IncidentReviewsTab from "@/components/IncidentReviewsTab"
+import IncidentActivitiesTab from "@/components/Activities"
 
 const EmployeeDetailsContent = () => {
   const { incidentId } = useParams();
@@ -28,6 +29,7 @@ const EmployeeDetailsContent = () => {
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [staffInvestigationId, setStaffInvestigationId] = useState(localStorage.getItem("employee_investigation_id"))
   const [reviewsCount, setReviewsCount] = useState();
+  const [activitiesCount, setActivitiesCount] = useState();
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -162,7 +164,7 @@ const EmployeeDetailsContent = () => {
                 <StaffOtherInformation data={currentIncidentData} />
               }
               documentHistory={
-                <StaffDocumentHistory incidentId={incidentId} />
+                <IncidentActivitiesTab incidentId={incidentId} incident_type={"staff_incident_reports"} setCount={setActivitiesCount} />
               }
               reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"staff-incident"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
@@ -171,6 +173,7 @@ const EmployeeDetailsContent = () => {
               }
               showInvestigationTab={true}
               reviewsCount={reviewsCount}
+              incidentDocumentHistoryCount={activitiesCount}
             />
           </div>
         </div>
