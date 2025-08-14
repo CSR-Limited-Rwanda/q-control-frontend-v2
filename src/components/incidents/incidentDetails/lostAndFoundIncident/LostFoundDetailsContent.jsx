@@ -14,6 +14,7 @@ import LostAndfoundDocumentHistory from "./LostAndFoundDocumentHistory";
 import LostAndFoundReviews from "./LostAndFoundReview";
 import FilesList from "../../documentHistory/FilesList";
 import IncidentReviewsTab from "@/components/IncidentReviewsTab";
+import IncidentActivitiesTab from "@/components/Activities";
 import NoResources from "@/components/NoResources";
 
 // css
@@ -28,6 +29,7 @@ const LostFoundDetailsContent = () => {
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const { incidentId } = useParams()
   const [reviewsCount, setReviewsCount] = useState();
+  const [activitiesCount, setActivitiesCount] = useState();
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -157,11 +159,12 @@ const LostFoundDetailsContent = () => {
               //     <LostFoundDetailsOtherInformation data={currentIncidentData} />
               //   }
               documentHistory={
-                <LostAndfoundDocumentHistory incidentId={incidentId} />
+                <IncidentActivitiesTab incidentId={incidentId} incident_type={"lost_and_found"} setCount={setActivitiesCount} />
               }
               reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"lost-found"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
               reviewsCount={reviewsCount}
+              incidentDocumentHistoryCount={activitiesCount}
             />
           </div>
         </div>

@@ -16,6 +16,7 @@ import FilesList from "../../documentHistory/FilesList";
 import NoResources from "@/components/NoResources";
 import { ChevronRight } from 'lucide-react';
 import IncidentReviewsTab from "@/components/IncidentReviewsTab";
+import IncidentActivitiesTab from "@/components/Activities";
 // css
 import "../../../../styles/_generalIncidentDetailsPage.scss";
 
@@ -29,6 +30,7 @@ const GrievanceDetailsContent = () => {
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [reviewsCount, setReviewsCount] = useState();
+  const [activitiesCount, setActivitiesCount] = useState();
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -176,7 +178,7 @@ const GrievanceDetailsContent = () => {
               }
               otherInformation={"No other information"}
               documentHistory={
-                <GrivanceDocumentHistory incidentId={incidentId} />
+                <IncidentActivitiesTab incidentId={incidentId} incident_type={"patient_visitor_grievance"} setCount={setActivitiesCount} />
               }
               reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"grievance"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
@@ -185,6 +187,7 @@ const GrievanceDetailsContent = () => {
               }
               showInvestigationTab={true}
               reviewsCount={reviewsCount}
+              incidentDocumentHistoryCount={activitiesCount}
             />
           </div>
         </div>
