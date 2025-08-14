@@ -97,6 +97,7 @@ button, .btn {
   background-color: var(--primary);
   color: var(--background);
   justify-content: center;
+    text-wrap: nowrap;
 }
 
 button.loader{

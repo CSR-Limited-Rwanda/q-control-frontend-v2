@@ -7,11 +7,13 @@ import PermissionGroups from "@/components/accounts/tabs/PermissionGroups";
 import Titles from "@/components/accounts/tabs/Titles";
 import ReviewGroups from "@/components/accounts/tabs/ReviewGroups";
 import { ReviewTemplates } from "@/components/accounts/tabs/ReviewTemplates"; import DepartmentsPage from '@/components/accounts/tabs/Departments';
+import { getPermissions, useGetPermissions } from "@/hooks/fetchPermissions";
 
 
 
 const AccountsPage = () => {
-  const tabs = [
+  const { permissions, loading, error } = useGetPermissions();
+  const baseTabs = [
     {
       name: "Account management",
       id: "accountsManagement",
@@ -37,6 +39,14 @@ const AccountsPage = () => {
       id: "reviewTemplates",
     },
   ];
+
+  // if no permissions to view users, remove user
+  const tabs = React.useMemo(() => {
+    if (!permissions || !permissions?.accounts?.includes("view_userprofile")) {
+      return baseTabs.filter(tab => tab.id !== "accountsManagement");
+    }
+    return baseTabs;
+  }, [permissions]);
 
   const [activeTab, setActiveTab] = useState(null);
 
@@ -65,26 +75,26 @@ const AccountsPage = () => {
           </div>
         ))}
       </div>
-      {activeTab === "accountsManagement" && <Accounts />}
+      {activeTab === "accountsManagement" && <Accounts permissions={permissions} />}
       {activeTab === "permissionGroups" && (
         <div>
-          <PermissionGroups />
+          <PermissionGroups permissions={permissions} />
         </div>
       )}
       {
-        activeTab === 'departments' && <div><DepartmentsPage /></div>
+        activeTab === 'departments' && <div><DepartmentsPage permissions={permissions} /></div>
       }
       {activeTab === "reviewGroups" && (
         <div>
-          <ReviewGroups />
+          <ReviewGroups permissions={permissions} />
         </div>
       )}
       {activeTab === "reviewTemplates" && (
         <div>
-          <ReviewTemplates />
+          <ReviewTemplates permissions={permissions} />
         </div>
       )}
-      {activeTab === "titles" && <Titles />}
+      {activeTab === "titles" && <Titles permissions={permissions} />}
     </DashboardLayout>
   );
 };
