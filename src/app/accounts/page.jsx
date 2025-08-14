@@ -42,7 +42,7 @@ const AccountsPage = () => {
 
   // if no permissions to view users, remove user
   const tabs = React.useMemo(() => {
-    if (!permissions || !permissions?.accounts?.includes("view_userprofile")) {
+    if (!permissions || !permissions?.accounts?.includes("view_list")) {
       return baseTabs.filter(tab => tab.id !== "accountsManagement");
     }
     return baseTabs;
