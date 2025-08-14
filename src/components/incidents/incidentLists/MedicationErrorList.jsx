@@ -20,6 +20,7 @@ import {
   SortDateIcon,
   SortNameIcon,
 } from "./StaffIncidentList";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 function formatDate(dateString) {
   if (!dateString || isNaN(new Date(dateString).getTime())) {
@@ -210,137 +211,185 @@ const MedicationErrorList = () => {
     fetchFilteredData(filters);
   }, []);
 
-  return isFetching ? (
-    <ModifyPageLoader />
-  ) : (
-    <div>
-      {errorFetching ? (
-        <div className="error-message">
-          <p>{errorFetching}</p>
-        </div>
+  return (
+    <PermissionsGuard model={"medication_error"} codename={"view_list"}>
+      {isFetching ? (
+        <ModifyPageLoader />
       ) : (
-        <div className="tab-container incidents-tab">
-          <div className="tab-header">
-            <div className="title-container-action">
-              <div className="title-container">
-                <h2 className="title">Medication Error Tracking List</h2>
-                <p>{medicationData.length} incident(s) available</p>
-              </div>
+        <div>
+          {errorFetching ? (
+            <div className="error-message">
+              <p>{errorFetching}</p>
             </div>
-
-            <div className="filters">
-              {openFilters ? (
-                <div className="filters_popup">
-                  <div onClick={toggleOpenFilters} className="close-icon">
-                    <X size={24} variant="stroke" />
-                  </div>
-                  <h3>Filter incident data</h3>
-                  <div className="filter-buttons">
-                    <CustomSelectInput
-                      options={["Draft", "Open", "Closed"]}
-                      placeholder="Filter by status"
-                      selected={filters.status}
-                      setSelected={(value) =>
-                        setFilters({ ...filters, status: value })
-                      }
-                      name="status"
-                      id="status"
-                    />
-                    <div className="filter-range">
-                      <span>Start date</span>
-                      <CustomDatePicker
-                        selectedDate={filters.start_date}
-                        setSelectedDate={(value) =>
-                          setFilters({ ...filters, start_date: value })
-                        }
-                        placeholderText="Select a date"
-                        dateFormat="yyyy-MM-dd"
-                      />
-                    </div>
-                    <div className="filter-range">
-                      <span>End date</span>
-                      <CustomDatePicker
-                        selectedDate={filters.end_date}
-                        setSelectedDate={(value) =>
-                          setFilters({ ...filters, end_date: value })
-                        }
-                        placeholderText="Select a date"
-                        dateFormat="yyyy-MM-dd"
-                      />
-                    </div>
-                    <div className="popup-buttons">
-                      <button onClick={clearFilters} className="outline-button">
-                        <X size={20} variant="stroke" />
-                        Clear
-                      </button>
-                      <button
-                        onClick={applyFilters}
-                        className="secondary-button"
-                      >
-                        <div className="icon">
-                          <SlidersHorizontal size={20} variant="stroke" />
-                        </div>
-                        <span>Filter</span>
-                      </button>
-                    </div>
+          ) : (
+            <div className="tab-container incidents-tab">
+              <div className="tab-header">
+                <div className="title-container-action">
+                  <div className="title-container">
+                    <h2 className="title">Medication Error Tracking List</h2>
+                    <p>{medicationData.length} incident(s) available</p>
                   </div>
                 </div>
-              ) : null}
-              <input
-                onChange={(e) => search(e.target.value)}
-                type="search"
-                name="systemSearch"
-                id="systemSearch"
-                placeholder="Search by facility, patient name, or drug given"
-              />
-              {selectedItems.length > 0 ? (
-                <button
-                  onClick={() =>
-                    exportExcel(selectedItems, "medication_error_list")
-                  }
-                  className="secondary-button"
-                >
-                  <File />
-                  <span>Export</span>
-                </button>
-              ) : (
-                <button
-                  onClick={toggleOpenFilters}
-                  className="date-filter-button"
-                >
-                  <div className="icon">
-                    <SlidersHorizontal variant="stroke" />
-                  </div>
-                  <span>Filter</span>
-                </button>
-              )}
-            </div>
-          </div>
 
-          <div className="incident-list">
-            {isSearching ? (
-              <div className="search-results">
-                {isSearchingTheDatabase ? (
-                  <div className="searching_database">
-                    <p>Searching database</p>
-                  </div>
-                ) : currentSearchResults.length > 0 ? (
-                  <div className="results-table">
-                    <div className="results-count">
-                      <span className="count">{searchResults.length}</span>{" "}
-                      result(s) found
+                <div className="filters">
+                  {openFilters ? (
+                    <div className="filters_popup">
+                      <div onClick={toggleOpenFilters} className="close-icon">
+                        <X size={24} variant="stroke" />
+                      </div>
+                      <h3>Filter incident data</h3>
+                      <div className="filter-buttons">
+                        <CustomSelectInput
+                          options={["Draft", "Open", "Closed"]}
+                          placeholder="Filter by status"
+                          selected={filters.status}
+                          setSelected={(value) =>
+                            setFilters({ ...filters, status: value })
+                          }
+                          name="status"
+                          id="status"
+                        />
+                        <div className="filter-range">
+                          <span>Start date</span>
+                          <CustomDatePicker
+                            selectedDate={filters.start_date}
+                            setSelectedDate={(value) =>
+                              setFilters({ ...filters, start_date: value })
+                            }
+                            placeholderText="Select a date"
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+                        <div className="filter-range">
+                          <span>End date</span>
+                          <CustomDatePicker
+                            selectedDate={filters.end_date}
+                            setSelectedDate={(value) =>
+                              setFilters({ ...filters, end_date: value })
+                            }
+                            placeholderText="Select a date"
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+                        <div className="popup-buttons">
+                          <button onClick={clearFilters} className="outline-button">
+                            <X size={20} variant="stroke" />
+                            Clear
+                          </button>
+                          <button
+                            onClick={applyFilters}
+                            className="secondary-button"
+                          >
+                            <div className="icon">
+                              <SlidersHorizontal size={20} variant="stroke" />
+                            </div>
+                            <span>Filter</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <MedicationErrorTable
-                      incidentData={currentSearchResults}
-                      handleNonClickableColumnClick={
-                        handleNonClickableColumnClick
+                  ) : null}
+                  <input
+                    onChange={(e) => search(e.target.value)}
+                    type="search"
+                    name="systemSearch"
+                    id="systemSearch"
+                    placeholder="Search by facility, patient name, or drug given"
+                  />
+                  {selectedItems.length > 0 ? (
+                    <button
+                      onClick={() =>
+                        exportExcel(selectedItems, "medication_error_list")
                       }
-                      setIncidentData={setSearchResults}
+                      className="secondary-button"
+                    >
+                      <File />
+                      <span>Export</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={toggleOpenFilters}
+                      className="date-filter-button"
+                    >
+                      <div className="icon">
+                        <SlidersHorizontal variant="stroke" />
+                      </div>
+                      <span>Filter</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="incident-list">
+                {isSearching ? (
+                  <div className="search-results">
+                    {isSearchingTheDatabase ? (
+                      <div className="searching_database">
+                        <p>Searching database</p>
+                      </div>
+                    ) : currentSearchResults.length > 0 ? (
+                      <div className="results-table">
+                        <div className="results-count">
+                          <span className="count">{searchResults.length}</span>{" "}
+                          result(s) found
+                        </div>
+                        <MedicationErrorTable
+                          incidentData={currentSearchResults}
+                          handleNonClickableColumnClick={
+                            handleNonClickableColumnClick
+                          }
+                          setIncidentData={setSearchResults}
+                          handleRowClick={handleRowClick}
+                          navigateToModify={navigateToModify}
+                          selectedItems={selectedItems}
+                          handleSelectedItems={handleSelectedItems}
+                          handleSelectAll={handleSelectAll}
+                        />
+
+                        <div className="pagination-controls">
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            Prev
+                          </button>
+                          {pageNumbers.map((number) => (
+                            <button
+                              key={number}
+                              className={`pagination-button ${currentPage === number ? "active" : ""
+                                }`}
+                              onClick={() => handlePageChange(number)}
+                            >
+                              {number}
+                            </button>
+                          ))}
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="no-data-found">
+                        <p>No data found with your search</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <MedicationErrorTable
+                      incidentData={currentMedicationData}
+                      handleNonClickableColumnClick={handleNonClickableColumnClick}
                       handleRowClick={handleRowClick}
                       navigateToModify={navigateToModify}
                       selectedItems={selectedItems}
                       handleSelectedItems={handleSelectedItems}
                       handleSelectAll={handleSelectAll}
+                      setIncidentData={setMedicationData}
                     />
 
                     <div className="pagination-controls">
@@ -369,58 +418,14 @@ const MedicationErrorList = () => {
                         Next
                       </button>
                     </div>
-                  </div>
-                ) : (
-                  <div className="no-data-found">
-                    <p>No data found with your search</p>
-                  </div>
+                  </>
                 )}
               </div>
-            ) : (
-              <>
-                <MedicationErrorTable
-                  incidentData={currentMedicationData}
-                  handleNonClickableColumnClick={handleNonClickableColumnClick}
-                  handleRowClick={handleRowClick}
-                  navigateToModify={navigateToModify}
-                  selectedItems={selectedItems}
-                  handleSelectedItems={handleSelectedItems}
-                  handleSelectAll={handleSelectAll}
-                  setIncidentData={setMedicationData}
-                />
-
-                <div className="pagination-controls">
-                  <button
-                    className="pagination-button"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    Prev
-                  </button>
-                  {pageNumbers.map((number) => (
-                    <button
-                      key={number}
-                      className={`pagination-button ${currentPage === number ? "active" : ""
-                        }`}
-                      onClick={() => handlePageChange(number)}
-                    >
-                      {number}
-                    </button>
-                  ))}
-                  <button
-                    className="pagination-button"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </PermissionsGuard>
   );
 };
 
