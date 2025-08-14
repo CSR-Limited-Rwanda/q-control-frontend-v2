@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import api from "@/utils/api";
+import { fetchPermissions } from "@/hooks/fetchPermissions";
 
 // Create AuthContext
 const AuthContext = createContext({
@@ -88,6 +89,15 @@ export const AuthProvider = ({ children }) => {
     try {
       if (typeof window === "undefined") return false;
 
+      // fetch user permissions
+      const permissionsResult = await fetchPermissions();
+
+      if (permissionsResult.success) {
+        localStorage.setItem("userPermissions", JSON.stringify(permissionsResult.data));
+      }
+      else {
+        return false
+      }
       localStorage.setItem("access", token);
       if (refreshToken) {
         localStorage.setItem("refresh", refreshToken);

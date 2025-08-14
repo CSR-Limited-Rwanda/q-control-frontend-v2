@@ -28,7 +28,7 @@ export const fetchTasks = async (params) => {
 }
 
 export const fetchUserTasks = async (userId, params) => {
-    return
+
     try {
         const response = await api.get(`/users/${userId}/tasks/?${params}`);
         if (response.status === 200) {
