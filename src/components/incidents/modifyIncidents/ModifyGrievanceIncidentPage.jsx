@@ -25,10 +25,10 @@ import CantModify from "@/components/CantModify";
 import "@/styles/_modifyIncident.scss";
 import BackToPage from "@/components/BackToPage";
 import CloseIcon from "@/components/CloseIcon";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
-  const permission = usePermission();
-  const department = useDepartments();
+  const { permissions } = useGetPermissions()
   const [incident, setIncident] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
@@ -193,7 +193,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
         }
-      } catch (error) {}
+      } catch (error) { }
     };
 
     fetchIncidentDocuments();
@@ -220,32 +220,32 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       patient_name:
         patientFirstName && patientLastName
           ? {
-              first_name: patientFirstName,
-              last_name: patientLastName,
-              age: age,
-              date_of_birth: dateBirth,
-              medical_record_number: medicalRecord,
-              profile_type: "Patient",
-            }
+            first_name: patientFirstName,
+            last_name: patientLastName,
+            age: age,
+            date_of_birth: dateBirth,
+            medical_record_number: medicalRecord,
+            profile_type: "Patient",
+          }
           : null,
 
       form_initiated_by:
         formInitiatedByFirstName && formInitiatedByLastName
           ? {
-              first_name: formInitiatedByFirstName,
-              last_name: formInitiatedByLastName,
-              profile_type: "Staff",
-            }
+            first_name: formInitiatedByFirstName,
+            last_name: formInitiatedByLastName,
+            profile_type: "Staff",
+          }
           : null,
       title: formInitiatedByTitle,
       complaint_made_by:
         complaintByFirstName && complaintByLastName
           ? {
-              first_name: complaintByFirstName,
-              last_name: complaintByLastName,
-              phone_number: phoneNumber,
-              profile_type: "Patient",
-            }
+            first_name: complaintByFirstName,
+            last_name: complaintByLastName,
+            phone_number: phoneNumber,
+            profile_type: "Patient",
+          }
           : null,
       relationship_to_patient: patientRelationship,
       source_of_information: sourceOfInformation,
@@ -256,10 +256,10 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       administrator_notified:
         administratorFirstName && administratorLastName
           ? {
-              first_name: administratorFirstName,
-              last_name: administratorLastName,
-              profile_type: "Staff",
-            }
+            first_name: administratorFirstName,
+            last_name: administratorLastName,
+            profile_type: "Staff",
+          }
           : null,
       notification_date: grivanceDate,
       notification_time: grivanceTime,
@@ -283,8 +283,8 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error while updating the incident"
+          error.response.data.error ||
+          "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -313,25 +313,34 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         />
         <h2 className="title">Modifying grievance incident</h2>
         {investigation ? (
-          <Link
-            href={`/incidents/grievance/${grievanceId}`}
-            onClick={() => {
-              localStorage.setItem("activate_investigation_tab", true);
-            }}
-          >
-            <button type="button" className="tertiary-button">
-              <span>View investigation</span>
-              <Eye size={18} />
-            </button>
-          </Link>
+          <>
+            {permissions?.staff_incident_reports?.includes("view_grievanceinvestigation") && (
+              <Link
+                href={`/incidents/grievance/${grievanceId}`}
+                onClick={() => {
+                  localStorage.setItem("activate_investigation_tab", true);
+                }}
+              >
+                <button type="button" className="tertiary-button">
+                  <span>View investigation</span>
+                  <Eye size={18} />
+                </button>
+              </Link>
+            )}
+
+          </>
         ) : (
-          <button
-            onClick={handleShowInvestigationForm}
-            className="tertiary-button"
-          >
-            <span>Add investigation</span>
-            <TextSearch size={20} />
-          </button>
+          <>
+            {permissions?.staff_incident_reports?.includes("add_grievanceinvestigation") && (
+              <button
+                onClick={handleShowInvestigationForm}
+                className="tertiary-button"
+              >
+                <span>Add investigation</span>
+                <TextSearch />
+              </button>
+            )}
+          </>
         )}
 
         <div className="buttons">
@@ -368,13 +377,12 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${
-                status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
+              className={`follow-up ${status === "Draft"
+                ? "in-progress"
+                : status === "Closed"
                   ? "closed"
                   : "Open"
-              }`}
+                }`}
             >
               {status}
             </span>
