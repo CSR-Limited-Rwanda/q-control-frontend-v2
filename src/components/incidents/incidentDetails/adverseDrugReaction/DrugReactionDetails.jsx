@@ -16,6 +16,7 @@ import FilesList from "../../documentHistory/FilesList";
 import { ChevronRight } from "lucide-react";
 import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 import NoResources from "@/components/NoResources";
+import IncidentActivitiesTab from "@/components/Activities";
 
 // css
 import "../../../../styles/_generalIncidentDetailsPage.scss"
@@ -74,6 +75,7 @@ function DrugReactionDetailsContent() {
   //   const [incidentStatus, setIncidentStatus] = useState({});
   const { incidentId } = useParams()
   const [reviewsCount, setReviewsCount] = useState();
+  const [activitiesCount, setActivitiesCount] = useState();
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -218,11 +220,12 @@ function DrugReactionDetailsContent() {
                 }} />
               }
               documentHistory={
-                <DrugReactionDocumentHistory incidentId={incidentId} />
+                <IncidentActivitiesTab incidentId={incidentId} incidentType={"adverse_drug_reaction"} setCount={setActivitiesCount} />
               }
               reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"adverse-drug-reaction"} setCount={setReviewsCount} />}
               documents={<IncidentDocuments incidentId={incidentId} />}
               reviewsCount={reviewsCount}
+              incidentDocumentHistoryCount={activitiesCount}
             />
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import UserCard from "../UserCard";
-import { Lock, LogOut, Settings, User } from "lucide-react";
+import { ListTodo, Lock, LogOut, Settings, User } from "lucide-react";
 import { useAuthentication } from "@/context/authContext";
 import { useRouter } from "next/navigation";
 import { splitName } from "@/utils/text";
@@ -14,6 +14,10 @@ export const ProfileContainer = () => {
 
     const goToProfile = () => {
         router.push(`/accounts/${user.profileId}`);
+    };
+
+    const goToTasks = () => {
+        router.push(`/accounts/${user.profileId}/tasks`);
     };
 
     const handleShowProfile = () => {
@@ -50,6 +54,11 @@ export const ProfileContainer = () => {
                     <div onClick={goToProfile} className="dropdown__item">
                         <User size={18} />
                         <span>My Account</span>
+                    </div>
+                    <hr />
+                    <div className="dropdown__item" onClick={goToTasks}>
+                        <ListTodo />
+                        <span>My Tasks</span>
                     </div>
                     <hr />
                     <div className="dropdown__item">

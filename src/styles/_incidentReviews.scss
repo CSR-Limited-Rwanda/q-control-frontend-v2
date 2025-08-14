@@ -12,7 +12,7 @@
     .new-review-form {
         background-color: var(--background);
         position: absolute;
-        bottom: 1rem;
+        top: calc(100% - 4rem);
         right: 1rem;
         max-width: 600px;
         width: 100%;

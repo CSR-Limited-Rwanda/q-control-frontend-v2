@@ -6,10 +6,8 @@ import Button from "./forms/Button";
 import { ArrowRight, Plus, Send, X } from "lucide-react";
 import UserCard from "./UserCard";
 import ProfilePlaceHolder from "./ProfilePlaceHolder";
-
 import { formatDateTime } from "@/utils/api";
 import RichTextField from "./RichTextField";
-import CloseIcon from "./CloseIcon";
 
 const IncidentReviewsTab = ({ incidentId, apiLink, setCount = 0 }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -128,8 +126,9 @@ export const NewReviewForm = ({ incidentId, apiLink, handleClose }) => {
 
   return (
     <div className="new-review-form">
-      <CloseIcon onClick={handleClose} />
-
+      <div className="close-icon" onClick={handleClose}>
+        <X />
+      </div>
       <h3>Add a comment or review</h3>
       <p>Please provide your feedback below:</p>
       <form onSubmit={handleSubmit} className="">

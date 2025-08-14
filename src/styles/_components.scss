@@ -252,7 +252,7 @@ form,
       cursor: pointer;
       position: absolute;
       top: 1rem;
-      right: 0;
+      right: 1rem;
       z-index: 999;
 
       i {
@@ -291,6 +291,20 @@ form,
 
   .forms-header {
     padding-top: 2rem;
+  }
+}
+
+// mark resolved popup
+.mark-resolved-popup {
+  .popup-content {
+    height: 200px;
+  }
+}
+
+// review popup 
+.review-popup {
+  .popup-content {
+    height: 400px;
   }
 }
 

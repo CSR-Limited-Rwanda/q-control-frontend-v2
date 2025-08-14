@@ -14,7 +14,7 @@ import useSorting from "@/hooks/useSorting";
 
 const DEFAULT_PAGE_SIZE = 10
 
-const Accounts = () => {
+const Accounts = ({ permissions }) => {
   const router = useRouter();
   const [usersData, setUsersData] = useState({
     results: [],
@@ -106,7 +106,12 @@ const Accounts = () => {
   };
 
   const handleNavigate = (user) => {
-    router.push(`/accounts/${user?.id}`);
+    if (permissions && permissions.accounts?.includes("view_profile")) {
+      router.push(`/accounts/${user?.id}`);
+    }
+    else {
+      return
+    }
   };
 
   // Fixed debouncing effect - now properly watches searchQuery changes
@@ -167,12 +172,15 @@ const Accounts = () => {
                 </div>
               </div>
             </form>
-            <PrimaryButton
-              onClick={() => setShowNewUserForm(true)}
-              span="New User"
-              prefixIcon={<CirclePlus />}
-              customClass={"sticky-button"}
-            />
+            {
+              permissions && permissions.accounts?.includes("add_profile") &&
+              <PrimaryButton
+                onClick={() => setShowNewUserForm(true)}
+                span="New User"
+                prefixIcon={<CirclePlus />}
+                customClass={"sticky-button"}
+              />
+            }
           </div>
         </div>
         {isLoading && users.length < 1 ? (

@@ -18,6 +18,7 @@ import { ChevronRight } from "lucide-react";
 import FilesList from "../../documentHistory/FilesList";
 import NoResources from "@/components/NoResources";
 import IncidentReviewsTab from "@/components/IncidentReviewsTab";
+import IncidentActivitiesTab from "@/components/Activities";
 
 const WorkPlaceDetailsContent = () => {
   const { incidentId } = useParams();
@@ -28,6 +29,7 @@ const WorkPlaceDetailsContent = () => {
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [reviewsCount, setReviewsCount] = useState();
+  const [activitiesCount, setActivitiesCount] = useState();
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -172,7 +174,7 @@ const WorkPlaceDetailsContent = () => {
                 <WorkplaceOtherInfo data={currentIncidentData} />
               }
               documentHistory={
-                <WorkplaceDocumentHistory incidentId={incidentId} />
+                <IncidentActivitiesTab incidentId={incidentId} incident_type={"workplace_violence_reports"} setCount={setActivitiesCount} />
               }
               reviews={
                 <IncidentReviewsTab
@@ -183,6 +185,7 @@ const WorkPlaceDetailsContent = () => {
               }
               documents={<IncidentDocuments incidentId={incidentId} />}
               reviewsCount={reviewsCount}
+              incidentDocumentHistoryCount={activitiesCount}
             />
           </div>
         </div>
