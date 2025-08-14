@@ -20,11 +20,12 @@ import CustomDatePicker from "../../CustomDatePicker";
 import { useAuthentication } from "@/context/authContext";
 
 import "@/styles/_modifyIncident.scss";
+import CloseIcon from "@/components/CloseIcon";
 
 const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const permission = usePermission();
   const department = useDepartments();
-  const { user } = useAuthentication()
+  const { user } = useAuthentication();
   const [incident, setIncident] = useState(data);
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -115,7 +116,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         first_name: "",
         last_name: "",
       });
-
     }
   };
 
@@ -141,11 +141,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
 
     fetchIncidentDocuments();
@@ -167,7 +164,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -175,7 +171,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-
     }
   };
   const handleSeenDoctor = () => {
@@ -195,7 +190,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
   const handleToldSupervisor = () => {
     setToldSupervisor(!toldSupervisor);
-
   };
 
   const handleSaveDraft = () => {
@@ -223,12 +217,12 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       patient_info:
         firstName && lastName
           ? {
-            first_name: firstName,
-            last_name: lastName,
-            age: age,
-            date_of_birth: dateBirth,
-            profile_type: "Patient",
-          }
+              first_name: firstName,
+              last_name: lastName,
+              age: age,
+              date_of_birth: dateBirth,
+              profile_type: "Patient",
+            }
           : null,
       job_title: jobTitle,
       supervisor: {
@@ -250,11 +244,11 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       doctor_consulted_info:
         doctorFirstName && doctorLastName
           ? {
-            first_name: doctorFirstName,
-            last_name: doctorLastName,
-            phone_number: doctorPhone || "",
-            profile_type: "Physician",
-          }
+              first_name: doctorFirstName,
+              last_name: doctorLastName,
+              phone_number: doctorPhone || "",
+              profile_type: "Physician",
+            }
           : null,
       previous_injury: injuredBody,
       previous_injury_date: whenInjured || null,
@@ -280,8 +274,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while updating the incident"
+            error.response.data.error ||
+            "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -296,7 +290,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       {showInvestigationFrom && (
         <div className="grievance-investigation-form">
           <div className="form-container">
-            <X className="close-popup" onClick={handleShowInvestigationForm} />
+            <CloseIcon onClick={handleShowInvestigationForm} />
             <HealthIncidentInvestigationForm investigationId={incidentId} />
           </div>
         </div>
@@ -361,12 +355,13 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
+                className={`follow-up ${
+                  status === "Draft"
+                    ? "in-progress"
+                    : status === "Closed"
                     ? "closed"
                     : "Open"
-                  }`}
+                }`}
               >
                 {status}
               </span>

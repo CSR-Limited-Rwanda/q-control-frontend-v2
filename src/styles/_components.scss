@@ -360,7 +360,7 @@ form,
   left: 0.75rem;
 }
 
-.input__icon--left+.input__field {
+.input__icon--left + .input__field {
   padding-left: 2.5rem;
 }
 
@@ -368,7 +368,7 @@ form,
   right: 0.75rem;
 }
 
-.input__icon--right+.input__field {
+.input__icon--right + .input__field {
   padding-right: 2.5rem;
 }
 
@@ -397,7 +397,6 @@ form,
 .user-name {
   font-size: 14px;
 }
-
 
 .no-content {
   text-align: center;
@@ -482,7 +481,7 @@ form,
     color: #a5a3a9;
   }
 
-  &> :first-child {
+  & > :first-child {
     padding-left: 0;
   }
 
@@ -531,11 +530,12 @@ form,
     right: 0;
     animation: slideDown 0.5s ease;
 
-    .action {
+    .profile-action {
       padding: 0.8rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      cursor: pointer;
     }
   }
 
@@ -758,7 +758,6 @@ form,
 
 // Responsive styles
 @media (max-width: 768px) {
-
   button,
   .btn {
     span {

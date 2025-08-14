@@ -22,8 +22,9 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import CantModify from "@/components/CantModify";
-import '@/styles/_modifyIncident.scss';
+import "@/styles/_modifyIncident.scss";
 import BackToPage from "@/components/BackToPage";
+import CloseIcon from "@/components/CloseIcon";
 
 const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
   const permission = usePermission();
@@ -158,7 +159,6 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       );
 
       if (response.status === 200 || 201) {
-
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -166,7 +166,6 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-
     }
   };
 
@@ -193,11 +192,8 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
 
     fetchIncidentDocuments();
@@ -224,32 +220,32 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       patient_name:
         patientFirstName && patientLastName
           ? {
-            first_name: patientFirstName,
-            last_name: patientLastName,
-            age: age,
-            date_of_birth: dateBirth,
-            medical_record_number: medicalRecord,
-            profile_type: "Patient",
-          }
+              first_name: patientFirstName,
+              last_name: patientLastName,
+              age: age,
+              date_of_birth: dateBirth,
+              medical_record_number: medicalRecord,
+              profile_type: "Patient",
+            }
           : null,
 
       form_initiated_by:
         formInitiatedByFirstName && formInitiatedByLastName
           ? {
-            first_name: formInitiatedByFirstName,
-            last_name: formInitiatedByLastName,
-            profile_type: "Staff",
-          }
+              first_name: formInitiatedByFirstName,
+              last_name: formInitiatedByLastName,
+              profile_type: "Staff",
+            }
           : null,
       title: formInitiatedByTitle,
       complaint_made_by:
         complaintByFirstName && complaintByLastName
           ? {
-            first_name: complaintByFirstName,
-            last_name: complaintByLastName,
-            phone_number: phoneNumber,
-            profile_type: "Patient",
-          }
+              first_name: complaintByFirstName,
+              last_name: complaintByLastName,
+              phone_number: phoneNumber,
+              profile_type: "Patient",
+            }
           : null,
       relationship_to_patient: patientRelationship,
       source_of_information: sourceOfInformation,
@@ -260,10 +256,10 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       administrator_notified:
         administratorFirstName && administratorLastName
           ? {
-            first_name: administratorFirstName,
-            last_name: administratorLastName,
-            profile_type: "Staff",
-          }
+              first_name: administratorFirstName,
+              last_name: administratorLastName,
+              profile_type: "Staff",
+            }
           : null,
       notification_date: grivanceDate,
       notification_time: grivanceTime,
@@ -284,12 +280,11 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
-
       if (error.response) {
         window.customToast.error(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while updating the incident"
+            error.response.data.error ||
+            "Error while updating the incident"
         );
       } else {
         window.customToast.error("Unknown error while updating the incident");
@@ -306,7 +301,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       {showInvestigationFrom && (
         <div className="grievance-investigation-form">
           <div className="form-container">
-            <X className="close-popup" onClick={handleShowInvestigationForm} />
+            <CloseIcon onClick={handleShowInvestigationForm} />
             <GrievanceInvestigationForm incidentId={grievanceId} />
           </div>
         </div>
@@ -373,12 +368,13 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${status === "Draft"
-                ? "in-progress"
-                : status === "Closed"
+              className={`follow-up ${
+                status === "Draft"
+                  ? "in-progress"
+                  : status === "Closed"
                   ? "closed"
                   : "Open"
-                }`}
+              }`}
             >
               {status}
             </span>

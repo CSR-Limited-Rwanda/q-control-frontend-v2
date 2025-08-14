@@ -6,6 +6,7 @@ import { Minus, Plus, Square, SquareCheck, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import AddUserPermissionsFrom from "../forms/AddUserPermissionsFrom";
+import CloseIcon from "@/components/CloseIcon";
 
 const UsersCard = ({ setUsersNumber }) => {
   const router = useRouter();
@@ -37,7 +38,6 @@ const UsersCard = ({ setUsersNumber }) => {
   };
 
   const handleNavigate = (user) => {
-
     router.push(`/accounts/profiles/${user?.id}`);
   };
 
@@ -52,7 +52,6 @@ const UsersCard = ({ setUsersNumber }) => {
         setIsLoading(false);
       }
     } catch (error) {
-
       let message = "Something went wrong";
       if (error?.response?.data) {
         message =
@@ -84,13 +83,10 @@ const UsersCard = ({ setUsersNumber }) => {
         });
 
         if (response.status === 200) {
-
           removedUserIds.push(user.id);
         }
       } catch (error) {
-
         alert(`Failed to remove permissions for user ${user.first_name}:`);
-
       } finally {
         setSelectedUsers([]);
       }
@@ -186,9 +182,8 @@ const UsersCard = ({ setUsersNumber }) => {
       {showAddUserForm && (
         <div className="popup">
           <div className="popup-content">
-            <div className="close">
-              <X size={32} onClick={() => setShowAddUserForm(false)} />
-            </div>
+            <CloseIcon onClick={() => setShowAddUserForm(false)} />
+
             <AddUserPermissionsFrom
               existingUsers={users}
               setExistingUsers={setUsers}

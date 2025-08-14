@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import api from "@/utils/api";
+import CloseIcon from "@/components/CloseIcon";
 
 const UserPermissions = ({ togglePermissions, userId }) => {
   const [permissions, setPermissions] = useState([]);
@@ -22,7 +23,6 @@ const UserPermissions = ({ togglePermissions, userId }) => {
   const [success, setSuccess] = useState("");
 
   const handleSelectGroup = (group) => {
-
     setSelectedGroups((prevGroups) => {
       const exists = prevGroups.some((g) => g.id === group.id);
       if (exists) {
@@ -77,7 +77,6 @@ const UserPermissions = ({ togglePermissions, userId }) => {
         const response = await api.get(`/users/${userId}/permissions/`);
         if (response.status === 200) {
           setPermissions(response.data.groups);
-
         }
       } catch (error) {
         setError("Error fetching permissions");
@@ -123,9 +122,8 @@ const UserPermissions = ({ togglePermissions, userId }) => {
             Remove permissions
           </button>
         )}
-        <div className="close" onClick={togglePermissions}>
-          <X />
-        </div>
+        <CloseIcon onClick={togglePermissions} />
+
         {isLoading ? (
           "Loading..."
         ) : error ? (

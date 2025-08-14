@@ -18,11 +18,12 @@ import {
   SquareX,
   Trash2,
   X,
-  CirclePlus
+  CirclePlus,
 } from "lucide-react";
 import DeletePopup from "@/components/forms/DeletePopup";
 import EditReviewTemplateForm from "@/components/forms/EditReviewTemplateForm";
 import SortControl from "@/utils/SortControl";
+import CloseIcon from "@/components/CloseIcon";
 
 export const ReviewTemplates = () => {
   const router = useRouter();
@@ -39,8 +40,8 @@ export const ReviewTemplates = () => {
   const [clickedTemplateId, setClickedTemplateId] = useState(null);
   const [showEditTemplateForm, setShowEditTemplateForm] = useState(false);
   const [sortConfig, setSortConfig] = useState({
-    field: 'created_at',
-    direction: 'desc',
+    field: "created_at",
+    direction: "desc",
   });
 
   const groupsWithFullname = reviewTemplates.map((user, index) => ({
@@ -105,8 +106,8 @@ export const ReviewTemplates = () => {
         if (error.response) {
           setErrorMessage(
             error.response.data.message ||
-            error.response.data.error ||
-            "Error setting a list of users"
+              error.response.data.error ||
+              "Error setting a list of users"
           );
         } else {
           setErrorMessage("Unknown error fetching users");
@@ -125,15 +126,13 @@ export const ReviewTemplates = () => {
       if (response.status === 200) {
         setShowEditTemplateForm(!showEditTemplateForm);
         setReviewTemplate(response.data);
-
       }
     } catch (error) {
-
       if (error.response) {
         setErrorMessage(
           error.response.data?.message ||
-          error.response.data?.error ||
-          "Failed to get tasks"
+            error.response.data?.error ||
+            "Failed to get tasks"
         );
       } else if (error.request) {
         setErrorMessage("No response from server");
@@ -145,26 +144,26 @@ export const ReviewTemplates = () => {
 
   // sorting
   const sortedReviewTemplates = useMemo(() => {
-    if (!reviewTemplates) return []
+    if (!reviewTemplates) return [];
 
-    const sortableReviewTemplates = [...reviewTemplates]
+    const sortableReviewTemplates = [...reviewTemplates];
     return sortableReviewTemplates.sort((a, b) => {
-      if (sortConfig.field === 'created_at') {
-        const dateA = new Date(a.created_at)
-        const dateB = new Date(b.created_at)
-        return sortConfig.direction === 'asc' ? dateA - dateB : dateB - dateA
+      if (sortConfig.field === "created_at") {
+        const dateA = new Date(a.created_at);
+        const dateB = new Date(b.created_at);
+        return sortConfig.direction === "asc" ? dateA - dateB : dateB - dateA;
       }
-      const nameA = a.name.toLowerCase()
-      const nameB = b.name.toLowerCase()
-      if (nameA < nameB) return sortConfig.direction === 'asc' ? -1 : 1
-      if (nameA > nameB) return sortConfig.direction === 'asc' ? 1 : -1
-      return 0
-    })
-  }, [reviewTemplates, sortConfig])
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      if (nameA < nameB) return sortConfig.direction === "asc" ? -1 : 1;
+      if (nameA > nameB) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [reviewTemplates, sortConfig]);
 
   const handleSortChange = (config) => {
-    setSortConfig(config)
-  }
+    setSortConfig(config);
+  };
 
   return isLoading ? (
     <div className="dashboard-page-content">
@@ -176,13 +175,7 @@ export const ReviewTemplates = () => {
         <div className="new-user-form-popup">
           <div className="popup">
             <div className="popup-content">
-              <div className="close">
-                <X
-                  onClick={handleShowNewUserForm}
-                  className="close-icon"
-                  size={34}
-                />
-              </div>
+              <CloseIcon onClick={handleShowNewUserForm} />
 
               <div className="form">
                 <NewReviewTemplatesForm discardFn={handleShowNewUserForm} />
@@ -235,8 +228,8 @@ export const ReviewTemplates = () => {
               {isEmpty
                 ? reviewTemplates.length
                 : searchResults.length > 0
-                  ? searchResults.length
-                  : reviewTemplates.length}
+                ? searchResults.length
+                : reviewTemplates.length}
             </span>{" "}
             <span>Available</span>
           </div>
@@ -264,8 +257,8 @@ export const ReviewTemplates = () => {
           </button>
           <SortControl
             options={[
-              { value: 'name', label: "Name" },
-              { value: 'created_at', label: 'Date added' }
+              { value: "name", label: "Name" },
+              { value: "created_at", label: "Date added" },
             ]}
             defaultField="created_at"
             defaultDirection="desc"

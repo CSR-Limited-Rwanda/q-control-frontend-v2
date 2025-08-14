@@ -96,134 +96,129 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 1000;
 
   .complaint-details {
-    background-color: white;
-    padding: 2rem 1rem;
-    border-radius: 8px;
-    max-width: 600px;
-    width: 100%;
-    display: grid;
-    height: fit-content;
-    gap: 1rem;
-    position: relative;
-    max-height: 90%;
-    overflow: auto;
-
-    >h4 {
-      font-size: 18px;
-    }
-
-    .items-group {
-      border: 1px solid rgb(230, 230, 230);
-      padding: 1rem;
-      border-radius: 0.5rem;
-
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-
-      .full {
-        grid-column: span 2;
-      }
-
-      .item {
-        small {
-          font-size: 14px;
-        }
-      }
-
-      .row {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-
-        .icon {
-          padding: 10px;
-          background-color: #ebf5ff;
-          color: $primary-color;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-items: center;
-        }
-      }
-
-      .phone-number {
-        padding-left: 55px;
-      }
-    }
-
-    .close-icon {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-    }
-
-    .buttons {
-      width: 100%;
-      justify-content: end;
-    }
-
-    .send-to-department {
-      width: 100%;
-    }
-
-    .btns {
+    .complaint-details-content {
       display: flex;
+      flex-direction: column;
       gap: 10px;
-      justify-content: flex-end;
-
-      .tertiary-button {
-        border-radius: 24px;
+      height: fit-content;
+      padding-bottom: 1.5rem;
+      h4 {
+        font-size: 18px;
       }
 
-      .action-btn-container {
-        position: relative;
-      }
+      .items-group {
+        border: 1px solid rgb(230, 230, 230);
+        padding: 1rem;
+        border-radius: 0.5rem;
 
-      .actions-button {
-        width: fit-content;
-        align-self: flex-end;
-        border-radius: 24px;
-      }
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
 
-      .chevron {
-        transition: 0.4s ease;
-      }
+        .full {
+          grid-column: span 2;
+        }
 
-      .actions {
-        position: absolute;
-        top: 60px;
-        right: 0;
-        display: flex;
-        flex-direction: column;
-        background-color: $body-background-color;
-        border: 1px solid var(--border);
-        width: 180px;
-        align-items: flex-start;
-        z-index: 100;
-        gap: 0;
-        border-radius: var(--base-border-radius);
+        .item {
+          small {
+            font-size: 14px;
+          }
+        }
 
-        .action {
+        .row {
           display: flex;
           gap: 10px;
           align-items: center;
-          font-size: 14px;
-          cursor: pointer;
-          padding: 10px;
-          width: 100%;
 
-          &:hover {
-            background-color: var(--gray-color);
+          .icon {
+            padding: 10px;
+            background-color: #ebf5ff;
+            color: $primary-color;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-items: center;
           }
+        }
+
+        .phone-number {
+          padding-left: 55px;
         }
       }
 
-      .action-active {
-        transform: rotate(-90deg);
+      .close-icon {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+      }
+
+      .buttons {
+        width: 100%;
+        justify-content: end;
+      }
+
+      .send-to-department {
+        width: 100%;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+
+        .tertiary-button {
+          border-radius: 24px;
+        }
+
+        .action-btn-container {
+          position: relative;
+        }
+
+        .actions-button {
+          width: fit-content;
+          align-self: flex-end;
+          border-radius: 24px;
+        }
+
+        .chevron {
+          transition: 0.4s ease;
+        }
+
+        .details-actions {
+          position: absolute;
+          top: 60px;
+          right: 0;
+          display: flex;
+          flex-direction: column;
+          background-color: $body-background-color;
+          border: 1px solid var(--border);
+          width: 180px;
+          align-items: flex-start;
+          z-index: 100;
+          gap: 0;
+          border-radius: var(--base-border-radius);
+
+          .details-action {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+
+            &:hover {
+              background-color: var(--gray-color);
+            }
+          }
+        }
+
+        .action-active {
+          transform: rotate(-90deg);
+        }
       }
     }
   }
@@ -232,7 +227,6 @@
 @media screen and (max-width: 768px) {
   .profile-page {
     .profile-details {
-
       .profile-info,
       .profile-tabs {
         flex: 1 1 100%;
@@ -260,7 +254,7 @@
       color: $gray-color;
     }
 
-    >.row {
+    > .row {
       display: flex;
       gap: 10px;
       width: 100%;
@@ -305,7 +299,7 @@
       gap: 10px;
     }
 
-    .action {
+    .profile-report-action {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -326,6 +320,7 @@
           font-size: 14px;
           width: 100%;
           text-align: center;
+          gap: 5px;
 
           .icon {
             height: 20px;
@@ -380,7 +375,7 @@
         justify-content: space-between;
         gap: 10px;
 
-        >button {
+        > button {
           width: fit-content;
           align-self: flex-end;
         }
@@ -483,7 +478,6 @@
   }
 }
 
-
 .complaint-modal {
   position: fixed;
   top: 0;
@@ -495,7 +489,7 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  z-index: 200;
+  z-index: 100000;
 
   textarea {
     resize: none;
@@ -505,16 +499,16 @@
 .modal-content {
   background: white;
   border-radius: 0.5rem;
-  padding: 1.5rem;
-  max-width: 28rem;
+  padding: 1.5rem !important;
+  max-width: 35rem !important;
   width: 100%;
   position: relative;
+  height: fit-content !important;
 }
 
-.close-icon {
+.close-popup {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  right: 1.5rem !important;
   cursor: pointer;
   color: #4b5563;
   transition: color 0.2s ease;
@@ -569,8 +563,8 @@
 }
 
 .department-list {
-  max-height: 16rem;
-  overflow-y: auto;
+  max-height: 8rem;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

@@ -27,10 +27,10 @@ import CloseIcon from "@/components/CloseIcon";
 import MessageComponent from "@/components/MessageComponet";
 
 const LostAndFoundForm = ({ togglePopup }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const { user } = useAuthentication();
   const [currentFacility, setCurrentFacility] = useState(user.facility);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +64,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
   const [actionTaken, setActionTaken] = useState("");
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
-  )
+  );
 
   function formatTime(time) {
     if (!time) return undefined;
@@ -324,8 +324,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
             status: "Draft",
           });
         }
-      }
-      else {
+      } else {
         setErrorMessage("Please fill in all required fields.");
       }
     }
@@ -344,7 +343,9 @@ const LostAndFoundForm = ({ togglePopup }) => {
   };
 
   const handleCurrentFacility = (facilityId) => {
-    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    const selectedFacility = user?.accounts?.find(
+      (facility) => facility.id === parseInt(facilityId)
+    );
     setCurrentFacility(selectedFacility);
   };
 
@@ -352,10 +353,12 @@ const LostAndFoundForm = ({ togglePopup }) => {
     <div className="form-container">
       <div className="forms-header">
         <h2>Lost and Found Property Report</h2>
-        <CloseIcon onClick={() => {
-          togglePopup();
-          localStorage.setItem("updateNewIncident", "false");
-        }} />
+        <CloseIcon
+          onClick={() => {
+            togglePopup();
+            localStorage.setItem("updateNewIncident", "false");
+          }}
+        />
         {currentStep < 3 ? (
           <div className="form-steps">
             <div className={currentStep === 1 ? "step current-step" : "step"}>
@@ -388,14 +391,18 @@ const LostAndFoundForm = ({ togglePopup }) => {
         />
       </div>
       {currentStep === 1 && (
-        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
-          {
-            user?.accounts?.map((facility) => (
-              <option key={facility.id} value={facility.id}>
-                Submitting for  {facility.name}
-              </option>
-            ))
-          }
+        <select
+          className="facility-card"
+          name="facility"
+          id="facility"
+          value={currentFacility?.id || ""}
+          onChange={(e) => handleCurrentFacility(e.target.value)}
+        >
+          {user?.accounts?.map((facility) => (
+            <option key={facility.id} value={facility.id}>
+              Submitting for {facility.name}
+            </option>
+          ))}
         </select>
       )}
 

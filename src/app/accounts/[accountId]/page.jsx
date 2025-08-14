@@ -33,6 +33,7 @@ import { DraftsTab } from "@/components/accounts/profile/DraftsTab";
 import UserComplaints from "@/components/accounts/profile/profileComplaints";
 import ProfileDocuments from "@/components/accounts/profile/profileDocuments";
 import { useGetPermissions } from "@/hooks/fetchPermissions";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 const ProfileDetailsPage = () => {
   const { permissions, loading, error: permissionsError } = useGetPermissions();
@@ -149,8 +150,11 @@ const ProfileDetailsPage = () => {
 
               {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
               <div className="actions-list">
-                {
-                  permissions && permissions.accounts?.includes("change_profile") &&
+                <PermissionsGuard
+                  model={"accounts"}
+                  codename={"change_profile"}
+                  isPage={false}
+                >
                   <>
                     <div
                       className="action"
@@ -160,20 +164,30 @@ const ProfileDetailsPage = () => {
                       <span>Edit user</span>
                     </div>
                     <hr />
-                    <div className="action" onClick={handleShowActivateUserForm}>
+                    <div
+                      className="action"
+                      onClick={handleShowActivateUserForm}
+                    >
                       <UserCheck />
                       <span>Activate user</span>
                     </div>
                     <hr />
-                    <div className="action" onClick={handleShowDeactivateUserForm}>
+                    <div
+                      className="action"
+                      onClick={handleShowDeactivateUserForm}
+                    >
                       <UserX />
                       <span>Deactivate user</span>
                     </div>
                     <hr />
                   </>
-                }
-                {
-                  permissions && permissions.accounts?.includes("delete_profile") &&
+                </PermissionsGuard>
+
+                <PermissionsGuard
+                  model={"accounts"}
+                  codename={"delete_profile"}
+                  isPage={false}
+                >
                   <>
                     <div className="action" onClick={handleShowDeleteUserForm}>
                       <Trash2 />
@@ -181,9 +195,13 @@ const ProfileDetailsPage = () => {
                     </div>
                     <hr />
                   </>
-                }
-                {
-                  permissions && permissions.auth?.includes("view_permission") &&
+                </PermissionsGuard>
+
+                <PermissionsGuard
+                  model={"auth"}
+                  codename={"view_permission"}
+                  isPage={false}
+                >
                   <>
                     <div
                       className="action"
@@ -194,8 +212,7 @@ const ProfileDetailsPage = () => {
                     </div>
                     <hr />
                   </>
-                }
-
+                </PermissionsGuard>
               </div>
             </div>
           </div>

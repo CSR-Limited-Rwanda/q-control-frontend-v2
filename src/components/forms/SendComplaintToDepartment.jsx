@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "@/utils/api";
 import { ArrowLeft, LoaderCircle, Send, X } from "lucide-react";
-// import "./SendComplaintToDepartment.scss";
+import CloseIcon from "../CloseIcon";
 
 const SendComplaintToDepartment = ({ complaint, onClose }) => {
   const [step, setStep] = useState(1);
@@ -10,7 +10,7 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
   const [selectedFacility, setSelectedFacility] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [comment, setComment] = useState("");
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -21,7 +21,6 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
       try {
         setIsLoading(true);
         const response = await api.get("/facilities/");
-
         setFacilities(response.data);
       } catch (error) {
         setError("Failed to fetch facilities");
@@ -42,7 +41,6 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
           const response = await api.get(
             `/departments/?facility_id=${selectedFacility}`
           );
-
           setDepartments(response.data.results);
         } catch (error) {
           setError("Failed to fetch departments");
@@ -56,7 +54,8 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
   }, [selectedFacility]);
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFiles = Array.from(e.target.files);
+    setFiles(selectedFiles);
   };
 
   const handleSubmit = async () => {
@@ -70,22 +69,31 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
     setSuccessMessage("");
 
     try {
-      // First, upload the file if it exists
-      let documentUrl = "";
-      if (file) {
+      // Upload files if any exist
+      let fileUrls = [];
+      if (files.length > 0) {
         const formData = new FormData();
-        formData.append("file", file);
-        const uploadResponse = await api.post("/upload/", formData);
-        documentUrl = uploadResponse.data.url;
+        files.forEach((file) => {
+          formData.append("files", file);
+        });
+        const uploadResponse = await api.post("/documents/", formData);
+        // Assuming the API returns an array of URLs or a single URL
+
+        console.log("Upload response data: ", uploadResponse);
+        fileUrls = Array.isArray(uploadResponse.data.files)
+          ? uploadResponse.data.files.map((item) => item.url)
+          : [uploadResponse.data.files.url];
       }
 
-      // Then, send the complaint to the department
+      // Send the complaint to the department
       const complaintData = {
         action: "send_to_department",
         details: comment,
-        document: documentUrl,
+        files: fileUrls,
         department_id: selectedDepartment,
       };
+
+      console.log(complaintData);
 
       const response = await api.patch(
         `complaints/${complaint.id}/`,
@@ -94,6 +102,7 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
 
       if (response.status === 200) {
         setSuccessMessage("Complaint sent successfully");
+
         setTimeout(() => {
           onClose();
         }, 2000);
@@ -107,11 +116,11 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
   };
 
   return (
-    <div className="complaint-modal">
-      <div className="modal-content">
-        <X className="close-icon" onClick={onClose} />
+    <div className="complaint-modal popup">
+      <div className="modal-content popup-content">
+        <CloseIcon onClick={onClose} />
         <h2 className="modal-title">
-          {step === 1 ? "Select Department" : "Add Details"}
+          {step === 1 ? "Select Facility and Department" : "Add Details"}
         </h2>
 
         {step === 1 && (
@@ -166,11 +175,12 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Attach File</label>
+              <label className="form-label">Attach Files</label>
               <input
                 type="file"
                 onChange={handleFileChange}
                 className="form-input"
+                multiple
               />
             </div>
           </div>

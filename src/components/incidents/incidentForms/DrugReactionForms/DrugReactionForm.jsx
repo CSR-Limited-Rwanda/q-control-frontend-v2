@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
-import api, {
-  API_URL,
-  cleanedData,
-} from "@/utils/api";
+import api, { API_URL, cleanedData } from "@/utils/api";
 import "@/styles/_drugReactionIncidentForm.scss";
 
 import { X, CheckSquare, Square, SquareIcon } from "lucide-react";
@@ -22,10 +19,13 @@ import {
 import CustomTimeInput from "@/components/CustomTimeInput";
 import { FacilityCard } from "@/components/DashboardContainer";
 import DraftPopup from "@/components/DraftPopup";
-import CloseIcon from "@/components/CloseIcon";
 import MessageComponent from "@/components/MessageComponet";
+import { useAuthentication } from "@/context/authContext";
+import CloseIcon from "@/components/CloseIcon";
 
 const DrugReactionForm = ({ togglePopup }) => {
+  const { user } = useAuthentication();
+  const [currentFacility, setCurrentFacility] = useState(user.facility);
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,7 +98,7 @@ const DrugReactionForm = ({ togglePopup }) => {
   );
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
-  )
+  );
 
   useEffect(() => {
     currentStepRef.current = currentStep;
@@ -161,12 +161,14 @@ const DrugReactionForm = ({ togglePopup }) => {
           setPopupOpen(
             response.data.adverse_drug_reaction.length > 0 ? true : false
           );
-
         }
       } catch (error) {
-        let errorMessage = 'Something went wrong. Try again later.';
+        let errorMessage = "Something went wrong. Try again later.";
         if (error?.response?.data) {
-          errorMessage = error.response.data.message || error.response.data.error || errorMessage;
+          errorMessage =
+            error.response.data.message ||
+            error.response.data.error ||
+            errorMessage;
         } else if (error?.message) {
           errorMessage = error.message;
         }
@@ -220,7 +222,6 @@ const DrugReactionForm = ({ togglePopup }) => {
         prevSelected.filter((item) => item !== value)
       );
     }
-
   };
 
   const handleOutcomeChange = (e) => {
@@ -232,7 +233,6 @@ const DrugReactionForm = ({ togglePopup }) => {
         prevSelected.filter((item) => item !== value)
       );
     }
-
   };
 
   const handleSelection = (agreementName) => {
@@ -248,7 +248,6 @@ const DrugReactionForm = ({ togglePopup }) => {
   };
 
   async function handleNewDrugAdverseReaction(drugReactionData) {
-
     try {
       setErrorMessage("");
       setSuccessMessage("");
@@ -272,12 +271,14 @@ const DrugReactionForm = ({ togglePopup }) => {
         postDocumentHistory(id, "added a new incident", "create");
       }
     } catch (error) {
-
-      let errorMessage = 'Something went wrong. Try again later.';
-      if (error?.response.data) {
-        errorMessage = error.response.data.message || error.response.data.error || errorMessage;
+      if (error?.response?.data.data) {
+        window.customToast.error(
+          error.response.data.message ||
+            "Error while creating new incident, please try again"
+        );
+      } else {
+        window.customToast.error("Something went wrong");
       }
-      setErrorMessage(errorMessage);
       console.error(error);
 
       return;
@@ -315,14 +316,16 @@ const DrugReactionForm = ({ togglePopup }) => {
         if (currentStep === 9) {
           localStorage.setItem("updateNewIncident", "false");
         }
-
       }
     } catch (error) {
-      let errorMessage = 'Something went wrong. Try again later.';
-      if (error?.response.data) {
-        errorMessage = error.response.data.message || error.response.data.error || errorMessage;
+      if (error.response.data) {
+        window.customToast.error(
+          error.response.data.message ||
+            "Failed to update the data. Please try again."
+        );
+      } else {
+        window.customToast.error("Something went wrong");
       }
-      setErrorMessage(errorMessage);
       console.error(error);
 
       return;
@@ -358,9 +361,9 @@ const DrugReactionForm = ({ togglePopup }) => {
         drugReactionData = {
           current_step: currentStep,
           patient_type: victimType,
-          facility: facilityId,
-          report_facility: facilityId,
-          department: departmentId,
+          facility: user?.facility?.id,
+          report_facility_id: currentFacility?.id,
+          department: user?.department?.id,
           patient_name: {
             first_name: firstName,
             last_name: lastName,
@@ -388,8 +391,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         if (localStorage.getItem("updateNewIncident") === "true") {
           updateDrugAdverseReaction(cleanedData(drugReactionData));
         }
-      }
-      else {
+      } else {
         setErrorMessage("Please fill in all required fields.");
       }
     }
@@ -417,8 +419,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
 
         updateDrugAdverseReaction(drugReactionData);
-      }
-      else {
+      } else {
         setErrorMessage("Please fill in all required fields.");
       }
     }
@@ -457,8 +458,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
 
         updateDrugAdverseReaction(drugReactionData);
-      }
-      else {
+      } else {
         setErrorMessage("Please fill in all required fields.");
       }
     }
@@ -517,8 +517,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
 
         updateDrugAdverseReaction(drugReactionData);
-      }
-      else {
+      } else {
         setErrorMessage("Please fill in all required fields.");
       }
     }
@@ -544,10 +543,10 @@ const DrugReactionForm = ({ togglePopup }) => {
             "other (describe)"
           )
             ? selectedAgreements
-              .filter((el) => el !== "other (describe)")
-              .join(", ") +
-            ", " +
-            agreementDescription
+                .filter((el) => el !== "other (describe)")
+                .join(", ") +
+              ", " +
+              agreementDescription
             : selectedAgreements.join(", "),
         };
         updateDrugAdverseReaction(drugReactionData);
@@ -577,8 +576,7 @@ const DrugReactionForm = ({ togglePopup }) => {
           adverse_event_to_be_reported_to_FDA: fdaReported,
         };
         updateDrugAdverseReaction(drugReactionData);
-      }
-      else {
+      } else {
         setErrorMessage("Please fill in all required fields.");
       }
     }
@@ -620,12 +618,10 @@ const DrugReactionForm = ({ togglePopup }) => {
             last_name: notifiedByLastName,
             profile_type: "Nurse",
           },
-
         };
 
         updateDrugAdverseReaction(drugReactionData);
-      }
-      else {
+      } else {
         setErrorMessage("Please fill in all required fields.");
       }
     }
@@ -644,8 +640,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
 
         updateDrugAdverseReaction(drugReactionData);
-      }
-      else {
+      } else {
         setErrorMessage("Please fill in all required fields.");
       }
     }
@@ -654,10 +649,18 @@ const DrugReactionForm = ({ togglePopup }) => {
     currentStep > 1 ? setCurrentStep(currentStep - 1) : setCurrentStep(1);
   };
 
+  const handleCurrentFacility = (facilityId) => {
+    const selectedFacility = user?.accounts?.find(
+      (facility) => facility.id === parseInt(facilityId)
+    );
+    setCurrentFacility(selectedFacility);
+    console.log(selectedFacility);
+  };
   return (
     <div className="form-container">
       <div className="forms-header">
         <CloseIcon onClick={togglePopup} />
+
         <h2>Anaphylaxis/Adverse Drug Reaction Report</h2>
         {currentStep < 5 ? (
           <div className="form-steps">
@@ -759,6 +762,21 @@ const DrugReactionForm = ({ togglePopup }) => {
           incidentType="adverse_drug_reaction"
         />
       </div>
+
+      {currentStep === 1 && (
+        <select
+          name="facility"
+          id="facility"
+          value={currentFacility?.id || ""}
+          onChange={(e) => handleCurrentFacility(e.target.value)}
+        >
+          {user?.accounts?.map((facility) => (
+            <option key={facility.id} value={facility.id}>
+              Submitting for {facility.name}
+            </option>
+          ))}
+        </select>
+      )}
 
       <form className="newIncidentForm">
         {currentStep === 1 ? (
@@ -904,7 +922,7 @@ const DrugReactionForm = ({ togglePopup }) => {
                   type="text"
                   name="city"
                   id="city"
-                  placeholder="Enter  patient or visitor city"
+                  placeholder="Enter patient or visitor city"
                 />
               </div>
 
@@ -916,7 +934,7 @@ const DrugReactionForm = ({ togglePopup }) => {
                   type="text"
                   name="state"
                   id="state"
-                  placeholder="Enter  patient or visitor state"
+                  placeholder="Enter patient or visitor state"
                 />
               </div>
               <div className="field">
@@ -1307,17 +1325,17 @@ const DrugReactionForm = ({ togglePopup }) => {
               <div>
                 {outcomeType === "Moderate"
                   ? outComeData.Moderate.map((el, i) => (
-                    <div key={i} className="outcome-data check-box">
-                      <input
-                        type="checkbox"
-                        name="moderateOutcome"
-                        id={el.name}
-                        value={el.name}
-                        onChange={handleOutcomeDescription}
-                      />
-                      <label htmlFor={el.name}>{el.name}</label>
-                    </div>
-                  ))
+                      <div key={i} className="outcome-data check-box">
+                        <input
+                          type="checkbox"
+                          name="moderateOutcome"
+                          id={el.name}
+                          value={el.name}
+                          onChange={handleOutcomeDescription}
+                        />
+                        <label htmlFor={el.name}>{el.name}</label>
+                      </div>
+                    ))
                   : null}
               </div>
 
@@ -1334,17 +1352,17 @@ const DrugReactionForm = ({ togglePopup }) => {
               <div>
                 {outcomeType === "Severe"
                   ? outComeData.Severe.map((el, i) => (
-                    <div key={i} className="outcome-data check-box">
-                      <input
-                        type="checkbox"
-                        name="severeOutcome"
-                        id={el.name}
-                        value={el.name}
-                        onChange={handleOutcomeDescription}
-                      />
-                      <label htmlFor={el.name}>{el.name}</label>
-                    </div>
-                  ))
+                      <div key={i} className="outcome-data check-box">
+                        <input
+                          type="checkbox"
+                          name="severeOutcome"
+                          id={el.name}
+                          value={el.name}
+                          onChange={handleOutcomeDescription}
+                        />
+                        <label htmlFor={el.name}>{el.name}</label>
+                      </div>
+                    ))
                   : null}
               </div>
 

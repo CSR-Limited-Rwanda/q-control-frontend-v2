@@ -22,10 +22,11 @@ import CloseIcon from "@/components/CloseIcon";
 import MessageComponent from "@/components/MessageComponet";
 
 const GrievanceForm = ({ togglePopup }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const { user } = useAuthentication();
   const [currentFacility, setCurrentFacility] = useState(user.facility);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [userId, setUserId] = useState();
@@ -70,6 +71,7 @@ const GrievanceForm = ({ togglePopup }) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadingDocuments, setUploadingDocuments] = useState(false);
+
   const handleAdversePatientOutcome = () => {
     setAdversePatientOutcome((prev) => !prev);
   };
@@ -182,8 +184,8 @@ const GrievanceForm = ({ togglePopup }) => {
         selectedOption === "other"
           ? otherInput
           : selectedOption
-            ? selectedOption
-            : null,
+          ? selectedOption
+          : null,
     };
 
     try {
@@ -207,8 +209,8 @@ const GrievanceForm = ({ togglePopup }) => {
       if (error.response) {
         window.customToast.error(
           error.response?.data.message ||
-          error.response?.data.error ||
-          "Error while saving incident"
+            error.response?.data.error ||
+            "Error while saving incident"
         );
       } else {
         window.customToast.error("Unknown error while saving incident");
@@ -234,7 +236,6 @@ const GrievanceForm = ({ togglePopup }) => {
           localStorage.setItem("updateNewIncident", "false");
         }
       }
-
     } catch (error) {
       console.error(error);
       setIsLoading(false);
@@ -254,7 +255,6 @@ const GrievanceForm = ({ togglePopup }) => {
       setPhoneNumber(newValue);
     }
   };
-
 
   const handleNextStep = () => {
     let isValid = true;
@@ -330,14 +330,13 @@ const GrievanceForm = ({ togglePopup }) => {
               selectedOption === "other"
                 ? otherInput
                 : selectedOption
-                  ? selectedOption
-                  : null,
+                ? selectedOption
+                : null,
           });
         }
       } else {
         setErrorMessage("Please fill in all required fields.");
       }
-
     } else if (currentStep === 2) {
       isValid = validateStep({
         "complaint or concern": complaintOrConcern,
@@ -446,7 +445,6 @@ const GrievanceForm = ({ togglePopup }) => {
       );
 
       if (response.status === 201 || response.status === 200) {
-
         setUploadingDocuments(false);
         window.customToast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -454,12 +452,13 @@ const GrievanceForm = ({ togglePopup }) => {
     } catch (error) {
       window.customToast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-
     }
   };
 
   const handleCurrentFacility = (facilityId) => {
-    const selectedFacility = user?.accounts?.find(facility => facility.id === parseInt(facilityId));
+    const selectedFacility = user?.accounts?.find(
+      (facility) => facility.id === parseInt(facilityId)
+    );
     setCurrentFacility(selectedFacility);
   };
 
@@ -467,10 +466,12 @@ const GrievanceForm = ({ togglePopup }) => {
     <div className="form-container">
       <div className="forms-header">
         <h2>Patient/Patient Representative Grievance Form</h2>
-        <CloseIcon onClick={() => {
-          togglePopup();
-          localStorage.setItem("updateNewIncident", "false");
-        }} />
+        <CloseIcon
+          onClick={() => {
+            togglePopup();
+            localStorage.setItem("updateNewIncident", "false");
+          }}
+        />
 
         {currentStep < 4 ? (
           <div className="form-steps">
@@ -517,14 +518,18 @@ const GrievanceForm = ({ togglePopup }) => {
       </div>
 
       {currentStep === 1 && (
-        <select className="facility-card" name="facility" id="facility" value={currentFacility?.id || ""} onChange={(e) => handleCurrentFacility(e.target.value)}>
-          {
-            user?.accounts?.map((facility) => (
-              <option key={facility.id} value={facility.id}>
-                Submitting for  {facility.name}
-              </option>
-            ))
-          }
+        <select
+          className="facility-card"
+          name="facility"
+          id="facility"
+          value={currentFacility?.id || ""}
+          onChange={(e) => handleCurrentFacility(e.target.value)}
+        >
+          {user?.accounts?.map((facility) => (
+            <option key={facility.id} value={facility.id}>
+              Submitting for {facility.name}
+            </option>
+          ))}
         </select>
       )}
 

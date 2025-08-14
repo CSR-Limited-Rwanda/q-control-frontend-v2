@@ -45,7 +45,6 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
   };
 
   const handleAssignedStaffList = (staff) => {
-
     if (!assignedStaffList.includes(staff)) {
       setAssignedStaffList((prevList) => [...prevList, staff]);
     } else {
@@ -86,8 +85,8 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
       if (error.response) {
         setError(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while submitting the complaint"
+            error.response.data.error ||
+            "Error while submitting the complaint"
         );
       } else {
         setError("Unknown error while submitting the complaint");
@@ -108,8 +107,8 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
         if (error.response) {
           setUserError(
             error.response.data.message ||
-            error.response.data.error ||
-            "We could no get a list of users"
+              error.response.data.error ||
+              "We could no get a list of users"
           );
         }
         console.error(error);
@@ -274,11 +273,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
         <div className="success-message">{successMessage}</div>
       )}
       {resolvedByStaff && (
-        <button
-          onClick={handleSubmit}
-          className="primary-button"
-          type="button"
-        >
+        <button onClick={handleSubmit} className="primary-button" type="button">
           {isLoading ? (
             <LoaderCircle size={18} className="loading-icon" />
           ) : (

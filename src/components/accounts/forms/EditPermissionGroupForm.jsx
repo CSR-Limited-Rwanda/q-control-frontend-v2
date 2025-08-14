@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import api from "@/utils/api";
 import "../../../styles/_permissions.scss";
+import CloseIcon from "@/components/CloseIcon";
 
 const FEATURES = {
   general: "General Patient Visitor Reports",
@@ -150,9 +151,7 @@ const EditPermissionGroupForm = ({ handleClose, groupId }) => {
           </div>
         )}
 
-        <div className="close" onClick={handleClose}>
-          <X />
-        </div>
+        <CloseIcon onClick={handleClose} />
 
         <form className="add-permission-group-form" onSubmit={handleSubmit}>
           <h2>Edit Permission Group</h2>

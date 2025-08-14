@@ -7,6 +7,7 @@ import PermissionGroups from "./permissionGroups";
 import PrimaryButton from "@/components/PrimaryButton";
 import SecondaryButton from "@/components/SecondaryButton";
 import api from "@/utils/api";
+import CloseIcon from "@/components/CloseIcon";
 
 const NewUserForm = ({
   handleClose,
@@ -61,7 +62,6 @@ const NewUserForm = ({
     try {
       setIsLoading(true);
       if (isEditMode) {
-
         const response = await api.put(`/users/${existingUserData.id}/`, data);
         if (response.status === 200) {
           setSuccessMessage("User updated successfully");
@@ -79,7 +79,6 @@ const NewUserForm = ({
         }
       }
     } catch (error) {
-
       let message;
       if (error?.response?.data) {
         message =
@@ -137,7 +136,6 @@ const NewUserForm = ({
       localStorage.setItem("userInfo", JSON.stringify(payload));
       return payload;
     } catch (error) {
-
       setErrorMessage(
         "An error occurred while saving the data. Please try again."
       );
@@ -147,9 +145,8 @@ const NewUserForm = ({
   return (
     <div className="popup">
       <div className="popup-content">
-        <div className="close" onClick={handleClose}>
-          <X size={34} className="close-icon" />
-        </div>
+        <CloseIcon onClick={handleClose} />
+
         <div className="form">
           <h2>
             {isEditMode ? "Update user" : "New User"} {currentStep} of {maxStep}

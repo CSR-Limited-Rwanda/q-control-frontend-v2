@@ -24,9 +24,13 @@ import DraftPopup from "@/components/DraftPopup";
 import "@/styles/_forms.scss";
 import "@/styles/_employeeIncidentForm.scss";
 import CloseIcon from "@/components/CloseIcon";
+import { useAuthentication } from "@/context/authContext";
 import MessageComponent from "@/components/MessageComponet";
 
 const EmployeeIncidentForm = ({ togglePopup }) => {
+  const { user } = useAuthentication();
+  const [currentFacility, setCurrentFacility] = useState(user.facility);
+
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
@@ -68,16 +72,15 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const [age, setAge] = useState("");
   const currentStepRef = useRef(currentStep);
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [facilityId, setFacilityId] = useState(
-    localStorage.getItem("facilityId")
-  );
+  const [facilityId, setFacilityId] = useState(user.facility.id);
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
-  )
+  );
+
+  console.log(facilityId);
 
   useEffect(() => {
     currentStepRef.current = currentStep;
-
   }, [currentStep]);
 
   useEffect(() => {
@@ -144,7 +147,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         first_name: "",
         last_name: "",
       });
-
     }
   };
 
@@ -178,20 +180,20 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       profile_type: "Witness",
     }));
     const incidentData = {
-      facility_id: facilityId,
-      department: departmentId,
+      facility_id: user?.facility?.id,
+      department: user?.department?.id,
       current_step: currentStep,
       incident_status: statusType,
-      report_facility: checkCurrentAccount(),
+      report_facility_id: currentFacility?.id,
       patient_info:
         firstName && lastName
           ? {
-            first_name: firstName,
-            last_name: lastName,
-            profile_type: "Patient",
-            age: age,
-            date_of_birth: dateBirth,
-          }
+              first_name: firstName,
+              last_name: lastName,
+              profile_type: "Patient",
+              age: age,
+              date_of_birth: dateBirth,
+            }
           : null,
       job_title: jobTitle,
 
@@ -223,7 +225,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         localStorage.setItem("updateNewIncident", "true");
 
         setReportID(res.data.id);
-
       }
     } catch (error) {
       console.error("Error submitting step 1: ", error);
@@ -292,7 +293,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
 
       if (isValid) {
-
         const data = {
           facility_id: facilityId,
           current_step: currentStep,
@@ -304,10 +304,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           doctor_consulted_info:
             doctorFirstName && doctorLastName
               ? {
-                first_name: doctorFirstName,
-                last_name: doctorLastName,
-                profile_type: "Physician",
-              }
+                  first_name: doctorFirstName,
+                  last_name: doctorLastName,
+                  profile_type: "Physician",
+                }
               : null,
 
           previous_injury: injuredBody,
@@ -336,7 +336,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             postDocumentHistory(reportId, "added a new incident", "create");
           }
         } catch (error) {
-
           console.error("Error submitting step 4: ", error);
 
           setIsLoading(false);
@@ -369,7 +368,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         postDocumentHistory(reportId, "added a new incident", "create");
       }
     } catch (error) {
-
       console.error("Error submitting step 4: ", error);
       return;
     }
@@ -417,7 +415,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
 
       if (isValid) {
-
         setIsLoading(true);
         if (localStorage.getItem("updateNewIncident") === "false") {
           handleStepOneSubmit();
@@ -437,12 +434,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               patient_info:
                 firstName && lastName
                   ? {
-                    first_name: firstName,
-                    last_name: lastName,
-                    profile_type: "Patient",
-                    age: age,
-                    date_of_birth: dateBirth,
-                  }
+                      first_name: firstName,
+                      last_name: lastName,
+                      profile_type: "Patient",
+                      age: age,
+                      date_of_birth: dateBirth,
+                    }
                   : null,
               job_title: jobTitle,
 
@@ -480,6 +477,14 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
   const handlePreviousStep = () => {
     currentStep > 1 ? setCurrentStep(currentStep - 1) : setCurrentStep(1);
+  };
+
+  const handleCurrentFacility = (facilityId) => {
+    const selectedFacility = user?.accounts?.find(
+      (facility) => facility.id === parseInt(facilityId)
+    );
+    setCurrentFacility(selectedFacility);
+    console.log(selectedFacility);
   };
   return (
     <div className="form-container">
@@ -533,6 +538,21 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           incidentType="employee_incident"
         />
       </div>
+
+      {currentStep === 2 && (
+        <select
+          name="facility"
+          id="facility"
+          value={currentFacility?.id || ""}
+          onChange={(e) => handleCurrentFacility(e.target.value)}
+        >
+          {user?.accounts?.map((facility) => (
+            <option key={facility.id} value={facility.id}>
+              Submitting for {facility.name}
+            </option>
+          ))}
+        </select>
+      )}
 
       <form className="newIncidentForm">
         {currentStep === 1 ? (

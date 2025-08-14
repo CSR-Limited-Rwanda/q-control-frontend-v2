@@ -79,7 +79,6 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   const [dateClosed, setDateClosed] = useState();
   const responseLetterFileInputRef = useRef("");
   const extensionLetterFileInputRef = useRef("");
-  const [error, setError] = useState("");
 
   const handleExtensionLetter = async (event) => {
     const grievanceInvestigationId = localStorage.getItem(
@@ -100,15 +99,14 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
 
       if (response.status === 200) {
         setResponseLaterFile(response.data.document);
-
       }
     } catch (error) {
       console.error(error);
       if (error.response) {
         setError(
           error.response.message ||
-          error.response.error ||
-          "Error uploading files"
+            error.response.error ||
+            "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -134,15 +132,14 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
 
       if (response.status === 200) {
         setResponseLaterFile(response.data.document);
-
       }
     } catch (error) {
       console.error(error);
       if (error.response) {
         setError(
           error.response.message ||
-          error.response.error ||
-          "Error uploading files"
+            error.response.error ||
+            "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -262,7 +259,6 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
         data
       );
       if (response.status === 201) {
-
         window.customToast.success(
           "Grievance investigation saved successfully"
         );
@@ -276,7 +272,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response.data) {
         window.customToast.error(
           error.response.data.message ||
-          "Error saving the grievance investigation"
+            "Error saving the grievance investigation"
         );
       } else {
         window.customToast.error(
@@ -309,7 +305,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response.data) {
         window.customToast.error(
           error.response.data.message ||
-          "Error updating the grievance investigation"
+            "Error updating the grievance investigation"
         );
       } else {
         window.customToast.error(
