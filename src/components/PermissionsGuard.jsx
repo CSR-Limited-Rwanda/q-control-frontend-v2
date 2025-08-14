@@ -56,9 +56,9 @@ const PermissionsGuard = ({ model, codename, children, isPage = true }) => {
     return <>{children}</>;
   }
 
-  if (hasAccess && !isPage) {
-    return "";
-  }
+  //   if (hasAccess && !isPage) {
+  //     return "";
+  //   }
 
   if (!hasAccess && !isPage) {
     return "";
