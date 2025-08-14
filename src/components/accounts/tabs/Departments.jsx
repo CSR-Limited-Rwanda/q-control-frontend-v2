@@ -5,7 +5,7 @@ import {
   Notebook,
   PlusCircle,
   PlusIcon,
-  ListFilter
+  ListFilter,
 } from "lucide-react";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
@@ -13,8 +13,11 @@ import AddDepartment from "../forms/department/AddDepartment";
 import "../../../styles/facilities/_facilities.scss";
 import { format } from "date-fns";
 import SortControl from "@/utils/SortControl";
+import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 const DepartmentsPage = () => {
+  const { permissions } = useGetPermissions();
   const [isLoading, setIsLoading] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [facilities, setFacilities] = useState([]);
@@ -23,8 +26,8 @@ const DepartmentsPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showAddDepartment, setShowAddDepartment] = useState(false);
   const [sortConfig, setSortConfig] = useState({
-    field: 'created_at',
-    direction: 'desc',
+    field: "created_at",
+    direction: "desc",
   });
   const router = useRouter();
 
@@ -74,118 +77,129 @@ const DepartmentsPage = () => {
 
   // sorting
   const sortedDepartments = useMemo(() => {
-    if (!departments) return []
+    if (!departments) return [];
 
-    const sortableDepartments = [...departments]
+    const sortableDepartments = [...departments];
     return sortableDepartments.sort((a, b) => {
-      if (sortConfig.field === 'created_at') {
-        const dateA = new Date(a.created_at)
-        const dateB = new Date(b.created_at)
-        return sortConfig.direction === 'asc' ? dateA - dateB : dateB - dateA
+      if (sortConfig.field === "created_at") {
+        const dateA = new Date(a.created_at);
+        const dateB = new Date(b.created_at);
+        return sortConfig.direction === "asc" ? dateA - dateB : dateB - dateA;
       }
-      const nameA = a.name.toLowerCase()
-      const nameB = b.name.toLowerCase()
-      if (nameA < nameB) return sortConfig.direction === 'asc' ? -1 : 1
-      if (nameA > nameB) return sortConfig.direction === 'asc' ? 1 : -1
-      return 0
-    })
-  }, [departments, sortConfig])
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      if (nameA < nameB) return sortConfig.direction === "asc" ? -1 : 1;
+      if (nameA > nameB) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [departments, sortConfig]);
 
   const handleSortChange = (config) => {
-    setSortConfig(config)
-  }
+    setSortConfig(config);
+  };
 
   const handleDepartmentClick = (department_id) => {
-    router.push(
-      `/facilities/${selectedFacilityId}/departments/${department_id}`
-    );
+    if (permissions && permissions.base?.includes("view_details")) {
+      router.push(
+        `/facilities/${selectedFacilityId}/departments/${department_id}`
+      );
+    } else {
+      return;
+    }
   };
 
   const handleDepartmentAdded = (newDepartment) => {
-    setDepartments(prev => Array.isArray(prev) ? [...prev, newDepartment] : [newDepartment]);
-  }
+    setDepartments((prev) =>
+      Array.isArray(prev) ? [...prev, newDepartment] : [newDepartment]
+    );
+  };
 
   function formatDate(isoString) {
-    return format(new Date(isoString), 'dd/MM/yyyy')
+    return format(new Date(isoString), "dd/MM/yyyy");
   }
 
   return (
-    <div>
-      <div className="facility-select">
-        <label htmlFor="facility">Select a Facility:</label>
-        <select
-          id="facility"
-          value={selectedFacilityId}
-          onChange={(e) => setSelectedFacilityId(e.target.value)}
-          disabled={isLoading}
-        >
-          <option value="">-- Choose a Facility --</option>
-          {Array.isArray(facilities) &&
-            facilities.map((facility) => (
-              <option key={facility.id} value={facility.id}>
-                {facility.name}
-              </option>
-            ))}
-        </select>
-      </div>
-      {isLoading && <p>Loading...</p>}
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-      {!isLoading && selectedFacilityId && (
-        <div className="departments">
-          <div className="departments-titles">
-            <div className="first-col">
-              <h3>
-                Departments
-              </h3>
-              <p>Available departments</p>
-            </div>
-            <div className="second-col">
-              <button onClick={() => setShowAddDepartment(true)}>
-                <PlusIcon />
-                Add department
-              </button>
-              <SortControl
-                options={[
-                  { value: 'name', label: "Name" },
-                  { value: 'created_at', label: 'Date added' }
-                ]}
-                defaultField="created_at"
-                defaultDirection="desc"
-                onChange={handleSortChange}
-              />
-            </div>
-          </div>
-          {showAddDepartment && (
-            <AddDepartment
-              facilityId={selectedFacilityId}
-              onClose={() => setShowAddDepartment(false)}
-              onDepartmentAdded={handleDepartmentAdded}
-            />
-          )}
-          <div className="departments-list">
-            {sortedDepartments.length > 0
-              ? sortedDepartments.map((department) => (
-                <div
-                  key={department.id}
-                  className="department-item"
-                  onClick={() => handleDepartmentClick(department.id)}
-                >
-                  <Notebook size={30} className="department-icon" />
-                  <div>
-                    <h3 className="department-title">{department.name}</h3>
-                    <p
-                      className="date"
-                    >
-                      Created on {formatDate(department.created_at)}
-                    </p>
-                  </div>
-                </div>
-              ))
-              : "No departments found"}
-          </div>
+    <PermissionsGuard model="base" codename="view_list">
+      <div>
+        <div className="facility-select">
+          <label htmlFor="facility">Select a Facility:</label>
+          <select
+            id="facility"
+            value={selectedFacilityId}
+            onChange={(e) => setSelectedFacilityId(e.target.value)}
+            disabled={isLoading}
+          >
+            <option value="">-- Choose a Facility --</option>
+            {Array.isArray(facilities) &&
+              facilities.map((facility) => (
+                <option key={facility.id} value={facility.id}>
+                  {facility.name}
+                </option>
+              ))}
+          </select>
         </div>
-      )}
-    </div>
+        {isLoading && <p>Loading...</p>}
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+        {!isLoading && selectedFacilityId && (
+          <div className="departments">
+            <div className="departments-titles">
+              <div className="first-col">
+                <h3>Departments</h3>
+                <p>Available departments</p>
+              </div>
+              <div className="second-col">
+                <PermissionsGuard
+                  model="base"
+                  codename="add_department"
+                  isPage={false}
+                >
+                  <button onClick={() => setShowAddDepartment(true)}>
+                    <PlusIcon />
+                    Add department
+                  </button>
+                </PermissionsGuard>
+
+                <SortControl
+                  options={[
+                    { value: "name", label: "Name" },
+                    { value: "created_at", label: "Date added" },
+                  ]}
+                  defaultField="created_at"
+                  defaultDirection="desc"
+                  onChange={handleSortChange}
+                />
+              </div>
+            </div>
+            {showAddDepartment && (
+              <AddDepartment
+                facilityId={selectedFacilityId}
+                onClose={() => setShowAddDepartment(false)}
+                onDepartmentAdded={handleDepartmentAdded}
+              />
+            )}
+            <div className="departments-list">
+              {sortedDepartments.length > 0
+                ? sortedDepartments.map((department) => (
+                    <div
+                      key={department.id}
+                      className="department-item"
+                      onClick={() => handleDepartmentClick(department.id)}
+                    >
+                      <Notebook size={30} className="department-icon" />
+                      <div>
+                        <h3 className="department-title">{department.name}</h3>
+                        <p className="date">
+                          Created on {formatDate(department.created_at)}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                : "No departments found"}
+            </div>
+          </div>
+        )}
+      </div>
+    </PermissionsGuard>
   );
 };
 

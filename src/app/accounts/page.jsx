@@ -6,13 +6,13 @@ import Accounts from "@/components/accounts/tabs/Accounts";
 import PermissionGroups from "@/components/accounts/tabs/PermissionGroups";
 import Titles from "@/components/accounts/tabs/Titles";
 import ReviewGroups from "@/components/accounts/tabs/ReviewGroups";
-import { ReviewTemplates } from "@/components/accounts/tabs/ReviewTemplates"; import DepartmentsPage from '@/components/accounts/tabs/Departments';
+import { ReviewTemplates } from "@/components/accounts/tabs/ReviewTemplates";
+import DepartmentsPage from "@/components/accounts/tabs/Departments";
 import { getPermissions, useGetPermissions } from "@/hooks/fetchPermissions";
-
-
 
 const AccountsPage = () => {
   const { permissions, loading, error } = useGetPermissions();
+  console.log("permissions: ", permissions);
   const baseTabs = [
     {
       name: "Account management",
@@ -20,11 +20,11 @@ const AccountsPage = () => {
     },
     {
       name: "Permission groups",
-      id: "permissionGroups"
+      id: "permissionGroups",
     },
     {
       name: "Departments",
-      id: "departments"
+      id: "departments",
     },
     {
       name: "Titles",
@@ -43,7 +43,18 @@ const AccountsPage = () => {
   // if no permissions to view users, remove user
   const tabs = React.useMemo(() => {
     if (!permissions || !permissions?.accounts?.includes("view_list")) {
-      return baseTabs.filter(tab => tab.id !== "accountsManagement");
+      return baseTabs.filter((tab) => tab.id !== "accountsManagement");
+    }
+    if (!permissions || !permissions?.accounts?.includes("view_list")) {
+      return baseTabs.filter((tab) => tab.id !== "permissionGroups");
+    }
+
+    if (!permissions || !permissions?.base?.includes("view_list")) {
+      return baseTabs.filter((tab) => tab.id !== "departments");
+    }
+
+    if (!permissions || !permissions?.accounts?.includes("view_title")) {
+      return baseTabs.filter((tab) => tab.id !== "titles");
     }
     return baseTabs;
   }, [permissions]);
@@ -75,15 +86,19 @@ const AccountsPage = () => {
           </div>
         ))}
       </div>
-      {activeTab === "accountsManagement" && <Accounts permissions={permissions} />}
+      {activeTab === "accountsManagement" && (
+        <Accounts permissions={permissions} />
+      )}
       {activeTab === "permissionGroups" && (
         <div>
           <PermissionGroups permissions={permissions} />
         </div>
       )}
-      {
-        activeTab === 'departments' && <div><DepartmentsPage permissions={permissions} /></div>
-      }
+      {activeTab === "departments" && (
+        <div>
+          <DepartmentsPage permissions={permissions} />
+        </div>
+      )}
       {activeTab === "reviewGroups" && (
         <div>
           <ReviewGroups permissions={permissions} />

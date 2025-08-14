@@ -6,6 +6,7 @@ import PrimaryButton from "@/components/PrimaryButton";
 import OutlineButton from "@/components/OutlineButton";
 import api from "@/utils/api";
 import CloseIcon from "@/components/CloseIcon";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 const TitleDetails = ({ title, handleClose }) => {
   const [showEditForm, setShowEditForm] = useState(false);
@@ -58,12 +59,21 @@ const TitleDetails = ({ title, handleClose }) => {
             <p className="success message">{successMessage}</p>
           )}
           <div className="actions">
-            <OutlineButton
-              text={"Delete title"}
-              isLoading={isLoading}
-              onClick={() => handleDeleteClick(title.id)}
-            />
-            <PrimaryButton text={"Edit title"} onClick={handleEditClick} />
+            <PermissionsGuard model="accounts" codename="delete_title">
+              <OutlineButton
+                text={"Delete title"}
+                isLoading={isLoading}
+                onClick={() => handleDeleteClick(title.id)}
+              />
+            </PermissionsGuard>
+
+            <PermissionsGuard
+              model="accounts"
+              codename="change_title"
+              isPage={false}
+            >
+              <PrimaryButton text={"Edit title"} onClick={handleEditClick} />
+            </PermissionsGuard>
           </div>
         </div>
       </div>

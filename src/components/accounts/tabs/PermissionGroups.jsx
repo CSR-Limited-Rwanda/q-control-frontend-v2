@@ -11,7 +11,7 @@ import AddPermissionGroupForm from "../forms/AddPermissionGroupForm";
 import DeletePermissionGroup from "../forms/DeletePermissionGroupForm";
 import EditPermissionGroupForm from "../forms/EditPermissionGroupForm";
 
-const PermissionGroups = () => {
+const PermissionGroups = ({ permissions }) => {
   const router = useRouter();
   const { setSelectedGroup } = useGroupContext();
   const [groups, setGroups] = useState([]);
@@ -41,7 +41,6 @@ const PermissionGroups = () => {
     setGroup(group);
 
     setGroupId(id);
-
   };
 
   const formatGroupDataForDelete = (group) => {
@@ -73,7 +72,6 @@ const PermissionGroups = () => {
       );
 
       if (response.status === 204 || response.status === 200) {
-
         try {
           const response = await api.delete(`/permissions/`, {
             data: {
@@ -85,9 +83,7 @@ const PermissionGroups = () => {
             setShowDeleteModal(false);
             window.location.reload();
           }
-        } catch (error) {
-
-        }
+        } catch (error) {}
         handleFetchGroups();
       } else {
         throw new Error("Failed to delete group");
@@ -154,14 +150,12 @@ const PermissionGroups = () => {
     try {
       const response = await api.get(`/permissions/`);
       if (response.status === 200) {
-
         setGroups(response.data);
         return;
       } else {
         setErrorMessage("Error fetching groups. Contact support.");
       }
     } catch (error) {
-
       setErrorMessage("Error fetching groups. Contact support.");
     } finally {
       setIsLoading(false);
@@ -233,12 +227,14 @@ const PermissionGroups = () => {
             )}
           </div>
 
-          <PrimaryButton
-            onClick={() => setShowNewUserForm(true)}
-            span="Add permission group"
-            prefixIcon={<Plus />}
-            customClass={"sticky-button"}
-          />
+          {permissions && permissions.auth?.includes("add_group") && (
+            <PrimaryButton
+              onClick={() => setShowNewUserForm(true)}
+              span="Add permission group"
+              prefixIcon={<Plus />}
+              customClass={"sticky-button"}
+            />
+          )}
         </div>
       </div>
       <table>
@@ -253,12 +249,20 @@ const PermissionGroups = () => {
         <tbody>
           {groups.map((group) => (
             <tr key={group.id}>
-              <td data-label="Permission group">{group.name || '-'}</td>
-              <td data-label="Created at">{group.created_at || '-'}</td>
-              <td data-label="Total features">{group.permissions?.length || 0}</td>
+              <td data-label="Permission group">{group.name || "-"}</td>
+              <td data-label="Created at">{group.created_at || "-"}</td>
+              <td data-label="Total features">
+                {group.permissions?.length || 0}
+              </td>
               <td data-label="Actions">
-                <Trash2 size={18} onClick={() => handleShowDeleteModal(group.id, group)} />
-                <SquarePen size={18} onClick={() => handleShowEditPermissionForm(group.id)} />
+                <Trash2
+                  size={18}
+                  onClick={() => handleShowDeleteModal(group.id, group)}
+                />
+                <SquarePen
+                  size={18}
+                  onClick={() => handleShowEditPermissionForm(group.id)}
+                />
               </td>
             </tr>
           ))}

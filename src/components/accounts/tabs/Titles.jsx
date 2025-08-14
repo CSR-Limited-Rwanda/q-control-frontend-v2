@@ -11,9 +11,12 @@ import DateFormatter from "@/components/DateFormatter";
 import SortableHeader from "@/components/SortableHeader";
 import useSorting from "@/hooks/useSorting";
 import { openDropdown } from "@/utils/dropdownUtils";
+import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
-const DEFAULT_PAGE_SIZE = 10
+const DEFAULT_PAGE_SIZE = 10;
 const Titles = () => {
+  const { permissions } = useGetPermissions();
   const [titlesData, setTitlesData] = useState({
     results: [],
     count: 0,
@@ -21,8 +24,8 @@ const Titles = () => {
     page_size: DEFAULT_PAGE_SIZE,
     total_pages: 1,
     has_next: false,
-    has_previous: false
-  })
+    has_previous: false,
+  });
   const [isFetchingTitles, setIsFetchingTitles] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
@@ -38,12 +41,20 @@ const Titles = () => {
 
   const isFocused = document.activeElement;
 
-  const { sortField, sortOrder, handleSort, getSortParams } = useSorting()
-  const { results: titles = [], page, page_size, count, total_pages } = titlesData
+  const { sortField, sortOrder, handleSort, getSortParams } = useSorting();
+  const {
+    results: titles = [],
+    page,
+    page_size,
+    count,
+    total_pages,
+  } = titlesData;
 
-  const fetchTitles = async (params = '') => {
-    const sortParams = getSortParams()
-    const fullParams = params ? `${params}&${createUrlParams(sortParams)}` : createUrlParams(sortParams)
+  const fetchTitles = async (params = "") => {
+    const sortParams = getSortParams();
+    const fullParams = params
+      ? `${params}&${createUrlParams(sortParams)}`
+      : createUrlParams(sortParams);
     setIsFetchingTitles(true);
 
     try {
@@ -56,17 +67,16 @@ const Titles = () => {
           page_size: response.data.page_size || DEFAULT_PAGE_SIZE,
           total_pages: response.data.total_pages || 1,
           has_next: response.data.has_next || false,
-          has_previous: response.data.has_previous || false
-        })
+          has_previous: response.data.has_previous || false,
+        });
       }
     } catch (error) {
       console.error("Error fetching titles:", error);
-      setErrorMessage("Error fetching titles")
+      setErrorMessage("Error fetching titles");
     } finally {
       setIsFetchingTitles(false);
-      setIsSearching(false)
+      setIsSearching(false);
     }
-
   };
 
   const handleSearch = useCallback(() => {
@@ -77,7 +87,7 @@ const Titles = () => {
         page: 1,
         page_size: pageSize,
         sort_by: sortField,
-        sort_order: sortOrder
+        sort_order: sortOrder,
       });
       fetchTitles(params);
     } else if (searchQuery.length === 0 && isFocused) {
@@ -107,37 +117,41 @@ const Titles = () => {
   };
 
   const handleShowTitleDetails = (title) => {
-    setSelectedTitle(title);
-    setShowTitleDetails(!showTitleDetails);
+    if (permissions && permissions?.accounts?.includes("view_title")) {
+      setSelectedTitle(title);
+      setShowTitleDetails(!showTitleDetails);
+    } else {
+      return;
+    }
   };
 
   const handlePageSizeChange = (newSize) => {
-    setTitlesData(prev => ({
+    setTitlesData((prev) => ({
       ...prev,
-      page_size: newSize
-    }))
+      page_size: newSize,
+    }));
     const params = createUrlParams({
       q: searchQuery.trim(),
       page: 1,
       page_size: newSize,
       sort_by: sortField,
-      sort_order: sortOrder
-    })
-    fetchTitles(params)
-  }
+      sort_order: sortOrder,
+    });
+    fetchTitles(params);
+  };
 
   const handlePageChange = (newPage) => {
-    if (newPage < 1 || newPage > total_pages) return
+    if (newPage < 1 || newPage > total_pages) return;
 
     const params = createUrlParams({
       q: searchQuery.trim(),
       page: newPage,
       page_size: page_size,
       sort_by: sortField,
-      sort_order: sortOrder
-    })
-    fetchTitles(params)
-  }
+      sort_order: sortOrder,
+    });
+    fetchTitles(params);
+  };
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -176,17 +190,27 @@ const Titles = () => {
                   <option value="20">20</option>
                   <option value="50">50</option>
                 </select>
-                <ChevronDown size={24} onClick={() => openDropdown('pageSize')} className="filter-icon" />
+                <ChevronDown
+                  size={24}
+                  onClick={() => openDropdown("pageSize")}
+                  className="filter-icon"
+                />
               </div>
             </div>
           </form>
 
-          <PrimaryButton
-            onClick={handleShowNewTitleForm}
-            span="Add title"
-            prefixIcon={<CirclePlus size={20} />}
-            customClass={"sticky-button"}
-          />
+          <PermissionsGuard
+            model="accounts"
+            codename="add_title"
+            isPage={false}
+          >
+            <PrimaryButton
+              onClick={handleShowNewTitleForm}
+              span="Add title"
+              prefixIcon={<CirclePlus size={20} />}
+              customClass={"sticky-button"}
+            />
+          </PermissionsGuard>
         </div>
       </div>
       {isFetchingTitles ? (
@@ -222,7 +246,9 @@ const Titles = () => {
                   <td data-label="ID">{title.id}</td>
                   <td data-label="Name">{title.name || "-"}</td>
                   <td data-label="Description">{title.description || "-"}</td>
-                  <td data-label="Date created">{<DateFormatter dateString={title.created_at || "-"} />}</td>
+                  <td data-label="Date created">
+                    {<DateFormatter dateString={title.created_at || "-"} />}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -239,13 +265,17 @@ const Titles = () => {
             {/* Always show first page */}
             <button
               onClick={() => handlePageChange(1)}
-              className={`pagination-button ${1 === page ? 'active' : ''}`}
+              className={`pagination-button ${1 === page ? "active" : ""}`}
             >
               1
             </button>
 
             {/* Show ellipsis if current page is far from start */}
-            {page > 3 && <span className="pagination-ellipsis"><Ellipsis /></span>}
+            {page > 3 && (
+              <span className="pagination-ellipsis">
+                <Ellipsis />
+              </span>
+            )}
 
             {/* Show one page before current if needed */}
             {page > 2 && (
@@ -278,13 +308,17 @@ const Titles = () => {
             )}
 
             {/* Show ellipsis if current page is far from end */}
-            {page < total_pages - 2 && <span className="pagination-ellipsis">...</span>}
+            {page < total_pages - 2 && (
+              <span className="pagination-ellipsis">...</span>
+            )}
 
             {/* Always show last page if it's not the first page */}
             {total_pages > 1 && (
               <button
                 onClick={() => handlePageChange(total_pages)}
-                className={`pagination-button ${total_pages === page ? 'active' : ''}`}
+                className={`pagination-button ${
+                  total_pages === page ? "active" : ""
+                }`}
               >
                 {total_pages}
               </button>
@@ -299,8 +333,6 @@ const Titles = () => {
             </button>
           </div>
         </>
-
-
       )}
 
       {showNewTitleForm && <TitlesForm handleClose={handleShowNewTitleForm} />}
