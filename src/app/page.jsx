@@ -39,7 +39,7 @@ const Dashboard = () => {
 						<div className="list">
 							{
 								HelplineActions.map((action, index) => ((
-									<Link key={index} href={action.href} className="action">
+									<Link key={index} href={action.href} className="action" target="_blank" rel="noopener noreferrer">
 										{action.icon}
 										<span>{action.label}</span>
 									</Link>

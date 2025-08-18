@@ -32,6 +32,7 @@
     width: 100%;
     height: var(--header-height);
     background-color: darken($color: #1565c0, $amount: 5);
+    text-wrap: nowrap;
 
     img {
       width: 52px;

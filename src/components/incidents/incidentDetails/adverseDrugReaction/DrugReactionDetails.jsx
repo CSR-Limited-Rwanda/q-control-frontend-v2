@@ -87,7 +87,7 @@ function DrugReactionDetailsContent() {
         response = await api.get(
           `${API_URL}/incidents/adverse-drug-reaction/${incidentId}/`
         );
-        setIncidentDetails(response.data.incident); // Store the original data
+        setIncidentDetails(response.data); // Store the original data
         setCurrentIncidentData(response.data.incident); // Set current data for UI
 
       } else {
@@ -170,28 +170,25 @@ function DrugReactionDetailsContent() {
     };
     getDocumentHistory();
   }, []);
-  return hasAccess ? (
+  return (
     <div className="incident-details-page">
       {isFetching ? (
         <div className="fetching-data">Loading data</div>
       ) : incidentDetails && Object.keys(incidentDetails).length > 0 ? (
         <div className="incident-details">
-          {incidentDetails.modifications ? (
+
             <IncidentDetailsHeader
               data={
                 useOriginalVersion ? incidentDetails : latestIncidentDetails
               }
               incidentDetailsId={incidentId}
-              apiLink={"adverse_drug_reaction"}
+              apiLink={"adverse-drug-reaction"}
               sendTo={"send-to-department"}
-              managerAccess={false}
               useOriginalVersion={useOriginalVersion}
               setCurrentIncidentData={setCurrentIncidentData}
               showClosedManager={false}
+              model={"adverse_drug_reaction"}
             />
-          ) : (
-            ""
-          )}
 
           <div className="details">
             <IncidentDetails
@@ -216,7 +213,7 @@ function DrugReactionDetailsContent() {
               }
               otherInformation={
                 <DrugReactionOtherInformation data={{
-                  incident: currentIncidentData
+            currentIncidentData
                 }} />
               }
               documentHistory={
@@ -233,9 +230,7 @@ function DrugReactionDetailsContent() {
         "No data"
       )}
     </div>
-  ) : (
-    <div className="no-access-text">You don't have access to this page</div>
-  );
+  )
 }
 const IncidentDocuments = ({ incidentId, apiLink }) => {
   const [documents, setDocuments] = useState([]);
@@ -243,7 +238,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
     const fetchDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/adverse_drug_reaction/${incidentId}/documents/`
+          `/incidents/adverse-drug-reaction/${incidentId}/documents/`
         );
         if (response.status === 200) {
           setDocuments(response.data);
