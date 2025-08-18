@@ -19,6 +19,7 @@ import { openDropdown } from "@/utils/dropdownUtils";
 import SortableHeader from "@/components/SortableHeader";
 import useSorting from "@/hooks/useSorting";
 import CloseIcon from "@/components/CloseIcon";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -166,212 +167,227 @@ const ReviewGroups = () => {
   };
 
   return (
-    <div className="dashboard-page-content">
-      {showNewUserForm && (
-        <div className="new-user-form-popup">
-          <div className="popup">
-            <div className="popup-content">
-              <CloseIcon onClick={handleShowNewUserForm} />
+    <PermissionsGuard model={"tasks"} codename={"view_reviewgroups"}>
+      <div className="dashboard-page-content">
+        {showNewUserForm && (
+          <div className="new-user-form-popup">
+            <div className="popup">
+              <div className="popup-content">
+                <CloseIcon onClick={handleShowNewUserForm} />
 
-              <div className="form">
-                <NewReviewGroupForm />
+                <div className="form">
+                  <NewReviewGroupForm />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      <div className="filters">
-        <div className="title">
-          <div>
-            <h3>Review Groups</h3>
-            <p>{count} available group(s)</p>
-          </div>
-        </div>
-
-        <SearchInput
-          value={searchQuery}
-          setValue={setSearchQuery}
-          isSearching={isSearching}
-          label={"Search groups by name or description"}
-        />
-
-        <div className="actions">
-          <form>
-            <div className="half">
-              <span>Show</span>
-              <div className="form-group">
-                <select
-                  value={page_size}
-                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                  name="pageSize"
-                  id="pageSize"
-                >
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="50">50</option>
-                </select>
-                <ChevronDown
-                  onClick={() => openDropdown("pageSize")}
-                  size={24}
-                  className="filter-icon"
-                />
-              </div>
+        )}
+        <div className="filters">
+          <div className="title">
+            <div>
+              <h3>Review Groups</h3>
+              <p>{count} available group(s)</p>
             </div>
-          </form>
-          <PrimaryButton
-            onClick={() => setShowNewUserForm(true)}
-            span="Add New Group"
-            prefixIcon={<CirclePlus size={20} />}
-            customClass={"sticky-button"}
+          </div>
+
+          <SearchInput
+            value={searchQuery}
+            setValue={setSearchQuery}
+            isSearching={isSearching}
+            label={"Search groups by name or description"}
           />
-        </div>
-      </div>
 
-      {isLoading && reviewGroups.length < 1 ? (
-        <LoaderCircle className="loading-icon" />
-      ) : errorMessage ? (
-        <div className="message error">
-          <span>{errorMessage}</span>
+          <div className="actions">
+            <form>
+              <div className="half">
+                <span>Show</span>
+                <div className="form-group">
+                  <select
+                    value={page_size}
+                    onChange={(e) =>
+                      handlePageSizeChange(Number(e.target.value))
+                    }
+                    name="pageSize"
+                    id="pageSize"
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                  <ChevronDown
+                    onClick={() => openDropdown("pageSize")}
+                    size={24}
+                    className="filter-icon"
+                  />
+                </div>
+              </div>
+            </form>
+            <PermissionsGuard
+              model={"tasks"}
+              codename={"add_reviewgroups"}
+              isPage={false}
+            >
+              <PrimaryButton
+                onClick={() => setShowNewUserForm(true)}
+                span="Add New Group"
+                prefixIcon={<CirclePlus size={20} />}
+                customClass={"sticky-button"}
+              />
+            </PermissionsGuard>
+          </div>
         </div>
-      ) : (
-        <div className="users-table">
-          {reviewGroups.length > 0 ? (
-            <>
-              <table>
-                <thead>
-                  <tr>
-                    <SortableHeader
-                      field="id"
-                      currentField={sortField}
-                      currentOrder={sortOrder}
-                      onSort={handleSort}
-                    >
-                      ID
-                    </SortableHeader>
-                    <SortableHeader
-                      field="title"
-                      currentField={sortField}
-                      currentOrder={sortOrder}
-                      onSort={handleSort}
-                    >
-                      Group Name
-                    </SortableHeader>
-                    <th>Description</th>
-                    <SortableHeader
-                      field="created_at"
-                      currentField={sortField}
-                      currentOrder={sortOrder}
-                      onSort={handleSort}
-                    >
-                      Date Created
-                    </SortableHeader>
-                  </tr>
-                </thead>
-                <tbody className={`${isSearching && "is-searching"}`}>
-                  {reviewGroups.map((group) => (
-                    <tr key={group.id} onClick={() => handleRowClick(group.id)}>
-                      <td data-label="ID">{group.id || "N/A"}</td>
-                      <td data-label="Group Name">{group.title || "N/A"}</td>
-                      <td data-label="Description">
-                        {group.description || "N/A"}
-                      </td>
-                      <td data-label="Date Created">
-                        <DateFormatter dateString={group.created_at} />
-                      </td>
+
+        {isLoading && reviewGroups.length < 1 ? (
+          <LoaderCircle className="loading-icon" />
+        ) : errorMessage ? (
+          <div className="message error">
+            <span>{errorMessage}</span>
+          </div>
+        ) : (
+          <div className="users-table">
+            {reviewGroups.length > 0 ? (
+              <>
+                <table>
+                  <thead>
+                    <tr>
+                      <SortableHeader
+                        field="id"
+                        currentField={sortField}
+                        currentOrder={sortOrder}
+                        onSort={handleSort}
+                      >
+                        ID
+                      </SortableHeader>
+                      <SortableHeader
+                        field="title"
+                        currentField={sortField}
+                        currentOrder={sortOrder}
+                        onSort={handleSort}
+                      >
+                        Group Name
+                      </SortableHeader>
+                      <th>Description</th>
+                      <SortableHeader
+                        field="created_at"
+                        currentField={sortField}
+                        currentOrder={sortOrder}
+                        onSort={handleSort}
+                      >
+                        Date Created
+                      </SortableHeader>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="pagination-controls">
-                <button
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={!reviewGroupsData.has_previous}
-                  className="pagination-button"
-                >
-                  Previous
-                </button>
-
-                {/* Always show first page */}
-                <button
-                  onClick={() => handlePageChange(1)}
-                  className={`pagination-button ${1 === page ? "active" : ""}`}
-                >
-                  1
-                </button>
-
-                {/* Show ellipsis if current page is far from start */}
-                {page > 3 && (
-                  <span className="pagination-ellipsis">
-                    <Ellipsis />
-                  </span>
-                )}
-
-                {/* Show one page before current if needed */}
-                {page > 2 && (
+                  </thead>
+                  <tbody className={`${isSearching && "is-searching"}`}>
+                    {reviewGroups.map((group) => (
+                      <tr
+                        key={group.id}
+                        onClick={() => handleRowClick(group.id)}
+                      >
+                        <td data-label="ID">{group.id || "N/A"}</td>
+                        <td data-label="Group Name">{group.title || "N/A"}</td>
+                        <td data-label="Description">
+                          {group.description || "N/A"}
+                        </td>
+                        <td data-label="Date Created">
+                          <DateFormatter dateString={group.created_at} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="pagination-controls">
                   <button
                     onClick={() => handlePageChange(page - 1)}
+                    disabled={!reviewGroupsData.has_previous}
                     className="pagination-button"
                   >
-                    {page - 1}
+                    Previous
                   </button>
-                )}
 
-                {/* Show current page if it's not first or last */}
-                {page !== 1 && page !== total_pages && (
+                  {/* Always show first page */}
                   <button
-                    onClick={() => handlePageChange(page)}
-                    className="pagination-button active"
-                  >
-                    {page}
-                  </button>
-                )}
-
-                {/* Show one page after current if needed */}
-                {page < total_pages - 1 && (
-                  <button
-                    onClick={() => handlePageChange(page + 1)}
-                    className="pagination-button"
-                  >
-                    {page + 1}
-                  </button>
-                )}
-
-                {/* Show ellipsis if current page is far from end */}
-                {page < total_pages - 2 && (
-                  <span className="pagination-ellipsis">...</span>
-                )}
-
-                {/* Always show last page if it's not the first page */}
-                {total_pages > 1 && (
-                  <button
-                    onClick={() => handlePageChange(total_pages)}
+                    onClick={() => handlePageChange(1)}
                     className={`pagination-button ${
-                      total_pages === page ? "active" : ""
+                      1 === page ? "active" : ""
                     }`}
                   >
-                    {total_pages}
+                    1
                   </button>
-                )}
 
-                <button
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={!reviewGroupsData.has_next}
-                  className="pagination-button"
-                >
-                  Next
-                </button>
+                  {/* Show ellipsis if current page is far from start */}
+                  {page > 3 && (
+                    <span className="pagination-ellipsis">
+                      <Ellipsis />
+                    </span>
+                  )}
+
+                  {/* Show one page before current if needed */}
+                  {page > 2 && (
+                    <button
+                      onClick={() => handlePageChange(page - 1)}
+                      className="pagination-button"
+                    >
+                      {page - 1}
+                    </button>
+                  )}
+
+                  {/* Show current page if it's not first or last */}
+                  {page !== 1 && page !== total_pages && (
+                    <button
+                      onClick={() => handlePageChange(page)}
+                      className="pagination-button active"
+                    >
+                      {page}
+                    </button>
+                  )}
+
+                  {/* Show one page after current if needed */}
+                  {page < total_pages - 1 && (
+                    <button
+                      onClick={() => handlePageChange(page + 1)}
+                      className="pagination-button"
+                    >
+                      {page + 1}
+                    </button>
+                  )}
+
+                  {/* Show ellipsis if current page is far from end */}
+                  {page < total_pages - 2 && (
+                    <span className="pagination-ellipsis">...</span>
+                  )}
+
+                  {/* Always show last page if it's not the first page */}
+                  {total_pages > 1 && (
+                    <button
+                      onClick={() => handlePageChange(total_pages)}
+                      className={`pagination-button ${
+                        total_pages === page ? "active" : ""
+                      }`}
+                    >
+                      {total_pages}
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={!reviewGroupsData.has_next}
+                    className="pagination-button"
+                  >
+                    Next
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="no-content">
+                <h3>No review groups found</h3>
+                <p>There are no review groups in the system.</p>
               </div>
-            </>
-          ) : (
-            <div className="no-content">
-              <h3>No review groups found</h3>
-              <p>There are no review groups in the system.</p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+            )}
+          </div>
+        )}
+      </div>
+    </PermissionsGuard>
   );
 };
 

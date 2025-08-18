@@ -692,28 +692,41 @@ const GeneralIncidentTable = ({
                 className="action-col"
               >
                 <div className="table-actions">
-                  {!incident.is_resolved && (
-                    <Pencil
+                  <PermissionsGuard
+                    model={"general_patient_visitor"}
+                    codename={"change_incident"}
+                    isPage={false}
+                  >
+                    {!incident.is_resolved && (
+                      <Pencil
+                        size={20}
+                        onClick={() =>
+                          navigateToModify(
+                            incident.original_report
+                              ? incident.original_report
+                              : incident.id
+                          )
+                        }
+                      />
+                    )}
+                  </PermissionsGuard>
+
+                  <PermissionsGuard
+                    model={"general_patient_visitor"}
+                    codename={"view_details"}
+                    isPage={false}
+                  >
+                    <Eye
                       size={20}
                       onClick={() =>
-                        navigateToModify(
+                        handleRowClick(
                           incident.original_report
                             ? incident.original_report
                             : incident.id
                         )
                       }
                     />
-                  )}
-                  <Eye
-                    size={20}
-                    onClick={() =>
-                      handleRowClick(
-                        incident.original_report
-                          ? incident.original_report
-                          : incident.id
-                      )
-                    }
-                  />
+                  </PermissionsGuard>
                 </div>
               </td>
             </tr>
