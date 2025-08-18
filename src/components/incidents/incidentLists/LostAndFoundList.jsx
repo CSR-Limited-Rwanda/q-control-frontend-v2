@@ -642,8 +642,8 @@ const LostFoundTable = ({
           </th>
 
           <th>Status</th>
-          {permissions?.lost_and_found?.includes("change_incident") ||
-            permissions?.lost_and_found?.includes("view_details") && (
+          {(permissions?.lost_and_found?.includes("change_incident") ||
+            permissions?.lost_and_found?.includes("view_details")) && (
               <th className="action-col">Action</th>
             )}
         </tr>
@@ -714,8 +714,8 @@ const LostFoundTable = ({
                 </p>
               </td>
 
-              {permissions?.lost_and_found?.includes("change_incident") ||
-                permissions?.lost_and_found?.includes("view_details") && (
+              {(permissions?.lost_and_found?.includes("change_incident") ||
+                permissions?.lost_and_found?.includes("view_details")) && (
                   <td
                     data-label="Action"
                     onClick={(event) => handleNonClickableColumnClick(event)}
@@ -725,6 +725,7 @@ const LostFoundTable = ({
                       <PermissionsGuard
                         model={"lost_and_found"}
                         codename={"change_incident"}
+                        isPage={false}
                       >
                         {!incident.is_resolved && (
                           <Pencil
@@ -743,6 +744,7 @@ const LostFoundTable = ({
                       <PermissionsGuard
                         model={"lost_and_found"}
                         codename={"view_details"}
+                        isPage={false}
                       >
                         <Eye
                           size={20}
