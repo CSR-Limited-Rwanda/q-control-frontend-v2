@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState, useEffect, useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 import api, { API_URL, checkCurrentAccount, cleanedData } from "@/utils/api";
@@ -37,8 +39,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   );
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [victimAlone, setVictimAlone] = useState(false);
   const [errorFetching, setErrorFetching] = useState([]);
   // forms
@@ -232,7 +232,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         injury_description: "",
       });
     } else {
-      setErrorMessage(
+      toast.error(
         "Please fill in both person injured and injury details"
       );
     }
@@ -301,7 +301,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       setSelectedBackground([]);
       setSelectedRelationship([]);
     } else {
-      setErrorMessage(
+      toast.error(
         "Please fill all fields before adding a person."
       );
     }
@@ -542,17 +542,17 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
 
           if (response.status === 200) {
             setCurrentStep(currentStep + 1);
-            setSuccessMessage("Data posted successfully");
+            toast.success("Data posted successfully");
             setIsLoading(false);
             setSuccess(true);
           }
         } catch (error) {
-          setErrorMessage("Error posting data please try again");
+          toast.error("Error posting data please try again");
           setIsLoading(false);
           console.error(error);
         }
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
   };
@@ -595,20 +595,20 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             "create"
           );
 
-          setSuccessMessage("Data posted successfully");
+          toast.success("Data posted successfully");
         }
       } catch (error) {
         setIsLoading(false);
 
         if (error.message) {
           appendError(error.message);
-          setErrorMessage(
+          toast.error(
             error.message ||
             "Error while creating new incident, please try again"
           );
           return;
         } else {
-          setErrorMessage("Something went wrong");
+          toast.error("Something went wrong");
           appendError("An error occurred while posting incident data.");
           return;
         }
@@ -625,18 +625,18 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
 
         if (response.status === 200) {
           setCurrentStep(currentStep + 1);
-          setSuccessMessage("Data posted successfully");
+          toast.success("Data posted successfully");
           setIsLoading(false);
         }
       } catch (error) {
         setIsLoading(false);
         if (error.response.data) {
           appendError(error.response.data.error);
-          setErrorMessage("Error posting data please try again");
+          toast.error("Error posting data please try again");
 
           return;
         } else {
-          setErrorMessage("Something went wrong");
+          toast.error("Something went wrong");
           appendError("An error occurred while posting incident data.");
           return;
         }
@@ -649,12 +649,12 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       });
 
       if (selfInjury && !explainselfinjury) {
-        setErrorMessage("Please Explain");
+        toast.error("Please Explain");
         isValid = false;
       }
 
       if (selectedInjuries.type === "Other" && !selectedInjuries.explanation) {
-        setErrorMessage("Explain other types of injury");
+        toast.error("Explain other types of injury");
         isValid = false;
       }
 
@@ -687,7 +687,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
 
         handleNewWorkPlaceViolence(incidentData);
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 2) {
       isValid = validateStep({
@@ -704,7 +704,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("workplaceViolenceId")
         );
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 3) {
       isValid = validateStep({
@@ -725,7 +725,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("workplaceViolenceId")
         );
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 4) {
       const {
@@ -744,7 +744,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         let hasError = false;
 
         if (selectedRelationship === "Other (explain)" && !assailant.trim()) {
-          setErrorMessage("Explain Relationship to assailant");
+          toast.error("Explain Relationship to assailant");
           hasError = true;
         }
 
@@ -752,7 +752,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           selectedBackground.includes("Other (explain)") &&
           !background.trim()
         ) {
-          setErrorMessage("Explain Background");
+          toast.error("Explain Background");
           hasError = true;
         }
 
@@ -803,10 +803,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         }
       } else {
         if (!isAssailantFieldsFilled) {
-          setErrorMessage("Please fill out all fields for Assailant.");
+          toast.error("Please fill out all fields for Assailant.");
         }
         if (!isVictimFieldsFilled) {
-          setErrorMessage("Please fill out all fields for Victim.");
+          toast.error("Please fill out all fields for Victim.");
         }
 
         return;
@@ -834,16 +834,16 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("workplaceViolenceId")
         );
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 6) {
       if (injuryCheck === null) {
-        setErrorMessage("Please select whether there were injuries");
+        toast.error("Please select whether there were injuries");
         return;
       }
 
       if (injuryCheck && !validateInjuries(injuries)) {
-        setErrorMessage(
+        toast.error(
           "Please add at least one injury with all fields filled"
         );
         return;
@@ -884,7 +884,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       });
 
       if (!securityalert) {
-        setErrorMessage("Please select an option for security alert.");
+        toast.error("Please select an option for security alert.");
         return;
       }
 
@@ -921,11 +921,11 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("workplaceViolenceId")
         );
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 9) {
       if (departmentManagerNotified === null) {
-        setErrorMessage(
+        toast.error(
           "Please select whether the department manager was notified."
         );
         return;
@@ -975,7 +975,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("workplaceViolenceId")
         );
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
   };
@@ -2544,10 +2544,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
               ""
             )}
           </form>
-          <MessageComponent
-            errorMessage={errorMessage}
-            successMessage={successMessage}
-          />
           <div className="incident-form-buttons">
             {currentStep > 1 && currentStep <= 10 ? (
               <button

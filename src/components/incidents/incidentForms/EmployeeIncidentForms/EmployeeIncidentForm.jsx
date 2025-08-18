@@ -32,8 +32,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
   const [currentFacility, setCurrentFacility] = useState(user.facility);
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [statusType, setStatusType] = useState("Select Status");
@@ -220,7 +218,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       if (res.status === 200 || res.status === 201) {
         setIsLoading(false);
         setCurrentStep(currentStep + 1);
-        setSuccessMessage("Data posted successfully");
+        toast.success("Data posted successfully");
 
         localStorage.setItem("employeeId", res.data.id);
         localStorage.setItem("updateNewIncident", "true");
@@ -253,7 +251,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
       if (res.status === 200 || res.status === 201) {
         setCurrentStep(currentStep + 1);
-        setSuccessMessage("Data posted successfully");
+        toast.success("Data posted successfully");
         setIsLoading(false);
       }
     } catch (error) {
@@ -281,14 +279,14 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         !dateSeenDoctor &&
         !timeSeenDoctor
       ) {
-        setErrorMessage(
+        toast.error(
           "Please fill all required fields for Doctor information"
         );
         isValid = false;
         return;
       }
       if (injuredBody && !whenInjured) {
-        setErrorMessage("Please fill in when the injury occured");
+        toast.error("Please fill in when the injury occured");
         isValid = false;
         return;
       }
@@ -344,7 +342,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         }
         setSuccess(true);
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
   };
@@ -360,7 +358,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
       if (res.status === 200) {
         setCurrentStep(currentStep + 1);
-        setSuccessMessage("Data posted successfully");
+        toast.success("Data posted successfully");
         setIsLoading(false);
 
         if (currentStep === 5) {
@@ -402,7 +400,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         !supervisorFirstName.trim() &&
         !supervisorLastName.trim()
       ) {
-        setErrorMessage(
+        toast.error(
           "Please provide the supervisor's name if you have informed them about the injury/near miss."
         );
         isValid = false;
@@ -450,7 +448,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           );
         }
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 3) {
       const isValid = validateStep({
@@ -464,7 +462,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
         handleStepThreeSubmit();
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
   };
@@ -907,10 +905,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           <h1>Something ain't right</h1>
         )}
       </form>
-      <MessageComponent
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-      />
       <div className="buttons">
         {currentStep > 1 && currentStep < 5 ? (
           <button

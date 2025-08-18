@@ -1,4 +1,6 @@
 'use client';
+
+import toast from "react-hot-toast";
 import BackButton from '@/components/forms/BackButton';
 import Button from '@/components/forms/Button';
 import { forgotPassword, resetPassword } from '@/services/auth';
@@ -10,8 +12,6 @@ import React, { useState } from 'react'
 const page = () => {
     const router = useRouter();
     const [username, setUsername] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [resetCodeSent, setResetCodeSent] = useState(false);
 
@@ -24,17 +24,17 @@ const page = () => {
     const handleSubmit = async () => {
         localStorage.setItem('passwordResetEmail', username);
         // validate form
-        setErrorMessage("");
-        setSuccessMessage("");
+        toast.error("");
+        toast.success("");
         setIsLoading(true);
 
         const response = await forgotPassword(username);
         if (response.success) {
-            setSuccessMessage(response.message);
+            toast.success(response.message);
             setUsername("");
             setResetCodeSent(true);
         } else {
-            setErrorMessage(response.error);
+            toast.error(response.error);
         }
         setIsLoading(false);
     }
@@ -44,11 +44,11 @@ const page = () => {
         // get the email from local storage
         const email = localStorage.getItem('passwordResetEmail');
         if (!email) {
-            setErrorMessage("No email found. Please try again.");
+            toast.error("No email found. Please try again.");
             return;
         }
-        setErrorMessage("");
-        setSuccessMessage("");
+        toast.error("");
+        toast.success("");
         setIsLoading(true);
         const payload = {
             code: resetCode,
@@ -57,14 +57,14 @@ const page = () => {
         }
         const response = await resetPassword(payload);
         if (response.success) {
-            setSuccessMessage(response.message);
+            toast.success(response.message);
             setResetCode("");
             setNewPassword("");
             router.push('/');
             localStorage.removeItem('passwordResetEmail');
 
         } else {
-            setErrorMessage(response.error);
+            toast.error(response.error);
         }
         setIsLoading(false);
     }

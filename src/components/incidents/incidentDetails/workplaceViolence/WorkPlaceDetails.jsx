@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -30,8 +32,6 @@ const WorkPlaceDetailsContent = () => {
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [reviewsCount, setReviewsCount] = useState();
   const [activitiesCount, setActivitiesCount] = useState();
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -90,9 +90,9 @@ const WorkPlaceDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          setErrorMessage("Authentication error");
+          toast.error("Authentication error");
         } else {
-          setErrorMessage("Failed to fetch incident reviews");
+          toast.error("Failed to fetch incident reviews");
           console.error(error);
         }
       }
@@ -110,9 +110,9 @@ const WorkPlaceDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          setErrorMessage("Authentication error");
+          toast.error("Authentication error");
         } else {
-          setErrorMessage("Failed to fetch document History");
+          toast.error("Failed to fetch document History");
           console.error(error);
         }
       }

@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useRef, useState, useEffect } from "react";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import CustomSelectInput from "@/components/CustomSelectInput";
@@ -21,8 +23,6 @@ import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
 import BackToPage from "@/components/BackToPage";
 const ModifyMedicalErrorForm = ({ data, incidentId }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const permission = usePermission();
   const department = useDepartments();
   const [incident, setIncident] = useState(data);
@@ -233,20 +233,20 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        setSuccessMessage("Incident updated successfully");
+        toast.success("Incident updated successfully");
         setIncident(response.data.incident);
 
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data.message ||
           error.response.data.error ||
           "Error while updating the incident"
         );
       } else {
-        setErrorMessage("Unknown error while updating the incident");
+        toast.error("Unknown error while updating the incident");
       }
 
       setIsLoading(false);
@@ -328,11 +328,11 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       if (response.status === 200 || response.status === 201) {
 
         setUploadingDocuments(false);
-        setSuccessMessage("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      setErrorMessage(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
 
     }

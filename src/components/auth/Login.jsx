@@ -1,4 +1,6 @@
 'use client';
+
+import toast from "react-hot-toast";
 import '@/styles/_login.scss';
 import { CheckSquare, Key, Mail, Square } from "lucide-react";
 import React, { useState } from "react";
@@ -11,8 +13,6 @@ const LoginPopup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -20,11 +20,11 @@ const LoginPopup = () => {
 
   const handleSubmit = async () => {
     // validate form
-    setErrorMessage("");
-    setSuccessMessage("");
+    toast.error("");
+    toast.success("");
 
     if (!username || !password) {
-      setErrorMessage("Email and password are required");
+      toast.error("Email and password are required");
       return;
     }
 
@@ -38,16 +38,16 @@ const LoginPopup = () => {
         const loginSuccess = await login(result.accessToken, result.refreshToken);
 
         if (loginSuccess) {
-          setSuccessMessage("Login successful!");
+          toast.success("Login successful!");
           // No need to reload the window, the auth context will handle the state update
         } else {
-          setErrorMessage("Failed to authenticate user data. Please try again.");
+          toast.error("Failed to authenticate user data. Please try again.");
         }
       } else {
-        setErrorMessage(result.error || "Login failed. Please try again.");
+        toast.error(result.error || "Login failed. Please try again.");
       }
     } catch (error) {
-      setErrorMessage("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);

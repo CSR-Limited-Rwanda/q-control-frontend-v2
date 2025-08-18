@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import { X } from "lucide-react";
 import React, { useState } from "react";
 import TitlesForm from "../forms/TitlesForm";
@@ -10,8 +12,6 @@ import PermissionsGuard from "@/components/PermissionsGuard";
 
 const TitleDetails = ({ title, handleClose }) => {
   const [showEditForm, setShowEditForm] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleEditClick = () => {
@@ -23,7 +23,7 @@ const TitleDetails = ({ title, handleClose }) => {
       setIsLoading(true);
       const response = await api.delete(`/titles/${id}/`);
       if (response.status === 204) {
-        setSuccessMessage("Title deleted successfully");
+        toast.success("Title deleted successfully");
         setTimeout(() => {
           window.location.reload();
         }, 1000);
@@ -39,7 +39,7 @@ const TitleDetails = ({ title, handleClose }) => {
       } else {
         message = error?.message || "Unknown error occurred";
       }
-      setErrorMessage(message);
+      toast.error(message);
       return;
     } finally {
       setIsLoading(false);

@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import api, { API_URL, calculateAge, cleanedData } from "@/utils/api";
@@ -27,8 +29,6 @@ import CloseIcon from "@/components/CloseIcon";
 import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const { permissions } = useGetPermissions()
   const { user } = useAuthentication();
   const [incident, setIncident] = useState(data);
@@ -170,11 +170,11 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
       if (response.status === 200 || response.status === 201) {
         setUploadingDocuments(false);
-        setSuccessMessage("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      setErrorMessage(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
     }
   };
@@ -268,7 +268,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        setSuccessMessage("Incident updated successfully");
+        toast.success("Incident updated successfully");
         setIncident(response.data.incident);
 
         postDocumentHistory(incidentId, "modified this incident", "modify");
@@ -277,13 +277,13 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       setIsLoading(false);
 
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data.message ||
           error.response.data.error ||
           "Error while updating the incident"
         );
       } else {
-        setErrorMessage("Unknown error while updating the incident");
+        toast.error("Unknown error while updating the incident");
       }
       setSavingDraft(false);
     }

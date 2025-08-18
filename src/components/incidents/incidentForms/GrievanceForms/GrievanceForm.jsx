@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState, useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 import api, {
@@ -24,8 +26,6 @@ import MessageComponent from "@/components/MessageComponet";
 const GrievanceForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
   const [currentFacility, setCurrentFacility] = useState(user.facility);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
@@ -199,7 +199,7 @@ const GrievanceForm = ({ togglePopup }) => {
         localStorage.setItem("updateNewIncident", "true");
 
         setUserId(response.data.created_by);
-        setSuccessMessage("Data saved successfully");
+        toast.success("Data saved successfully");
         setCurrentStep(currentStep + 1);
         setIsLoading(false);
       }
@@ -207,13 +207,13 @@ const GrievanceForm = ({ togglePopup }) => {
       console.error(error);
       setIsLoading(false);
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response?.data.message ||
           error.response?.data.error ||
           "Error while saving incident"
         );
       } else {
-        setErrorMessage("Unknown error while saving incident");
+        toast.error("Unknown error while saving incident");
       }
     }
   }
@@ -227,7 +227,7 @@ const GrievanceForm = ({ togglePopup }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        setSuccessMessage("Data saved successfully");
+        toast.success("Data saved successfully");
         setCurrentStep(currentStep + 1);
         setIsLoading(false);
 
@@ -239,8 +239,8 @@ const GrievanceForm = ({ togglePopup }) => {
     } catch (error) {
       console.error(error);
       setIsLoading(false);
-      setErrorMessage("Failed to post data");
-      setErrorMessage(error.message);
+      toast.error("Failed to post data");
+      toast.error(error.message);
     }
   }
 
@@ -335,7 +335,7 @@ const GrievanceForm = ({ togglePopup }) => {
           });
         }
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 2) {
       isValid = validateStep({
@@ -344,7 +344,7 @@ const GrievanceForm = ({ togglePopup }) => {
       });
 
       if (adversePatientOutcome && !outcome.trim()) {
-        setErrorMessage(
+        toast.error(
           "Please identify outcome for adverse patient outcome."
         );
         isValid = false;
@@ -360,7 +360,7 @@ const GrievanceForm = ({ togglePopup }) => {
           outcome: outcome,
         });
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
         return;
       }
     } else if (currentStep === 3) {
@@ -388,7 +388,7 @@ const GrievanceForm = ({ togglePopup }) => {
             status: "Open",
           });
         } else {
-          setErrorMessage("Please fill in all required fields.");
+          toast.error("Please fill in all required fields.");
         }
       } else {
         patchData({
@@ -411,7 +411,7 @@ const GrievanceForm = ({ togglePopup }) => {
         "relationship to patient": relationshipToPatient,
       });
       if (!actionMeeting && !actionTelephone) {
-        setErrorMessage("Please select at least one option.");
+        toast.error("Please select at least one option.");
         isValid = false;
       }
     }
@@ -446,11 +446,11 @@ const GrievanceForm = ({ togglePopup }) => {
 
       if (response.status === 201 || response.status === 200) {
         setUploadingDocuments(false);
-        setSuccessMessage("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      setErrorMessage(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
     }
   };
@@ -960,10 +960,6 @@ const GrievanceForm = ({ togglePopup }) => {
           ""
         )}
       </form>
-      <MessageComponent
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-      />
       <div className="incident-form-buttons">
         {currentStep > 1 && currentStep < 4 ? (
           <button onClick={handlePreviousStep} className="incident-back-btn">

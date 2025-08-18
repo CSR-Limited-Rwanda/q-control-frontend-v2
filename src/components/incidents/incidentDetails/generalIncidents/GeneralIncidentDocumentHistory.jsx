@@ -1,12 +1,12 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import api, { API_URL } from "@/utils/api";
 import DateFormatter from "@/components/DateFormatter";
 const GeneralIncidentDocumentHistory = ({ incidentId }) => {
   const [documentHistory, setDocumentHistory] = useState([]);
   const [gettingDocumentHistory, setGettingDocumentHistory] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const getDocumentHistory = async () => {
@@ -22,9 +22,9 @@ const GeneralIncidentDocumentHistory = ({ incidentId }) => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          setErrorMessage("Authentication error");
+          toast.error("Authentication error");
         } else {
-          setErrorMessage("Failed to fetch document History");
+          toast.error("Failed to fetch document History");
           console.error(error);
         }
         setGettingDocumentHistory(false);

@@ -1,4 +1,6 @@
 'use client'
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -72,8 +74,6 @@ function DrugReactionDetailsContent() {
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [hasAccess, setHasAccess] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   //   const [incidentStatus, setIncidentStatus] = useState({});
   const { incidentId } = useParams()
   const [reviewsCount, setReviewsCount] = useState();
@@ -144,9 +144,9 @@ function DrugReactionDetailsContent() {
       } catch (error) {
         if (error.response && error.response.status === 403) {
 
-          setErrorMessage("Authentication error");
+          toast.error("Authentication error");
         } else {
-          setErrorMessage("Failed to fetch incident reviews");
+          toast.error("Failed to fetch incident reviews");
           console.error(error);
         }
       }
@@ -160,14 +160,14 @@ function DrugReactionDetailsContent() {
           `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
-          setSuccessMessage("Fetched document history successfully");
+          toast.success("Fetched document history successfully");
           localStorage.setItem("documentHistoryCount", response.data.length);
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          setErrorMessage("Authentication error");
+          toast.error("Authentication error");
         } else {
-          setErrorMessage("Failed to fetch document History");
+          toast.error("Failed to fetch document History");
           console.error(error);
         }
       }

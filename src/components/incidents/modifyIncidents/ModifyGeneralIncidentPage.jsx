@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState, useRef, useEffect } from "react";
 import RichTexField from "@/components/forms/RichTextField";
 import CustomDatePicker from "@/components/CustomDatePicker";
@@ -21,8 +23,6 @@ import BackToPage from "@/components/BackToPage";
 
 // We need to resolve the issue with status prio to
 const ModifyGeneralIncidentForm = ({ data }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const { incidentId } = useParams();
   const { user } = useAuthentication()
   const [incident, setIncident] = useState(data);
@@ -67,11 +67,11 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       if (response.status === 200 || response.status === 201) {
 
         setUploadingDocuments(false);
-        setSuccessMessage("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      setErrorMessage(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
 
     }
@@ -392,14 +392,14 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       );
 
       if (response.status === 200) {
-        setSuccessMessage("Incident is updated successfully");
+        toast.success("Incident is updated successfully");
         setIsLoading(false);
         setSavingDraft(false);
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data.message ||
           error.response.data.error ||
           "Error updating the incident"

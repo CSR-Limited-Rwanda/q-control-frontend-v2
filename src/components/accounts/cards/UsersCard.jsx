@@ -8,6 +8,8 @@ import React, { useEffect, useState } from "react";
 import AddUserPermissionsFrom from "../forms/AddUserPermissionsFrom";
 import CloseIcon from "@/components/CloseIcon";
 
+import toast from "react-hot-toast";
+
 const UsersCard = ({ setUsersNumber }) => {
   const router = useRouter();
   const { permissionGroupID } = useParams();
@@ -16,8 +18,6 @@ const UsersCard = ({ setUsersNumber }) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [showAddUserForm, setShowAddUserForm] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
   // handle select user
   const handleSelectUser = (user) => {
     // if user is not in selected users list add them, else remove them
@@ -99,7 +99,7 @@ const UsersCard = ({ setUsersNumber }) => {
     }
 
     if (errors.length > 0) {
-      setErrorMessage(
+      toast.error(
         `Failed to remove permissions for ${errors.length} users`
       );
     }

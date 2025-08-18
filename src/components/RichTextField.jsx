@@ -15,7 +15,7 @@ const RichTextField = ({ value, onEditorChange }) => {
     return (
         <Editor
             apiKey={TINYEMCE_API_KEY}
-            value={value}
+            value={value || ""}
             onEditorChange={onEditorChange}
             init={{
                 height: 200,

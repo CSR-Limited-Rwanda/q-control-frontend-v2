@@ -23,8 +23,6 @@ import CantModify from "@/components/CantModify";
 import { useAuthentication } from "@/context/authContext";
 import BackToPage from "@/components/BackToPage";
 const ModifyAdverseDruReactionForm = ({ data }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [savingDraft, setSavingDraft] = useState(false);
   const { incidentId } = useParams();
   const { user } = useAuthentication()
@@ -226,11 +224,11 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       if (response.status === 200 || response.status === 201) {
 
         setUploadingDocuments(false);
-        setSuccessMessage("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      setErrorMessage(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
 
     }
@@ -395,7 +393,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         cleanedData(incidentData)
       );
       if (response.status === 200) {
-        setSuccessMessage("Incident modified successfully");
+        toast.success("Incident modified successfully");
         setIncident(response.data.incident);
         setIsLoading(false);
         setSavingDraft(false);
@@ -405,13 +403,13 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
     } catch (error) {
       if (error.response) {
 
-        setErrorMessage(
+        toast.error(
           error.response.data.error ||
           error.response.data.message ||
           "Error updating incident"
         );
       } else {
-        setErrorMessage("Unknown error updating incident");
+        toast.error("Unknown error updating incident");
 
       }
 

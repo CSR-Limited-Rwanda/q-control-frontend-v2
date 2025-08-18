@@ -33,7 +33,7 @@ const RichTexField = ({ value, onEditorChange }) => {
       name=""
       id=""
       onChange={(e) => handleChange(e.target.value)}
-      value={value}
+      value={value || ""}
       placeholder="Type here"
       rows={5}
     ></textarea>

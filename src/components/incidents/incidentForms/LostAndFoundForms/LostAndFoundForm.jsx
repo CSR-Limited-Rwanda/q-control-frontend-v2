@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState, useEffect, useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 import api, {
@@ -29,8 +31,6 @@ import MessageComponent from "@/components/MessageComponet";
 const LostAndFoundForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
   const [currentFacility, setCurrentFacility] = useState(user.facility);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
@@ -176,7 +176,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("lost_found_id", response.data.id);
-        setSuccessMessage("Data posted successfully");
+        toast.success("Data posted successfully");
         localStorage.setItem("updateNewIncident", "true");
         if (currentStep <= 3) {
           setCurrentStep(currentStep + 1);
@@ -198,7 +198,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
         error.response?.data?.message ||
         error.response?.data?.error ||
         "Failed to post data";
-      setErrorMessage(errorMessage);
+      toast.error(errorMessage);
     }
   }
 
@@ -212,7 +212,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
         payload
       );
 
-      setSuccessMessage("Data posted successfully");
+      toast.success("Data posted successfully");
 
       if (currentStep <= 4) {
         setCurrentStep(currentStep + 1);
@@ -230,7 +230,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
           JSON.stringify(error.response.data, null, 2)
         );
       }
-      setErrorMessage("Failed to post data");
+      toast.error("Failed to post data");
     } finally {
       setIsLoading(false);
     }
@@ -278,7 +278,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
         setIsLoading(true);
         patchData(data);
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
   };
@@ -325,7 +325,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
           });
         }
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
   };
@@ -665,10 +665,6 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
         {currentStep === 3 && <FormCompleteMessage />}
       </form>
-      <MessageComponent
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-      />
       <div className="incident-form-buttons">
         {currentStep > 1 && currentStep <= 2 && (
           <button

@@ -4,6 +4,8 @@ import { Eye, NotebookPen, Pencil, Square, SquareCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import toast from "react-hot-toast";
+
 export const DraftCategory = ({
   incident,
   title,
@@ -15,8 +17,6 @@ export const DraftCategory = ({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSelectedItems = (item) => {
     if (!selectedItems.includes(item)) {
@@ -71,17 +71,17 @@ export const DraftCategory = ({
 
         if (response.status === 204 || response.status === 200) {
           setIsLoading(false);
-          setSuccessMessage("Draft(s) deleted successfully");
+          toast.success("Draft(s) deleted successfully");
           setSelectedItems([]);
           fetchDrafts();
         } else {
-          setErrorMessage("Unexpected response from server");
+          toast.error("Unexpected response from server");
           console.error(response.data);
           setSelectedItems([]);
           setIsLoading(false);
         }
       } catch (error) {
-        setErrorMessage(
+        toast.error(
           error.response?.data?.message || "Failed to delete drafts"
         );
         console.error(error);
@@ -89,7 +89,7 @@ export const DraftCategory = ({
         setSelectedItems([]);
       }
     } else {
-      setErrorMessage(
+      toast.error(
         "No draft(s) selected, select draft(s) to be deleted"
       );
       setSelectedItems([]);
@@ -101,7 +101,7 @@ export const DraftCategory = ({
     if (selectedItems.length > 0) {
       setShowDeleteModal(true);
     } else {
-      setErrorMessage(
+      toast.error(
         "No draft(s) selected, select draft(s) to be deleted"
       );
     }

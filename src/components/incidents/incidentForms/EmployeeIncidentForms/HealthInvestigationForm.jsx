@@ -1,4 +1,6 @@
 'use client'
+
+import toast from "react-hot-toast";
 import React, { useState, useEffect } from "react";
 import { useRef } from "react";
 import postDocumentHistory from "../../documentHistory/postDocumentHistory.jsx";
@@ -19,8 +21,6 @@ const HealthIncidentInvestigationForm = () => {
     const [savingDraft, setSavingDraft] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
     const [showWitnessList, setShowWitnessList] = useState(false);
     // const [safetyRegulationsUser, setSafetyRegulationsUser] = useState("")
     const [employeeSeenDoctor, setEmployeeSeenDoctor] = useState(false);
@@ -155,7 +155,7 @@ const HealthIncidentInvestigationForm = () => {
             const isValid = validateStep(fieldsToValidate);
 
             if (!isValid) {
-                setErrorMessage("Please fill out all required fields.");
+                toast.error("Please fill out all required fields.");
                 return;
             }
 
@@ -163,14 +163,14 @@ const HealthIncidentInvestigationForm = () => {
                 employeeSeenDoctor &&
                 (!doctorsFirstName || !doctorsLastName || !hospitalName || !preventions)
             ) {
-                setErrorMessage(
+                toast.error(
                     "Please enter the Doctor's name, Hospital's name, and description."
                 );
                 return;
             }
 
             if (!incidentId) {
-                setErrorMessage("Missing incident ID. Please start over.");
+                toast.error("Missing incident ID. Please start over.");
                 return;
             }
 
@@ -203,7 +203,7 @@ const HealthIncidentInvestigationForm = () => {
                 handleStepOneSubmit();
             }
             else {
-                setErrorMessage("Please fill in all required fields.");
+                toast.error("Please fill in all required fields.");
             }
         } else if (currentStep === 2) {
             const isValid = validateStep({
@@ -216,14 +216,14 @@ const HealthIncidentInvestigationForm = () => {
 
             if (isValid) {
                 if (!incidentId) {
-                    setErrorMessage("Missing incident ID. Please start over.");
+                    toast.error("Missing incident ID. Please start over.");
                     return;
                 }
                 setIsLoading(true);
 
                 handleStepTwoSubmit();
             } else {
-                setErrorMessage("Please fill in all required fields.");
+                toast.error("Please fill in all required fields.");
             }
         }
     };
@@ -257,14 +257,14 @@ const HealthIncidentInvestigationForm = () => {
                 localStorage.setItem("employee_investigation_id", res.data.id);
                 setIncidentId(res.data.id);
                 setCurrentStep(currentStep + 1);
-                setSuccessMessage("Data posted successfully");
+                toast.success("Data posted successfully");
                 setIsLoading(false);
                 return res.data.id;
             }
         } catch (error) {
             const serverError = error?.response?.data?.error;
             if (typeof serverError === "string") {
-                setErrorMessage(serverError);
+                toast.error(serverError);
             } else if (
                 typeof serverError === "object" &&
                 serverError !== null
@@ -272,9 +272,9 @@ const HealthIncidentInvestigationForm = () => {
                 const messages = Object.entries(serverError).map(
                     ([key, value]) => `${key}: ${value.join(", ")}`
                 );
-                messages.forEach((msg) => setErrorMessage(msg));
+                messages.forEach((msg) => toast.error(msg));
             } else {
-                setErrorMessage("Something went wrong. Please try again.");
+                toast.error("Something went wrong. Please try again.");
             }
             console.error("Error submitting step 1: ", error);
             setIsLoading(false);
@@ -308,7 +308,7 @@ const HealthIncidentInvestigationForm = () => {
                 setIncidentId(res.data.id);
                 setCurrentStep(currentStep + 1);
                 setIsLoading(false);
-                setSuccessMessage("Data posted successfully");
+                toast.success("Data posted successfully");
                 return res.data.id;
             }
         } catch (error) {
@@ -349,7 +349,7 @@ const HealthIncidentInvestigationForm = () => {
 
             if (res.status === 200 || res.status === 201) {
                 postDocumentHistory(incidentId, "added a new investigation", "create");
-                setSuccessMessage("Data posted successfully");
+                toast.success("Data posted successfully");
                 setIsLoading(false);
                 setSuccess(true);
             }
@@ -806,10 +806,6 @@ const HealthIncidentInvestigationForm = () => {
                             ""
                         )}
                     </form>
-                    <MessageComponent
-                        errorMessage={errorMessage}
-                        successMessage={successMessage}
-                    />
                     <div className="buttons">
                         {currentStep > 1 && currentStep < 4 ? (
                             <button

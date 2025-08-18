@@ -1,4 +1,6 @@
 'use client'
+
+import toast from "react-hot-toast";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import DashboardLayout from "@/app/dashboard/layout";
@@ -15,8 +17,6 @@ const PageContent = () => {
   const { incidentId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [medicationErrorIncidentId, setMedicationErrorIncidentId] = useState(
     localStorage.getItem("medicationErrorIncidentId")
   )
@@ -30,18 +30,18 @@ const PageContent = () => {
         );
 
         if (response.status === 200) {
-          setSuccessMessage("Incident data modified successfully");
+          toast.success("Incident data modified successfully");
           setIncidentData(response.data.incident);
 
           setIsLoading(false);
         }
       } catch (error) {
         if (error.response.status && error.response.status === 403) {
-          setErrorMessage("You are not allowed to view this incident");
+          toast.error("You are not allowed to view this incident");
         } else if (error.response.status === 404) {
           setIsError(true);
         } else {
-          setErrorMessage("There was an error");
+          toast.error("There was an error");
         }
 
       } finally {

@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/app/dashboard/layout";
 import Link from "next/link";
@@ -26,7 +28,6 @@ import PermissionsGuard from "../PermissionsGuard";
 const ReviewGroupsDetailsContent = () => {
   const [members, setMembers] = useState([]);
   const [reviewGroup, setReviewGroup] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showAddMembersForm, setShowAddMembersForm] = useState(false);
   const [showActions, setShowActions] = useState(false);
@@ -48,10 +49,10 @@ const ReviewGroupsDetailsContent = () => {
           setReviewGroup(response.data);
         }
       } catch (error) {
-        setErrorMessage(
+        toast.error(
           error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get review group"
+          error.response.data?.error ||
+          "Failed to get review group"
         );
       }
     };
@@ -70,21 +71,21 @@ const ReviewGroupsDetailsContent = () => {
           if (Array.isArray(response.data)) {
             setMembers(response.data);
           } else {
-            setErrorMessage("Received data in unexpected format");
+            toast.error("Received data in unexpected format");
             setMembers([]);
           }
         }
       } catch (error) {
         if (error.response) {
-          setErrorMessage(
+          toast.error(
             error.response.data?.message ||
-              error.response.data?.error ||
-              "Failed to get review group members"
+            error.response.data?.error ||
+            "Failed to get review group members"
           );
         } else if (error.request) {
-          setErrorMessage("No response from server");
+          toast.error("No response from server");
         } else {
-          setErrorMessage("Failed to make request");
+          toast.error("Failed to make request");
         }
       } finally {
         setIsLoading(false);
@@ -119,8 +120,8 @@ const ReviewGroupsDetailsContent = () => {
       console.error("Delete error:", error);
       setDeleteError(
         error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Error deleting department"
+        error.response?.data?.error ||
+        "Error deleting department"
       );
     } finally {
       setIsDeleting(false);
@@ -318,8 +319,8 @@ const ReviewGroupsDetailsContent = () => {
                       <td>
                         {member?.access_to_department?.length > 0
                           ? member.access_to_department
-                              .map((dept) => dept.name)
-                              .join(", ")
+                            .map((dept) => dept.name)
+                            .join(", ")
                           : "No department"}
                       </td>
                     </tr>

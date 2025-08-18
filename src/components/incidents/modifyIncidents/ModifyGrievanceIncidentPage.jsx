@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import api, { calculateAge, cleanedData } from "@/utils/api";
@@ -28,8 +30,6 @@ import CloseIcon from "@/components/CloseIcon";
 import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const { permissions } = useGetPermissions()
   const [incident, setIncident] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
@@ -162,11 +162,11 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
 
       if (response.status === 200 || 201) {
         setUploadingDocuments(false);
-        setSuccessMessage("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      setErrorMessage(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
     }
   };
@@ -276,20 +276,20 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        setSuccessMessage("Incident updated successfully");
+        toast.success("Incident updated successfully");
         setIncident(response.data.incident);
 
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data.message ||
           error.response.data.error ||
           "Error while updating the incident"
         );
       } else {
-        setErrorMessage("Unknown error while updating the incident");
+        toast.error("Unknown error while updating the incident");
       }
       setIsLoading(false);
       setSavingDraft(false);

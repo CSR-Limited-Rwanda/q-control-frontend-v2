@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 import "@/styles/_forms.scss";
+import toast from "react-hot-toast";
 import api, {
   API_URL,
   checkCurrentAccount,
@@ -35,8 +36,6 @@ const MedicationErrorForm = ({ togglePopup }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [physicianFirstName, setPhysicianFirstName] = useState("");
@@ -319,8 +318,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("medication_id", response.data.id);
-        setErrorMessage("");
-        setSuccessMessage("Data posted successfully");
+        toast.error("");
+        toast.success("Data posted successfully");
         if (currentStep <= 7) {
           setCurrentStep(currentStep + 1);
           setIsLoading(false);
@@ -330,12 +329,12 @@ const MedicationErrorForm = ({ togglePopup }) => {
     } catch (error) {
       console.error(error);
       setIsLoading(false);
-      setSuccessMessage("");
+      toast.success("");
       let errorMsg = "Failed to post data";
       if (error.message) {
         errorMsg = error.message;
       }
-      setErrorMessage(errorMsg);
+      toast.error(errorMsg);
     }
   }
 
@@ -349,8 +348,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        setErrorMessage("");
-        setSuccessMessage("Data saved successfully");
+        toast.error("");
+        toast.success("Data saved successfully");
         if (currentStep <= 8) {
           setCurrentStep(currentStep + 1);
         }
@@ -365,12 +364,12 @@ const MedicationErrorForm = ({ togglePopup }) => {
     } catch (error) {
       console.error(error);
       setIsLoading(false);
-      setSuccessMessage("");
+      toast.success("");
       let errorMsg = "Failed to post data";
       if (error.message) {
         errorMsg = error.message;
       }
-      setErrorMessage(errorMsg);
+      toast.error(errorMsg);
     }
   }
 
@@ -441,7 +440,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           status: "Open",
         });
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
   };
@@ -485,7 +484,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           });
         }
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
 
@@ -520,7 +519,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
             staffStatus === "Other" ? otherStaffStatus : staffStatus,
         });
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
 
@@ -537,7 +536,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
         postStepThree();
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
 
@@ -552,7 +551,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
         postStepFour();
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
 
@@ -569,7 +568,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           description_of_error: descriptionerror,
         });
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
 
@@ -586,7 +585,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           contributing_factors: contributingfactors.join(", "),
         });
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
 
@@ -601,7 +600,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
           error_category: JSON.stringify(selectedCategory),
         });
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
     setIsLoading(true);
@@ -992,7 +991,7 @@ const MedicationErrorForm = ({ togglePopup }) => {
                     key={index}
                   >
                     {drugOrderedRoutes &&
-                    drugOrderedRoutes.includes(route.value) ? (
+                      drugOrderedRoutes.includes(route.value) ? (
                       <CheckSquare color="#F87C47" />
                     ) : (
                       <Square />
@@ -1117,9 +1116,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
               </p>
               <div className="types">
                 <div
-                  className={`type full-width-type ${
-                    descriptionerror.includes("PRESCRIBING") ? "selected" : ""
-                  }`}
+                  className={`type full-width-type ${descriptionerror.includes("PRESCRIBING") ? "selected" : ""
+                    }`}
                   onClick={() => handleTypeSelection("PRESCRIBING")}
                 >
                   <h5>PRESCRIBING</h5>
@@ -1128,9 +1126,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
                 </div>
 
                 <div
-                  className={`type full-width-type ${
-                    descriptionerror.includes("TRANSCRIBING") ? "selected" : ""
-                  }`}
+                  className={`type full-width-type ${descriptionerror.includes("TRANSCRIBING") ? "selected" : ""
+                    }`}
                   onClick={() => handleTypeSelection("TRANSCRIBING")}
                 >
                   <h5>TRANSCRIBING</h5>
@@ -1139,11 +1136,10 @@ const MedicationErrorForm = ({ togglePopup }) => {
                 </div>
 
                 <div
-                  className={`type full-width-type ${
-                    descriptionerror.includes("PROCUREMENT & STORAGE")
-                      ? "selected"
-                      : ""
-                  }`}
+                  className={`type full-width-type ${descriptionerror.includes("PROCUREMENT & STORAGE")
+                    ? "selected"
+                    : ""
+                    }`}
                   onClick={() => handleTypeSelection("PROCUREMENT & STORAGE")}
                 >
                   <h5>PROCUREMENT & STORAGE</h5>
@@ -1154,9 +1150,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
                 </div>
 
                 <div
-                  className={`type full-width-type ${
-                    descriptionerror.includes("DISPENSING") ? "selected" : ""
-                  }`}
+                  className={`type full-width-type ${descriptionerror.includes("DISPENSING") ? "selected" : ""
+                    }`}
                   onClick={() => handleTypeSelection("DISPENSING")}
                 >
                   <h5>DISPENSING</h5>
@@ -1166,9 +1161,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
                 </div>
 
                 <div
-                  className={`type full-width-type ${
-                    descriptionerror.includes("ADMINISTERING") ? "selected" : ""
-                  }`}
+                  className={`type full-width-type ${descriptionerror.includes("ADMINISTERING") ? "selected" : ""
+                    }`}
                   onClick={() => handleTypeSelection("ADMINISTERING")}
                 >
                   <h5>ADMINISTERING</h5>
@@ -1177,9 +1171,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
                   not verified, person not available on unit, etc.
                 </div>
                 <div
-                  className={`type full-width-type ${
-                    descriptionerror.includes("MONITORING") ? "selected" : ""
-                  }`}
+                  className={`type full-width-type ${descriptionerror.includes("MONITORING") ? "selected" : ""
+                    }`}
                   onClick={() => handleTypeSelection("MONITORING")}
                 >
                   <h5>MONITORING</h5>
@@ -1204,9 +1197,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
 
               <div className="types">
                 <div
-                  className={`type full-width-type ${
-                    contributingfactors.includes("PRODUCT") ? "selected" : ""
-                  }`}
+                  className={`type full-width-type ${contributingfactors.includes("PRODUCT") ? "selected" : ""
+                    }`}
                   onClick={() => handleContributingFactor("PRODUCT")}
                 >
                   <h5>PRODUCT</h5>
@@ -1216,11 +1208,10 @@ const MedicationErrorForm = ({ togglePopup }) => {
                 </div>
 
                 <div
-                  className={`type full-width-type ${
-                    contributingfactors.includes("MEDICATION USE SYSTEM")
-                      ? "selected"
-                      : ""
-                  }`}
+                  className={`type full-width-type ${contributingfactors.includes("MEDICATION USE SYSTEM")
+                    ? "selected"
+                    : ""
+                    }`}
                   onClick={() =>
                     handleContributingFactor("MEDICATION USE SYSTEM")
                   }
@@ -1231,11 +1222,10 @@ const MedicationErrorForm = ({ togglePopup }) => {
                 </div>
 
                 <div
-                  className={`type full-width-type ${
-                    contributingfactors.includes("COMMUNICATION DYNAMICS")
-                      ? "selected"
-                      : ""
-                  }`}
+                  className={`type full-width-type ${contributingfactors.includes("COMMUNICATION DYNAMICS")
+                    ? "selected"
+                    : ""
+                    }`}
                   onClick={() =>
                     handleContributingFactor("COMMUNICATION DYNAMICS")
                   }
@@ -1248,9 +1238,8 @@ const MedicationErrorForm = ({ togglePopup }) => {
                 </div>
 
                 <div
-                  className={`type full-width-type ${
-                    contributingfactors.includes("OTHER") ? "selected" : ""
-                  }`}
+                  className={`type full-width-type ${contributingfactors.includes("OTHER") ? "selected" : ""
+                    }`}
                   onClick={
                     handleShowOtherContributingFactors
                     // handleContributingFactor("OTHER")
@@ -1288,11 +1277,10 @@ const MedicationErrorForm = ({ togglePopup }) => {
                 {severityCategories.map((category, index) => (
                   <div
                     key={index}
-                    className={`type full full-width-type ${
-                      selectedCategory.value === category.value
-                        ? "selected"
-                        : ""
-                    }`}
+                    className={`type full full-width-type ${selectedCategory.value === category.value
+                      ? "selected"
+                      : ""
+                      }`}
                     onClick={() =>
                       handleSelectedCategory({
                         category: category.category,
@@ -1330,10 +1318,6 @@ const MedicationErrorForm = ({ togglePopup }) => {
         )}
       </form>
 
-      <MessageComponent
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-      />
 
       <div className="buttons">
         {currentStep > 1 && currentStep < 9 ? (

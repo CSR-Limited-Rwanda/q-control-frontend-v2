@@ -1,4 +1,6 @@
 'use client'
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import api, { API_URL } from "@/utils/api";
 import NamesInitials from "@/components/NamesInitials";
@@ -27,9 +29,9 @@ const WorkplaceReviews = ({ incidentId }) => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          setErrorMessage("Authentication error");
+          toast.error("Authentication error");
         } else {
-          setErrorMessage("Failed to fetch incident reviews");
+          toast.error("Failed to fetch incident reviews");
           console.error(error);
         }
         setGettingReviews(false);

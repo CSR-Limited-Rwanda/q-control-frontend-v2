@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState } from "react";
 // import { Editor } from "@tinymce/tinymce-react";
 import api, { API_URL } from "@/utils/api";
@@ -7,8 +9,6 @@ import { LoaderCircle } from "lucide-react";
 const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
   const [content, setContent] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const handleReviewContent = (content, editor) => {
     setContent(content);
   };
@@ -21,7 +21,7 @@ const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
         { content: content }
       );
       if (response.status === 201) {
-        setSuccessMessage("Review added successfully");
+        toast.success("Review added successfully");
         setContent("");
         setSubmittingReview(false);
         toggleReviewForm();
@@ -29,11 +29,11 @@ const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
     } catch (error) {
 
       if (error.response.data) {
-        setErrorMessage(
+        toast.error(
           error.response.data.error || "Error adding review"
         );
       } else {
-        setErrorMessage("Failed to add review");
+        toast.error("Failed to add review");
       }
       setSubmittingReview(false);
     }

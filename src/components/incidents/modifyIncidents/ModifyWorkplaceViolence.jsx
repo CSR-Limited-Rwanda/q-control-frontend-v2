@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState, useEffect } from "react";
 import api, { cleanedData } from "@/utils/api";
 import { useParams } from "react-router-dom";
@@ -21,8 +23,6 @@ import '@/styles/_modifyIncident.scss';
 import BackToPage from "@/components/BackToPage";
 
 const ModifyWorkplaceIncident = ({ data }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const { user } = useAuthentication()
   const { incidentId } = useParams();
   const [incident, setIncident] = useState(data);
@@ -252,11 +252,11 @@ const ModifyWorkplaceIncident = ({ data }) => {
       if (response.status === 200 || response.status === 201) {
 
         setUploadingDocuments(false);
-        setSuccessMessage("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      setErrorMessage(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
 
     }
@@ -296,7 +296,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
         injury_description: "",
       });
     } else {
-      setErrorMessage(
+      toast.error(
         "Please fill in both person injured and injury details"
       );
     }
@@ -361,7 +361,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
       setSelectedBackground([]);
       setSelectedRelationship([]);
     } else {
-      setErrorMessage(
+      toast.error(
         "Please fill all fields before adding a person."
       );
     }
@@ -703,7 +703,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        setSuccessMessage("Incident updated successfully");
+        toast.success("Incident updated successfully");
         setIncident(response.data.incident);
 
         postDocumentHistory(incidentId, "modified this incident", "modify");
@@ -713,13 +713,13 @@ const ModifyWorkplaceIncident = ({ data }) => {
       setSavingDraft(false);
 
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data?.message ||
           error.response.data?.error ||
           "Error while updating the incident"
         );
       } else {
-        setErrorMessage("Unknown error while updating the incident");
+        toast.error("Unknown error while updating the incident");
       }
     }
   };

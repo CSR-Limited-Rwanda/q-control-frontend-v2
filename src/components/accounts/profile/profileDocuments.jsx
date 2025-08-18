@@ -2,8 +2,9 @@ import FilesList from "@/components/incidents/documentHistory/FilesList";
 import api from "@/utils/api";
 import React, { useEffect, useState } from "react";
 
+import toast from "react-hot-toast";
+
 const ProfileDocuments = () => {
-  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState([]);
 
@@ -20,13 +21,13 @@ const ProfileDocuments = () => {
         }
       } catch (error) {
         if (error.response) {
-          setErrorMessage(
+          toast.error(
             error.response.data.message ||
-              error.response.data.error ||
-              "Error getting your documents"
+            error.response.data.error ||
+            "Error getting your documents"
           );
         } else {
-          setErrorMessage("Unknown error getting your documents");
+          toast.error("Unknown error getting your documents");
         }
         setIsLoading(false);
       }

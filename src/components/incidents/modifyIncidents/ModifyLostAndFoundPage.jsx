@@ -18,8 +18,6 @@ import { useAuthentication } from "@/context/authContext";
 import BackToPage from "@/components/BackToPage";
 
 const ModifyLostFound = ({ data }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const { user } = useAuthentication()
   const { incidentId } = useParams();
   const [incident, setIncident] = useState(data);
@@ -152,11 +150,11 @@ const ModifyLostFound = ({ data }) => {
       if (response.status === 200 || response.status === 201) {
 
         setUploadingDocuments(false);
-        setSuccessMessage("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      setErrorMessage(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
 
     }
@@ -226,14 +224,14 @@ const ModifyLostFound = ({ data }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        setSuccessMessage("Incident updated successfully");
+        toast.success("Incident updated successfully");
         setIncident(response.data.incident);
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       setIsLoading(false);
       setSavingDraft(false);
-      setErrorMessage("Error updating the incident");
+      toast.error("Error updating the incident");
 
     }
   };

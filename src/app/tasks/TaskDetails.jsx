@@ -7,12 +7,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import toast from "react-hot-toast";
+
 export const TaskDetails = ({ taskId, handleClose }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
   const [taskDetails, setTaskDetails] = useState(null);
   const popupRef = useRef(null);
 
@@ -20,9 +21,9 @@ export const TaskDetails = ({ taskId, handleClose }) => {
     setIsSubmitting(true);
     const response = await completeTask(taskId);
     if (response.success) {
-      setSuccessMessage(response.message);
+      toast.success(response.message);
       setTimeout(() => {
-        setSuccessMessage(null);
+        toast.success(null);
         handleClose();
       }, 1000);
     } else {
@@ -35,9 +36,9 @@ export const TaskDetails = ({ taskId, handleClose }) => {
     setIsSubmitting(true);
     const response = await submitTask(taskId);
     if (response.success) {
-      setSuccessMessage(response.message);
+      toast.success(response.message);
       setTimeout(() => {
-        setSuccessMessage(null);
+        toast.success(null);
         handleClose();
       }, 1000);
     } else {

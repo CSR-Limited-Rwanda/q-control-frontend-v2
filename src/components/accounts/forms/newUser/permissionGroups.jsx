@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useCallback } from "react";
 import { useState } from "react";
 import { LoaderCircle, Search, Square, SquareCheck, X } from "lucide-react";
@@ -32,8 +34,6 @@ const PermissionGroups = ({ formData, setFormData }) => {
     useState({});
   const [departmentSearch, setDepartmentSearch] = useState("");
   const [facilitySearch, setFacilitySearch] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSearchingDepartment, setIsSearchingDepartment] = useState(false);
   const [isSearchingFacility, setIsSearchingFacility] = useState(false);
@@ -44,7 +44,7 @@ const PermissionGroups = ({ formData, setFormData }) => {
       const response = await api.get(`/permissions/?search=${searchQuery}`);
       setGroups(response.data);
     } catch (error) {
-      setErrorMessage("Failed to fetch groups");
+      toast.error("Failed to fetch groups");
 
     } finally {
       setIsLoading(false);
@@ -132,7 +132,7 @@ const PermissionGroups = ({ formData, setFormData }) => {
       setPermissions(response.data);
     } catch (error) {
 
-      setErrorMessage("Failed to fetch permissions");
+      toast.error("Failed to fetch permissions");
     } finally {
       setIsLoading(false);
     }
