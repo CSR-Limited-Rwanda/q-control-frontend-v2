@@ -246,17 +246,18 @@ const IncidentDetailsHeader = ({
               </button>
               <div className="actions-popup">
                 <>
-                  <div
+                <PermissionsGuard model={model} codename={"send_for_review"} isPage={false}>
+                <div
                     className="action"
                     onClick={toggleShowSendToDepartmentForm}
                   >
                     <div className="icon">
                       <SendHorizontal />
                     </div>
-                    <PermissionsGuard model={model} codename={"send_for_review"} isPage={false}>
-                      <span>Send for review</span>
-                    </PermissionsGuard>
+                    <span>Send for review</span>
                   </div>
+                </PermissionsGuard>
+                 
                   <PermissionsGuard
                     model={model}
                     codename={"close_incident"}

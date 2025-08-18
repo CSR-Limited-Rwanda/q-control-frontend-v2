@@ -619,7 +619,7 @@ const GrievanceTable = ({
           <th>Status</th>
           {permissions?.patient_visitor_grievance?.includes(
             "change_incident"
-          ) &&
+          ) ||
             permissions?.patient_visitor_grievance?.includes(
               "view_details"
             ) && <th className="action-col">Action</th>}
@@ -689,7 +689,7 @@ const GrievanceTable = ({
 
               {permissions?.patient_visitor_grievance?.includes(
                 "change_incident"
-              ) &&
+              ) ||
                 permissions?.patient_visitor_grievance?.includes(
                   "view_details"
                 ) && (
