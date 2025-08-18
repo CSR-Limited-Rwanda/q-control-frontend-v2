@@ -181,20 +181,20 @@ const DepartmentsPage = () => {
             <div className="departments-list">
               {sortedDepartments.length > 0
                 ? sortedDepartments.map((department) => (
-                  <div
-                    key={department.id}
-                    className="department-item"
-                    onClick={() => handleDepartmentClick(department.id)}
-                  >
-                    <Notebook size={30} className="department-icon" />
-                    <div>
-                      <h3 className="department-title">{department.name}</h3>
-                      <p className="date">
-                        Created on {formatDate(department.created_at)}
-                      </p>
+                    <div
+                      key={department.id}
+                      className="department-item"
+                      onClick={() => handleDepartmentClick(department.id)}
+                    >
+                      <Notebook size={30} className="department-icon" />
+                      <div>
+                        <h3 className="department-title">{department.name}</h3>
+                        <p className="date">
+                          Created on {formatDate(department.created_at)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  ))
                 : "No departments found"}
             </div>
           </div>
