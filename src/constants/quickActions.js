@@ -33,21 +33,21 @@ export const HelplineActions = [
     {
         icon: <Headset size={20} color="var(--primary" />,
         label: 'Call Helpline',
-        href: 'tel:+1234567890'
+        href: 'tel:+250788449976'
     },
     {
         icon: <Mail size={20} color="var(--primary" />,
         label: 'Email Support',
-        href: 'mailto:support@example.com'
+        href: 'mailto:salphonse@compstaffing.com'
     },
     {
         icon: <Ticket size={20} color="var(--primary" />,
         label: 'Submit a Ticket',
         href: 'https://cohesivehealthcare.us.4me.com/login'
     },
-    // {
-    //     icon: <File size={20} color="var(--primary" />,
-    //     label: 'How to use',
-    //     href: '/docs'
-    // }
+    {
+        icon: <File size={20} color="var(--primary" />,
+        label: 'How to use',
+        href: '/docs.cohesiveapps.com/q-control'
+    }
 ]

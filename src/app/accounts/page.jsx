@@ -6,13 +6,13 @@ import Accounts from "@/components/accounts/tabs/Accounts";
 import PermissionGroups from "@/components/accounts/tabs/PermissionGroups";
 import Titles from "@/components/accounts/tabs/Titles";
 import ReviewGroups from "@/components/accounts/tabs/ReviewGroups";
-import { ReviewTemplates } from "@/components/accounts/tabs/ReviewTemplates"; import DepartmentsPage from '@/components/accounts/tabs/Departments';
+import { ReviewTemplates } from "@/components/accounts/tabs/ReviewTemplates";
+import DepartmentsPage from "@/components/accounts/tabs/Departments";
 import { getPermissions, useGetPermissions } from "@/hooks/fetchPermissions";
-
-
 
 const AccountsPage = () => {
   const { permissions, loading, error } = useGetPermissions();
+  console.log("permissions: ", permissions);
   const baseTabs = [
     {
       name: "Account management",
@@ -20,11 +20,11 @@ const AccountsPage = () => {
     },
     {
       name: "Permission groups",
-      id: "permissionGroups"
+      id: "permissionGroups",
     },
     {
       name: "Departments",
-      id: "departments"
+      id: "departments",
     },
     {
       name: "Titles",
@@ -40,12 +40,51 @@ const AccountsPage = () => {
     },
   ];
 
-  // if no permissions to view users, remove user
   const tabs = React.useMemo(() => {
-    if (!permissions || !permissions?.accounts?.includes("view_list")) {
-      return baseTabs.filter(tab => tab.id !== "accountsManagement");
+    if (!permissions) {
+      // If no permissions, remove all permission-dependent tabs
+      return baseTabs.filter(
+        (tab) =>
+          ![
+            "accountsManagement",
+            "permissionGroups",
+            "departments",
+            "titles",
+            "reviewGroups",
+            "reviewTemplates",
+          ].includes(tab.id)
+      );
     }
-    return baseTabs;
+
+    let filteredTabs = [...baseTabs];
+
+    if (!permissions.accounts?.includes("view_list")) {
+      filteredTabs = filteredTabs.filter(
+        (tab) => tab.id !== "accountsManagement"
+      );
+    }
+
+    if (!permissions.auth?.includes("view_group")) {
+      filteredTabs = filteredTabs.filter(
+        (tab) => tab.id !== "permissionGroups"
+      );
+    }
+
+    if (!permissions.base?.includes("view_list")) {
+      filteredTabs = filteredTabs.filter((tab) => tab.id !== "departments");
+    }
+
+    if (!permissions.accounts?.includes("view_title")) {
+      filteredTabs = filteredTabs.filter((tab) => tab.id !== "titles");
+    }
+
+    if (!permissions.tasks?.includes("view_reviewgroups")) {
+      filteredTabs = filteredTabs.filter((tab) => tab.id !== "reviewGroups");
+    }
+    if (!permissions.tasks?.includes("view_reviewtemplates")) {
+      filteredTabs = filteredTabs.filter((tab) => tab.id !== "reviewTemplates");
+    }
+    return filteredTabs;
   }, [permissions]);
 
   const [activeTab, setActiveTab] = useState(null);
@@ -75,15 +114,19 @@ const AccountsPage = () => {
           </div>
         ))}
       </div>
-      {activeTab === "accountsManagement" && <Accounts permissions={permissions} />}
+      {activeTab === "accountsManagement" && (
+        <Accounts permissions={permissions} />
+      )}
       {activeTab === "permissionGroups" && (
         <div>
           <PermissionGroups permissions={permissions} />
         </div>
       )}
-      {
-        activeTab === 'departments' && <div><DepartmentsPage permissions={permissions} /></div>
-      }
+      {activeTab === "departments" && (
+        <div>
+          <DepartmentsPage permissions={permissions} />
+        </div>
+      )}
       {activeTab === "reviewGroups" && (
         <div>
           <ReviewGroups permissions={permissions} />

@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -132,8 +133,8 @@ const StaffIncidentList = () => {
 
   const handleRowClick = (incidentId) => {
     router.push(`/incidents/staff/${incidentId}`);
-    localStorage.setItem("staffIncidentId", incidentId)
-    localStorage.setItem("employee_investigation_id", incidentId)
+    localStorage.setItem("staffIncidentId", incidentId);
+    localStorage.setItem("employee_investigation_id", incidentId);
   };
 
   const navigateToModify = (incidentId) => {
@@ -210,138 +211,190 @@ const StaffIncidentList = () => {
         <ModifyPageLoader />
       ) : (
         <div>
-      {errorFetching ? (
-        <div className="error-message">
-          <p>{errorFetching}</p>
-        </div>
-      ) : (
-        <div className="tab-container incidents-tab">
-          <div className="tab-header">
-            <div className="title-container-action">
-              <div className="title-container">
-                <h2 className="title">Staff Incident Tracking List</h2>
-                <p>{incidentData.length} incident(s) available</p>
-              </div>
+          {errorFetching ? (
+            <div className="error-message">
+              <p>{errorFetching}</p>
             </div>
-
-            <div className="filters">
-              {openFilters ? (
-                <div className="filters_popup">
-                  <div onClick={toggleOpenFilters} className="close-icon">
-                    <X size={24} variant="stroke" />
-                  </div>
-
-                  <h3>Filter incident data</h3>
-                  <div className="filter-buttons">
-                    <CustomSelectInput
-                      options={["Draft", "Open", "Closed"]}
-                      placeholder="Filter by status"
-                      selected={filters.status}
-                      setSelected={(value) =>
-                        setFilters({ ...filters, status: value })
-                      }
-                      name="status"
-                      id="status"
-                    />
-
-                    <div className="filter-range">
-                      <span>Start date</span>
-                      <CustomDatePicker
-                        selectedDate={filters.start_date}
-                        setSelectedDate={(value) =>
-                          setFilters({ ...filters, start_date: value })
-                        }
-                        placeholderText="Select a date"
-                        dateFormat="yyyy-MM-dd"
-                      />
-                    </div>
-
-                    <div className="filter-range">
-                      <span>End date</span>
-                      <CustomDatePicker
-                        selectedDate={filters.end_date}
-                        setSelectedDate={(value) =>
-                          setFilters({ ...filters, end_date: value })
-                        }
-                        placeholderText="Select a date"
-                        dateFormat="yyyy-MM-dd"
-                      />
-                    </div>
-
-                    <div className="popup-buttons">
-                      <button onClick={clearFilters} className="outline-button">
-                        <X size={20} variant="stroke" />
-                        Clear
-                      </button>
-                      <button
-                        onClick={applyFilters}
-                        className="secondary-button"
-                      >
-                        <div className="icon">
-                          <SlidersHorizontal size={20} variant="stroke" />
-                        </div>
-                        <span>Filter</span>
-                      </button>
-                    </div>
+          ) : (
+            <div className="tab-container incidents-tab">
+              <div className="tab-header">
+                <div className="title-container-action">
+                  <div className="title-container">
+                    <h2 className="title">Staff Incident Tracking List</h2>
+                    <p>{incidentData.length} incident(s) available</p>
                   </div>
                 </div>
-              ) : null}
 
-              <input
-                onChange={(e) => search(e.target.value)}
-                type="search"
-                name="systemSearch"
-                id="systemSearch"
-                placeholder="Search by facility, staff name"
-              />
-              {selectedItems.length > 0 ? (
-                <button
-                  onClick={() =>
-                    exportExcel(selectedItems, "staff_incident_list")
-                  }
-                  className="secondary-button"
-                >
-                  <File />
-                  <span>Export</span>
-                </button>
-              ) : (
-                <button
-                  onClick={toggleOpenFilters}
-                  className="date-filter-button"
-                >
-                  <div className="icon">
-                    <SlidersHorizontal variant="stroke" />
-                  </div>
-                  <span>Filter</span>
-                </button>
-              )}
-            </div>
-          </div>
+                <div className="filters">
+                  {openFilters ? (
+                    <div className="filters_popup">
+                      <div onClick={toggleOpenFilters} className="close-icon">
+                        <X size={24} variant="stroke" />
+                      </div>
 
-          <div className="incident-list">
-            {isSearching ? (
-              <div className="search-results">
-                {isSearchingTheDatabase ? (
-                  <div className="searching_database">
-                    <p>Searching database</p>
-                  </div>
-                ) : currentSearchResults.length > 0 ? (
-                  <div className="results-table">
-                    <div className="results-count">
-                      <span className="count">{searchResults.length}</span>{" "}
-                      result(s) found
+                      <h3>Filter incident data</h3>
+                      <div className="filter-buttons">
+                        <CustomSelectInput
+                          options={["Draft", "Open", "Closed"]}
+                          placeholder="Filter by status"
+                          selected={filters.status}
+                          setSelected={(value) =>
+                            setFilters({ ...filters, status: value })
+                          }
+                          name="status"
+                          id="status"
+                        />
+
+                        <div className="filter-range">
+                          <span>Start date</span>
+                          <CustomDatePicker
+                            selectedDate={filters.start_date}
+                            setSelectedDate={(value) =>
+                              setFilters({ ...filters, start_date: value })
+                            }
+                            placeholderText="Select a date"
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+
+                        <div className="filter-range">
+                          <span>End date</span>
+                          <CustomDatePicker
+                            selectedDate={filters.end_date}
+                            setSelectedDate={(value) =>
+                              setFilters({ ...filters, end_date: value })
+                            }
+                            placeholderText="Select a date"
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+
+                        <div className="popup-buttons">
+                          <button
+                            onClick={clearFilters}
+                            className="outline-button"
+                          >
+                            <X size={20} variant="stroke" />
+                            Clear
+                          </button>
+                          <button
+                            onClick={applyFilters}
+                            className="secondary-button"
+                          >
+                            <div className="icon">
+                              <SlidersHorizontal size={20} variant="stroke" />
+                            </div>
+                            <span>Filter</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
+                  ) : null}
+
+                  <input
+                    onChange={(e) => search(e.target.value)}
+                    type="search"
+                    name="systemSearch"
+                    id="systemSearch"
+                    placeholder="Search by facility, staff name"
+                  />
+                  {selectedItems.length > 0 ? (
+                    <button
+                      onClick={() =>
+                        exportExcel(selectedItems, "staff_incident_list")
+                      }
+                      className="secondary-button"
+                    >
+                      <File />
+                      <span>Export</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={toggleOpenFilters}
+                      className="date-filter-button"
+                    >
+                      <div className="icon">
+                        <SlidersHorizontal variant="stroke" />
+                      </div>
+                      <span>Filter</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="incident-list">
+                {isSearching ? (
+                  <div className="search-results">
+                    {isSearchingTheDatabase ? (
+                      <div className="searching_database">
+                        <p>Searching database</p>
+                      </div>
+                    ) : currentSearchResults.length > 0 ? (
+                      <div className="results-table">
+                        <div className="results-count">
+                          <span className="count">{searchResults.length}</span>{" "}
+                          result(s) found
+                        </div>
+                        <StaffTable
+                          incidentData={currentSearchResults}
+                          handleRowClick={handleRowClick}
+                          selectedItems={selectedItems}
+                          handleSelectedItems={handleSelectedItems}
+                          handleSelectAll={handleSelectAll}
+                          handleNonClickableColumnClick={
+                            handleNonClickableColumnClick
+                          }
+                          setIncidentData={setSearchResults}
+                          navigateToModify={navigateToModify}
+                        />
+
+                        <div className="pagination-controls">
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            Prev
+                          </button>
+                          {pageNumbers.map((number) => (
+                            <button
+                              key={number}
+                              className={`pagination-button ${
+                                currentPage === number ? "active" : ""
+                              }`}
+                              onClick={() => handlePageChange(number)}
+                            >
+                              {number}
+                            </button>
+                          ))}
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="no-data-found">
+                        <p>No data found with your search</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
                     <StaffTable
-                      incidentData={currentSearchResults}
-                      handleRowClick={handleRowClick}
-                      selectedItems={selectedItems}
-                      handleSelectedItems={handleSelectedItems}
-                      handleSelectAll={handleSelectAll}
+                      incidentData={currentIncidentData}
                       handleNonClickableColumnClick={
                         handleNonClickableColumnClick
                       }
-                      setIncidentData={setSearchResults}
+                      setIncidentData={setIncidentData}
                       navigateToModify={navigateToModify}
+                      handleRowClick={handleRowClick}
+                      selectedItems={selectedItems}
+                      handleSelectAll={handleSelectAll}
+                      handleSelectedItems={handleSelectedItems}
                     />
 
                     <div className="pagination-controls">
@@ -355,8 +408,9 @@ const StaffIncidentList = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${currentPage === number ? "active" : ""
-                            }`}
+                          className={`pagination-button ${
+                            currentPage === number ? "active" : ""
+                          }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}
@@ -370,58 +424,12 @@ const StaffIncidentList = () => {
                         Next
                       </button>
                     </div>
-                  </div>
-                ) : (
-                  <div className="no-data-found">
-                    <p>No data found with your search</p>
-                  </div>
+                  </>
                 )}
               </div>
-            ) : (
-              <>
-                <StaffTable
-                  incidentData={currentIncidentData}
-                  handleNonClickableColumnClick={handleNonClickableColumnClick}
-                  setIncidentData={setIncidentData}
-                  navigateToModify={navigateToModify}
-                  handleRowClick={handleRowClick}
-                  selectedItems={selectedItems}
-                  handleSelectAll={handleSelectAll}
-                  handleSelectedItems={handleSelectedItems}
-                />
-
-                <div className="pagination-controls">
-                  <button
-                    className="pagination-button"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    Prev
-                  </button>
-                  {pageNumbers.map((number) => (
-                    <button
-                      key={number}
-                      className={`pagination-button ${currentPage === number ? "active" : ""
-                        }`}
-                      onClick={() => handlePageChange(number)}
-                    >
-                      {number}
-                    </button>
-                  ))}
-                  <button
-                    className="pagination-button"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
       )}
     </PermissionsGuard>
   );
@@ -437,6 +445,7 @@ const StaffTable = ({
   handleSelectedItems,
   setIncidentData,
 }) => {
+  const { permissions } = useGetPermissions();
   const [sortDesc, setSortDesc] = useState(false);
   const [nameAZ, setNameAZ] = useState(false);
   const [dateRecent, setDateRecent] = useState(false);
@@ -475,7 +484,6 @@ const StaffTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const result = a.id - b.id;
@@ -563,7 +571,10 @@ const StaffTable = ({
           </th>
           <th>Claim contact & PH</th>
           <th>Status</th>
-          <th>Action</th>
+          {permissions?.staff_incident_reports?.includes("change_incident") &&
+            permissions?.staff_incident_reports?.includes("view_details") && (
+              <th className="action-col">Action</th>
+            )}
         </tr>
       </thead>
       <tbody>
@@ -578,8 +589,9 @@ const StaffTable = ({
                 )
               }
               key={index}
-              className={`table-card ${selectedItems.includes(employee) ? "selected" : ""
-                }`}
+              className={`table-card ${
+                selectedItems.includes(employee) ? "selected" : ""
+              }`}
             >
               <td data-label="Select">
                 <div
@@ -595,10 +607,12 @@ const StaffTable = ({
               </td>
               <td data-label="No">{index + 1}</td>
               <td data-label="ID">{employee.original_report || employee.id}</td>
-              <td data-label="Facility">{employee.report_facility?.name || "Not provided"}</td>
+              <td data-label="Facility">
+                {employee.report_facility?.name || "Not provided"}
+              </td>
               <td data-label="Name">
                 {employee.patient_info?.last_name &&
-                  employee.patient_info?.first_name
+                employee.patient_info?.first_name
                   ? `${employee.patient_info?.last_name} ${employee.patient_info?.first_name}`
                   : "Not provided"}
               </td>
@@ -614,44 +628,66 @@ const StaffTable = ({
               <td data-label="Claim">{employee.claim || "Not Specified"}</td>
               <td data-label="Status">
                 <p
-                  className={`follow-up ${employee.status === "Draft"
-                    ? "in-progress"
-                    : employee.status === "Closed"
+                  className={`follow-up ${
+                    employee.status === "Draft"
+                      ? "in-progress"
+                      : employee.status === "Closed"
                       ? "closed"
                       : "Open"
-                    }`}
+                  }`}
                 >
                   {employee.status || "Not specified"}
                 </p>
               </td>
-              <td
-                data-label="Action"
-                onClick={(event) => handleNonClickableColumnClick(event)}
-                className="action-col"
-              >
-                <div className="table-actions">
-                  <Pencil
-                    size={20}
-                    onClick={() =>
-                      navigateToModify(
-                        employee.original_report
-                          ? employee.original_report
-                          : employee.id
-                      )
-                    }
-                  />
-                  <Eye
-                    size={20}
-                    onClick={() =>
-                      handleRowClick(
-                        employee.original_report
-                          ? employee.original_report
-                          : employee.id
-                      )
-                    }
-                  />
-                </div>
-              </td>
+
+              {permissions?.staff_incident_reports?.includes(
+                "change_incident"
+              ) &&
+                permissions?.staff_incident_reports?.includes(
+                  "view_details"
+                ) && (
+                  <td
+                    data-label="Action"
+                    onClick={(event) => handleNonClickableColumnClick(event)}
+                    className="action-col"
+                  >
+                    <div className="table-actions">
+                      <PermissionsGuard
+                        model={"staff_incident_reports"}
+                        codename={"change_incident"}
+                        isPage={false}
+                      >
+                        <Pencil
+                          size={20}
+                          onClick={() =>
+                            navigateToModify(
+                              employee.original_report
+                                ? employee.original_report
+                                : employee.id
+                            )
+                          }
+                        />
+                      </PermissionsGuard>
+
+                      <PermissionsGuard
+                        model={"staff_incident_reports"}
+                        codename={"view_details"}
+                        isPage={false}
+                      >
+                        <Eye
+                          size={20}
+                          onClick={() =>
+                            handleRowClick(
+                              employee.original_report
+                                ? employee.original_report
+                                : employee.id
+                            )
+                          }
+                        />
+                      </PermissionsGuard>
+                    </div>
+                  </td>
+                )}
             </tr>
           ))
         ) : (
