@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import api, {API_URL} from "@/utils/api";
+import api, { API_URL } from "@/utils/api";
 import NamesInitials from "@/components/NamesInitials";
 import ReviewForm from "../../incidentForms/ReviewForm";
 import DateFormatter from "@/components/DateFormatter";
@@ -10,6 +10,8 @@ const LostAndFoundReviews = ({ incidentId }) => {
 
   const [gettingReviews, setGettingReviews] = useState(true);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const toggleReviewForm = () => {
     setShowReviewForm(!showReviewForm);
   };
@@ -20,6 +22,7 @@ const LostAndFoundReviews = ({ incidentId }) => {
           `${API_URL}/incidents/lost_and_found/${incidentId}/reviews/`
         );
         if (response.status === 200) {
+          setSuccessMessage("Incident reviews fetched successfully");
           setReviews(response.data);
 
           localStorage.setItem("incidentReviewsCount", response.data.length);
@@ -27,9 +30,9 @@ const LostAndFoundReviews = ({ incidentId }) => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch incident reviews");
+          setErrorMessage("Failed to fetch incident reviews");
           console.error(error);
         }
         setGettingReviews(false);
@@ -49,7 +52,7 @@ const LostAndFoundReviews = ({ incidentId }) => {
           <div key={index} className="review">
             <div className="profile">
               {review.created_by.profile_img &&
-              review.created_by.profile_img ? (
+                review.created_by.profile_img ? (
                 <img
                   className="profile-pic"
                   src={`${API_URL}${review.created_by.profile_img}`}
@@ -59,9 +62,8 @@ const LostAndFoundReviews = ({ incidentId }) => {
                 <div className="profile-place-holder">
                   {/* we will find a way to change color according to the user who is logged in */}
                   <NamesInitials
-                    fullName={`${review.created_by.last_name || "None"} ${
-                      review.created_by.first_name || "None"
-                    }`}
+                    fullName={`${review.created_by.last_name || "None"} ${review.created_by.first_name || "None"
+                      }`}
                   />
                 </div>
               )}

@@ -15,6 +15,8 @@ export const DraftCategory = ({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSelectedItems = (item) => {
     if (!selectedItems.includes(item)) {
@@ -69,17 +71,17 @@ export const DraftCategory = ({
 
         if (response.status === 204 || response.status === 200) {
           setIsLoading(false);
-          window.customToast.success("Draft(s) deleted successfully");
+          setSuccessMessage("Draft(s) deleted successfully");
           setSelectedItems([]);
           fetchDrafts();
         } else {
-          window.customToast.error("Unexpected response from server");
+          setErrorMessage("Unexpected response from server");
           console.error(response.data);
           setSelectedItems([]);
           setIsLoading(false);
         }
       } catch (error) {
-        window.customToast.error(
+        setErrorMessage(
           error.response?.data?.message || "Failed to delete drafts"
         );
         console.error(error);
@@ -87,7 +89,7 @@ export const DraftCategory = ({
         setSelectedItems([]);
       }
     } else {
-      window.customToast.error(
+      setErrorMessage(
         "No draft(s) selected, select draft(s) to be deleted"
       );
       setSelectedItems([]);
@@ -99,7 +101,7 @@ export const DraftCategory = ({
     if (selectedItems.length > 0) {
       setShowDeleteModal(true);
     } else {
-      window.customToast.error(
+      setErrorMessage(
         "No draft(s) selected, select draft(s) to be deleted"
       );
     }
@@ -200,10 +202,10 @@ export const DraftCategory = ({
                 <td>
                   <p
                     className={`follow-up ${draft.status === "Draft"
-                        ? "in-progress"
-                        : draft.status === "Closed"
-                          ? "closed"
-                          : "open"
+                      ? "in-progress"
+                      : draft.status === "Closed"
+                        ? "closed"
+                        : "open"
                       }`}
                   >
                     {draft.status || "Not specified"}

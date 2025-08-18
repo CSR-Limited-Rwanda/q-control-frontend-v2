@@ -64,7 +64,7 @@ const GrievanceDetailsContent = () => {
 
         setLatestIncidentDetails(response.data); // Store the latest modified version
         setCurrentIncidentData(response.data.incident); // Set current data for UI
-        
+
       }
       const investigationRes = await api.get(
         `/incidents/grievance/${incidentId}/investigation/`
@@ -95,9 +95,9 @@ const GrievanceDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          // window.customToast.error("Failed to fetch incident reviews");
+          setErrorMessage("Failed to fetch incident reviews");
           console.error(error);
         }
       }
@@ -115,9 +115,9 @@ const GrievanceDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          setErrorMessage("Failed to fetch document History");
           console.error(error);
         }
       }
@@ -132,9 +132,9 @@ const GrievanceDetailsContent = () => {
         <div className="incident-details">
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
-              data={ useOriginalVersion
-                  ? incidentDetails
-                  : latestIncidentDetails
+              data={useOriginalVersion
+                ? incidentDetails
+                : latestIncidentDetails
               }
               incidentDetailsId={incidentId}
               apiLink={"grievance"}

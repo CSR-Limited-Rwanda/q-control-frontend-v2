@@ -27,9 +27,9 @@ const StaffReviews = ({ incidentId }) => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch incident reviews");
+          setErrorMessage("Failed to fetch incident reviews");
           console.error(error);
         }
         setGettingReviews(false);

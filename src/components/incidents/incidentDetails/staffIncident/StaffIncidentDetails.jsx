@@ -83,13 +83,14 @@ const EmployeeDetailsContent = () => {
           `${API_URL}/incidents/staff-incident/${incidentId}/reviews/`
         );
         if (response.status === 200) {
+
           localStorage.setItem("incidentReviewsCount", response.data.length);
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch incident reviews");
+          setErrorMessage("Failed to fetch incident reviews");
           console.error(error);
         }
       }
@@ -107,9 +108,9 @@ const EmployeeDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          setErrorMessage("Failed to fetch document History");
           console.error(error);
         }
       }

@@ -21,6 +21,8 @@ import BackToPage from "@/components/BackToPage";
 
 // We need to resolve the issue with status prio to
 const ModifyGeneralIncidentForm = ({ data }) => {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const { incidentId } = useParams();
   const { user } = useAuthentication()
   const [incident, setIncident] = useState(data);
@@ -65,11 +67,11 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       if (response.status === 200 || response.status === 201) {
 
         setUploadingDocuments(false);
-        window.customToast.success("Files uploaded successfully");
+        setSuccessMessage("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      window.customToast.error(error?.response?.data?.error);
+      setErrorMessage(error?.response?.data?.error);
       setUploadingDocuments(false);
 
     }
@@ -390,14 +392,14 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       );
 
       if (response.status === 200) {
-        window.customToast.success("Incident is updated successfully");
+        setSuccessMessage("Incident is updated successfully");
         setIsLoading(false);
         setSavingDraft(false);
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       if (error.response) {
-        window.customToast.error(
+        setErrorMessage(
           error.response.data.message ||
           error.response.data.error ||
           "Error updating the incident"

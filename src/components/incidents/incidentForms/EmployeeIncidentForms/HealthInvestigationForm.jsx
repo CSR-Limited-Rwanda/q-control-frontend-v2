@@ -155,7 +155,7 @@ const HealthIncidentInvestigationForm = () => {
             const isValid = validateStep(fieldsToValidate);
 
             if (!isValid) {
-                window.customToast.error("Please fill out all required fields.");
+                setErrorMessage("Please fill out all required fields.");
                 return;
             }
 
@@ -163,14 +163,14 @@ const HealthIncidentInvestigationForm = () => {
                 employeeSeenDoctor &&
                 (!doctorsFirstName || !doctorsLastName || !hospitalName || !preventions)
             ) {
-                window.customToast.error(
+                setErrorMessage(
                     "Please enter the Doctor's name, Hospital's name, and description."
                 );
                 return;
             }
 
             if (!incidentId) {
-                window.customToast.error("Missing incident ID. Please start over.");
+                setErrorMessage("Missing incident ID. Please start over.");
                 return;
             }
 
@@ -216,7 +216,7 @@ const HealthIncidentInvestigationForm = () => {
 
             if (isValid) {
                 if (!incidentId) {
-                    window.customToast.error("Missing incident ID. Please start over.");
+                    setErrorMessage("Missing incident ID. Please start over.");
                     return;
                 }
                 setIsLoading(true);
@@ -257,14 +257,14 @@ const HealthIncidentInvestigationForm = () => {
                 localStorage.setItem("employee_investigation_id", res.data.id);
                 setIncidentId(res.data.id);
                 setCurrentStep(currentStep + 1);
-                window.customToast.success("Data posted successfully");
+                setSuccessMessage("Data posted successfully");
                 setIsLoading(false);
                 return res.data.id;
             }
         } catch (error) {
             const serverError = error?.response?.data?.error;
             if (typeof serverError === "string") {
-                window.customToast.error(serverError);
+                setErrorMessage(serverError);
             } else if (
                 typeof serverError === "object" &&
                 serverError !== null
@@ -272,9 +272,9 @@ const HealthIncidentInvestigationForm = () => {
                 const messages = Object.entries(serverError).map(
                     ([key, value]) => `${key}: ${value.join(", ")}`
                 );
-                messages.forEach((msg) => window.customToast.error(msg));
+                messages.forEach((msg) => setErrorMessage(msg));
             } else {
-                window.customToast.error("Something went wrong. Please try again.");
+                setErrorMessage("Something went wrong. Please try again.");
             }
             console.error("Error submitting step 1: ", error);
             setIsLoading(false);
@@ -308,7 +308,7 @@ const HealthIncidentInvestigationForm = () => {
                 setIncidentId(res.data.id);
                 setCurrentStep(currentStep + 1);
                 setIsLoading(false);
-                window.customToast.success("Data posted successfully");
+                setSuccessMessage("Data posted successfully");
                 return res.data.id;
             }
         } catch (error) {
@@ -349,7 +349,7 @@ const HealthIncidentInvestigationForm = () => {
 
             if (res.status === 200 || res.status === 201) {
                 postDocumentHistory(incidentId, "added a new investigation", "create");
-                window.customToast.success("Data posted successfully");
+                setSuccessMessage("Data posted successfully");
                 setIsLoading(false);
                 setSuccess(true);
             }

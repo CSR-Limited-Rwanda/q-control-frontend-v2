@@ -184,8 +184,8 @@ const GrievanceForm = ({ togglePopup }) => {
         selectedOption === "other"
           ? otherInput
           : selectedOption
-          ? selectedOption
-          : null,
+            ? selectedOption
+            : null,
     };
 
     try {
@@ -199,7 +199,7 @@ const GrievanceForm = ({ togglePopup }) => {
         localStorage.setItem("updateNewIncident", "true");
 
         setUserId(response.data.created_by);
-        window.customToast.success("Data saved successfully");
+        setSuccessMessage("Data saved successfully");
         setCurrentStep(currentStep + 1);
         setIsLoading(false);
       }
@@ -207,13 +207,13 @@ const GrievanceForm = ({ togglePopup }) => {
       console.error(error);
       setIsLoading(false);
       if (error.response) {
-        window.customToast.error(
+        setErrorMessage(
           error.response?.data.message ||
-            error.response?.data.error ||
-            "Error while saving incident"
+          error.response?.data.error ||
+          "Error while saving incident"
         );
       } else {
-        window.customToast.error("Unknown error while saving incident");
+        setErrorMessage("Unknown error while saving incident");
       }
     }
   }
@@ -227,7 +227,7 @@ const GrievanceForm = ({ togglePopup }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        window.customToast.success("Data saved successfully");
+        setSuccessMessage("Data saved successfully");
         setCurrentStep(currentStep + 1);
         setIsLoading(false);
 
@@ -239,8 +239,8 @@ const GrievanceForm = ({ togglePopup }) => {
     } catch (error) {
       console.error(error);
       setIsLoading(false);
-      window.customToast.error("Failed to post data");
-      window.customToast.error(error.message);
+      setErrorMessage("Failed to post data");
+      setErrorMessage(error.message);
     }
   }
 
@@ -330,8 +330,8 @@ const GrievanceForm = ({ togglePopup }) => {
               selectedOption === "other"
                 ? otherInput
                 : selectedOption
-                ? selectedOption
-                : null,
+                  ? selectedOption
+                  : null,
           });
         }
       } else {
@@ -344,7 +344,7 @@ const GrievanceForm = ({ togglePopup }) => {
       });
 
       if (adversePatientOutcome && !outcome.trim()) {
-        window.customToast.error(
+        setErrorMessage(
           "Please identify outcome for adverse patient outcome."
         );
         isValid = false;
@@ -411,7 +411,7 @@ const GrievanceForm = ({ togglePopup }) => {
         "relationship to patient": relationshipToPatient,
       });
       if (!actionMeeting && !actionTelephone) {
-        window.customToast.error("Please select at least one option.");
+        setErrorMessage("Please select at least one option.");
         isValid = false;
       }
     }
@@ -446,11 +446,11 @@ const GrievanceForm = ({ togglePopup }) => {
 
       if (response.status === 201 || response.status === 200) {
         setUploadingDocuments(false);
-        window.customToast.success("Files uploaded successfully");
+        setSuccessMessage("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      window.customToast.error(error?.response?.data?.error);
+      setErrorMessage(error?.response?.data?.error);
       setUploadingDocuments(false);
     }
   };

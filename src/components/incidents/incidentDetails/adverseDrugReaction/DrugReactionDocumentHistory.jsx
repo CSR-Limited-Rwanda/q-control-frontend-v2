@@ -5,6 +5,8 @@ import DateFormatter from "@/components/DateFormatter";
 const DrugReactionDocumentHistory = ({ incidentId }) => {
   const [documentHistory, setDocumentHistory] = useState([]);
   const [gettingDocumentHistory, setGettingDocumentHistory] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const getDocumentHistory = async () => {
@@ -20,9 +22,9 @@ const DrugReactionDocumentHistory = ({ incidentId }) => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          setErrorMessage("Failed to fetch document History");
           console.error(error);
         }
         setGettingDocumentHistory(false);

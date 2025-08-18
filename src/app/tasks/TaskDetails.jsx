@@ -1,17 +1,14 @@
 import CloseIcon from "@/components/CloseIcon";
 import Button from "@/components/forms/Button";
-import { completeTask, fetchTaskById } from "@/hooks/fetchTasks";
-import { Calendar, Eye, FileText, Flag, X } from "lucide-react";
+import PermissionsGuard from "@/components/PermissionsGuard";
+import { completeTask, fetchTaskById, submitTask } from "@/hooks/fetchTasks";
+import { Calendar, Eye, FileText, Flag, Users, X } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export const TaskDetails = ({ taskId, handleClose }) => {
-  const [userPermissions, setUserPermissions] = useState({
-    can_edit: false,
-    can_delete: false,
-    can_view: true,
-    can_submit: false,
-    can_complete: true,
-  });
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -33,6 +30,25 @@ export const TaskDetails = ({ taskId, handleClose }) => {
     }
     setIsSubmitting(false);
   };
+
+  const handleSubmitTask = async () => {
+    setIsSubmitting(true);
+    const response = await submitTask(taskId);
+    if (response.success) {
+      setSuccessMessage(response.message);
+      setTimeout(() => {
+        setSuccessMessage(null);
+        handleClose();
+      }, 1000);
+    } else {
+      setError(response.message);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleEditTask = () => {
+    router.push(`/tasks/${taskId}/edit`);
+  }
 
   useEffect(() => {
     const fetchTaskDetails = async () => {
@@ -79,10 +95,10 @@ export const TaskDetails = ({ taskId, handleClose }) => {
 
               <div
                 className={`priority-value ${taskDetails.task_priority === 1
-                    ? "high"
-                    : taskDetails.task_priority === 2
-                      ? "medium"
-                      : "low"
+                  ? "high"
+                  : taskDetails.task_priority === 2
+                    ? "medium"
+                    : "low"
                   }`}
               >
                 {taskDetails.task_priority === 1
@@ -101,13 +117,24 @@ export const TaskDetails = ({ taskId, handleClose }) => {
               <p>{taskDetails.deadline}</p>
             </div>
 
-            {/* <div className="assigned-to">
-                            <div className="assigned-to-icon">
-                                <Users />
-                                <small>Assigned To</small>
-                            </div>
-                            <p>{taskDetails.assigned_to}</p>
-                        </div> */}
+            <div className="assigned-to">
+              <div className="assigned-to-icon">
+                <Users />
+                <small>Assigned to</small>
+              </div>
+              {
+                taskDetails.review_groups?.length > 0 &&
+                <div className="task-assigned-to">{taskDetails.review_groups.map((reviewer, index) => (
+                  <Link className="card" href={`/accounts/review-groups/${reviewer.id}/tasks`} key={index}>{reviewer.name}</Link>
+                ))}</div>
+              }
+              {
+                taskDetails.reviewers?.length > 0 &&
+                <div className="task-assigned-to">{taskDetails.reviewers.map((reviewer, index) => (
+                  <Link className="card" href={`/accounts/${reviewer.id}/tasks`} key={index}>{reviewer.name}</Link>
+                ))}</div>
+              }
+            </div>
 
             <div className="incident">
               <div className="incident-icon">
@@ -125,30 +152,13 @@ export const TaskDetails = ({ taskId, handleClose }) => {
               </div>
             </div>
             {error && <p className="message error">Error: {error}</p>}
-
             <div className="buttons">
-              {userPermissions.can_edit && (
-                <Button text={"Edit Task"} className="gray" />
-              )}
-              {userPermissions.can_delete && (
-                <Button text={"Delete Task"} className="danger" />
-              )}
-              {userPermissions.can_submit && (
-                <Button text={"Submit Task"} className="success" />
-              )}
-              {userPermissions.can_complete && (
-                <Button
-                  onClick={handleCompleteTask}
-                  isLoading={isSubmitting}
-                  text={"Mark complete"}
-                  className="light"
-                />
-              )}
-
+              <Button text={"Submit Task"} className="success" onClick={() => handleSubmitTask(taskDetails.id)} />
               <Button
-                text={"Back to tasks"}
-                className="gray"
-                onClick={handleClose}
+                onClick={handleCompleteTask}
+                isLoading={isSubmitting}
+                text={"Mark complete"}
+                className="light"
               />
             </div>
           </div>

@@ -25,6 +25,16 @@
         gap: 0.5rem;
     }
 
+    .task-assigned-to {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+
+        .card {
+            width: fit-content;
+        }
+    }
 
 
     .medium {

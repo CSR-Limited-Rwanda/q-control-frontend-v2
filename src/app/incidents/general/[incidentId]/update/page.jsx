@@ -20,6 +20,8 @@ const PageContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { incidentId } = useParams();
   const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [generalIncidentId, setGeneralIncidentId] = useState(
     localStorage.getItem("generalIncidentId")
   )
@@ -31,7 +33,7 @@ const PageContent = () => {
           `/incidents/general-visitor/${generalIncidentId}/`
         );
         if (response.status === 200) {
-
+          setSuccessMessage("Incident data modified successfully");
           setIncidentData(response.data.incident);
 
           setIsLoading(false);
@@ -40,11 +42,11 @@ const PageContent = () => {
         // setIsLoading(false);
 
         if (error.response.status && error.response.status === 403) {
-          window.customToast.error("You are not allowed to view this incident");
+          setErrorMessage("You are not allowed to view this incident");
         } else if (error.response.status === 404) {
           setIsError(true);
         } else {
-          window.customToast.error("There was an error");
+          setErrorMessage("There was an error");
         }
       } finally {
         setIsLoading(false);

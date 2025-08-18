@@ -30,6 +30,8 @@ const MedicationDetailsContent = () => {
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [reviewsCount, setReviewsCount] = useState();
   const [activitiesCount, setActivitiesCount] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -88,9 +90,9 @@ const MedicationDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch incident reviews");
+          setErrorMessage("Failed to fetch incident reviews");
           console.error(error);
         }
       }
@@ -108,9 +110,9 @@ const MedicationDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          setErrorMessage("Failed to fetch document History");
           console.error(error);
         }
       }

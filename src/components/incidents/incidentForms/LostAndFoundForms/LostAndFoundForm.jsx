@@ -176,7 +176,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("lost_found_id", response.data.id);
-        window.customToast.success("Data posted successfully");
+        setSuccessMessage("Data posted successfully");
         localStorage.setItem("updateNewIncident", "true");
         if (currentStep <= 3) {
           setCurrentStep(currentStep + 1);
@@ -198,7 +198,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
         error.response?.data?.message ||
         error.response?.data?.error ||
         "Failed to post data";
-      window.customToast.error(errorMessage);
+      setErrorMessage(errorMessage);
     }
   }
 
@@ -212,7 +212,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
         payload
       );
 
-      window.customToast.success("Data posted successfully");
+      setSuccessMessage("Data posted successfully");
 
       if (currentStep <= 4) {
         setCurrentStep(currentStep + 1);
@@ -230,7 +230,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
           JSON.stringify(error.response.data, null, 2)
         );
       }
-      window.customToast.error("Failed to post data");
+      setErrorMessage("Failed to post data");
     } finally {
       setIsLoading(false);
     }

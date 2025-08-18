@@ -8,19 +8,21 @@ import api from "@/utils/api";
 const DraftPopup = ({ incidentType, incidentString }) => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [incident, setIncident] = useState(null);
-
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   useEffect(() => {
     const fetchDrafts = async () => {
       // API call to fetch drafts data
       try {
         const response = await api.get(`incidents/overview/draft/user/`);
         if (response.status === 200) {
+          setSuccessMessage("Drafts fetched successfully");
           setIncident(response.data[incidentType]);
 
           setPopupOpen(response.data[incidentType].length > 0 ? true : false);
         }
       } catch (error) {
-        window.customToast.error(error.message);
+        setErrorMessage(error.message);
         console.error(error);
       }
     };

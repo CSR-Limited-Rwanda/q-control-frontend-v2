@@ -10,6 +10,8 @@ const MedicationReviews = ({ incidentId }) => {
 
   const [gettingReviews, setGettingReviews] = useState(true);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const toggleReviewForm = () => {
     setShowReviewForm(!showReviewForm);
   };
@@ -27,9 +29,9 @@ const MedicationReviews = ({ incidentId }) => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch incident reviews");
+          setErrorMessage("Failed to fetch incident reviews");
           console.error(error);
         }
         setGettingReviews(false);
@@ -49,7 +51,7 @@ const MedicationReviews = ({ incidentId }) => {
           <div key={index} className="review">
             <div className="profile">
               {review.created_by.profile_img &&
-              review.created_by.profile_img ? (
+                review.created_by.profile_img ? (
                 <img
                   className="profile-pic"
                   src={`${API_URL}${review.created_by.profile_img}`}
@@ -59,9 +61,8 @@ const MedicationReviews = ({ incidentId }) => {
                 <div className="profile-place-holder">
                   {/* we will find a way to change color according to the user who is logged in */}
                   <NamesInitials
-                    fullName={`${review.created_by.last_name || "None"} ${
-                      review.created_by.first_name || "None"
-                    }`}
+                    fullName={`${review.created_by.last_name || "None"} ${review.created_by.first_name || "None"
+                      }`}
                   />
                 </div>
               )}

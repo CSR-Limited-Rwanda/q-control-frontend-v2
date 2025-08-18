@@ -18,6 +18,8 @@ import { useAuthentication } from "@/context/authContext";
 import BackToPage from "@/components/BackToPage";
 
 const ModifyLostFound = ({ data }) => {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const { user } = useAuthentication()
   const { incidentId } = useParams();
   const [incident, setIncident] = useState(data);
@@ -150,11 +152,11 @@ const ModifyLostFound = ({ data }) => {
       if (response.status === 200 || response.status === 201) {
 
         setUploadingDocuments(false);
-        window.customToast.success("Files uploaded successfully");
+        setSuccessMessage("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      window.customToast.error(error?.response?.data?.error);
+      setErrorMessage(error?.response?.data?.error);
       setUploadingDocuments(false);
 
     }
@@ -224,14 +226,14 @@ const ModifyLostFound = ({ data }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        window.customToast.success("Incident updated successfully");
+        setSuccessMessage("Incident updated successfully");
         setIncident(response.data.incident);
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       setIsLoading(false);
       setSavingDraft(false);
-      window.customToast.error("Error updating the incident");
+      setErrorMessage("Error updating the incident");
 
     }
   };

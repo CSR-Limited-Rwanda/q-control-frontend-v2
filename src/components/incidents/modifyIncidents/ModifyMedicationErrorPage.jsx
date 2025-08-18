@@ -21,6 +21,8 @@ import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
 import BackToPage from "@/components/BackToPage";
 const ModifyMedicalErrorForm = ({ data, incidentId }) => {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const permission = usePermission();
   const department = useDepartments();
   const [incident, setIncident] = useState(data);
@@ -231,20 +233,20 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        window.customToast.success("Incident updated successfully");
+        setSuccessMessage("Incident updated successfully");
         setIncident(response.data.incident);
 
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       if (error.response) {
-        window.customToast.error(
+        setErrorMessage(
           error.response.data.message ||
           error.response.data.error ||
           "Error while updating the incident"
         );
       } else {
-        window.customToast.error("Unknown error while updating the incident");
+        setErrorMessage("Unknown error while updating the incident");
       }
 
       setIsLoading(false);
@@ -326,11 +328,11 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       if (response.status === 200 || response.status === 201) {
 
         setUploadingDocuments(false);
-        window.customToast.success("Files uploaded successfully");
+        setSuccessMessage("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      window.customToast.error(error?.response?.data?.error);
+      setErrorMessage(error?.response?.data?.error);
       setUploadingDocuments(false);
 
     }

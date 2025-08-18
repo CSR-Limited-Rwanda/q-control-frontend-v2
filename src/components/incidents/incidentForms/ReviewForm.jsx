@@ -7,6 +7,8 @@ import { LoaderCircle } from "lucide-react";
 const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
   const [content, setContent] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const handleReviewContent = (content, editor) => {
     setContent(content);
   };
@@ -19,7 +21,7 @@ const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
         { content: content }
       );
       if (response.status === 201) {
-        window.customToast.success("Review added successfully");
+        setSuccessMessage("Review added successfully");
         setContent("");
         setSubmittingReview(false);
         toggleReviewForm();
@@ -27,11 +29,11 @@ const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
     } catch (error) {
 
       if (error.response.data) {
-        window.customToast.error(
+        setErrorMessage(
           error.response.data.error || "Error adding review"
         );
       } else {
-        window.customToast.error("Failed to add review");
+        setErrorMessage("Failed to add review");
       }
       setSubmittingReview(false);
     }

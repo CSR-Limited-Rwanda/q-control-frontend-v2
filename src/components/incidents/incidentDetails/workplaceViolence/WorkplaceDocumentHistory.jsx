@@ -21,9 +21,9 @@ const WorkplaceDocumentHistory = ({ incidentId }) => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          setErrorMessage("Failed to fetch document History");
           console.error(error);
         }
         setGettingDocumentHistory(false);

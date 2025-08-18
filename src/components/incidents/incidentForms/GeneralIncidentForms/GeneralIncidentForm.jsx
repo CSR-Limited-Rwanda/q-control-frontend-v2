@@ -164,9 +164,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   const [facilityId, setFacilityId] = useState(
     localStorage.getItem("facilityId")
   );
-  const [departmentId, setDepartmentId] = useState(
-    localStorage.getItem("departmentId")
-  );
+
   // Incident Location
 
   const [location, setLocation] = useState("");
@@ -357,7 +355,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         setUserId(response?.data?.created_by);
         setCurrentStep(currentStep + 1);
         setIsLoading(false);
-        window.customToast.success("Data posted successfully");
+        setSuccessMessage("Data posted successfully");
         localStorage.setItem("updateNewIncident", "true");
         console.log(localStorage.getItem("updateNewIncident"));
         postDocumentHistory(
@@ -372,13 +370,13 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       setIsLoading(false);
       if (error?.response?.data) {
         // setErrorFetching(error?.response?.data?.error);
-        window.customToast.error(
+        setErrorMessage(
           error?.response?.data?.message ||
-            "Error while creating new incident, please try again"
+          "Error while creating new incident, please try again"
         );
         return;
       } else {
-        window.customToast.error("Something went wrong");
+        setErrorMessage("Something went wrong");
         // setErrorFetching("An error occurred while posting incident data.");
         return;
       }
@@ -402,7 +400,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       );
 
       if (response.status === 201 || response.status === 200) {
-        window.customToast.success("Media Posted Successfully");
+        setSuccessMessage("Media Posted Successfully");
         console.log(response);
         console.log("Files submitted successfully:", response.data);
       }
@@ -434,7 +432,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           localStorage.setItem("updateNewIncident", "false");
           setCurrentStep(currentStep + 1);
           setIsLoading(false);
-          window.customToast.success("Data posted successfully");
+          setSuccessMessage("Data posted successfully");
 
           handleFileSubmit(response?.data?.id);
         }
@@ -443,12 +441,12 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           console.error("API error:", error.response.data);
           console.log(error);
           // setErrorFetching(error.response.data.error);
-          window.customToast.error(
+          setErrorMessage(
             error.response.data.message || "API error occurred"
           );
         } else {
           console.error("Unexpected error:", error);
-          window.customToast.error("Something went wrong");
+          setErrorMessage("Something went wrong");
           // setErrorFetching("An error occurred while posting incident data.");
         }
       }
@@ -478,7 +476,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       if (isValid) {
         const incidentPostData = {
           facility_id: user.facility.id,
-          department: user.department.id,
           status: "Draft",
           current_step: currentStep,
           category: category,
@@ -525,12 +522,12 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       });
 
       if (statusPrior.length === 0) {
-        window.customToast.error("Please select at least one status");
+        setErrorMessage("Please select at least one status");
         isValid = false;
       }
 
       if (selectedStatus === "others" && !otherStatus) {
-        window.customToast.error("Please enter a status for 'others'");
+        setErrorMessage("Please enter a status for 'others'");
         isValid = false;
       }
       let statusPriorUpdatedOptions = [...statusPrior];
@@ -576,12 +573,12 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         }
 
         if (!agreement) {
-          window.customToast.error("Please indicate your agreement");
+          setErrorMessage("Please indicate your agreement");
           isValid = false;
         }
         if (fallType === "Fall from" && !fallFromDetails) {
           console.log("Fall from details is missing");
-          window.customToast.error("Specify all the equipment");
+          setErrorMessage("Specify all the equipment");
           isValid = false;
         }
 
@@ -599,7 +596,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           };
 
           if (fallType === "Fall from" && !fallFromDetails) {
-            window.customToast.error("Specify all the required places");
+            setErrorMessage("Specify all the required places");
             isValid = false;
           }
           console.log("Fall Related Data:", incidentPostData);
@@ -692,7 +689,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       });
 
       if (selectedOutcome === "Other" && !otherOutcome) {
-        window.customToast.error(
+        setErrorMessage(
           "Please enter a description for the selected outcome"
         );
         isValid = false;
@@ -770,7 +767,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   const validateFallFrom = (data) => {
     let isValid = true;
     if (data.fall_related_type === "fall from" && !data.fell_from) {
-      window.customToast.error("Specify the equipment you fell from");
+      setErrorMessage("Specify the equipment you fell from");
       isValid = false;
     }
 
@@ -1018,9 +1015,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
             <div className="form-half">
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor first name</label>
                 <input
@@ -1035,9 +1031,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                 />
               </div>
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor last name</label>
                 <input
@@ -1209,8 +1204,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </label>
               <div
                 className="check-boxes check-boxes-row"
-                //  onChange={(e) => setRoute(e.target.value)}
-                //  value={route}
+              //  onChange={(e) => setRoute(e.target.value)}
+              //  value={route}
               >
                 {statusesPrionToIncident.map((status, index) => (
                   <div
@@ -1716,7 +1711,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                         style={{
                           display:
                             specialTypes.includes(type.name) &&
-                            otherTypes !== "Specimen"
+                              otherTypes !== "Specimen"
                               ? "none"
                               : "block",
                         }}
@@ -1978,9 +1973,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           >
             <span>{isLoading ? "Saving..." : "Save Incident"}</span>
             <i
-              className={`fa-solid fa-arrow-right ${
-                isLoading ? "loading" : ""
-              }`}
+              className={`fa-solid fa-arrow-right ${isLoading ? "loading" : ""
+                }`}
             ></i>
           </button>
         ) : currentStep < 7 ? (

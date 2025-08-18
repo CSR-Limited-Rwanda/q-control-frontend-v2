@@ -105,8 +105,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response) {
         setError(
           error.response.message ||
-            error.response.error ||
-            "Error uploading files"
+          error.response.error ||
+          "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -138,8 +138,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response) {
         setError(
           error.response.message ||
-            error.response.error ||
-            "Error uploading files"
+          error.response.error ||
+          "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -157,7 +157,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       last_name === "" ||
       relationship_to_patient === ""
     ) {
-      window.customToast.error(
+      setErrorMessage(
         "Please enter a valid party name and relationship"
       );
       return;
@@ -259,7 +259,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
         data
       );
       if (response.status === 201) {
-        window.customToast.success(
+        setSuccessMessage(
           "Grievance investigation saved successfully"
         );
         localStorage.setItem("grievanceInvestigationId", response.data.id);
@@ -270,12 +270,12 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       setIsLoading(false);
 
       if (error.response.data) {
-        window.customToast.error(
+        setErrorMessage(
           error.response.data.message ||
-            "Error saving the grievance investigation"
+          "Error saving the grievance investigation"
         );
       } else {
-        window.customToast.error(
+        setErrorMessage(
           "There was a error. report the error to admin"
         );
       }
@@ -293,7 +293,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
         data
       );
       if (response.status === 200) {
-        window.customToast.success(
+        setSuccessMessage(
           "Grievance investigation updated successfully"
         );
         setCurrentStep(currentStep + 1);
@@ -303,12 +303,12 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       setIsLoading(false);
 
       if (error.response.data) {
-        window.customToast.error(
+        setErrorMessage(
           error.response.data.message ||
-            "Error updating the grievance investigation"
+          "Error updating the grievance investigation"
         );
       } else {
-        window.customToast.error(
+        setErrorMessage(
           "There was a error. report the error to admin"
         );
       }

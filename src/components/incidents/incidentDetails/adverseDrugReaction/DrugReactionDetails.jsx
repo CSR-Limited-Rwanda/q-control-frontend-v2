@@ -72,6 +72,8 @@ function DrugReactionDetailsContent() {
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [hasAccess, setHasAccess] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   //   const [incidentStatus, setIncidentStatus] = useState({});
   const { incidentId } = useParams()
   const [reviewsCount, setReviewsCount] = useState();
@@ -141,9 +143,10 @@ function DrugReactionDetailsContent() {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch incident reviews");
+          setErrorMessage("Failed to fetch incident reviews");
           console.error(error);
         }
       }
@@ -157,13 +160,14 @@ function DrugReactionDetailsContent() {
           `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
+          setSuccessMessage("Fetched document history successfully");
           localStorage.setItem("documentHistoryCount", response.data.length);
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          setErrorMessage("Failed to fetch document History");
           console.error(error);
         }
       }
@@ -177,18 +181,18 @@ function DrugReactionDetailsContent() {
       ) : incidentDetails && Object.keys(incidentDetails).length > 0 ? (
         <div className="incident-details">
 
-            <IncidentDetailsHeader
-              data={
-                useOriginalVersion ? incidentDetails : latestIncidentDetails
-              }
-              incidentDetailsId={incidentId}
-              apiLink={"adverse-drug-reaction"}
-              sendTo={"send-to-department"}
-              useOriginalVersion={useOriginalVersion}
-              setCurrentIncidentData={setCurrentIncidentData}
-              showClosedManager={false}
-              model={"adverse_drug_reaction"}
-            />
+          <IncidentDetailsHeader
+            data={
+              useOriginalVersion ? incidentDetails : latestIncidentDetails
+            }
+            incidentDetailsId={incidentId}
+            apiLink={"adverse-drug-reaction"}
+            sendTo={"send-to-department"}
+            useOriginalVersion={useOriginalVersion}
+            setCurrentIncidentData={setCurrentIncidentData}
+            showClosedManager={false}
+            model={"adverse_drug_reaction"}
+          />
 
           <div className="details">
             <IncidentDetails
@@ -213,7 +217,7 @@ function DrugReactionDetailsContent() {
               }
               otherInformation={
                 <DrugReactionOtherInformation data={{
-            currentIncidentData
+                  currentIncidentData
                 }} />
               }
               documentHistory={

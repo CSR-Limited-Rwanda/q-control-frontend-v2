@@ -62,31 +62,10 @@ const LostFoundDetailsContent = () => {
     }
   };
 
-  // UseEffect to fetch data when either the incidentId or useOriginalVersion changes
   useEffect(() => {
     fetchIncidentDetails();
 
-  }, [incidentId, useOriginalVersion]); // Dependencies trigger re-fetch
-  //   useEffect(() => {
-  //     const getIncidentReviews = async () => {
-  //       try {
-  //         const response = await api.get(
-  //           `${API_URL}/incidents/lost-and-found/${incidentId}/reviews/`
-  //         );
-  //         if (response.status === 200) {
-  //           localStorage.setItem("incidentReviewsCount", response.data.length);
-  //         }
-  //       } catch (error) {
-  //         if (error.response && error.response.status === 403) {
-  //           window.customToast.error("Authentication error");
-  //         } else {
-  //           window.customToast.error("Failed to fetch incident reviews");
-  //           console.error(error);
-  //         }
-  //       }
-  //     };
-  //     getIncidentReviews();
-  //   }, []);
+  }, [incidentId, useOriginalVersion]);
   useEffect(() => {
     const getDocumentHistory = async () => {
       try {
@@ -98,9 +77,9 @@ const LostFoundDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          setErrorMessage("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          setErrorMessage("Failed to fetch document History");
           console.error(error);
         }
       }

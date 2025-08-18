@@ -24,11 +24,11 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
     } catch (error) {
       setIsLoading(false);
       if (error.response.status === 403) {
-        window.customToast.error(error.response.data.message);
+        setErrorMessage(error.response.data.message);
       } else if (error.response.status === 400) {
-        window.customToast.error(error.response.data.message);
+        setErrorMessage(error.response.data.message);
       } else {
-        window.customToast.error("Unknown error while resolving incident");
+        setErrorMessage("Unknown error while resolving incident");
       }
 
     }

@@ -26,6 +26,7 @@ import "@/styles/_employeeIncidentForm.scss";
 import CloseIcon from "@/components/CloseIcon";
 import { useAuthentication } from "@/context/authContext";
 import MessageComponent from "@/components/MessageComponet";
+import { set } from "date-fns";
 
 const EmployeeIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
@@ -188,12 +189,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       patient_info:
         firstName && lastName
           ? {
-              first_name: firstName,
-              last_name: lastName,
-              profile_type: "Patient",
-              age: age,
-              date_of_birth: dateBirth,
-            }
+            first_name: firstName,
+            last_name: lastName,
+            profile_type: "Patient",
+            age: age,
+            date_of_birth: dateBirth,
+          }
           : null,
       job_title: jobTitle,
 
@@ -219,7 +220,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       if (res.status === 200 || res.status === 201) {
         setIsLoading(false);
         setCurrentStep(currentStep + 1);
-        window.customToast.success("Data posted successfully");
+        setSuccessMessage("Data posted successfully");
 
         localStorage.setItem("employeeId", res.data.id);
         localStorage.setItem("updateNewIncident", "true");
@@ -252,7 +253,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
       if (res.status === 200 || res.status === 201) {
         setCurrentStep(currentStep + 1);
-        window.customToast.success("Data posted successfully");
+        setSuccessMessage("Data posted successfully");
         setIsLoading(false);
       }
     } catch (error) {
@@ -280,14 +281,14 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         !dateSeenDoctor &&
         !timeSeenDoctor
       ) {
-        window.customToast.error(
+        setErrorMessage(
           "Please fill all required fields for Doctor information"
         );
         isValid = false;
         return;
       }
       if (injuredBody && !whenInjured) {
-        window.customToast.error("Please fill in when the injury occured");
+        setErrorMessage("Please fill in when the injury occured");
         isValid = false;
         return;
       }
@@ -304,10 +305,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           doctor_consulted_info:
             doctorFirstName && doctorLastName
               ? {
-                  first_name: doctorFirstName,
-                  last_name: doctorLastName,
-                  profile_type: "Physician",
-                }
+                first_name: doctorFirstName,
+                last_name: doctorLastName,
+                profile_type: "Physician",
+              }
               : null,
 
           previous_injury: injuredBody,
@@ -327,7 +328,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
           if (res.status === 200) {
             setCurrentStep(currentStep + 1);
-            window.customToast.success("Data posted successfully");
+            set("Data posted successfully");
             setIsLoading(false);
 
             if (currentStep === 5) {
@@ -359,7 +360,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
 
       if (res.status === 200) {
         setCurrentStep(currentStep + 1);
-        window.customToast.success("Data posted successfully");
+        setSuccessMessage("Data posted successfully");
         setIsLoading(false);
 
         if (currentStep === 5) {
@@ -395,20 +396,13 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         "Time of Injury": timeOfInjury,
       });
 
-      // const areWitnessesValid = witnesses.every(
-      //   (witness) => witness.trim() !== ""
-      // );
-      // if (!areWitnessesValid) {
-      //   window.customToast.error("Please provide names for all witnesses.");
-      //   isValid = false;
-      // }
 
       if (
         toldSupervisor &&
         !supervisorFirstName.trim() &&
         !supervisorLastName.trim()
       ) {
-        window.customToast.error(
+        setErrorMessage(
           "Please provide the supervisor's name if you have informed them about the injury/near miss."
         );
         isValid = false;
@@ -434,12 +428,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               patient_info:
                 firstName && lastName
                   ? {
-                      first_name: firstName,
-                      last_name: lastName,
-                      profile_type: "Patient",
-                      age: age,
-                      date_of_birth: dateBirth,
-                    }
+                    first_name: firstName,
+                    last_name: lastName,
+                    profile_type: "Patient",
+                    age: age,
+                    date_of_birth: dateBirth,
+                  }
                   : null,
               job_title: jobTitle,
 

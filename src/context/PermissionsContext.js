@@ -14,7 +14,6 @@ const fetchPermissions = async () => {
     }
   } catch (error) {
 
-    // window.customToast.error("You are logged out");
     return [];
   }
 };
