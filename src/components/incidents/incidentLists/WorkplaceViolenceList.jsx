@@ -602,12 +602,12 @@ const WorkplaceViolenceTable = ({
           </th>
           <th>Severity</th>
           <th>Status</th>
-          {permissions?.workplace_violence_reports?.includes(
+          {(permissions?.workplace_violence_reports?.includes(
             "change_incident"
           ) ||
             permissions?.workplace_violence_reports?.includes(
               "view_details"
-            ) && <th className="action-col">Action</th>}
+            )) && <th className="action-col">Action</th>}
         </tr>
       </thead>
       <tbody>
@@ -683,12 +683,12 @@ const WorkplaceViolenceTable = ({
                 </p>
               </td>
 
-              {permissions?.workplace_violence_reports?.includes(
+              {(permissions?.workplace_violence_reports?.includes(
                 "change_incident"
               ) ||
                 permissions?.workplace_violence_reports?.includes(
                   "view_details"
-                ) && (
+                )) && (
                   <td
                     data-label="Action"
                     onClick={(event) => handleNonClickableColumnClick(event)}
@@ -698,6 +698,7 @@ const WorkplaceViolenceTable = ({
                       <PermissionsGuard
                         model={"workplace_violence_reports"}
                         codename={"change_incident"}
+                        isPage={false}
                       >
                         {!incident.is_resolved && (
                           <Pencil
@@ -715,6 +716,7 @@ const WorkplaceViolenceTable = ({
                       <PermissionsGuard
                         model={"workplace_violence_reports"}
                         codename={"view_details"}
+                        isPage={false}
                       >
                         <Eye
                           size={20}

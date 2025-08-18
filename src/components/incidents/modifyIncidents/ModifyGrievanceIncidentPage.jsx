@@ -131,6 +131,11 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
     localStorage.getItem("grievanceId")
   );
 
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department
+  );
+
   const handleShowInvestigationForm = () => {
     setShowInvestigationFrom(!showInvestigationFrom);
   };
@@ -185,6 +190,36 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
     // setInputValue("");
   };
 
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartmentId(event.target.value);
+  };
+
+  useEffect(() => {
+    console.log(data)
+    if (!data.report_facility) return;
+
+    const fetchDepartments = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/departments/`, {
+          params: { facility_id: data.report_facility },
+        });
+        if (response.status === 200) {
+          console.log("first")
+          console.log(response.data.results);
+          setDepartments(response.data.results);
+        }
+      } catch (error) {
+        toast.error("Error fetching departments");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, [data.report_facility]);
+
   useEffect(() => {
     // get documents
     const fetchIncidentDocuments = async () => {
@@ -219,6 +254,8 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
     const incidentData = {
       action: "modify",
       date: formatDate(incidentDate),
+      report_facility: data.report_facility,
+      department: parseInt(selectedDepartmentId),
       patient_name:
         patientFirstName && patientLastName
           ? {
@@ -393,6 +430,22 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         <form className="modify-forms">
           <div className="inputs-group modify-inputs">
             <h3 className="full">General info</h3>
+            <div className="department-select field">
+                <label htmlFor="department">Department</label>
+                <select
+                  id="department"
+                  value={selectedDepartmentId}
+                  onChange={handleDepartmentChange}
+                  disabled={isLoading}
+                >
+                  <option value="">Select a department</option>
+                  {departments.map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             <div className="field">
               <label htmlFor="incidentDate">Date</label>
 
