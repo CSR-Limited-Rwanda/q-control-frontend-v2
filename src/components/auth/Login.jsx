@@ -19,9 +19,8 @@ const LoginPopup = () => {
   const { login } = useAuthentication();
 
   const handleSubmit = async () => {
-    // validate form
-    toast.error("");
-    toast.success("");
+    // Clear any previous toasts
+    toast.dismiss();
 
     if (!username || !password) {
       toast.error("Email and password are required");
@@ -40,8 +39,6 @@ const LoginPopup = () => {
         if (loginSuccess) {
           toast.success("Login successful!");
           // No need to reload the window, the auth context will handle the state update
-        } else {
-          toast.error("Failed to authenticate user data. Please try again.");
         }
       } else {
         toast.error(result.error || "Login failed. Please try again.");
@@ -63,10 +60,6 @@ const LoginPopup = () => {
           <img src="/logo-blue.svg" alt="" className='logo' />
           <h1>Log into your account</h1>
           <p>Please enter your credentials to access the cohesive quality control platform</p>
-
-          {errorMessage && <p className="message error">{errorMessage}</p>}
-
-          {successMessage && <p className="message success">{successMessage}</p>}
 
           <form>
             <div className="form-control">
