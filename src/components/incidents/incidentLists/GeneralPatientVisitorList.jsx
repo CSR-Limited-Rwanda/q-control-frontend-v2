@@ -23,6 +23,7 @@ import {
   SortNameIcon,
 } from "./StaffIncidentList";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -491,6 +492,7 @@ const GeneralIncidentTable = ({
   navigateToModify,
   handleRowClick,
 }) => {
+  const { permissions } = useGetPermissions();
   const [sortDesc, setSortDesc] = useState(false);
   const [nameAZ, setNameAZ] = useState(false);
   const [dateRecent, setDateRecent] = useState(false);
@@ -615,7 +617,10 @@ const GeneralIncidentTable = ({
           </th>
           <th>Care level</th>
           <th>Status</th>
-          <th className="action-col">Action</th>
+          {permissions?.general_patient_visitor?.includes("change_incident") &&
+            permissions?.general_patient_visitor?.includes("view_details") && (
+              <th className="action-col">Action</th>
+            )}
         </tr>
       </thead>
       <tbody>
@@ -686,49 +691,56 @@ const GeneralIncidentTable = ({
                   {incident.status || "Not specified"}
                 </p>
               </td>
-              <td
-                data-label="Action"
-                onClick={(event) => handleNonClickableColumnClick(event)}
-                className="action-col"
-              >
-                <div className="table-actions">
-                  <PermissionsGuard
-                    model={"general_patient_visitor"}
-                    codename={"change_incident"}
-                    isPage={false}
+              {permissions?.general_patient_visitor?.includes(
+                "change_incident"
+              ) &&
+                permissions?.general_patient_visitor?.includes(
+                  "view_details"
+                ) && (
+                  <td
+                    data-label="Action"
+                    onClick={(event) => handleNonClickableColumnClick(event)}
+                    className="action-col"
                   >
-                    {!incident.is_resolved && (
-                      <Pencil
-                        size={20}
-                        onClick={() =>
-                          navigateToModify(
-                            incident.original_report
-                              ? incident.original_report
-                              : incident.id
-                          )
-                        }
-                      />
-                    )}
-                  </PermissionsGuard>
+                    <div className="table-actions">
+                      <PermissionsGuard
+                        model={"general_patient_visitor"}
+                        codename={"change_incident"}
+                        isPage={false}
+                      >
+                        {!incident.is_resolved && (
+                          <Pencil
+                            size={20}
+                            onClick={() =>
+                              navigateToModify(
+                                incident.original_report
+                                  ? incident.original_report
+                                  : incident.id
+                              )
+                            }
+                          />
+                        )}
+                      </PermissionsGuard>
 
-                  <PermissionsGuard
-                    model={"general_patient_visitor"}
-                    codename={"view_details"}
-                    isPage={false}
-                  >
-                    <Eye
-                      size={20}
-                      onClick={() =>
-                        handleRowClick(
-                          incident.original_report
-                            ? incident.original_report
-                            : incident.id
-                        )
-                      }
-                    />
-                  </PermissionsGuard>
-                </div>
-              </td>
+                      <PermissionsGuard
+                        model={"general_patient_visitor"}
+                        codename={"view_details"}
+                        isPage={false}
+                      >
+                        <Eye
+                          size={20}
+                          onClick={() =>
+                            handleRowClick(
+                              incident.original_report
+                                ? incident.original_report
+                                : incident.id
+                            )
+                          }
+                        />
+                      </PermissionsGuard>
+                    </div>
+                  </td>
+                )}
             </tr>
           ))
         ) : (
