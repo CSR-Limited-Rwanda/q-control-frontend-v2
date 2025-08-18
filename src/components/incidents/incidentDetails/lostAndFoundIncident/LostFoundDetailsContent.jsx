@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -18,7 +18,7 @@ import IncidentActivitiesTab from "@/components/Activities";
 import NoResources from "@/components/NoResources";
 
 // css
-import "../../../../styles/_generalIncidentDetailsPage.scss"
+import "../../../../styles/_generalIncidentDetailsPage.scss";
 
 const LostFoundDetailsContent = () => {
   const [isFetching, setIsFetching] = useState(true);
@@ -27,7 +27,7 @@ const LostFoundDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const { incidentId } = useParams()
+  const { incidentId } = useParams();
   const [reviewsCount, setReviewsCount] = useState();
   const [activitiesCount, setActivitiesCount] = useState();
 
@@ -36,12 +36,18 @@ const LostFoundDetailsContent = () => {
     try {
       let response;
       if (useOriginalVersion) {
-        response = await api.get(`${API_URL}/incidents/lost-found/${incidentId}/`);
+        response = await api.get(
+          `${API_URL}/incidents/lost-found/${incidentId}/`
+        );
         setIncidentDetails(response.data); // <-- Don't destructure here
         setCurrentIncidentData(response.data.incident);
       } else {
-        const res = await api.get(`${API_URL}/incidents/lost-found/${incidentId}/`);
-        const latestIncident = res.data.modifications.versions.find((mod) => mod.latest === true);
+        const res = await api.get(
+          `${API_URL}/incidents/lost-found/${incidentId}/`
+        );
+        const latestIncident = res.data.modifications.versions.find(
+          (mod) => mod.latest === true
+        );
 
         if (latestIncident) {
           response = await api.get(
@@ -65,7 +71,6 @@ const LostFoundDetailsContent = () => {
   // UseEffect to fetch data when either the incidentId or useOriginalVersion changes
   useEffect(() => {
     fetchIncidentDetails();
-
   }, [incidentId, useOriginalVersion]); // Dependencies trigger re-fetch
   //   useEffect(() => {
   //     const getIncidentReviews = async () => {
@@ -112,14 +117,15 @@ const LostFoundDetailsContent = () => {
       {isFetching ? (
         <div className="fetching-data">Loading data</div>
       ) : incidentDetails && Object.keys(incidentDetails).length > 0 ? (
-
         <div className="incident-details">
           <IncidentDetailsHeader
             data={{
-              incident: useOriginalVersion ? incidentDetails : latestIncidentDetails,
+              incident: useOriginalVersion
+                ? incidentDetails
+                : latestIncidentDetails,
               modifications: useOriginalVersion
                 ? incidentDetails?.modifications
-                : latestIncidentDetails?.modifications
+                : latestIncidentDetails?.modifications,
             }}
             incidentDetailsId={incidentId}
             apiLink={"lost-found"}
@@ -129,6 +135,7 @@ const LostFoundDetailsContent = () => {
             setCurrentIncidentData={setCurrentIncidentData}
             showClosedManager={false}
             model={"lost_and_found"}
+            versionCodeName={"view_lostandfoundversion"}
           />
 
           <div className="details">
@@ -140,14 +147,16 @@ const LostFoundDetailsContent = () => {
               //   Relationship={incidentDetails.relation_to_patient}
               //   LocationFound={incidentDetails.data.location_found}
               incidentDetails={
-                <LostFoundDetailsContentTab data={{
-                  incident: currentIncidentData
-                }} />
+                <LostFoundDetailsContentTab
+                  data={{
+                    incident: currentIncidentData,
+                  }}
+                />
               }
             />
             <IncidentTabs
               data={{
-                incident: currentIncidentData
+                incident: currentIncidentData,
               }}
               statuses={incidentStatus}
               generalInformation={
@@ -160,9 +169,21 @@ const LostFoundDetailsContent = () => {
               //     <LostFoundDetailsOtherInformation data={currentIncidentData} />
               //   }
               documentHistory={
-                <IncidentActivitiesTab incidentId={incidentId} incident_type={"lost_and_found"} setCount={setActivitiesCount} />
+                <IncidentActivitiesTab
+                  incidentId={incidentId}
+                  incident_type={"lost_and_found"}
+                  setCount={setActivitiesCount}
+                />
               }
-              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"lost-found"} setCount={setReviewsCount} />}
+              reviews={
+                <IncidentReviewsTab
+                  model={"lost_and_found"}
+                  codeName={"add_review"}
+                  incidentId={incidentId}
+                  apiLink={"lost-found"}
+                  setCount={setReviewsCount}
+                />
+              }
               documents={<IncidentDocuments incidentId={incidentId} />}
               reviewsCount={reviewsCount}
               incidentDocumentHistoryCount={activitiesCount}
@@ -189,9 +210,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
     fetchDocuments();
   }, [incidentId]);
@@ -233,13 +252,13 @@ const LostFoundDetails = () => {
     <div>
       <DashboardLayout
         children={<LostFoundDetailsContent />}
-      // breadCrumbs={
-      //   changeBreadCrumbs ? (
-      //     <FacilityDetailsBreadCrumbs incidentID={incidentId} />
-      //   ) : (
-      //     <BreadCrumbs />
-      //   )
-      // }
+        // breadCrumbs={
+        //   changeBreadCrumbs ? (
+        //     <FacilityDetailsBreadCrumbs incidentID={incidentId} />
+        //   ) : (
+        //     <BreadCrumbs />
+        //   )
+        // }
       />
     </div>
   );

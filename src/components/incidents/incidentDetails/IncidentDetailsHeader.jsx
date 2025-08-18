@@ -38,7 +38,8 @@ const IncidentDetailsHeader = ({
   showClosedManager,
   codename,
   model,
-  isPage
+  isPage,
+  versionCodeName,
 }) => {
   // Default to "Most Recent" if available, otherwise "Original Version"
   const permissions = usePermission();
@@ -74,25 +75,25 @@ const IncidentDetailsHeader = ({
   const sortedVersions = data?.modifications?.versions?.map((mod, index) =>
     mod.original === true // Define the original version
       ? {
-        label: `<span style="font-weight: bold; margin-right: 10px;">Original</span> <span style="color: gray;">${formatDate(
-          mod.date
-        )}</span>`,
-        value: "Original Version",
-        id: incidentDetailsId,
-        isOriginal: true,
-        isMostRecent: mod.latest,
-        date: mod.date,
-      }
+          label: `<span style="font-weight: bold; margin-right: 10px;">Original</span> <span style="color: gray;">${formatDate(
+            mod.date
+          )}</span>`,
+          value: "Original Version",
+          id: incidentDetailsId,
+          isOriginal: true,
+          isMostRecent: mod.latest,
+          date: mod.date,
+        }
       : {
-        label: `<span style="font-weight: bold; margin-right: 10px;">Modified</span> <span style="color: gray;">${formatDate(
-          mod.date
-        )}</span>`,
-        value: `Modified Version ${index}`,
-        id: mod.id,
-        date: mod.date,
-        isOriginal: false,
-        isMostRecent: mod.latest,
-      }
+          label: `<span style="font-weight: bold; margin-right: 10px;">Modified</span> <span style="color: gray;">${formatDate(
+            mod.date
+          )}</span>`,
+          value: `Modified Version ${index}`,
+          id: mod.id,
+          date: mod.date,
+          isOriginal: false,
+          isMostRecent: mod.latest,
+        }
   );
 
   // Identify the most recent version
@@ -211,12 +212,18 @@ const IncidentDetailsHeader = ({
             <span>{data.incident.department?.name || "No department"}</span>
           </div>
 
-          <CustomModifiedSelectInput
-            placeholder="Version"
-            options={updatedOptions}
-            selected={selectedVersion}
-            setSelected={setSelectedVersion}
-          />
+          <PermissionsGuard
+            model={model}
+            codename={versionCodeName}
+            isPage={false}
+          >
+            <CustomModifiedSelectInput
+              placeholder="Version"
+              options={updatedOptions}
+              selected={selectedVersion}
+              setSelected={setSelectedVersion}
+            />
+          </PermissionsGuard>
 
           {data.incident.is_resolved ? (
             <div className="is-resolved button one-bg">
@@ -250,8 +257,15 @@ const IncidentDetailsHeader = ({
                       <span>Send for review</span>
                     </PermissionsGuard>
                   </div>
-                  <PermissionsGuard model={model} codename={"close_incident"} isPage={false}>
-                    <div onClick={toggleShowMarkResolvedPopup} className="action">
+                  <PermissionsGuard
+                    model={model}
+                    codename={"close_incident"}
+                    isPage={false}
+                  >
+                    <div
+                      onClick={toggleShowMarkResolvedPopup}
+                      className="action"
+                    >
                       <div className="icon">
                         <FileCheck2 size={20} variant={"stroke"} />
                       </div>
@@ -260,7 +274,11 @@ const IncidentDetailsHeader = ({
                   </PermissionsGuard>
                 </>
 
-                <PermissionsGuard model={model} codename={"change_incident"} isPage={false}>
+                <PermissionsGuard
+                  model={model}
+                  codename={"change_incident"}
+                  isPage={false}
+                >
                   <Link
                     href={"modify/"}
                     onClick={() => {

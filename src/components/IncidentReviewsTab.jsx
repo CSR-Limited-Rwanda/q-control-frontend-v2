@@ -9,8 +9,15 @@ import ProfilePlaceHolder from "./ProfilePlaceHolder";
 import { formatDateTime } from "@/utils/api";
 import RichTextField from "./RichTextField";
 import PositionCard from "./PositionCard";
+import PermissionsGuard from "./PermissionsGuard";
 
-const IncidentReviewsTab = ({ incidentId, apiLink, setCount = 0 }) => {
+const IncidentReviewsTab = ({
+  incidentId,
+  model,
+  codeName,
+  apiLink,
+  setCount = 0,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [reviews, setReviews] = useState([]);
   const [error, setError] = useState(null);
@@ -78,12 +85,14 @@ const IncidentReviewsTab = ({ incidentId, apiLink, setCount = 0 }) => {
       )}
 
       {!isLoading && (
-        <Button
-          onClick={() => setNewReviewFormVisible(true)}
-          icon={<Plus />}
-          hasIcon={true}
-          text={"Create Review"}
-        ></Button>
+        <PermissionsGuard model={model} codename={codeName} isPage={false}>
+          <Button
+            onClick={() => setNewReviewFormVisible(true)}
+            icon={<Plus />}
+            hasIcon={true}
+            text={"Create Review"}
+          ></Button>
+        </PermissionsGuard>
       )}
       {newReviewFormVisible && (
         <NewReviewForm
