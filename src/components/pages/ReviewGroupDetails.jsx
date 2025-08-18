@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import DeleteReviewGroup from "../accounts/forms/reviewGroups/DeleteReviewGroup";
 import EditReviewGroup from "../accounts/forms/reviewGroups/EditReviewGroup";
 import CloseIcon from "../CloseIcon";
+import PermissionsGuard from "../PermissionsGuard";
 
 const ReviewGroupsDetailsContent = () => {
   const [members, setMembers] = useState([]);
@@ -145,181 +146,197 @@ const ReviewGroupsDetailsContent = () => {
   }
 
   return (
-    <>
-      <div className="dashboard-page-content">
-        {showAddMembersForm && (
-          <div className="new-user-form-popup">
-            <div className="popup">
-              <div className="popup-content">
-                <CloseIcon onClick={handleShowNewUserForm} />
+    <PermissionsGuard model={"tasks"} codename={"view_reviewgroups"}>
+      <>
+        <div className="dashboard-page-content">
+          {showAddMembersForm && (
+            <div className="new-user-form-popup">
+              <div className="popup">
+                <div className="popup-content">
+                  <CloseIcon onClick={handleShowNewUserForm} />
 
-                <div className="form">
-                  <AddMembersToReviewGroup
-                    groupId={reviewId}
-                    onClose={() => setShowAddMembersForm(false)}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showDeletePopup && (
-          <DeleteReviewGroup
-            onClose={() => {
-              setShowDeletePopup(false);
-              setDeleteError(null);
-            }}
-            onConfirm={handleDeleteReviewGroup}
-            isLoading={isDeleting}
-            error={deleteError}
-          />
-        )}
-
-        {showEditForm && (
-          <EditReviewGroup
-            reviewGroup={reviewGroup}
-            onClose={() => setShowEditForm(false)}
-            onReviewGroupUpdated={(updatedReviewGroup) => {
-              setReviewGroup(updatedReviewGroup);
-            }}
-          />
-        )}
-
-        <div className="group-details-top-content">
-          <div className="group-details-title">
-            <Link href="/accounts">
-              <MoveLeft />
-            </Link>
-            <p>Group details</p>
-          </div>
-        </div>
-
-        <div className="review-group-details-container">
-          <div className="review-group-details-contents">
-            <div className="row">
-              <div className="col">
-                <h4 className="review-title">
-                  {reviewGroup.title || "Not provided"}
-                </h4>
-                <p className="review-date">
-                  <DateFormatter dateString={reviewGroup.created_at || "N/A"} />
-                </p>
-              </div>
-              <div className="col">
-                <p className="review-created">Created by</p>
-                <p className="review-created-by-name">
-                  {reviewGroup.created_by || "N/A"}
-                </p>
-              </div>
-              <div className="col">
-                <p className="review-update">Last updated by</p>
-                <p>{reviewGroup.updated_by || "N/A"}</p>
-              </div>
-            </div>
-            <div className="action-btn">
-              <div
-                onClick={handleShowActions}
-                className={`actions-dropdown ${showActions && "show"}`}
-              >
-                <button className="header">
-                  <span>Actions</span>
-                  <ChevronRight className="icon" />
-                </button>
-
-                {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
-                <div className="actions-list">
-                  <div
-                    className="action"
-                    onClick={() => {
-                      setShowEditForm(true);
-                      setShowActions(false);
-                    }}
-                  >
-                    <SquarePen />
-                    <span>Edit review group</span>
-                  </div>
-                  <hr />
-                  <div
-                    className="action"
-                    onClick={() => {
-                      setShowDeletePopup(true);
-                      setShowActions(false);
-                    }}
-                  >
-                    <Trash2 />
-                    <span>Delete review group</span>
+                  <div className="form">
+                    <AddMembersToReviewGroup
+                      groupId={reviewId}
+                      onClose={() => setShowAddMembersForm(false)}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="review-group-description">
-            <p>{reviewGroup.description || "No description provided"}</p>
-          </div>
-        </div>
+          )}
 
-        <div className="actions">
-          <div className="title">
-            <div>
-              <h3>Group members</h3>
-              <span>{members.length > 0 ? members.length : "0"}</span>{" "}
-              <span>Available</span>
+          {showDeletePopup && (
+            <DeleteReviewGroup
+              onClose={() => {
+                setShowDeletePopup(false);
+                setDeleteError(null);
+              }}
+              onConfirm={handleDeleteReviewGroup}
+              isLoading={isDeleting}
+              error={deleteError}
+            />
+          )}
+
+          {showEditForm && (
+            <EditReviewGroup
+              reviewGroup={reviewGroup}
+              onClose={() => setShowEditForm(false)}
+              onReviewGroupUpdated={(updatedReviewGroup) => {
+                setReviewGroup(updatedReviewGroup);
+              }}
+            />
+          )}
+
+          <div className="group-details-top-content">
+            <div className="group-details-title">
+              <Link href="/accounts">
+                <MoveLeft />
+              </Link>
+              <p>Group details</p>
             </div>
           </div>
-          <button
-            type="button"
-            className="btn tertiary-button new-user-button"
-            onClick={() => setShowAddMembersForm(true)}
-          >
-            <Plus size={20} />
-            <span>Add Members</span>
-          </button>
-        </div>
-        <div className="table-container">
-          <table className="review-groups-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>ID</th>
-                <th>Email</th>
-                <th>Phone number</th>
-                <th>Facility</th>
-                <th>Department</th>
-              </tr>
-            </thead>
-            <tbody>
-              {members.length > 0 ? (
-                members.map((member) => (
-                  <tr key={member.id}>
-                    <td>
-                      {member.user.first_name} {member.user.last_name}
-                    </td>
-                    <td>{member.id}</td>
-                    <td>{member.user.email}</td>
-                    <td>{member.phone_number || "N/A"}</td>
-                    <td>{member?.facility?.name}</td>
-                    <td>
-                      {member?.access_to_department?.length > 0
-                        ? member.access_to_department
-                            .map((dept) => dept.name)
-                            .join(", ")
-                        : "No department"}
+
+          <div className="review-group-details-container">
+            <div className="review-group-details-contents">
+              <div className="row">
+                <div className="col">
+                  <h4 className="review-title">
+                    {reviewGroup.title || "Not provided"}
+                  </h4>
+                  <p className="review-date">
+                    <DateFormatter
+                      dateString={reviewGroup.created_at || "N/A"}
+                    />
+                  </p>
+                </div>
+                <div className="col">
+                  <p className="review-created">Created by</p>
+                  <p className="review-created-by-name">
+                    {reviewGroup.created_by || "N/A"}
+                  </p>
+                </div>
+                <div className="col">
+                  <p className="review-update">Last updated by</p>
+                  <p>{reviewGroup.updated_by || "N/A"}</p>
+                </div>
+              </div>
+              <div className="action-btn">
+                <div
+                  onClick={handleShowActions}
+                  className={`actions-dropdown ${showActions && "show"}`}
+                >
+                  <button className="header">
+                    <span>Actions</span>
+                    <ChevronRight className="icon" />
+                  </button>
+
+                  {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
+                  <div className="actions-list">
+                    <PermissionsGuard
+                      model={"tasks"}
+                      codename={"change_reviewgroups"}
+                      isPage={false}
+                    >
+                      <div
+                        className="action"
+                        onClick={() => {
+                          setShowEditForm(true);
+                          setShowActions(false);
+                        }}
+                      >
+                        <SquarePen />
+                        <span>Edit review group</span>
+                      </div>
+                    </PermissionsGuard>
+
+                    <hr />
+                    <PermissionsGuard
+                      model={"tasks"}
+                      codename={"delete_reviewgroups"}
+                    >
+                      <div
+                        className="action"
+                        onClick={() => {
+                          setShowDeletePopup(true);
+                          setShowActions(false);
+                        }}
+                      >
+                        <Trash2 />
+                        <span>Delete review group</span>
+                      </div>
+                    </PermissionsGuard>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="review-group-description">
+              <p>{reviewGroup.description || "No description provided"}</p>
+            </div>
+          </div>
+
+          <div className="actions">
+            <div className="title">
+              <div>
+                <h3>Group members</h3>
+                <span>{members.length > 0 ? members.length : "0"}</span>{" "}
+                <span>Available</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="btn tertiary-button new-user-button"
+              onClick={() => setShowAddMembersForm(true)}
+            >
+              <Plus size={20} />
+              <span>Add Members</span>
+            </button>
+          </div>
+          <div className="table-container">
+            <table className="review-groups-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>ID</th>
+                  <th>Email</th>
+                  <th>Phone number</th>
+                  <th>Facility</th>
+                  <th>Department</th>
+                </tr>
+              </thead>
+              <tbody>
+                {members.length > 0 ? (
+                  members.map((member) => (
+                    <tr key={member.id}>
+                      <td>
+                        {member.user.first_name} {member.user.last_name}
+                      </td>
+                      <td>{member.id}</td>
+                      <td>{member.user.email}</td>
+                      <td>{member.phone_number || "N/A"}</td>
+                      <td>{member?.facility?.name}</td>
+                      <td>
+                        {member?.access_to_department?.length > 0
+                          ? member.access_to_department
+                              .map((dept) => dept.name)
+                              .join(", ")
+                          : "No department"}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="no-data-found">
+                      <p>No members found in this group</p>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="no-data-found">
-                    <p>No members found in this group</p>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    </>
+      </>
+    </PermissionsGuard>
   );
 };
 

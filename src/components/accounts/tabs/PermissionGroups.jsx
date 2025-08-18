@@ -10,8 +10,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import AddPermissionGroupForm from "../forms/AddPermissionGroupForm";
 import DeletePermissionGroup from "../forms/DeletePermissionGroupForm";
 import EditPermissionGroupForm from "../forms/EditPermissionGroupForm";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
-const PermissionGroups = () => {
+const PermissionGroups = ({ permissions }) => {
   const router = useRouter();
   const { setSelectedGroup } = useGroupContext();
   const [groups, setGroups] = useState([]);
@@ -41,7 +42,6 @@ const PermissionGroups = () => {
     setGroup(group);
 
     setGroupId(id);
-
   };
 
   const formatGroupDataForDelete = (group) => {
@@ -73,7 +73,6 @@ const PermissionGroups = () => {
       );
 
       if (response.status === 204 || response.status === 200) {
-
         try {
           const response = await api.delete(`/permissions/`, {
             data: {
@@ -85,9 +84,7 @@ const PermissionGroups = () => {
             setShowDeleteModal(false);
             window.location.reload();
           }
-        } catch (error) {
-
-        }
+        } catch (error) {}
         handleFetchGroups();
       } else {
         throw new Error("Failed to delete group");
@@ -154,14 +151,12 @@ const PermissionGroups = () => {
     try {
       const response = await api.get(`/permissions/`);
       if (response.status === 200) {
-
         setGroups(response.data);
         return;
       } else {
         setErrorMessage("Error fetching groups. Contact support.");
       }
     } catch (error) {
-
       setErrorMessage("Error fetching groups. Contact support.");
     } finally {
       setIsLoading(false);
@@ -172,115 +167,154 @@ const PermissionGroups = () => {
     handleFetchGroups();
   }, []);
   return (
-    <div className="permission-groups">
-      <div className="filters">
-        <SearchInput
-          value={searchQuery}
-          setValue={setSearchQuery}
-          isSearching={isSearching}
-          label={"Search permission groups"}
-        />
+    <PermissionsGuard model={"auth"} codename={"view_group"}>
+      <div className="permission-groups">
+        <div className="filters">
+          <SearchInput
+            value={searchQuery}
+            setValue={setSearchQuery}
+            isSearching={isSearching}
+            label={"Search permission groups"}
+          />
 
-        <div className="actions">
-          <span>Page: {pageNumber}</span>
-          <span>Per page: {pageSize}</span>
-          <div className="filters-popup">
-            <OutlineButton
-              onClick={handleShowFilters}
-              span={"Filters"}
-              prefixIcon={showFilters ? <X /> : <Plus />}
-            />
+          <div className="actions">
+            <span>Page: {pageNumber}</span>
+            <span>Per page: {pageSize}</span>
+            <div className="filters-popup">
+              <OutlineButton
+                onClick={handleShowFilters}
+                span={"Filters"}
+                prefixIcon={showFilters ? <X /> : <Plus />}
+              />
 
-            {showFilters ? (
-              <div className="side-popup">
-                <div className="popup-content">
-                  <h3>Filters</h3>
-                  <form>
-                    <div className="half">
-                      <div className="form-group">
-                        <label htmlFor="page">Page</label>
-                        <input
-                          value={pageNumber}
-                          onChange={(e) => setPageNumber(e.target.value)}
-                          type="number"
-                          name="pageNumber"
-                          id="pageNumber"
-                          placeholder="Page number"
-                        />
+              {showFilters ? (
+                <div className="side-popup">
+                  <div className="popup-content">
+                    <h3>Filters</h3>
+                    <form>
+                      <div className="half">
+                        <div className="form-group">
+                          <label htmlFor="page">Page</label>
+                          <input
+                            value={pageNumber}
+                            onChange={(e) => setPageNumber(e.target.value)}
+                            type="number"
+                            name="pageNumber"
+                            id="pageNumber"
+                            placeholder="Page number"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="page">Page size</label>
+                          <input
+                            value={pageSize}
+                            onChange={(e) => setPageSize(e.target.value)}
+                            type="number"
+                            name="pageSize"
+                            id="pageSize"
+                            placeholder="Page size"
+                          />
+                        </div>
                       </div>
-                      <div className="form-group">
-                        <label htmlFor="page">Page size</label>
-                        <input
-                          value={pageSize}
-                          onChange={(e) => setPageSize(e.target.value)}
-                          type="number"
-                          name="pageSize"
-                          id="pageSize"
-                          placeholder="Page size"
-                        />
-                      </div>
-                    </div>
-                  </form>
+                    </form>
 
-                  <PrimaryButton
-                    text={"Apply filters"}
-                    onClick={handleApplyFilters}
-                  />
+                    <PrimaryButton
+                      text={"Apply filters"}
+                      onClick={handleApplyFilters}
+                    />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              ""
+              ) : (
+                ""
+              )}
+            </div>
+
+            {permissions && permissions.auth?.includes("add_group") && (
+              <PrimaryButton
+                onClick={() => setShowNewUserForm(true)}
+                span="Add permission group"
+                prefixIcon={<Plus />}
+                customClass={"sticky-button"}
+              />
             )}
           </div>
-
-          <PrimaryButton
-            onClick={() => setShowNewUserForm(true)}
-            span="Add permission group"
-            prefixIcon={<Plus />}
-            customClass={"sticky-button"}
-          />
         </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Permission group</th>
-            <th>Created at</th>
-            <th>Total feature</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {groups.map((group) => (
-            <tr key={group.id}>
-              <td data-label="Permission group">{group.name || '-'}</td>
-              <td data-label="Created at">{group.created_at || '-'}</td>
-              <td data-label="Total features">{group.permissions?.length || 0}</td>
-              <td data-label="Actions">
-                <Trash2 size={18} onClick={() => handleShowDeleteModal(group.id, group)} />
-                <SquarePen size={18} onClick={() => handleShowEditPermissionForm(group.id)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <table>
+          <thead>
+            <tr>
+              <th>Permission group</th>
+              <th>Created at</th>
+              <th>Total feature</th>
 
-      {showNewUserForm && <AddPermissionGroupForm handleClose={handleClose} />}
-      {showEditPermissionForm && (
-        <EditPermissionGroupForm
-          handleClose={() => setShowEditPermissionForm(false)}
-          groupId={groupId}
-        />
-      )}
-      {showDeleteModal && (
-        <DeletePermissionGroup
-          onClose={() => setShowDeleteModal(false)}
-          onConfirm={handleDeletePermissionGroup}
-          isLoading={isDeleting}
-          error={deleteError}
-        />
-      )}
-    </div>
+              {permissions &&
+                permissions.auth?.includes("view_group") &&
+                (permissions.auth?.includes("change_group") ||
+                  permissions.auth?.includes("delete_group")) && (
+                  <th>Actions</th>
+                )}
+            </tr>
+          </thead>
+          <tbody>
+            {groups.map((group) => (
+              <tr key={group.id}>
+                <td data-label="Permission group">{group.name || "-"}</td>
+                <td data-label="Created at">{group.created_at || "-"}</td>
+                <td data-label="Total features">
+                  {group.permissions?.length || 0}
+                </td>
+
+                {permissions &&
+                  permissions.auth?.includes("view_group") &&
+                  (permissions.auth?.includes("change_group") ||
+                    permissions.auth?.includes("delete_group")) && (
+                    <td data-label="Actions">
+                      <PermissionsGuard
+                        model={"auth"}
+                        codename={"delete_group"}
+                        isPage={false}
+                      >
+                        <Trash2
+                          size={18}
+                          onClick={() => handleShowDeleteModal(group.id, group)}
+                        />
+                      </PermissionsGuard>
+
+                      <PermissionsGuard
+                        model={"auth"}
+                        codename={"change_group"}
+                        isPage={false}
+                      >
+                        <SquarePen
+                          size={18}
+                          onClick={() => handleShowEditPermissionForm(group.id)}
+                        />
+                      </PermissionsGuard>
+                    </td>
+                  )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {showNewUserForm && (
+          <AddPermissionGroupForm handleClose={handleClose} />
+        )}
+        {showEditPermissionForm && (
+          <EditPermissionGroupForm
+            handleClose={() => setShowEditPermissionForm(false)}
+            groupId={groupId}
+          />
+        )}
+        {showDeleteModal && (
+          <DeletePermissionGroup
+            onClose={() => setShowDeleteModal(false)}
+            onConfirm={handleDeletePermissionGroup}
+            isLoading={isDeleting}
+            error={deleteError}
+          />
+        )}
+      </div>
+    </PermissionsGuard>
   );
 };
 
