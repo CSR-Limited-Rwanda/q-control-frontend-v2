@@ -595,10 +595,10 @@ const DrugReactionTable = ({
           <th>Severity</th>
           <th>Care Level</th>
           <th>Status</th>
-          {permissions?.adverse_drug_reaction?.includes("change_incident") ||
-            permissions?.adverse_drug_reaction?.includes("view_details") && (
-              <th className="action-col">Action</th>
-            )}
+          {(permissions?.adverse_drug_reaction?.includes("change_incident") ||
+            permissions?.adverse_drug_reaction?.includes("view_details")) && (
+            <th className="action-col">Action</th>
+          )}
         </tr>
       </thead>
       <tbody>
@@ -664,56 +664,56 @@ const DrugReactionTable = ({
                   {data.status || "Not specified"}
                 </p>
               </td>
-              {permissions?.adverse_drug_reaction?.includes(
+              {(permissions?.adverse_drug_reaction?.includes(
                 "change_incident"
               ) ||
                 permissions?.adverse_drug_reaction?.includes(
                   "view_details"
-                ) && (
-                  <td
-                    data-label="Action"
-                    onClick={(event) => handleNonClickableColumnClick(event)}
-                    className="action-col"
-                  >
-                    <div className="table-actions">
-                      <PermissionsGuard
-                        model={"adverse_drug_reaction"}
-                        codename={"change_incident"}
-                        isPage={false}
-                      >
-                        {!data.is_resolved && (
-                          <Pencil
-                            size={20}
-                            onClick={() =>
-                              navigateToModify(
-                                data.original_report
-                                  ? data.original_report
-                                  : data.id
-                              )
-                            }
-                          />
-                        )}
-                      </PermissionsGuard>
-
-                      <PermissionsGuard
-                        model={"adverse_drug_reaction"}
-                        codename={"view_details"}
-                        isPage={false}
-                      >
-                        <Eye
+                )) && (
+                <td
+                  data-label="Action"
+                  onClick={(event) => handleNonClickableColumnClick(event)}
+                  className="action-col"
+                >
+                  <div className="table-actions">
+                    <PermissionsGuard
+                      model={"adverse_drug_reaction"}
+                      codename={"change_incident"}
+                      isPage={false}
+                    >
+                      {!data.is_resolved && (
+                        <Pencil
                           size={20}
                           onClick={() =>
-                            handleRowClick(
+                            navigateToModify(
                               data.original_report
                                 ? data.original_report
                                 : data.id
                             )
                           }
                         />
-                      </PermissionsGuard>
-                    </div>
-                  </td>
-                )}
+                      )}
+                    </PermissionsGuard>
+
+                    <PermissionsGuard
+                      model={"adverse_drug_reaction"}
+                      codename={"view_details"}
+                      isPage={false}
+                    >
+                      <Eye
+                        size={20}
+                        onClick={() =>
+                          handleRowClick(
+                            data.original_report
+                              ? data.original_report
+                              : data.id
+                          )
+                        }
+                      />
+                    </PermissionsGuard>
+                  </div>
+                </td>
+              )}
             </tr>
           ))
         ) : (

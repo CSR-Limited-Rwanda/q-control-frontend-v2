@@ -22,14 +22,13 @@ import CustomDatePicker from "../../CustomDatePicker";
 import { useAuthentication } from "@/context/authContext";
 import PermissionsGuard from "@/components/PermissionsGuard";
 
-
 import "@/styles/_modifyIncident.scss";
 import CloseIcon from "@/components/CloseIcon";
 
 import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
-  const { permissions } = useGetPermissions()
+  const { permissions } = useGetPermissions();
   const { user } = useAuthentication();
   const [incident, setIncident] = useState(data);
   const [currentStep, setCurrentStep] = useState(1);
@@ -97,6 +96,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [showInvestigationFrom, setShowInvestigationFrom] = useState(false);
   const [dateBirth, setdateBirth] = useState(data.patient_info?.date_of_birth);
   const [age, setAge] = useState(data.patient_info?.age || "");
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department.id
+  );
   const [staffIncidentId, setStaffIncidentId] = useState(
     localStorage.getItem("staffIncidentId")
   );
@@ -110,6 +113,35 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       };
     })
   );
+
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartmentId(event.target.value);
+  };
+
+  useEffect(() => {
+    console.log(data);
+    if (!data.report_facility.id) return;
+
+    const fetchDepartments = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/departments/`, {
+          params: { facility_id: data.report_facility.id },
+        });
+        if (response.status === 200) {
+          console.log(response.data.results);
+          setDepartments(response.data.results);
+        }
+      } catch (error) {
+        toast.error("Error fetching departments");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, [data.report_facility.id]);
   const handleShowInvestigationForm = () => {
     setShowInvestigationFrom(!showInvestigationFrom);
   };
@@ -147,7 +179,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
         }
-      } catch (error) { }
+      } catch (error) {}
     };
 
     fetchIncidentDocuments();
@@ -217,17 +249,18 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
 
     const incidentData = {
       action: "modify",
-      report_facility: user.facility.id,
+      report_facility: data.report_facility.id,
+      department: parseInt(selectedDepartmentId),
       incident_status: statusType || "Open",
       patient_info:
         firstName && lastName
           ? {
-            first_name: firstName,
-            last_name: lastName,
-            age: age,
-            date_of_birth: dateBirth,
-            profile_type: "Patient",
-          }
+              first_name: firstName,
+              last_name: lastName,
+              age: age,
+              date_of_birth: dateBirth,
+              profile_type: "Patient",
+            }
           : null,
       job_title: jobTitle,
       supervisor: {
@@ -249,11 +282,11 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       doctor_consulted_info:
         doctorFirstName && doctorLastName
           ? {
-            first_name: doctorFirstName,
-            last_name: doctorLastName,
-            phone_number: doctorPhone || "",
-            profile_type: "Physician",
-          }
+              first_name: doctorFirstName,
+              last_name: doctorLastName,
+              phone_number: doctorPhone || "",
+              profile_type: "Physician",
+            }
           : null,
       previous_injury: injuredBody,
       previous_injury_date: whenInjured || null,
@@ -279,8 +312,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       if (error.response) {
         toast.error(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while updating the incident"
+            error.response.data.error ||
+            "Error while updating the incident"
         );
       } else {
         toast.error("Unknown error while updating the incident");
@@ -305,7 +338,9 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
         <h2 className="title">Modifying Staff Incident</h2>
         {investigation ? (
           <>
-            {permissions?.staff_incident_reports?.includes("view_staffincidentinvestigation") && (
+            {permissions?.staff_incident_reports?.includes(
+              "view_staffincidentinvestigation"
+            ) && (
               <Link
                 href={`/incidents/staff/${staffIncidentId}`}
                 onClick={() => {
@@ -316,13 +351,14 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
                   <span>View investigation</span>
                   <Eye size={18} />
                 </button>
-
               </Link>
             )}
           </>
         ) : (
           <>
-            {permissions?.staff_incident_reports?.includes("add_staffincidentinvestigation") && (
+            {permissions?.staff_incident_reports?.includes(
+              "add_staffincidentinvestigation"
+            ) && (
               <button
                 onClick={handleShowInvestigationForm}
                 className="tertiary-button"
@@ -369,12 +405,13 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
+                className={`follow-up ${
+                  status === "Draft"
+                    ? "in-progress"
+                    : status === "Closed"
                     ? "closed"
                     : "Open"
-                  }`}
+                }`}
               >
                 {status}
               </span>
@@ -382,15 +419,35 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
           </div>
           <div className="step inputs-group">
             <h3>I am reporting a work related</h3>
-            <div className="field flex-column step-2-status">
-              <label htmlFor="incidentLocation">Status</label>
-              <CustomSelectInput
-                options={["Injury", "Illness", "Near miss"]}
-                placeholder={"status"}
-                selected={statusType}
-                setSelected={setStatusType}
-              />
+
+            <div className="half">
+              <div className="department-select field">
+                <label htmlFor="department">Department</label>
+                <select
+                  id="department"
+                  value={selectedDepartmentId}
+                  onChange={handleDepartmentChange}
+                  disabled={isLoading}
+                >
+                  <option value="">Select a department</option>
+                  {departments.map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="field flex-column step-2-status">
+                <label htmlFor="incidentLocation">Status</label>
+                <CustomSelectInput
+                  options={["Injury", "Illness", "Near miss"]}
+                  placeholder={"status"}
+                  selected={statusType}
+                  setSelected={setStatusType}
+                />
+              </div>
             </div>
+
             <div className="half">
               <div className="field name">
                 <label htmlFor="employeeFirstName">First name</label>
