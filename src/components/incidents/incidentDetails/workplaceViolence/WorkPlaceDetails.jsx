@@ -43,7 +43,6 @@ const WorkPlaceDetailsContent = () => {
         );
         setIncidentDetails(response.data); // Store the original data
         setCurrentIncidentData(response.data.incident); // Set current data for UI
-
       } else {
         // Fetch the latest modified version of the incident
         const res = await api.get(
@@ -57,7 +56,6 @@ const WorkPlaceDetailsContent = () => {
           response = await api.get(
             `${API_URL}/incidents/workplace-violence/${incidentId}/versions/${latestIncident.id}/`
           );
-
         } else {
           response = res;
         }
@@ -125,7 +123,9 @@ const WorkPlaceDetailsContent = () => {
         <div className="incident-details">
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
-              data={useOriginalVersion ? incidentDetails : latestIncidentDetails}
+              data={
+                useOriginalVersion ? incidentDetails : latestIncidentDetails
+              }
               incidentDetailsId={incidentId}
               apiLink={"workplace-violence"}
               sendTo={"send-to-department"}
@@ -134,6 +134,7 @@ const WorkPlaceDetailsContent = () => {
               setCurrentIncidentData={setCurrentIncidentData}
               showClosedManager={true}
               model={"workplace_violence_reports"}
+              versionCodeName={"view_workplaceviolenceversion"}
             />
           ) : (
             ""
@@ -168,10 +169,16 @@ const WorkPlaceDetailsContent = () => {
                 <WorkplaceOtherInfo data={currentIncidentData} />
               }
               documentHistory={
-                <IncidentActivitiesTab incidentId={incidentId} incident_type={"workplace_violence_reports"} setCount={setActivitiesCount} />
+                <IncidentActivitiesTab
+                  incidentId={incidentId}
+                  incident_type={"workplace_violence_reports"}
+                  setCount={setActivitiesCount}
+                />
               }
               reviews={
                 <IncidentReviewsTab
+                  model={"workplace_violence_reports"}
+                  codeName={"add_review"}
                   incidentId={incidentId}
                   apiLink={"workplace-violence"}
                   setCount={setReviewsCount}
@@ -218,9 +225,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
     fetchDocuments();
   }, []);
