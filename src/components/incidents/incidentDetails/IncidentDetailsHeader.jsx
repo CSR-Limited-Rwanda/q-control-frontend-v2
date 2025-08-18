@@ -246,7 +246,9 @@ const IncidentDetailsHeader = ({
                     <div className="icon">
                       <SendHorizontal />
                     </div>
-                    <span>Send for review</span>
+                    <PermissionsGuard model={model} codename={"send_for_review"} isPage={false}>
+                      <span>Send for review</span>
+                    </PermissionsGuard>
                   </div>
                   <PermissionsGuard model={model} codename={"close_incident"} isPage={false}>
                     <div onClick={toggleShowMarkResolvedPopup} className="action">
