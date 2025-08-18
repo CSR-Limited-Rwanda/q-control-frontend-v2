@@ -25,6 +25,7 @@ import ReviewForm from "../incidentForms/ReviewForm";
 import Link from "next/link";
 import SendForReview from "./sendForReview/sendForReview";
 import { NewReviewForm } from "@/components/IncidentReviewsTab";
+import PermissionsGuard from "@/components/PermissionsGuard";
 // import GenerateReport from "../../../../components/general/popups/generateReport";
 
 const IncidentDetailsHeader = ({
@@ -35,6 +36,9 @@ const IncidentDetailsHeader = ({
   sendTo,
   apiLink,
   showClosedManager,
+  codename,
+  model,
+  isPage
 }) => {
   // Default to "Most Recent" if available, otherwise "Original Version"
   const permissions = usePermission();
@@ -244,26 +248,30 @@ const IncidentDetailsHeader = ({
                     </div>
                     <span>Send for review</span>
                   </div>
-                  <div onClick={toggleShowMarkResolvedPopup} className="action">
-                    <div className="icon">
-                      <FileCheck2 size={20} variant={"stroke"} />
+                  <PermissionsGuard model={model} codename={"close_incident"} isPage={false}>
+                    <div onClick={toggleShowMarkResolvedPopup} className="action">
+                      <div className="icon">
+                        <FileCheck2 size={20} variant={"stroke"} />
+                      </div>
+                      <span>Mark as closed</span>
                     </div>
-                    <span>Mark as closed</span>
-                  </div>
+                  </PermissionsGuard>
                 </>
 
-                <Link
-                  href={"modify/"}
-                  onClick={() => {
-                    localStorage.setItem("canModifyDraft", true);
-                  }}
-                  className="action"
-                >
-                  <div className="icon">
-                    <Pencil size={20} variant={"stroke"} />
-                  </div>
-                  <span>Modify</span>
-                </Link>
+                <PermissionsGuard model={model} codename={"change_incident"} isPage={false}>
+                  <Link
+                    href={"modify/"}
+                    onClick={() => {
+                      localStorage.setItem("canModifyDraft", true);
+                    }}
+                    className="action"
+                  >
+                    <div className="icon">
+                      <Pencil size={20} variant={"stroke"} />
+                    </div>
+                    <span>Modify</span>
+                  </Link>
+                </PermissionsGuard>
 
                 <div onClick={toggleShowReviewForm} className="action">
                   <div className="icon">
