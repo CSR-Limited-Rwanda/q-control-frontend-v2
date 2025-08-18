@@ -40,23 +40,50 @@ const AccountsPage = () => {
     },
   ];
 
-  // if no permissions to view users, remove user
   const tabs = React.useMemo(() => {
-    if (!permissions || !permissions?.accounts?.includes("view_list")) {
-      return baseTabs.filter((tab) => tab.id !== "accountsManagement");
-    }
-    if (!permissions || !permissions?.accounts?.includes("view_list")) {
-      return baseTabs.filter((tab) => tab.id !== "permissionGroups");
+    if (!permissions) {
+      // If no permissions, remove all permission-dependent tabs
+      return baseTabs.filter(
+        (tab) =>
+          ![
+            "accountsManagement",
+            "permissionGroups",
+            "departments",
+            "titles",
+            "reviewGroups",
+          ].includes(tab.id)
+      );
     }
 
-    if (!permissions || !permissions?.base?.includes("view_list")) {
-      return baseTabs.filter((tab) => tab.id !== "departments");
+    let filteredTabs = [...baseTabs];
+
+    if (!permissions.accounts?.includes("view_list")) {
+      filteredTabs = filteredTabs.filter(
+        (tab) => tab.id !== "accountsManagement"
+      );
     }
 
-    if (!permissions || !permissions?.accounts?.includes("view_title")) {
-      return baseTabs.filter((tab) => tab.id !== "titles");
+    if (!permissions.auth?.includes("view_group")) {
+      filteredTabs = filteredTabs.filter(
+        (tab) => tab.id !== "permissionGroups"
+      );
     }
-    return baseTabs;
+
+    if (!permissions.base?.includes("view_list")) {
+      filteredTabs = filteredTabs.filter((tab) => tab.id !== "departments");
+    }
+
+    if (!permissions.accounts?.includes("view_title")) {
+      filteredTabs = filteredTabs.filter((tab) => tab.id !== "titles");
+    }
+
+    if (!permissions.tasks?.includes("view_reviewgroups")) {
+      filteredTabs = filteredTabs.filter((tab) => tab.id !== "reviewGroups");
+    }
+    if (!permissions.tasks?.includes("view_reviewtemplates")) {
+      filteredTabs = filteredTabs.filter((tab) => tab.id !== "reviewTemplates");
+    }
+    return filteredTabs;
   }, [permissions]);
 
   const [activeTab, setActiveTab] = useState(null);
