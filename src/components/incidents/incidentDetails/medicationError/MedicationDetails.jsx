@@ -136,6 +136,7 @@ const MedicationDetailsContent = () => {
               useOriginalVersion={useOriginalVersion}
               setCurrentIncidentData={setCurrentIncidentData}
               showClosedManager={false}
+              model={"medication_error"}
             />
           ) : (
             ""

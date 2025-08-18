@@ -143,6 +143,7 @@ const GrievanceDetailsContent = () => {
               useOriginalVersion={useOriginalVersion}
               setCurrentIncidentData={setCurrentIncidentData}
               showClosedManager={false}
+              model={"patient_visitor_grievance"}
             />
           ) : (
             ""

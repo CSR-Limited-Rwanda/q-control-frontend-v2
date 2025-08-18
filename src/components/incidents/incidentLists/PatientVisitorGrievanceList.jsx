@@ -927,342 +927,344 @@ const ComplaintsTab = () => {
   }, []);
 
   return (
-    <div className="incident-list">
-      {errorFetchingComplaints ? (
-        <div className="error-message">
-          <p>{errorFetchingComplaints}</p>
-        </div>
-      ) : (
-        <>
-          <div className="filters">
-            {openFilters ? (
-              <div className="filters_popup">
-                <div onClick={toggleOpenFilters} className="close-icon">
-                  <X size={24} variant="stroke" />
-                </div>
-                <h3>Filter complaint data</h3>
-                <div className="filter-buttons">
-                  <CustomSelectInput
-                    options={["Any", "Yes", "No"]}
-                    placeholder="Filter by resolved by staff"
-                    selected={
-                      filters.resolved_by_staff === null
-                        ? "Any"
-                        : filters.resolved_by_staff
-                          ? "Yes"
-                          : "No"
-                    }
-                    setSelected={(value) => {
-                      const resolvedByStaff =
-                        value === "Yes" ? true : value === "No" ? false : null;
-                      setFilters({
-                        ...filters,
-                        resolved_by_staff: resolvedByStaff,
-                      });
-                    }}
-                    name="resolved_by_staff"
-                    id="resolved_by_staff"
-                  />
-                  <div className="filter-range">
-                    <span>Start date</span>
-                    <CustomDatePicker
-                      selectedDate={filters.start_date}
-                      setSelectedDate={(value) =>
-                        setFilters({ ...filters, start_date: value })
-                      }
-                      placeholderText="Select a date"
-                      dateFormat="yyyy-MM-dd"
-                    />
-                  </div>
-                  <div className="filter-range">
-                    <span>End date</span>
-                    <CustomDatePicker
-                      selectedDate={filters.end_date}
-                      setSelectedDate={(value) =>
-                        setFilters({ ...filters, end_date: value })
-                      }
-                      placeholderText="Select a date"
-                      dateFormat="yyyy-MM-dd"
-                    />
-                  </div>
-                  <div className="popup-buttons">
-                    <button onClick={clearFilters} className="outline-button">
-                      <X size={20} variant="stroke" />
-                      Clear
-                    </button>
-                    <button onClick={applyFilters} className="secondary-button">
-                      <div className="icon">
-                        <SlidersHorizontal size={20} variant="stroke" />
-                      </div>
-                      <span>Filter</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-            <div className="search-input incident-search">
-              <i className="fa-solid fa-magnifying-glass"></i>
-              <input
-                onChange={(e) => search(e.target.value)}
-                type="search"
-                name="systemSearch"
-                id="systemSearch"
-                placeholder="Search by ID, Name, or MRN"
-              />
-            </div>
-            <button onClick={toggleOpenFilters} className="date-filter-button">
-              <div className="icon">
-                <SlidersHorizontal size={24} variant="stroke" />
-              </div>
-              <span>Filter</span>
-            </button>
+    <PermissionsGuard model={"complaints"} codename={"view_list"}>
+      <div className="incident-list">
+        {errorFetchingComplaints ? (
+          <div className="error-message">
+            <p>{errorFetchingComplaints}</p>
           </div>
-          <br />
-          {loadingComplaints ? (
-            <ModifyPageLoader />
-          ) : (
-            <>
-              {isSearching ? (
-                <div className="search-results">
-                  {searchResults.length > 0 ? (
-                    <>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>
-                              <div className="sort-cell">
-                                ID
-                                <SortByNumberIcon
-                                  setSortDesc={setSortDesc}
-                                  handleSortById={handleSortById}
-                                  sortDesc={sortDesc}
-                                />
-                              </div>
-                            </th>
-                            <th>
-                              <div className="sort-cell">
-                                Patient Name
-                                <SortNameIcon
-                                  handleSortById={handleSortByName}
-                                  sortDesc={nameAZ}
-                                  setSortDesc={setNameAZ}
-                                />
-                              </div>
-                            </th>
-                            <th>MRN</th>
-                            <th>
-                              <div className="sort-cell">
-                                Date of Complaint
-                                <SortDateIcon
-                                  setSortDesc={setDateRecent}
-                                  handleSortById={handleFilterByDate}
-                                  sortDesc={dateRecent}
-                                />
-                              </div>
-                            </th>
-                            <th>Resolved by staff</th>
-                            <th>How complaint was taken</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {showComplaintDetails && (
-                            <ComplaintDetails
-                              handleShowComplainDetails={
-                                handleShowComplaintDetails
-                              }
-                              complaint={selectedComplaint}
-                            />
-                          )}
-                          {currentGrievanceComplaints.map(
-                            (complaint, index) => (
-                              <tr
-                                key={index}
-                                onClick={() =>
-                                  handleSelectedComplaint(complaint)
-                                }
-                              >
-                                <td data-label="No"> {index + 1}</td>
-                                <td data-label="ID">{complaint.id}</td>
-                                <td data-label="Patient Name">
-                                  {complaint.patient_name || "Not provided"}
-                                </td>
-                                <td data-label="MRN">
-                                  {complaint.medical_record_number || "-"}
-                                </td>
-                                <td data-label="Date of Complaint">
-                                  <DateFormatter
-                                    dateString={complaint.date_of_complaint}
-                                  />
-                                </td>
-                                <td data-label="Resolved by staff">
-                                  <p
-                                    className={`follow-up ${complaint.resolved_by_staff === false
-                                      ? "in-progress"
-                                      : "Open"
-                                      }`}
-                                  >
-                                    {(complaint.resolved_by_staff
-                                      ? "Yes"
-                                      : "No") || "Not specified"}
-                                  </p>
-                                </td>
-                                <td data-label="How complaint was taken">
-                                  {complaint.how_complaint_was_taken || "-"}
-                                </td>
-                              </tr>
-                            )
-                          )}
-                        </tbody>
-                      </table>
-                      <div className="pagination-controls">
-                        <button
-                          className="pagination-button"
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
-                        >
-                          Prev
-                        </button>
-                        {pageNumbers.map((number) => (
-                          <button
-                            key={number}
-                            className={`pagination-button ${currentPage === number ? "active" : ""
-                              }`}
-                            onClick={() => handlePageChange(number)}
-                          >
-                            {number}
-                          </button>
-                        ))}
-                        <button
-                          className="pagination-button"
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                        >
-                          Next
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <p>No complaints found</p>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>No</th>
-                        <th>
-                          <div className="sort-cell">
-                            ID
-                            <SortByNumberIcon
-                              setSortDesc={setSortDesc}
-                              handleSortById={handleSortById}
-                              sortDesc={sortDesc}
-                            />
-                          </div>
-                        </th>
-                        <th>
-                          <div className="sort-cell">
-                            Patient Name
-                            <SortNameIcon
-                              handleSortById={handleSortByName}
-                              sortDesc={nameAZ}
-                              setSortDesc={setNameAZ}
-                            />
-                          </div>
-                        </th>
-                        <th>MRN</th>
-                        <th>
-                          <div className="sort-cell">
-                            Date of Complaint
-                            <SortDateIcon
-                              setSortDesc={setDateRecent}
-                              handleSortById={handleFilterByDate}
-                              sortDesc={dateRecent}
-                            />
-                          </div>
-                        </th>
-                        <th>Resolved by staff</th>
-                        <th>How complaint was taken</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {showComplaintDetails && (
-                        <ComplaintDetails
-                          handleShowComplainDetails={handleShowComplaintDetails}
-                          complaint={selectedComplaint}
-                        />
-                      )}
-                      {currentGrievanceComplaints.length > 0 ? (
-                        currentGrievanceComplaints.map((complaint, index) => (
-                          <tr
-                            key={index}
-                            onClick={() => handleSelectedComplaint(complaint)}
-                          >
-                            <td data-label="No">{index + 1}</td>
-                            <td data-label="ID">{complaint.id}</td>
-                            <td data-label="Patient Name">{complaint.patient_name || "Not provided"}</td>
-                            <td data-label="MRN">{complaint.medical_record_number || "-"}</td>
-                            <td data-label="Date of Complaint">
-                              <DateFormatter
-                                dateString={complaint.date_of_complaint}
-                              />
-                            </td>
-                            <td data-label="Resolved by staff">
-                              <p
-                                className={`follow-up ${complaint.resolved_by_staff === false
-                                  ? "in-progress"
-                                  : "Open"
-                                  }`}
-                              >
-                                {(complaint.resolved_by_staff ? "Yes" : "No") ||
-                                  "Not specified"}
-                              </p>
-                            </td>
-                            <td data-label="How complaint was taken">{complaint.how_complaint_was_taken || "-"}</td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="7">No complaints found</td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                  <div className="pagination-controls">
-                    <button
-                      className="pagination-button"
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      Prev
-                    </button>
-                    {pageNumbers.map((number) => (
-                      <button
-                        key={number}
-                        className={`pagination-button ${currentPage === number ? "active" : ""
-                          }`}
-                        onClick={() => handlePageChange(number)}
-                      >
-                        {number}
-                      </button>
-                    ))}
-                    <button
-                      className="pagination-button"
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                    >
-                      Next
-                    </button>
+        ) : (
+          <>
+            <div className="filters">
+              {openFilters ? (
+                <div className="filters_popup">
+                  <div onClick={toggleOpenFilters} className="close-icon">
+                    <X size={24} variant="stroke" />
                   </div>
-                </>
-              )}
-            </>
-          )}
-        </>
-      )}
-    </div>
+                  <h3>Filter complaint data</h3>
+                  <div className="filter-buttons">
+                    <CustomSelectInput
+                      options={["Any", "Yes", "No"]}
+                      placeholder="Filter by resolved by staff"
+                      selected={
+                        filters.resolved_by_staff === null
+                          ? "Any"
+                          : filters.resolved_by_staff
+                            ? "Yes"
+                            : "No"
+                      }
+                      setSelected={(value) => {
+                        const resolvedByStaff =
+                          value === "Yes" ? true : value === "No" ? false : null;
+                        setFilters({
+                          ...filters,
+                          resolved_by_staff: resolvedByStaff,
+                        });
+                      }}
+                      name="resolved_by_staff"
+                      id="resolved_by_staff"
+                    />
+                    <div className="filter-range">
+                      <span>Start date</span>
+                      <CustomDatePicker
+                        selectedDate={filters.start_date}
+                        setSelectedDate={(value) =>
+                          setFilters({ ...filters, start_date: value })
+                        }
+                        placeholderText="Select a date"
+                        dateFormat="yyyy-MM-dd"
+                      />
+                    </div>
+                    <div className="filter-range">
+                      <span>End date</span>
+                      <CustomDatePicker
+                        selectedDate={filters.end_date}
+                        setSelectedDate={(value) =>
+                          setFilters({ ...filters, end_date: value })
+                        }
+                        placeholderText="Select a date"
+                        dateFormat="yyyy-MM-dd"
+                      />
+                    </div>
+                    <div className="popup-buttons">
+                      <button onClick={clearFilters} className="outline-button">
+                        <X size={20} variant="stroke" />
+                        Clear
+                      </button>
+                      <button onClick={applyFilters} className="secondary-button">
+                        <div className="icon">
+                          <SlidersHorizontal size={20} variant="stroke" />
+                        </div>
+                        <span>Filter</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+              <div className="search-input incident-search">
+                <i className="fa-solid fa-magnifying-glass"></i>
+                <input
+                  onChange={(e) => search(e.target.value)}
+                  type="search"
+                  name="systemSearch"
+                  id="systemSearch"
+                  placeholder="Search by ID, Name, or MRN"
+                />
+              </div>
+              <button onClick={toggleOpenFilters} className="date-filter-button">
+                <div className="icon">
+                  <SlidersHorizontal size={24} variant="stroke" />
+                </div>
+                <span>Filter</span>
+              </button>
+            </div>
+            <br />
+            {loadingComplaints ? (
+              <ModifyPageLoader />
+            ) : (
+              <>
+                {isSearching ? (
+                  <div className="search-results">
+                    {searchResults.length > 0 ? (
+                      <>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>No</th>
+                              <th>
+                                <div className="sort-cell">
+                                  ID
+                                  <SortByNumberIcon
+                                    setSortDesc={setSortDesc}
+                                    handleSortById={handleSortById}
+                                    sortDesc={sortDesc}
+                                  />
+                                </div>
+                              </th>
+                              <th>
+                                <div className="sort-cell">
+                                  Patient Name
+                                  <SortNameIcon
+                                    handleSortById={handleSortByName}
+                                    sortDesc={nameAZ}
+                                    setSortDesc={setNameAZ}
+                                  />
+                                </div>
+                              </th>
+                              <th>MRN</th>
+                              <th>
+                                <div className="sort-cell">
+                                  Date of Complaint
+                                  <SortDateIcon
+                                    setSortDesc={setDateRecent}
+                                    handleSortById={handleFilterByDate}
+                                    sortDesc={dateRecent}
+                                  />
+                                </div>
+                              </th>
+                              <th>Resolved by staff</th>
+                              <th>How complaint was taken</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {showComplaintDetails && (
+                              <ComplaintDetails
+                                handleShowComplainDetails={
+                                  handleShowComplaintDetails
+                                }
+                                complaint={selectedComplaint}
+                              />
+                            )}
+                            {currentGrievanceComplaints.map(
+                              (complaint, index) => (
+                                <tr
+                                  key={index}
+                                  onClick={() =>
+                                    handleSelectedComplaint(complaint)
+                                  }
+                                >
+                                  <td data-label="No"> {index + 1}</td>
+                                  <td data-label="ID">{complaint.id}</td>
+                                  <td data-label="Patient Name">
+                                    {complaint.patient_name || "Not provided"}
+                                  </td>
+                                  <td data-label="MRN">
+                                    {complaint.medical_record_number || "-"}
+                                  </td>
+                                  <td data-label="Date of Complaint">
+                                    <DateFormatter
+                                      dateString={complaint.date_of_complaint}
+                                    />
+                                  </td>
+                                  <td data-label="Resolved by staff">
+                                    <p
+                                      className={`follow-up ${complaint.resolved_by_staff === false
+                                        ? "in-progress"
+                                        : "Open"
+                                        }`}
+                                    >
+                                      {(complaint.resolved_by_staff
+                                        ? "Yes"
+                                        : "No") || "Not specified"}
+                                    </p>
+                                  </td>
+                                  <td data-label="How complaint was taken">
+                                    {complaint.how_complaint_was_taken || "-"}
+                                  </td>
+                                </tr>
+                              )
+                            )}
+                          </tbody>
+                        </table>
+                        <div className="pagination-controls">
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            Prev
+                          </button>
+                          {pageNumbers.map((number) => (
+                            <button
+                              key={number}
+                              className={`pagination-button ${currentPage === number ? "active" : ""
+                                }`}
+                              onClick={() => handlePageChange(number)}
+                            >
+                              {number}
+                            </button>
+                          ))}
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <p>No complaints found</p>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>No</th>
+                          <th>
+                            <div className="sort-cell">
+                              ID
+                              <SortByNumberIcon
+                                setSortDesc={setSortDesc}
+                                handleSortById={handleSortById}
+                                sortDesc={sortDesc}
+                              />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="sort-cell">
+                              Patient Name
+                              <SortNameIcon
+                                handleSortById={handleSortByName}
+                                sortDesc={nameAZ}
+                                setSortDesc={setNameAZ}
+                              />
+                            </div>
+                          </th>
+                          <th>MRN</th>
+                          <th>
+                            <div className="sort-cell">
+                              Date of Complaint
+                              <SortDateIcon
+                                setSortDesc={setDateRecent}
+                                handleSortById={handleFilterByDate}
+                                sortDesc={dateRecent}
+                              />
+                            </div>
+                          </th>
+                          <th>Resolved by staff</th>
+                          <th>How complaint was taken</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {showComplaintDetails && (
+                          <ComplaintDetails
+                            handleShowComplainDetails={handleShowComplaintDetails}
+                            complaint={selectedComplaint}
+                          />
+                        )}
+                        {currentGrievanceComplaints.length > 0 ? (
+                          currentGrievanceComplaints.map((complaint, index) => (
+                            <tr
+                              key={index}
+                              onClick={() => handleSelectedComplaint(complaint)}
+                            >
+                              <td data-label="No">{index + 1}</td>
+                              <td data-label="ID">{complaint.id}</td>
+                              <td data-label="Patient Name">{complaint.patient_name || "Not provided"}</td>
+                              <td data-label="MRN">{complaint.medical_record_number || "-"}</td>
+                              <td data-label="Date of Complaint">
+                                <DateFormatter
+                                  dateString={complaint.date_of_complaint}
+                                />
+                              </td>
+                              <td data-label="Resolved by staff">
+                                <p
+                                  className={`follow-up ${complaint.resolved_by_staff === false
+                                    ? "in-progress"
+                                    : "Open"
+                                    }`}
+                                >
+                                  {(complaint.resolved_by_staff ? "Yes" : "No") ||
+                                    "Not specified"}
+                                </p>
+                              </td>
+                              <td data-label="How complaint was taken">{complaint.how_complaint_was_taken || "-"}</td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="7">No complaints found</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                    <div className="pagination-controls">
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                      >
+                        Prev
+                      </button>
+                      {pageNumbers.map((number) => (
+                        <button
+                          key={number}
+                          className={`pagination-button ${currentPage === number ? "active" : ""
+                            }`}
+                          onClick={() => handlePageChange(number)}
+                        >
+                          {number}
+                        </button>
+                      ))}
+                      <button
+                        className="pagination-button"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </PermissionsGuard>
   );
 };
 

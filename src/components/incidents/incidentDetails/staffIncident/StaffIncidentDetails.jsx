@@ -27,7 +27,6 @@ const EmployeeDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [staffInvestigationId, setStaffInvestigationId] = useState(localStorage.getItem("employee_investigation_id"))
   const [reviewsCount, setReviewsCount] = useState();
   const [activitiesCount, setActivitiesCount] = useState();
 
@@ -38,7 +37,7 @@ const EmployeeDetailsContent = () => {
 
       if (useOriginalVersion) {
         response = await api.get(`/incidents/staff-incident/${incidentId}/`);
-        setIncidentDetails(response.data.incident);
+        setIncidentDetails(response.data);
         setCurrentIncidentData(response.data.incident);
       } else {
         const res = await api.get(`${API_URL}/incidents/staff-incident/${incidentId}/`);
@@ -122,8 +121,7 @@ const EmployeeDetailsContent = () => {
         <div className="fetching-data">Loading data...</div>
       ) : incidentDetails && Object.keys(incidentDetails).length > 0 ? (
         <div className="incident-details">
-          {incidentDetails.modifications ? (
-            <IncidentDetailsHeader
+          <IncidentDetailsHeader
               data={
                 useOriginalVersion ? incidentDetails : latestIncidentDetails
               }
@@ -134,10 +132,8 @@ const EmployeeDetailsContent = () => {
               useOriginalVersion={useOriginalVersion}
               setCurrentIncidentData={setCurrentIncidentData}
               showClosedManager={true}
+              model={"staff_incident_reports"}
             />
-          ) : (
-            ""
-          )}
 
           <div className="details">
             <StaffDetails

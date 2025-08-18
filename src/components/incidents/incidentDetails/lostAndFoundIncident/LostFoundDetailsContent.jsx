@@ -122,12 +122,13 @@ const LostFoundDetailsContent = () => {
                 : latestIncidentDetails?.modifications
             }}
             incidentDetailsId={incidentId}
-            apiLink={"lost-and-found"}
+            apiLink={"lost-found"}
             sendTo={"send-to-department"}
             managerAccess={false}
             useOriginalVersion={useOriginalVersion}
             setCurrentIncidentData={setCurrentIncidentData}
             showClosedManager={false}
+            model={"lost_and_found"}
           />
 
           <div className="details">
