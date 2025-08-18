@@ -58,7 +58,7 @@
       align-items: center;
       justify-content: center;
       color: var(--primary);
-      background-color: lighten($color: var(--primary), $amount: 50);
+      background-color: var(--primary-light);
     }
 
     small {
@@ -70,7 +70,7 @@
 }
 
 .departments {
-  background-color: $body-background-color;
+  background-color: var(--background);
   padding: 24px;
   margin-top: 24px;
   display: flex;
@@ -126,7 +126,7 @@
   }
 
   .active {
-    background-color: lighten($color: var(--secondary), $amount: 30);
+    background-color: var(--secondary-light);
     color: var(--secondary);
   }
 }
@@ -155,7 +155,7 @@
 
 .reports-card,
 .content-card {
-  border: 1px solid lighten($color: var(--primary), $amount: 40);
+  border: 1px solid var(--primary-light);
   border-radius: var(--base-border-radius);
 
   .status {
@@ -259,7 +259,7 @@
         align-items: center;
         justify-content: center;
         color: var(--secondary);
-        background-color: lighten($color: var(--secondary), $amount: 30);
+        background-color: var(--secondary-light);
       }
     }
 

@@ -137,11 +137,6 @@
       border-radius: var(--base-border-radius);
       cursor: pointer;
     }
-
-    .cancel-btn {
-      color: $text-color;
-      cursor: pointer;
-    }
   }
 }
 
@@ -209,7 +204,7 @@
     color: rgb(74, 74, 74);
 
     &:hover {
-      background-color: lighten($color: var(--secondary), $amount: 30);
+      background-color: var(--secondary-light);
     }
   }
 

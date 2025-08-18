@@ -299,7 +299,7 @@ textarea {
 
 .results-count {
   padding: 1rem;
-  background-color: lighten($color: var(--primary), $amount: 60);
+  background-color: var(--primary-light);
 }
 
 .sort-icon {
@@ -319,7 +319,7 @@ textarea {
       gap: 10px;
       width: fit-content;
       align-items: center;
-      background-color: lighten($color: var(--secondary-dark), $amount: 33);
+      background-color: var(--secondary-light);
 
       .count {
         background-color: var(--secondary-dark);
@@ -433,10 +433,10 @@ textarea {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    background-color: lighten($color: var(--primary), $amount: 50);
+    background-color: var(--primary-light);
     padding: 0.5rem 1rem;
     border-radius: var(--base-border-radius);
-    border: 1px solid lighten($color: var(--primary), $amount: 30);
+    border: 1px solid var(--border);
   }
 }
 
@@ -802,7 +802,7 @@ input[type="checkbox"] {
     }
 
     &:disabled {
-      background-color: lighten($color: var(--secondary), $amount: 05);
+      background-color: var(--secondary-light);
     }
   }
 
@@ -899,7 +899,7 @@ input[type="checkbox"] {
   }
 
   &:disabled {
-    background-color: lighten($color: var(--primary), $amount: 10);
+    background-color: var(--secondary-light);
   }
 }
 
@@ -1330,7 +1330,7 @@ input[type="checkbox"] {
 }
 
 .note-message {
-  background-color: lighten($color: var(--primary), $amount: 60);
+  background-color: var(--primary-light);
 
   .message-icon {
     color: var(--primary);
@@ -1423,7 +1423,7 @@ input[type="checkbox"] {
   }
 
   > :nth-child(even) {
-    background-color: lighten($color: var(--secondary), $amount: 30);
+    background-color: var(--secondary-light);
   }
 
   &:hover {
@@ -1440,7 +1440,7 @@ input[type="checkbox"] {
     height: 2.2rem;
     width: 2.2rem;
     border-radius: 50%;
-    background-color: lighten($color: var(--primary), $amount: 60);
+    background-color: var(--primary-light);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1476,7 +1476,7 @@ input[type="checkbox"] {
             height: 2.2rem;
             width: 2.2rem;
             border-radius: 50%;
-            background-color: lighten($color: var(--primary), $amount: 60);
+            background-color: var(--primary-light);
             display: flex;
             align-items: center;
             justify-content: center;
