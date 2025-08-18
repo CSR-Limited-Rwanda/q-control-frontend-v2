@@ -744,12 +744,12 @@ form,
   align-items: center;
   gap: 0.5rem;
   background-color: var(--primary-light);
-  // width: fit-content;
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: 0.8rem;
   border: 1px solid var(--border);
   border-radius: var(--base-border-radius);
+  color: gray;
 
   .facility {
     color: gray;
