@@ -30,6 +30,7 @@ import DeletePopup from "../forms/DeletePopup";
 import EditReviewTemplateForm from "../forms/EditReviewTemplateForm";
 import TaskDetailsPopup from "../forms/TaskDetailsPopup";
 import CloseIcon from "../CloseIcon";
+import PermissionsGuard from "../PermissionsGuard";
 
 const ReviewTemplatesDetailsContent = () => {
   const [tasks, setTasks] = useState([]);
@@ -158,239 +159,281 @@ const ReviewTemplatesDetailsContent = () => {
   }
 
   return (
-    <div className="dashboard-page-content">
-      {showAddTaskForm && (
-        <div className="new-user-form-popup">
-          <div className="popup">
-            <div className="popup-content">
-              <CloseIcon onClick={handleShowAddTaskForm} />
+    <PermissionsGuard model={"tasks"} codename={"view_reviewtemplates"}>
+      <div className="dashboard-page-content">
+        {showAddTaskForm && (
+          <div className="new-user-form-popup">
+            <div className="popup">
+              <div className="popup-content">
+                <CloseIcon onClick={handleShowAddTaskForm} />
 
-              <div className="form">
-                <AddTaskForm
-                  showTaskDetails={handleShowTaskDetailsPopup}
-                  discardFn={handleShowAddTaskForm}
-                  fetchTaskDetails={(taskId) => {
-                    fetchTaskDetails(taskId);
-                  }}
-                />
+                <div className="form">
+                  <AddTaskForm
+                    showTaskDetails={handleShowTaskDetailsPopup}
+                    discardFn={handleShowAddTaskForm}
+                    fetchTaskDetails={(taskId) => {
+                      fetchTaskDetails(taskId);
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {showEditTemplateForm && (
-        <div className="new-user-form-popup">
-          <div className="popup">
-            <div className="popup-content">
-              <CloseIcon onClick={handleShowEditTemplateForm} />
+        )}
+        {showEditTemplateForm && (
+          <div className="new-user-form-popup">
+            <div className="popup">
+              <div className="popup-content">
+                <CloseIcon onClick={handleShowEditTemplateForm} />
 
-              <div className="form">
-                <EditReviewTemplateForm
-                  data={reviewTemplate}
-                  discardFn={handleShowEditTemplateForm}
-                />
+                <div className="form">
+                  <EditReviewTemplateForm
+                    data={reviewTemplate}
+                    discardFn={handleShowEditTemplateForm}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {showEditTaskForm && (
-        <div className="new-user-form-popup">
-          <div className="popup">
-            <div className="popup-content">
-              <CloseIcon onClick={handleShowEditTaskForm} />
+        )}
+        {showEditTaskForm && (
+          <div className="new-user-form-popup">
+            <div className="popup">
+              <div className="popup-content">
+                <CloseIcon onClick={handleShowEditTaskForm} />
 
-              <div className="form">
-                <EditTaskForm
-                  showTaskDetails={handleShowTaskDetailsPopup}
-                  discardFn={handleShowEditTaskForm}
-                  data={task}
-                />
+                <div className="form">
+                  <EditTaskForm
+                    showTaskDetails={handleShowTaskDetailsPopup}
+                    discardFn={handleShowEditTaskForm}
+                    data={task}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {showTaskDetailsPopup && (
-        <div className="new-user-form-popup">
-          <div className="popup">
-            <div className="popup-content">
-              <CloseIcon onClick={handleShowTaskDetailsPopup} />
+        )}
+        {showTaskDetailsPopup && (
+          <div className="new-user-form-popup">
+            <div className="popup">
+              <div className="popup-content">
+                <CloseIcon onClick={handleShowTaskDetailsPopup} />
 
-              <div className="form">
-                <TaskDetailsPopup
-                  discardFn={handleShowTaskDetailsPopup}
-                  task={task}
-                  templateId={templateId}
-                />
+                <div className="form">
+                  <TaskDetailsPopup
+                    discardFn={handleShowTaskDetailsPopup}
+                    task={task}
+                    templateId={templateId}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {showDeleteForm && (
-        <div className="new-user-form-popup delete-form-popup">
-          <div className="popup">
-            <div className="popup-content">
-              <div className="form">
-                <DeletePopup
-                  text={"Do you really want to delete this task"}
-                  cancelFn={handleShowDeleteForm}
-                  apiUrl={`/permissions/review-templates/${templateId}/tasks/${taskId}/`}
-                />
+        )}
+        {showDeleteForm && (
+          <div className="new-user-form-popup delete-form-popup">
+            <div className="popup">
+              <div className="popup-content">
+                <div className="form">
+                  <DeletePopup
+                    text={"Do you really want to delete this task"}
+                    cancelFn={handleShowDeleteForm}
+                    apiUrl={`/permissions/review-templates/${templateId}/tasks/${taskId}/`}
+                  />
+                </div>
               </div>
             </div>
           </div>
+        )}
+        <div className="group-details-top-content">
+          <div className="group-details-title">
+            <Link href="/accounts">
+              <MoveLeft />
+            </Link>
+            <p>Template details</p>
+          </div>
         </div>
-      )}
-      <div className="group-details-top-content">
-        <div className="group-details-title">
-          <Link href="/accounts">
-            <MoveLeft />
-          </Link>
-          <p>Template details</p>
-        </div>
-      </div>
 
-      <div className="review-group-details-container">
-        <div className="review-group-details-contents">
-          <div className="row">
-            <div className="col">
-              <h4 className="review-title">{reviewTemplate.name}</h4>
-              <p className="review-date">
-                <DateFormatter dateString={reviewTemplate.created_at} />
-              </p>
-            </div>
-            <div className="col">
-              <p className="review-created">Created by</p>
-              <p className="review-created-by-name">
-                {reviewTemplate.created_by
-                  ? `${reviewTemplate.created_by.first_name || "N/A"} ${
-                      reviewTemplate.created_by.last_name || "N/A"
-                    }`
-                  : "N/A"}
-              </p>
-            </div>
-            <div className="col">
-              <p className="review-update">Last updated by</p>
-              <p>
-                {reviewTemplate.updated_by
-                  ? `${reviewTemplate.updated_by.first_name || "N/A"} ${
-                      reviewTemplate.updated_by.last_name
-                    }`
-                  : "N/A"}
-              </p>
-            </div>
-          </div>
-          <div>
-            <button onClick={handleShowEditTemplateForm}>
-              <Pencil />
-            </button>
-          </div>
-        </div>
-        <div className="review-group-description">
-          <p>{reviewTemplate.description || "No description provided"}</p>
-        </div>
-      </div>
-
-      {loadingTask ? (
-        <div className="loading-state">
-          <p>Loading tasks...</p>
-        </div>
-      ) : tasks.length > 0 ? (
-        <div className="tasks-wrapper">
-          <div className="add-task-button" onClick={handleShowAddTaskForm}>
-            <div className="add-icon">
-              <PlusCircle size={50} />
-            </div>
-            <h3>Add Task</h3>
-            <p>You must add at least task for this template to be active</p>
-          </div>
-          {tasks.map((task, index) => (
-            <div key={index} className="task-container">
+        <div className="review-group-details-container">
+          <div className="review-group-details-contents">
+            <div className="row">
               <div className="col">
-                <div className="row">
-                  <span>{task?.name}</span>
-                  <span>
-                    <span>{task?.number_of_days_to_complete}</span>{" "}
-                    <span>day(s) alloted</span>
-                  </span>
-                </div>
-                <div className="review-task">
-                  <h3>{task?.description}</h3>
-                  <span>Admin, Supervisor, Manager review</span>
-                </div>
+                <h4 className="review-title">{reviewTemplate.name}</h4>
+                <p className="review-date">
+                  <DateFormatter dateString={reviewTemplate.created_at} />
+                </p>
+              </div>
+              <div className="col">
+                <p className="review-created">Created by</p>
+                <p className="review-created-by-name">
+                  {reviewTemplate.created_by
+                    ? `${reviewTemplate.created_by.first_name || "N/A"} ${
+                        reviewTemplate.created_by.last_name || "N/A"
+                      }`
+                    : "N/A"}
+                </p>
+              </div>
+              <div className="col">
+                <p className="review-update">Last updated by</p>
+                <p>
+                  {reviewTemplate.updated_by
+                    ? `${reviewTemplate.updated_by.first_name || "N/A"} ${
+                        reviewTemplate.updated_by.last_name
+                      }`
+                    : "N/A"}
+                </p>
+              </div>
+            </div>
+            <PermissionsGuard
+              model={"tasks"}
+              codename={"change_reviewtemplates"}
+              isPage={false}
+            >
+              <div>
+                <button onClick={handleShowEditTemplateForm}>
+                  <Pencil />
+                </button>
+              </div>
+            </PermissionsGuard>
+          </div>
+          <div className="review-group-description">
+            <p>{reviewTemplate.description || "No description provided"}</p>
+          </div>
+        </div>
 
+        {loadingTask ? (
+          <div className="loading-state">
+            <p>Loading tasks...</p>
+          </div>
+        ) : tasks.length > 0 ? (
+          <div className="tasks-wrapper">
+            <PermissionsGuard
+              model={"tasks"}
+              codename={"add_reviewtemplatetasks"}
+              isPage={false}
+            >
+              <div className="add-task-button" onClick={handleShowAddTaskForm}>
+                <div className="add-icon">
+                  <PlusCircle size={50} />
+                </div>
+                <h3>Add Task</h3>
+                <p>You must add at least task for this template to be active</p>
+              </div>
+            </PermissionsGuard>
+
+            {tasks.map((task, index) => (
+              <div key={index} className="task-container">
                 <div className="col">
                   <div className="row">
-                    <span className="group-title">Assigned group(s)</span>{" "}
-                    <span className="group-number">
-                      {task.review_groups.length}
+                    <span>{task?.name}</span>
+                    <span>
+                      <span>{task?.number_of_days_to_complete}</span>{" "}
+                      <span>day(s) alloted</span>
                     </span>
                   </div>
-                  {task.review_groups.length > 0 ? (
-                    <div className="groups-container">
-                      {task.review_groups.map((group, index) => (
-                        <div key={index} className="group-name">
-                          {group.name}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="groups-container">
-                      <div className="group-name">No assigned group</div>
-                    </div>
-                  )}
-                </div>
-                <div className="task-actions">
-                  <div className="delete-btn">
-                    <Trash2
-                      size={20}
-                      onClick={() => handleShowDeleteForm(task.id)}
-                    />
+                  <div className="review-task">
+                    <h3>{task?.description}</h3>
+                    <span>Admin, Supervisor, Manager review</span>
                   </div>
-                  <div
-                    className="edit-btn"
-                    onClick={async () => {
-                      await fetchTaskDetails(task.id);
-                      setShowEditTaskForm(true);
-                    }}
-                  >
-                    <SquarePen size={20} />
-                    <span>Edit Task</span>
+
+                  <div className="col">
+                    <div className="row">
+                      <span className="group-title">Assigned group(s)</span>{" "}
+                      <span className="group-number">
+                        {task.review_groups.length}
+                      </span>
+                    </div>
+                    {task.review_groups.length > 0 ? (
+                      <div className="groups-container">
+                        {task.review_groups.map((group, index) => (
+                          <div key={index} className="group-name">
+                            {group.name}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="groups-container">
+                        <div className="group-name">No assigned group</div>
+                      </div>
+                    )}
                   </div>
-                  <div
-                    className="details-btn"
-                    onClick={() => {
-                      handleShowTaskDetailsPopup();
-                      fetchTaskDetails(task.id);
-                    }}
-                  >
-                    <MoveRight size={18} />
+                  <div className="task-actions">
+                    <PermissionsGuard
+                      model={"tasks"}
+                      codename={"delete_reviewtemplatetasks"}
+                      isPage={false}
+                    >
+                      <div className="delete-btn">
+                        <Trash2
+                          size={20}
+                          onClick={() => handleShowDeleteForm(task.id)}
+                        />
+                      </div>
+                    </PermissionsGuard>
+
+                    <PermissionsGuard
+                      model={"tasks"}
+                      codename={"change_reviewtemplatetasks"}
+                      isPage={false}
+                    >
+                      <div
+                        className="edit-btn"
+                        onClick={async () => {
+                          await fetchTaskDetails(task.id);
+                          setShowEditTaskForm(true);
+                        }}
+                      >
+                        <SquarePen size={20} />
+                        <span>Edit Task</span>
+                      </div>
+                    </PermissionsGuard>
+
+                    <PermissionsGuard
+                      model={"tasks"}
+                      codename={"view_reviewtemplatetasks"}
+                      isPage={false}
+                    >
+                      <div
+                        className="details-btn"
+                        onClick={() => {
+                          handleShowTaskDetailsPopup();
+                          fetchTaskDetails(task.id);
+                        }}
+                      >
+                        <MoveRight size={18} />
+                      </div>
+                    </PermissionsGuard>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="create-task-container">
-          <Image
-            src={"/empty-box.png"}
-            height={80}
-            width={80}
-            alt="Empty Box"
-          />
-          <h2>No task yet</h2>
-          <p>You must add at least two tasks for this template to be active</p>
-          <OutlineButton
-            onClick={handleShowAddTaskForm}
-            text={"Create task"}
-            prefixIcon={<CirclePlusIcon />}
-          />
-        </div>
-      )}
-    </div>
+            ))}
+          </div>
+        ) : (
+          <div className="create-task-container">
+            <Image
+              src={"/empty-box.png"}
+              height={80}
+              width={80}
+              alt="Empty Box"
+            />
+            <h2>No task yet</h2>
+            <p>
+              You must add at least two tasks for this template to be active
+            </p>
+            <PermissionsGuard
+              model={"tasks"}
+              codename={"add_reviewtemplatetasks"}
+            >
+              <OutlineButton
+                onClick={handleShowAddTaskForm}
+                text={"Create task"}
+                prefixIcon={<CirclePlusIcon />}
+              />
+            </PermissionsGuard>
+          </div>
+        )}
+      </div>
+    </PermissionsGuard>
   );
 };
 
