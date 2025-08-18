@@ -595,7 +595,7 @@ const DrugReactionTable = ({
           <th>Severity</th>
           <th>Care Level</th>
           <th>Status</th>
-          {permissions?.adverse_drug_reaction?.includes("change_incident") &&
+          {permissions?.adverse_drug_reaction?.includes("change_incident") ||
             permissions?.adverse_drug_reaction?.includes("view_details") && (
               <th className="action-col">Action</th>
             )}
@@ -666,7 +666,7 @@ const DrugReactionTable = ({
               </td>
               {permissions?.adverse_drug_reaction?.includes(
                 "change_incident"
-              ) &&
+              ) ||
                 permissions?.adverse_drug_reaction?.includes(
                   "view_details"
                 ) && (

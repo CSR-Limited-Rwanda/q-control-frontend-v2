@@ -571,7 +571,7 @@ const StaffTable = ({
           </th>
           <th>Claim contact & PH</th>
           <th>Status</th>
-          {permissions?.staff_incident_reports?.includes("change_incident") &&
+          {permissions?.staff_incident_reports?.includes("change_incident") ||
             permissions?.staff_incident_reports?.includes("view_details") && (
               <th className="action-col">Action</th>
             )}
@@ -642,7 +642,7 @@ const StaffTable = ({
 
               {permissions?.staff_incident_reports?.includes(
                 "change_incident"
-              ) &&
+              ) ||
                 permissions?.staff_incident_reports?.includes(
                   "view_details"
                 ) && (

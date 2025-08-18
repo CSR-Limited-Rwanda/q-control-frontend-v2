@@ -574,7 +574,7 @@ const MedicationErrorTable = ({
           </th>
           <th>Category</th>
           <th>Status</th>
-          {permissions?.medication_error?.includes("change_incident") &&
+          {permissions?.medication_error?.includes("change_incident") ||
             permissions?.medication_error?.includes("view_details") && (
               <th className="action-col">Action</th>
             )}
@@ -658,7 +658,7 @@ const MedicationErrorTable = ({
                 </p>
               </td>
 
-              {permissions?.medication_error?.includes("change_incident") &&
+              {permissions?.medication_error?.includes("change_incident") ||
                 permissions?.medication_error?.includes("view_details") && (
                   <td
                     data-label="Action"

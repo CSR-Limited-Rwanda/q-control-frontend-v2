@@ -24,6 +24,7 @@ import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
 import MessageDisplay from "@/components/MessageDisplay";
 import MessageComponent from "@/components/MessageComponet";
+import toast from "react-hot-toast";
 
 const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const { user } = useAuthentication();
@@ -556,7 +557,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
             setSuccess(true);
           }
         } catch (error) {
-          window.customToast.error("Error posting data please try again");
+          window.customToast?.error("Error posting data please try again");
           setIsLoading(false);
           console.error(error);
         }
@@ -611,13 +612,13 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
 
         if (error.message) {
           appendError(error.message);
-          window.customToast.error(
+          window.customToast?.error(
             error.message ||
               "Error while creating new incident, please try again"
           );
           return;
         } else {
-          window.customToast.error("Something went wrong");
+          window.customToast?.error("Something went wrong");
           appendError("An error occurred while posting incident data.");
           return;
         }
@@ -634,18 +635,18 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
 
         if (response.status === 200) {
           setCurrentStep(currentStep + 1);
-          window.customToast.success("Data posted successfully");
+          window.customToast?.success("Data posted successfully");
           setIsLoading(false);
         }
       } catch (error) {
         setIsLoading(false);
-        if (error.response.data) {
+        if (error.response?.data) {
           appendError(error.response.data.error);
-          window.customToast.error("Error posting data please try again");
+          window.customToast?.error("Error posting data please try again");
 
           return;
         } else {
-          window.customToast.error("Something went wrong");
+          window.customToast?.error("Something went wrong");
           appendError("An error occurred while posting incident data.");
           return;
         }
@@ -812,10 +813,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         }
       } else {
         if (!isAssailantFieldsFilled) {
-          window.customToast.error("Please fill out all fields for Assailant.");
+          window.customToast?.error("Please fill out all fields for Assailant.");
         }
         if (!isVictimFieldsFilled) {
-          window.customToast.error("Please fill out all fields for Victim.");
+          window.customToast?.error("Please fill out all fields for Victim.");
         }
 
         return;

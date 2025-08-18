@@ -642,7 +642,7 @@ const LostFoundTable = ({
           </th>
 
           <th>Status</th>
-          {permissions?.lost_and_found?.includes("change_incident") &&
+          {permissions?.lost_and_found?.includes("change_incident") ||
             permissions?.lost_and_found?.includes("view_details") && (
               <th className="action-col">Action</th>
             )}
@@ -714,7 +714,7 @@ const LostFoundTable = ({
                 </p>
               </td>
 
-              {permissions?.lost_and_found?.includes("change_incident") &&
+              {permissions?.lost_and_found?.includes("change_incident") ||
                 permissions?.lost_and_found?.includes("view_details") && (
                   <td
                     data-label="Action"

@@ -604,7 +604,7 @@ const WorkplaceViolenceTable = ({
           <th>Status</th>
           {permissions?.workplace_violence_reports?.includes(
             "change_incident"
-          ) &&
+          ) ||
             permissions?.workplace_violence_reports?.includes(
               "view_details"
             ) && <th className="action-col">Action</th>}
@@ -685,7 +685,7 @@ const WorkplaceViolenceTable = ({
 
               {permissions?.workplace_violence_reports?.includes(
                 "change_incident"
-              ) &&
+              ) ||
                 permissions?.workplace_violence_reports?.includes(
                   "view_details"
                 ) && (

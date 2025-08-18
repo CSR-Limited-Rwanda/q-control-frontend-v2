@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import DashboardLayout from "@/app/dashboard/layout";
@@ -18,10 +18,10 @@ import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 import IncidentActivitiesTab from "@/components/Activities";
 
 // css
-import "../../../../styles/_generalIncidentDetailsPage.scss"
+import "../../../../styles/_generalIncidentDetailsPage.scss";
 
 const MedicationDetailsContent = () => {
-  const { incidentId } = useParams()
+  const { incidentId } = useParams();
   const [isFetching, setIsFetching] = useState(true);
   const [incidentDetails, setIncidentDetails] = useState({});
   const [incidentStatus, setIncidentStatus] = useState({});
@@ -43,7 +43,6 @@ const MedicationDetailsContent = () => {
         );
         setIncidentDetails(response.data); // Store the original data
         setCurrentIncidentData(response.data.incident); // Set current data for UI
-
       } else {
         // Fetch the latest modified version of the incident
         const res = await api.get(
@@ -57,7 +56,6 @@ const MedicationDetailsContent = () => {
           response = await api.get(
             `${API_URL}/incidents/medication-error/${incidentId}/versions/${latestIncident.id}/`
           );
-
         } else {
           response = res;
         }
@@ -67,10 +65,8 @@ const MedicationDetailsContent = () => {
       }
       setIsFetching(false);
     } catch (error) {
-
       setIsFetching(false);
     }
-
   };
 
   useEffect(() => {
@@ -127,7 +123,6 @@ const MedicationDetailsContent = () => {
             <IncidentDetailsHeader
               data={
                 useOriginalVersion ? incidentDetails : latestIncidentDetails
-
               }
               incidentDetailsId={incidentId}
               apiLink={"medication-error"}
@@ -136,6 +131,8 @@ const MedicationDetailsContent = () => {
               useOriginalVersion={useOriginalVersion}
               setCurrentIncidentData={setCurrentIncidentData}
               showClosedManager={false}
+              model={"medication_error"}
+              versionCodeName={"view_medicationerrorversion"}
             />
           ) : (
             ""
@@ -171,9 +168,21 @@ const MedicationDetailsContent = () => {
                 <MedicationOtherInformation data={currentIncidentData} />
               }
               documentHistory={
-                <IncidentActivitiesTab incidentId={incidentId} incidentType={"medication_error"} setCount={setActivitiesCount} />
+                <IncidentActivitiesTab
+                  incidentId={incidentId}
+                  incidentType={"medication_error"}
+                  setCount={setActivitiesCount}
+                />
               }
-              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"medication-error"} setCount={setReviewsCount} />}
+              reviews={
+                <IncidentReviewsTab
+                  model={"medication_error"}
+                  codeName={"add_review"}
+                  incidentId={incidentId}
+                  apiLink={"medication-error"}
+                  setCount={setReviewsCount}
+                />
+              }
               documents={<IncidentDocuments incidentId={incidentId} />}
               reviewsCount={reviewsCount}
               incidentDocumentHistoryCount={activitiesCount}
@@ -200,9 +209,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
     fetchDocuments();
   }, []);
@@ -214,7 +221,9 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <ChevronRight />
       <Link href={"/incidents/"}>Incidents</Link> <ChevronRight />
-      <Link href={"/incidents/medication-error/"}>Medication Error List</Link>{" "}
+      <Link href={"/incidents/medication-error/"}>
+        Medication Error List
+      </Link>{" "}
       <ChevronRight />
       <Link className="current-page">#{incidentId}</Link>
     </div>
@@ -223,9 +232,7 @@ const BreadCrumbs = () => {
 const MedicationDetails = () => {
   return (
     <div>
-      <DashboardLayout
-        children={<MedicationDetailsContent />}
-      />
+      <DashboardLayout children={<MedicationDetailsContent />} />
     </div>
   );
 };

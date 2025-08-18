@@ -617,7 +617,7 @@ const GeneralIncidentTable = ({
           </th>
           <th>Care level</th>
           <th>Status</th>
-          {permissions?.general_patient_visitor?.includes("change_incident") &&
+          {permissions?.general_patient_visitor?.includes("change_incident") ||
             permissions?.general_patient_visitor?.includes("view_details") && (
               <th className="action-col">Action</th>
             )}
@@ -693,7 +693,8 @@ const GeneralIncidentTable = ({
               </td>
               {permissions?.general_patient_visitor?.includes(
                 "change_incident"
-              ) &&
+              ) 
+              ||
                 permissions?.general_patient_visitor?.includes(
                   "view_details"
                 ) && (
