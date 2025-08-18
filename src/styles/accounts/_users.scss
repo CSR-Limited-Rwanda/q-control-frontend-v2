@@ -1,5 +1,3 @@
-@import '../variables';
-
 .actions {
   display: flex;
   justify-content: space-between;
@@ -50,7 +48,7 @@
   }
 
   .active {
-    background-color: $secondary-color;
+    background-color: var(--secondary);
     color: white;
   }
 }
@@ -72,12 +70,12 @@
     color: rgb(74, 74, 74);
 
     &:hover {
-      background-color: lighten($color: $secondary-color, $amount: 30);
+      background-color: lighten($color: var(--secondary), $amount: 30);
     }
   }
 
   .selected {
-    background-color: $secondary-color;
+    background-color: var(--secondary);
     color: white;
   }
 }

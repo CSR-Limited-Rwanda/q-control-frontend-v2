@@ -1,5 +1,3 @@
-@import "../styles/variables";
-
 .incidents-reports {
   display: flex;
   flex-wrap: wrap;
@@ -23,10 +21,10 @@
     }
 
     .icon {
-      background-color: $secondary-color-shade;
+      background-color: var(--secondary)§-shade;
       padding: 12px;
       border-radius: var(--base-border-radius);
-      color: $secondary-color;
+      color: var(--secondary);
       display: flex;
       align-items: center;
       justify-content: center;

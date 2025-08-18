@@ -1,5 +1,3 @@
-@import "../styles/variables";
-
 input,
 select,
 .search-input,
@@ -212,11 +210,11 @@ input[type="number"]:focus {
     }
 
     .icon {
-      color: $secondary-color;
+      color: var(--secondary);
     }
 
     .step-name {
-      color: $secondary-color;
+      color: var(--secondary);
       display: block;
     }
   }
@@ -292,7 +290,7 @@ input[type="number"]:focus {
     display: none;
   }
 
-  input[type="checkbox"]:checked + label {
+  input[type="checkbox"]:checked+label {
     background-color: #f87c47;
     color: white;
   }
@@ -522,13 +520,13 @@ form {
   .new-party {
     width: fit-content;
     // align-self: end;
-    background-color: $primary-color-shade;
-    color: $primary-color;
+    background-color: var(--primary-light);
+    color: var(--primary);
 
     .icon {
       height: 20px;
       width: 20px;
-      border: 1px solid $primary-color;
+      border: 1px solid var(--primary);
       border-radius: var(--base-border-radius);
       display: flex;
       align-items: center;
@@ -564,7 +562,7 @@ form {
 
     .upload-text {
       font-size: 16px;
-      color: $primary-color;
+      color: var(--primary);
     }
 
     .size-text {
@@ -624,7 +622,7 @@ form {
 //Staff Incident Report Step 2
 
 .step-2-status {
-  > select {
+  >select {
     font-size: 14px;
     font-weight: 500;
   }
@@ -697,49 +695,49 @@ textarea {
 form {
   .types {
     .type {
-      background-color: $gray-color-shade;
+      background-color: var(--primary-light);
     }
 
     .selected {
-      background-color: $secondary-color;
+      background-color: var(--secondary);
       color: white;
     }
   }
 
   input {
-    border-color: $gray-color-shade;
+    border-color: var(--gray);
   }
 }
 
 .form-notification {
-  background-color: $gray-color-shade;
+  background-color: var(--gray-light);
 
   .info-icon-main-container {
     background-color: #d9e8f6;
 
     .info-container {
-      background-color: $primary-color;
+      background-color: var(--primary);
 
       .info-icon {
-        border: 2px solid $body-background-color;
+        border: 2px solid var(--body-background);
 
         i {
           font-size: 18px;
-          color: $body-background-color;
+          color: var(--body-background);
         }
       }
     }
   }
 
   p {
-    color: $dark-secondary-color-shade;
+    color: var(--dark-secondary);
   }
 }
 
 .step-2-status {
-  > select {
-    border-color: $gray-color-shade;
-    color: $dark-gray-color-shade;
+  >select {
+    border-color: var(--gray);
+    color: var(--dark-gray);
   }
 }
 
@@ -747,49 +745,49 @@ form {
   form {
     .types {
       .type {
-        background-color: $gray-color-shade;
+        background-color: var(--gray-light);
       }
 
       .selected {
-        background-color: $secondary-color;
+        background-color: var(--secondary);
         color: white;
       }
     }
 
     input {
-      border-color: $gray-color-shade;
+      border-color: var(--gray);
     }
   }
 
   .form-notification {
-    background-color: $gray-color-shade;
+    background-color: var(--gray-light);
 
     .info-icon-main-container {
       background-color: #d9e8f6;
 
       .info-container {
-        background-color: $primary-color;
+        background-color: var(--primary);
 
         .info-icon {
-          border: 2px solid $body-background-color;
+          border: 2px solid var(--body-background);
 
           i {
             font-size: 18px;
-            color: $body-background-color;
+            color: var(--body-background);
           }
         }
       }
     }
 
     p {
-      color: $dark-secondary-color-shade;
+      color: var(--dark-secondary);
     }
   }
 
   .step-2-status {
-    > select {
-      border-color: $gray-color-shade;
-      color: $dark-gray-color-shade;
+    >select {
+      border-color: var(--gray);
+      color: var(--dark-gray);
     }
   }
 }
@@ -798,25 +796,25 @@ form {
   form {
     .types {
       .type {
-        background-color: $dark-body-background-color;
+        background-color: var(--dark-body-background);
       }
 
       .selected {
-        background-color: $secondary-color;
+        background-color: var(--secondary);
         color: white;
       }
     }
 
     .type1 {
       label {
-        background-color: $dark-body-background-color;
+        background-color: var(--dark-body-background);
 
         &:hover {
           background-color: #f87c47;
           color: white;
         }
 
-        input[type="checkbox"]:checked + label {
+        input[type="checkbox"]:checked+label {
           background-color: #f87c47;
           color: white;
         }
@@ -830,11 +828,11 @@ form {
   }
 
   .form-notification {
-    background-color: $dark-body-background-color;
+    background-color: var(--dark-body-background);
 
     .info-icon-main-container {
       .info-container {
-        background-color: $dark-gray-color-shade;
+        background-color: var(--dark-gray);
 
         .info-icon {
           border: 1px solid orange;
@@ -848,7 +846,7 @@ form {
     }
 
     p {
-      color: $body-background-color;
+      color: var(--body-background);
     }
   }
 }
@@ -952,7 +950,7 @@ form {
       }
 
       &:hover {
-        background-color: $secondary-color;
+        background-color: var(--secondary);
         border-color: transparent;
       }
 
@@ -971,7 +969,7 @@ form {
   display: grid !important;
   grid-template-columns: 1fr 1fr 1fr;
 
-  > div {
+  >div {
     height: 100% !important;
   }
 }
@@ -1038,7 +1036,7 @@ form {
   .suggestions {
     position: absolute;
     background-color: white;
-    // border: 1px solid $secondary-color;
+    // border: 1px solid var(--secondary);
     padding: 12px;
     width: 100%;
     left: 0;
@@ -1097,7 +1095,7 @@ form {
       align-items: center;
 
       .orange-color {
-        color: $dark-secondary-color;
+        color: var(--dark-secondary);
       }
 
       .icon-container {
@@ -1138,7 +1136,7 @@ form {
         padding: 6px 15px;
         gap: 10px;
         background-color: #fffadd;
-        color: $dark-secondary-color;
+        color: var(--dark-secondary);
 
         .icon {
           height: 18px;
@@ -1468,13 +1466,13 @@ form {
 
 .user-complain-form {
   .form {
-    background-color: $body-background-color;
+    background-color: var(--body-background);
 
-    > h3 {
+    >h3 {
       padding: 24px 24px 0 0;
     }
 
-    > button {
+    >button {
       margin-inline: 24px;
       margin-bottom: 24px;
     }

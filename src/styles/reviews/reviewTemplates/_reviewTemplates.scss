@@ -1,5 +1,3 @@
-@import "../../variables.scss";
-
 .actions {
   display: flex;
   justify-content: space-between;
@@ -110,8 +108,8 @@
 
     .trash-icon {
       padding: 30px;
-      border: 3px solid $secondary-color;
-      color: $secondary-color;
+      border: 3px solid var(--secondary);
+      color: var(--secondary);
       border-radius: 50%;
       display: flex;
       justify-content: center;
@@ -125,7 +123,7 @@
 
     p {
       font-size: 16px;
-      color: $dark-gray-color-shade;
+      color: var(--gray-dark);
     }
 
     .delete-btn {
@@ -134,7 +132,7 @@
       justify-content: center;
       align-items: center;
       padding: 16px 24px;
-      background-color: $secondary-color;
+      background-color: var(--secondary);
       color: #ffffff;
       border-radius: var(--base-border-radius);
       cursor: pointer;
@@ -189,7 +187,7 @@
   }
 
   .active {
-    background-color: $secondary-color;
+    background-color: var(--secondary);
     color: white;
   }
 }
@@ -211,18 +209,18 @@
     color: rgb(74, 74, 74);
 
     &:hover {
-      background-color: lighten($color: $secondary-color, $amount: 30);
+      background-color: lighten($color: var(--secondary), $amount: 30);
     }
   }
 
   .selected {
-    background-color: $secondary-color;
+    background-color: var(--secondary);
     color: white;
   }
 }
 
 .template-actions {
-  background-color: $body-background-color;
+  background-color: var(--background);
   padding: 1rem;
   border-radius: var(--base-border-radius);
 }
@@ -240,7 +238,7 @@
 
     >span,
     p {
-      color: $gray-color;
+      color: var(--gray);
     }
 
     .template-action-btns {
@@ -261,21 +259,21 @@
       }
 
       .delete-btn {
-        border: 2px solid $secondary-color;
-        color: $secondary-color;
+        border: 2px solid var(--secondary);
+        color: var(--secondary);
       }
 
       .edit-btn {
-        border: 2px solid $gray-color;
+        border: 2px solid var(--gray);
       }
 
       .details-btn {
         flex: 1;
-        background-color: $secondary-color-shade;
+        background-color: var(--secondary)-shade;
         display: flex;
         justify-content: center;
         align-items: center;
-        color: $secondary-color;
+        color: var(--secondary);
         gap: 10px;
         padding: 10px 24px;
         border: 1.5px solid #fcefea;
@@ -308,7 +306,7 @@
   align-items: center;
   gap: 15px;
   border-radius: var(--base-border-radius);
-  background-color: $body-background-color;
+  background-color: var(--background);
 
   h2 {
     font-size: 22px;
@@ -326,7 +324,7 @@
 }
 
 .tasks-wrapper {
-  background-color: $body-background-color;
+  background-color: var(--background);
   border-radius: var(--base-border-radius);
   padding: 20px;
   display: flex;
@@ -354,7 +352,7 @@
         justify-content: space-between;
         gap: 20px;
         background-color: #f9fcff;
-        color: $primary-color;
+        color: var(--primary);
         padding: 12px 20px;
         border-radius: var(--base-border-radius);
         font-size: 14px;
@@ -371,15 +369,15 @@
           align-items: center;
 
           .group-title {
-            color: $gray-color;
+            color: var(--gray);
             font-size: 14px;
           }
 
           .group-number {
             padding: 5px 10px;
-            background-color: $secondary-color-shade;
+            background-color: var(--secondary)-shade;
             border-radius: var(--base-border-radius);
-            color: $secondary-color;
+            color: var(--secondary);
             font-size: 12px;
           }
         }
@@ -393,7 +391,7 @@
             background-color: #f8f8f8;
             padding: 8px 18px;
             font-size: 12px;
-            color: $gray-color;
+            color: var(--gray);
             border-radius: var(--base-border-radius);
             text-align: center;
           }
@@ -407,8 +405,8 @@
         margin-top: auto;
 
         .delete-btn {
-          border: 2px solid $secondary-color;
-          color: $secondary-color;
+          border: 2px solid var(--secondary);
+          color: var(--secondary);
           padding: 8px 10px;
           border-radius: var(--base-border-radius);
           cursor: pointer;
@@ -423,15 +421,15 @@
           align-items: center;
           cursor: pointer;
           gap: 15px;
-          color: $secondary-color;
-          border: 2px solid $secondary-color-shade;
+          color: var(--secondary);
+          border: 2px solid var(--secondary)-shade;
           background-color: #fcefea;
           padding: 10px 18px;
           border-radius: var(--base-border-radius);
         }
 
         .details-btn {
-          border: 2px solid $gray-color;
+          border: 2px solid var(--gray);
           padding: 8px 10px;
           border-radius: var(--base-border-radius);
           cursor: pointer;
@@ -444,7 +442,7 @@
   }
 
   .add-task-button {
-    border: 2px dashed $secondary-color;
+    border: 2px dashed var(--secondary);
     border-radius: var(--base-border-radius);
     padding: 15px;
     display: flex;
@@ -455,19 +453,19 @@
     max-width: 200px;
 
     .add-icon {
-      color: $secondary-color;
+      color: var(--secondary);
     }
 
     h3 {
       font-weight: 600;
       font-size: 20px;
-      color: $secondary-color;
+      color: var(--secondary);
     }
 
     p {
       max-width: 200px;
       text-align: center;
-      color: $gray-color;
+      color: var(--gray);
       font-size: 14px;
     }
   }
@@ -481,7 +479,7 @@
 
   >span {
     font-size: 14px;
-    color: $gray-color;
+    color: var(--gray);
   }
 }
 
@@ -499,7 +497,7 @@
 
     .days {
       background-color: #f9fcff;
-      color: $primary-color;
+      color: var(--primary);
       padding: 12px 20px;
       border-radius: var(--base-border-radius);
       font-size: 16px;
@@ -519,15 +517,15 @@
         align-items: center;
 
         .group-title {
-          color: $gray-color;
+          color: var(--gray);
           font-size: 14px;
         }
 
         .group-number {
           padding: 5px 10px;
-          background-color: $secondary-color-shade;
+          background-color: var(--secondary)-shade;
           border-radius: var(--base-border-radius);
-          color: $secondary-color;
+          color: var(--secondary);
           font-size: 12px;
         }
       }
@@ -541,7 +539,7 @@
           background-color: #f8f8f8;
           padding: 8px 18px;
           font-size: 12px;
-          color: $gray-color;
+          color: var(--gray);
           border-radius: var(--base-border-radius);
           text-align: center;
         }
