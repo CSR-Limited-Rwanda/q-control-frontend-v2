@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
 import toast from "react-hot-toast";
-import React, { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import DashboardLayout from "@/app/dashboard/layout"
-import IncidentDetailsHeader from "../IncidentDetailsHeader"
-import IncidentTabs from "../IncidentTabs"
-import api, { API_URL } from "@/utils/api"
-import StaffDetails from "./StaffDetails"
-import StaffDetailsContentTab from "./StaffDetailsContentTab"
-import StaffGeneralInfo from "./StaffGeneralInfo"
-import StaffOtherInformation from "./StaffOtherInformation"
-import StaffDocumentHistory from "./StaffDocumentHistory"
-import StaffReviews from "./StaffReviewsForm"
-import StaffInvestigationInfo from "./StaffInvestigationInfo"
-import FilesList from "../../documentHistory/FilesList"
-import { MoveRight } from 'lucide-react'
-import Link from "next/link"
-import IncidentReviewsTab from "@/components/IncidentReviewsTab"
-import IncidentActivitiesTab from "@/components/Activities"
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import DashboardLayout from "@/app/dashboard/layout";
+import IncidentDetailsHeader from "../IncidentDetailsHeader";
+import IncidentTabs from "../IncidentTabs";
+import api, { API_URL } from "@/utils/api";
+import StaffDetails from "./StaffDetails";
+import StaffDetailsContentTab from "./StaffDetailsContentTab";
+import StaffGeneralInfo from "./StaffGeneralInfo";
+import StaffOtherInformation from "./StaffOtherInformation";
+import StaffDocumentHistory from "./StaffDocumentHistory";
+import StaffReviews from "./StaffReviewsForm";
+import StaffInvestigationInfo from "./StaffInvestigationInfo";
+import FilesList from "../../documentHistory/FilesList";
+import { MoveRight } from "lucide-react";
+import Link from "next/link";
+import IncidentReviewsTab from "@/components/IncidentReviewsTab";
+import IncidentActivitiesTab from "@/components/Activities";
 
 const EmployeeDetailsContent = () => {
   const { incidentId } = useParams();
@@ -29,7 +29,6 @@ const EmployeeDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [staffInvestigationId, setStaffInvestigationId] = useState(localStorage.getItem("employee_investigation_id"))
   const [reviewsCount, setReviewsCount] = useState();
   const [activitiesCount, setActivitiesCount] = useState();
 
@@ -40,11 +39,15 @@ const EmployeeDetailsContent = () => {
 
       if (useOriginalVersion) {
         response = await api.get(`/incidents/staff-incident/${incidentId}/`);
-        setIncidentDetails(response.data.incident);
+        setIncidentDetails(response.data);
         setCurrentIncidentData(response.data.incident);
       } else {
-        const res = await api.get(`${API_URL}/incidents/staff-incident/${incidentId}/`);
-        const latestIncident = res.data.modifications.versions.find(mod => mod.latest === true);
+        const res = await api.get(
+          `${API_URL}/incidents/staff-incident/${incidentId}/`
+        );
+        const latestIncident = res.data.modifications.versions.find(
+          (mod) => mod.latest === true
+        );
         if (latestIncident) {
           response = await api.get(
             `${API_URL}/incidents/staff-incident/${incidentId}/versions/${latestIncident.id}/`
@@ -125,22 +128,18 @@ const EmployeeDetailsContent = () => {
         <div className="fetching-data">Loading data...</div>
       ) : incidentDetails && Object.keys(incidentDetails).length > 0 ? (
         <div className="incident-details">
-          {incidentDetails.modifications ? (
-            <IncidentDetailsHeader
-              data={
-                useOriginalVersion ? incidentDetails : latestIncidentDetails
-              }
-              incidentDetailsId={incidentId}
-              apiLink={"staff-incident"}
-              sendTo={"send-to-department"}
-              managerAccess={false}
-              useOriginalVersion={useOriginalVersion}
-              setCurrentIncidentData={setCurrentIncidentData}
-              showClosedManager={true}
-            />
-          ) : (
-            ""
-          )}
+          <IncidentDetailsHeader
+            data={useOriginalVersion ? incidentDetails : latestIncidentDetails}
+            incidentDetailsId={incidentId}
+            apiLink={"staff-incident"}
+            sendTo={"send-to-department"}
+            managerAccess={false}
+            useOriginalVersion={useOriginalVersion}
+            setCurrentIncidentData={setCurrentIncidentData}
+            showClosedManager={true}
+            model={"staff_incident_reports"}
+            versionCodeName={"view_staffincidentreportversion"}
+          />
 
           <div className="details">
             <StaffDetails
@@ -167,12 +166,27 @@ const EmployeeDetailsContent = () => {
                 <StaffOtherInformation data={currentIncidentData} />
               }
               documentHistory={
-                <IncidentActivitiesTab incidentId={incidentId} incident_type={"staff_incident_reports"} setCount={setActivitiesCount} />
+                <IncidentActivitiesTab
+                  incidentId={incidentId}
+                  incident_type={"staff_incident_reports"}
+                  setCount={setActivitiesCount}
+                />
               }
-              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"staff-incident"} setCount={setReviewsCount} />}
+              reviews={
+                <IncidentReviewsTab
+                  model={"staff_incident_reports"}
+                  codeName={"add_review"}
+                  incidentId={incidentId}
+                  apiLink={"staff-incident"}
+                  setCount={setReviewsCount}
+                />
+              }
               documents={<IncidentDocuments incidentId={incidentId} />}
               investigation={
-                <StaffInvestigationInfo data={investigationInfo} incidentStatuses={incidentStatus} />
+                <StaffInvestigationInfo
+                  data={investigationInfo}
+                  incidentStatuses={incidentStatus}
+                />
               }
               showInvestigationTab={true}
               reviewsCount={reviewsCount}
@@ -200,9 +214,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
-      } catch (error) {
-
-      }
+      } catch (error) { }
     };
     fetchDocuments();
   }, []);
@@ -234,9 +246,7 @@ const EmployeeIncidentDetails = () => {
   }, []);
   return (
     <div>
-      <DashboardLayout
-        children={<EmployeeDetailsContent />}
-      />
+      <DashboardLayout children={<EmployeeDetailsContent />} />
     </div>
   );
 };

@@ -62,7 +62,7 @@ const BreadCrumbs = () => {
         Lost & Found Property report
       </Link>{" "}
       <MoveRight />
-      <Link href={`/incidents/lost_and_found/${incidentId}/`}>
+      <Link href={`/incidents/lost-and-found/${incidentId}/`}>
         #{incidentId}
       </Link>{" "}
       <MoveRight />

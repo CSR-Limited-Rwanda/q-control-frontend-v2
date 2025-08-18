@@ -16,7 +16,7 @@ import GrievanceReview from "./GrievanceReview";
 import GrievanceInvestigationInfo from "./GrievanceInvestigationInfo";
 import FilesList from "../../documentHistory/FilesList";
 import NoResources from "@/components/NoResources";
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight } from "lucide-react";
 import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 import IncidentActivitiesTab from "@/components/Activities";
 // css
@@ -59,24 +59,21 @@ const GrievanceDetailsContent = () => {
           response = await api.get(
             `${API_URL}/incidents/grievance/${incidentId}/versions/${latestIncident.id}/`
           );
-
         } else {
           response = res;
         }
 
         setLatestIncidentDetails(response.data); // Store the latest modified version
         setCurrentIncidentData(response.data.incident); // Set current data for UI
-
       }
       const investigationRes = await api.get(
         `/incidents/grievance/${incidentId}/investigation/`
-      )
+      );
       if (investigationRes.status === 200) {
-        setInvestigationDetails(investigationRes.data)
+        setInvestigationDetails(investigationRes.data);
       }
       setIsFetching(false);
     } catch (error) {
-
       setIsFetching(false);
     }
   };
@@ -134,9 +131,8 @@ const GrievanceDetailsContent = () => {
         <div className="incident-details">
           {incidentDetails.modifications ? (
             <IncidentDetailsHeader
-              data={useOriginalVersion
-                ? incidentDetails
-                : latestIncidentDetails
+              data={
+                useOriginalVersion ? incidentDetails : latestIncidentDetails
               }
               incidentDetailsId={incidentId}
               apiLink={"grievance"}
@@ -145,6 +141,8 @@ const GrievanceDetailsContent = () => {
               useOriginalVersion={useOriginalVersion}
               setCurrentIncidentData={setCurrentIncidentData}
               showClosedManager={false}
+              model={"patient_visitor_grievance"}
+              versionCodeName={"view_grievanceversion"}
             />
           ) : (
             ""
@@ -180,12 +178,27 @@ const GrievanceDetailsContent = () => {
               }
               otherInformation={"No other information"}
               documentHistory={
-                <IncidentActivitiesTab incidentId={incidentId} incident_type={"patient_visitor_grievance"} setCount={setActivitiesCount} />
+                <IncidentActivitiesTab
+                  incidentId={incidentId}
+                  incident_type={"patient_visitor_grievance"}
+                  setCount={setActivitiesCount}
+                />
               }
-              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"grievance"} setCount={setReviewsCount} />}
+              reviews={
+                <IncidentReviewsTab
+                  model={"patient_visitor_grievance"}
+                  codeName={"add_review"}
+                  incidentId={incidentId}
+                  apiLink={"grievance"}
+                  setCount={setReviewsCount}
+                />
+              }
               documents={<IncidentDocuments incidentId={incidentId} />}
               investigation={
-                <GrievanceInvestigationInfo data={investigationDetails} incidentStatuses={incidentStatus} />
+                <GrievanceInvestigationInfo
+                  data={investigationDetails}
+                  incidentStatuses={incidentStatus}
+                />
               }
               showInvestigationTab={true}
               reviewsCount={reviewsCount}
@@ -213,9 +226,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
-      } catch (error) {
-
-      }
+      } catch (error) { }
     };
     fetchDocuments();
   }, []);

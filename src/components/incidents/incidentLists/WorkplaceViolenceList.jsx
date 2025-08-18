@@ -22,6 +22,7 @@ import {
   SortNameIcon,
 } from "./StaffIncidentList";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 // Debugging check for imported components
 if (
@@ -236,127 +237,184 @@ const WorkplaceViolenceList = () => {
   }, []);
 
   return (
-    <PermissionsGuard model={"workplace_violence_reports"} codename={"view_list"}>
+    <PermissionsGuard
+      model={"workplace_violence_reports"}
+      codename={"view_list"}
+    >
       {isFetching ? (
         <ModifyPageLoader />
       ) : (
         <div>
-      {errorFetching ? (
-        <div className="error-message">
-          <p>{errorFetching}</p>
-        </div>
-      ) : (
-        <div className="tab-container incidents-tab">
-          <div className="tab-header">
-            <div className="title-container-action">
-              <div className="title-container">
-                <h2 className="title">Workplace Violence Tracking List</h2>
-                <p>{incidentData.length} incident(s) available</p>
-              </div>
+          {errorFetching ? (
+            <div className="error-message">
+              <p>{errorFetching}</p>
             </div>
-
-            <div className="filters">
-              {openFilters ? (
-                <div className="filters_popup">
-                  <div onClick={toggleOpenFilters} className="close-icon">
-                    <X size={24} variant="stroke" />
-                  </div>
-                  <h3>Filter incident data</h3>
-                  <div className="filter-buttons">
-                    <CustomSelectInput
-                      options={["Draft", "Open", "Closed"]}
-                      placeholder="Filter by status"
-                      selected={filters.status}
-                      setSelected={(value) =>
-                        setFilters({ ...filters, status: value })
-                      }
-                      name="status"
-                      id="status"
-                    />
-                    <div className="filter-range">
-                      <span>Start date</span>
-                      <CustomDatePicker
-                        selectedDate={filters.start_date}
-                        setSelectedDate={(value) =>
-                          setFilters({ ...filters, start_date: value })
-                        }
-                        placeholderText="Select a date"
-                        dateFormat="yyyy-MM-dd"
-                      />
-                    </div>
-                    <div className="filter-range">
-                      <span>End date</span>
-                      <CustomDatePicker
-                        selectedDate={filters.end_date}
-                        setSelectedDate={(value) =>
-                          setFilters({ ...filters, end_date: value })
-                        }
-                        placeholderText="Select a date"
-                        dateFormat="yyyy-MM-dd"
-                      />
-                    </div>
-                    <div className="popup-buttons">
-                      <button onClick={clearFilters} className="outline-button">
-                        <X size={20} variant="stroke" />
-                        Clear
-                      </button>
-                      <button
-                        onClick={applyFilters}
-                        className="secondary-button"
-                      >
-                        <div className="icon">
-                          <SlidersHorizontal size={20} variant="stroke" />
-                        </div>
-                        <span>Filter</span>
-                      </button>
-                    </div>
+          ) : (
+            <div className="tab-container incidents-tab">
+              <div className="tab-header">
+                <div className="title-container-action">
+                  <div className="title-container">
+                    <h2 className="title">Workplace Violence Tracking List</h2>
+                    <p>{incidentData.length} incident(s) available</p>
                   </div>
                 </div>
-              ) : null}
-              <input
-                onChange={(e) => search(e.target.value)}
-                type="search"
-                name="systemSearch"
-                id="systemSearch"
-                placeholder="Search by patient/visitor, incident type, or facility"
-              />
-              {selectedItems.length > 0 ? (
-                <button
-                  onClick={() => exportExcel(selectedItems, "wp_incident_list")}
-                  className="secondary-button"
-                >
-                  <File />
-                  <span>Export</span>
-                </button>
-              ) : (
-                <button
-                  onClick={toggleOpenFilters}
-                  className="date-filter-button"
-                >
-                  <div className="icon">
-                    <SlidersHorizontal variant="stroke" />
-                  </div>
-                  <span>Filter</span>
-                </button>
-              )}
-            </div>
-          </div>
 
-          <div className="incident-list">
-            {isSearching ? (
-              <div className="search-results">
-                {isSearchingTheDatabase ? (
-                  <div className="searching_database">
-                    <p>Searching database</p>
-                  </div>
-                ) : currentSearchResults.length > 0 ? (
-                  <div className="results-table">
-                    <div className="results-count">
-                      <span className="count">{searchResults.length}</span>{" "}
-                      result(s) found
+                <div className="filters">
+                  {openFilters ? (
+                    <div className="filters_popup">
+                      <div onClick={toggleOpenFilters} className="close-icon">
+                        <X size={24} variant="stroke" />
+                      </div>
+                      <h3>Filter incident data</h3>
+                      <div className="filter-buttons">
+                        <CustomSelectInput
+                          options={["Draft", "Open", "Closed"]}
+                          placeholder="Filter by status"
+                          selected={filters.status}
+                          setSelected={(value) =>
+                            setFilters({ ...filters, status: value })
+                          }
+                          name="status"
+                          id="status"
+                        />
+                        <div className="filter-range">
+                          <span>Start date</span>
+                          <CustomDatePicker
+                            selectedDate={filters.start_date}
+                            setSelectedDate={(value) =>
+                              setFilters({ ...filters, start_date: value })
+                            }
+                            placeholderText="Select a date"
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+                        <div className="filter-range">
+                          <span>End date</span>
+                          <CustomDatePicker
+                            selectedDate={filters.end_date}
+                            setSelectedDate={(value) =>
+                              setFilters({ ...filters, end_date: value })
+                            }
+                            placeholderText="Select a date"
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+                        <div className="popup-buttons">
+                          <button
+                            onClick={clearFilters}
+                            className="outline-button"
+                          >
+                            <X size={20} variant="stroke" />
+                            Clear
+                          </button>
+                          <button
+                            onClick={applyFilters}
+                            className="secondary-button"
+                          >
+                            <div className="icon">
+                              <SlidersHorizontal size={20} variant="stroke" />
+                            </div>
+                            <span>Filter</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
+                  ) : null}
+                  <input
+                    onChange={(e) => search(e.target.value)}
+                    type="search"
+                    name="systemSearch"
+                    id="systemSearch"
+                    placeholder="Search by patient/visitor, incident type, or facility"
+                  />
+                  {selectedItems.length > 0 ? (
+                    <button
+                      onClick={() =>
+                        exportExcel(selectedItems, "wp_incident_list")
+                      }
+                      className="secondary-button"
+                    >
+                      <File />
+                      <span>Export</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={toggleOpenFilters}
+                      className="date-filter-button"
+                    >
+                      <div className="icon">
+                        <SlidersHorizontal variant="stroke" />
+                      </div>
+                      <span>Filter</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="incident-list">
+                {isSearching ? (
+                  <div className="search-results">
+                    {isSearchingTheDatabase ? (
+                      <div className="searching_database">
+                        <p>Searching database</p>
+                      </div>
+                    ) : currentSearchResults.length > 0 ? (
+                      <div className="results-table">
+                        <div className="results-count">
+                          <span className="count">{searchResults.length}</span>{" "}
+                          result(s) found
+                        </div>
+                        <WorkplaceViolenceTable
+                          incidentData={currentSearchResults}
+                          handleSelectAll={handleSelectAll}
+                          selectedItems={selectedItems}
+                          handleSelectedItems={handleSelectedItems}
+                          handleNonClickableColumnClick={
+                            handleNonClickableColumnClick
+                          }
+                          navigateToModify={navigateToModify}
+                          handleRowClick={handleRowClick}
+                          setIncidentData={setSearchResults}
+                        />
+
+                        <div className="pagination-controls">
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            Prev
+                          </button>
+                          {pageNumbers.map((number) => (
+                            <button
+                              key={number}
+                              className={`pagination-button ${
+                                currentPage === number ? "active" : ""
+                              }`}
+                              onClick={() => handlePageChange(number)}
+                            >
+                              {number}
+                            </button>
+                          ))}
+                          <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="no-data-found">
+                        <p>No data found with your search</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
                     <WorkplaceViolenceTable
-                      incidentData={currentSearchResults}
+                      incidentData={currentIncidentData}
                       handleSelectAll={handleSelectAll}
                       selectedItems={selectedItems}
                       handleSelectedItems={handleSelectedItems}
@@ -365,7 +423,7 @@ const WorkplaceViolenceList = () => {
                       }
                       navigateToModify={navigateToModify}
                       handleRowClick={handleRowClick}
-                      setIncidentData={setSearchResults}
+                      setIncidentData={setIncidentData}
                     />
 
                     <div className="pagination-controls">
@@ -379,8 +437,9 @@ const WorkplaceViolenceList = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${currentPage === number ? "active" : ""
-                            }`}
+                          className={`pagination-button ${
+                            currentPage === number ? "active" : ""
+                          }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}
@@ -394,58 +453,12 @@ const WorkplaceViolenceList = () => {
                         Next
                       </button>
                     </div>
-                  </div>
-                ) : (
-                  <div className="no-data-found">
-                    <p>No data found with your search</p>
-                  </div>
+                  </>
                 )}
               </div>
-            ) : (
-              <>
-                <WorkplaceViolenceTable
-                  incidentData={currentIncidentData}
-                  handleSelectAll={handleSelectAll}
-                  selectedItems={selectedItems}
-                  handleSelectedItems={handleSelectedItems}
-                  handleNonClickableColumnClick={handleNonClickableColumnClick}
-                  navigateToModify={navigateToModify}
-                  handleRowClick={handleRowClick}
-                  setIncidentData={setIncidentData}
-                />
-
-                <div className="pagination-controls">
-                  <button
-                    className="pagination-button"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    Prev
-                  </button>
-                  {pageNumbers.map((number) => (
-                    <button
-                      key={number}
-                      className={`pagination-button ${currentPage === number ? "active" : ""
-                        }`}
-                      onClick={() => handlePageChange(number)}
-                    >
-                      {number}
-                    </button>
-                  ))}
-                  <button
-                    className="pagination-button"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
       )}
     </PermissionsGuard>
   );
@@ -461,6 +474,8 @@ const WorkplaceViolenceTable = ({
   handleSelectAll,
   setIncidentData,
 }) => {
+  const { permissions } = useGetPermissions();
+
   const [sortDesc, setSortDesc] = useState(false);
   const [nameAZ, setNameAZ] = useState(false);
   const [dateRecent, setDateRecent] = useState(false);
@@ -499,7 +514,6 @@ const WorkplaceViolenceTable = ({
   };
 
   const handleSorting = (items, sortBy, direction, field) => {
-
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const aValue = a.original_report ? a.original_report : a.id;
@@ -588,7 +602,12 @@ const WorkplaceViolenceTable = ({
           </th>
           <th>Severity</th>
           <th>Status</th>
-          <th className="action-col">Action</th>
+          {permissions?.workplace_violence_reports?.includes(
+            "change_incident"
+          ) ||
+            permissions?.workplace_violence_reports?.includes(
+              "view_details"
+            ) && <th className="action-col">Action</th>}
         </tr>
       </thead>
       <tbody>
@@ -603,8 +622,9 @@ const WorkplaceViolenceTable = ({
                 )
               }
               key={index}
-              className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
-                }`}
+              className={`table-card ${
+                selectedItems.includes(incident) ? "selected" : ""
+              }`}
             >
               <td data-label="Select">
                 <div
@@ -620,8 +640,12 @@ const WorkplaceViolenceTable = ({
               </td>
               <td data-label="No">{index + 1}</td>
               <td data-label="ID">{incident.original_report || incident.id}</td>
-              <td data-label="Facility">{incident.report_facility?.name || "Not provided"}</td>
-              <td data-label="Type of Incident">{incident.incident_type || "Not provided"}</td>
+              <td data-label="Facility">
+                {incident.report_facility?.name || "Not provided"}
+              </td>
+              <td data-label="Type of Incident">
+                {incident.incident_type || "Not provided"}
+              </td>
               <td data-label="Physical Injury Description">
                 {SliceText ? (
                   <SliceText
@@ -642,49 +666,70 @@ const WorkplaceViolenceTable = ({
                 )}
                 , {formatTime(incident.time_of_incident) || "Time not provided"}
               </td>
-              <td data-label="Severity">{incident.severity_level || "Not provided"}</td>
+              <td data-label="Severity">
+                {incident.severity_level || "Not provided"}
+              </td>
               <td data-label="Status">
                 <p
-                  className={`follow-up ${incident.status === "Draft"
-                    ? "in-progress"
-                    : incident.status === "Closed"
+                  className={`follow-up ${
+                    incident.status === "Draft"
+                      ? "in-progress"
+                      : incident.status === "Closed"
                       ? "closed"
                       : "Open"
-                    }`}
+                  }`}
                 >
                   {incident.status || "Not specified"}
                 </p>
               </td>
-              <td
-                data-label="Action"
-                onClick={(event) => handleNonClickableColumnClick(event)}
-                className="action-col"
-              >
-                <div className="table-actions">
-                  {!incident.is_resolved && (
-                    <Pencil
-                      size={20}
-                      onClick={() =>
-                        navigateToModify(
-                          incident.original_report
-                            ? incident.original_report
-                            : incident.id
-                        )
-                      }
-                    />
-                  )}
-                  <Eye
-                    size={20}
-                    onClick={() =>
-                      handleRowClick(
-                        incident.original_report
-                          ? incident.original_report
-                          : incident.id
-                      )
-                    }
-                  />
-                </div>
-              </td>
+
+              {permissions?.workplace_violence_reports?.includes(
+                "change_incident"
+              ) ||
+                permissions?.workplace_violence_reports?.includes(
+                  "view_details"
+                ) && (
+                  <td
+                    data-label="Action"
+                    onClick={(event) => handleNonClickableColumnClick(event)}
+                    className="action-col"
+                  >
+                    <div className="table-actions">
+                      <PermissionsGuard
+                        model={"workplace_violence_reports"}
+                        codename={"change_incident"}
+                      >
+                        {!incident.is_resolved && (
+                          <Pencil
+                            size={20}
+                            onClick={() =>
+                              navigateToModify(
+                                incident.original_report
+                                  ? incident.original_report
+                                  : incident.id
+                              )
+                            }
+                          />
+                        )}
+                      </PermissionsGuard>
+                      <PermissionsGuard
+                        model={"workplace_violence_reports"}
+                        codename={"view_details"}
+                      >
+                        <Eye
+                          size={20}
+                          onClick={() =>
+                            handleRowClick(
+                              incident.original_report
+                                ? incident.original_report
+                                : incident.id
+                            )
+                          }
+                        />
+                      </PermissionsGuard>
+                    </div>
+                  </td>
+                )}
             </tr>
           ))
         ) : (
@@ -696,6 +741,5 @@ const WorkplaceViolenceTable = ({
     </table>
   );
 };
-
 
 export default WorkplaceViolenceList;

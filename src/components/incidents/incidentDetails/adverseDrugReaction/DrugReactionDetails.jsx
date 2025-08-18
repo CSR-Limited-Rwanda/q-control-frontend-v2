@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ import NoResources from "@/components/NoResources";
 import IncidentActivitiesTab from "@/components/Activities";
 
 // css
-import "../../../../styles/_generalIncidentDetailsPage.scss"
+import "../../../../styles/_generalIncidentDetailsPage.scss";
 
 const BreadCrumbs = () => {
   const { drugReactionId } = useParams();
@@ -75,7 +75,7 @@ function DrugReactionDetailsContent() {
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const [hasAccess, setHasAccess] = useState(true);
   //   const [incidentStatus, setIncidentStatus] = useState({});
-  const { incidentId } = useParams()
+  const { incidentId } = useParams();
   const [reviewsCount, setReviewsCount] = useState();
   const [activitiesCount, setActivitiesCount] = useState();
 
@@ -91,7 +91,6 @@ function DrugReactionDetailsContent() {
         );
         setIncidentDetails(response.data); // Store the original data
         setCurrentIncidentData(response.data.incident); // Set current data for UI
-
       } else {
         // Fetch the latest modified version of the incident
         const res = await api.get(
@@ -129,7 +128,6 @@ function DrugReactionDetailsContent() {
 
   useEffect(() => {
     fetchIncidentDetails();
-
   }, [incidentId, useOriginalVersion]);
 
   useEffect(() => {
@@ -180,11 +178,8 @@ function DrugReactionDetailsContent() {
         <div className="fetching-data">Loading data</div>
       ) : incidentDetails && Object.keys(incidentDetails).length > 0 ? (
         <div className="incident-details">
-
           <IncidentDetailsHeader
-            data={
-              useOriginalVersion ? incidentDetails : latestIncidentDetails
-            }
+            data={useOriginalVersion ? incidentDetails : latestIncidentDetails}
             incidentDetailsId={incidentId}
             apiLink={"adverse-drug-reaction"}
             sendTo={"send-to-department"}
@@ -192,6 +187,7 @@ function DrugReactionDetailsContent() {
             setCurrentIncidentData={setCurrentIncidentData}
             showClosedManager={false}
             model={"adverse_drug_reaction"}
+            versionCodeName={"view_adversedrugreactionvisitorversion"}
           />
 
           <div className="details">
@@ -216,14 +212,28 @@ function DrugReactionDetailsContent() {
                 />
               }
               otherInformation={
-                <DrugReactionOtherInformation data={{
-                  currentIncidentData
-                }} />
+                <DrugReactionOtherInformation
+                  data={{
+                    currentIncidentData,
+                  }}
+                />
               }
               documentHistory={
-                <IncidentActivitiesTab incidentId={incidentId} incidentType={"adverse_drug_reaction"} setCount={setActivitiesCount} />
+                <IncidentActivitiesTab
+                  incidentId={incidentId}
+                  incidentType={"adverse_drug_reaction"}
+                  setCount={setActivitiesCount}
+                />
               }
-              reviews={<IncidentReviewsTab incidentId={incidentId} apiLink={"adverse-drug-reaction"} setCount={setReviewsCount} />}
+              reviews={
+                <IncidentReviewsTab
+                  model={"adverse_drug_reaction"}
+                  codeName={"add_review"}
+                  incidentId={incidentId}
+                  apiLink={"adverse-drug-reaction"}
+                  setCount={setReviewsCount}
+                />
+              }
               documents={<IncidentDocuments incidentId={incidentId} />}
               reviewsCount={reviewsCount}
               incidentDocumentHistoryCount={activitiesCount}
@@ -234,7 +244,7 @@ function DrugReactionDetailsContent() {
         "No data"
       )}
     </div>
-  )
+  );
 }
 const IncidentDocuments = ({ incidentId, apiLink }) => {
   const [documents, setDocuments] = useState([]);
@@ -249,9 +259,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
-      } catch (error) {
-
-      }
+      } catch (error) { }
     };
     fetchDocuments();
   }, []);

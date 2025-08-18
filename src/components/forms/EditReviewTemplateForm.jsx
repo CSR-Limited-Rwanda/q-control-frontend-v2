@@ -52,7 +52,6 @@ const EditReviewTemplateForm = ({ discardFn, data }) => {
 
         if (response.status === 201 || response.status === 200) {
           setCurrentStep((prev) => prev + 1);
-
         } else {
           alert("Something went wrong. Please try again.");
         }
@@ -71,7 +70,7 @@ const EditReviewTemplateForm = ({ discardFn, data }) => {
       {currentStep === 1 && (
         <div className="step-one">
           <form>
-            <h3>Create Review Template</h3>
+            <h3>Edit Review Template</h3>
 
             <div className="field">
               <label htmlFor="incident">Incident Type</label>

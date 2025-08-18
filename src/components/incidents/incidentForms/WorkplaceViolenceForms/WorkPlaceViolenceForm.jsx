@@ -26,6 +26,7 @@ import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
 import MessageDisplay from "@/components/MessageDisplay";
 import MessageComponent from "@/components/MessageComponet";
+import toast from "react-hot-toast";
 
 const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
 
@@ -630,7 +631,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         }
       } catch (error) {
         setIsLoading(false);
-        if (error.response.data) {
+        if (error.response?.data) {
           appendError(error.response.data.error);
           toast.error("Error posting data please try again");
 

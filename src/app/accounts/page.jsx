@@ -51,6 +51,7 @@ const AccountsPage = () => {
             "departments",
             "titles",
             "reviewGroups",
+            "reviewTemplates",
           ].includes(tab.id)
       );
     }

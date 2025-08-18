@@ -21,6 +21,7 @@ import {
   SortNameIcon,
 } from "./StaffIncidentList";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 function formatTimeWithAMPM(timeString) {
   const [hoursStr, minutesStr, secondsStr] = timeString.split(":");
@@ -65,7 +66,7 @@ const DrugReactionList = () => {
   );
   const totalPages = Math.ceil(
     (isSearching ? searchResults.length : drugReactionData.length) /
-    itemsPerPage
+      itemsPerPage
   );
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -92,8 +93,8 @@ const DrugReactionList = () => {
           ...item,
           date_of_adverse_reaction: item.date_of_adverse_reaction
             ? new Date(item.date_of_adverse_reaction)
-              .toISOString()
-              .split("T")[0]
+                .toISOString()
+                .split("T")[0]
             : item.date_of_adverse_reaction,
         }));
         setDrugReactionData(formattedData);
@@ -144,7 +145,7 @@ const DrugReactionList = () => {
 
   const navigateToModify = (incidentId) => {
     router.push(`/incidents/drug-reaction/${incidentId}/update/`);
-    localStorage.setItem("adverseDrugReactionId", incidentId)
+    localStorage.setItem("adverseDrugReactionId", incidentId);
   };
 
   const handleNonClickableColumnClick = (event) => {
@@ -294,7 +295,10 @@ const DrugReactionList = () => {
                         </div>
 
                         <div className="popup-buttons">
-                          <button onClick={clearFilters} className="outline-button">
+                          <button
+                            onClick={clearFilters}
+                            className="outline-button"
+                          >
                             <X size={20} variant="stroke" />
                             Clear
                           </button>
@@ -378,8 +382,9 @@ const DrugReactionList = () => {
                           {pageNumbers.map((number) => (
                             <button
                               key={number}
-                              className={`pagination-button ${currentPage === number ? "active" : ""
-                                }`}
+                              className={`pagination-button ${
+                                currentPage === number ? "active" : ""
+                              }`}
                               onClick={() => handlePageChange(number)}
                             >
                               {number}
@@ -405,7 +410,9 @@ const DrugReactionList = () => {
                     <DrugReactionTable
                       incidentData={currentDrugReactionData}
                       setIncidentData={setDrugReactionData}
-                      handleNonClickableColumnClick={handleNonClickableColumnClick}
+                      handleNonClickableColumnClick={
+                        handleNonClickableColumnClick
+                      }
                       handleRowClick={handleRowClick}
                       navigateToModify={navigateToModify}
                       selectedItems={selectedItems}
@@ -424,8 +431,9 @@ const DrugReactionList = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${currentPage === number ? "active" : ""
-                            }`}
+                          className={`pagination-button ${
+                            currentPage === number ? "active" : ""
+                          }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}
@@ -447,7 +455,7 @@ const DrugReactionList = () => {
         </div>
       )}
     </PermissionsGuard>
-  )
+  );
 };
 
 const DrugReactionTable = ({
@@ -460,6 +468,7 @@ const DrugReactionTable = ({
   handleSelectedItems,
   setIncidentData,
 }) => {
+  const { permissions } = useGetPermissions();
   const [sortDesc, setSortDesc] = useState(false);
   const [nameAZ, setNameAZ] = useState(false);
   const [dateRecent, setDateRecent] = useState(false);
@@ -498,7 +507,6 @@ const DrugReactionTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const result = a.id - b.id;
@@ -587,7 +595,10 @@ const DrugReactionTable = ({
           <th>Severity</th>
           <th>Care Level</th>
           <th>Status</th>
-          <th className="action-col">Action</th>
+          {permissions?.adverse_drug_reaction?.includes("change_incident") ||
+            permissions?.adverse_drug_reaction?.includes("view_details") && (
+              <th className="action-col">Action</th>
+            )}
         </tr>
       </thead>
       <tbody>
@@ -600,8 +611,9 @@ const DrugReactionTable = ({
                 )
               }
               key={index}
-              className={`table-card ${selectedItems.includes(data) ? "selected" : ""
-                }`}
+              className={`table-card ${
+                selectedItems.includes(data) ? "selected" : ""
+              }`}
             >
               <td data-label="Select">
                 <div onClick={() => handleSelectedItems(data)} className="icon">
@@ -614,13 +626,17 @@ const DrugReactionTable = ({
               </td>
               <td data-label="No"> {index + 1}</td>
               <td data-label="ID">{data.original_report || data.id}</td>
-              <td data-label="Facility">{data?.report_facility?.name || "Not provided"}</td>
+              <td data-label="Facility">
+                {data?.report_facility?.name || "Not provided"}
+              </td>
               <td data-label="Name">
                 {data.patient_name?.last_name && data.patient_name?.first_name
                   ? `${data.patient_name?.last_name} ${data.patient_name?.first_name}`
                   : "Not provided"}
               </td>
-              <td data-label="Outcome">{data.outcome_type || "Not Provided"}</td>
+              <td data-label="Outcome">
+                {data.outcome_type || "Not Provided"}
+              </td>
               <td data-label="Date & Time">
                 <div>
                   <DateFormatter dateString={data.date_of_adverse_reaction} />,{" "}
@@ -629,46 +645,75 @@ const DrugReactionTable = ({
                     : "-"}
                 </div>
               </td>
-              <td data-label="Severity">{data.severity_rating || "Not specified"}</td>
-              <td data-label="Care Level">{data.patient_type || "Not specified"}</td>
+              <td data-label="Severity">
+                {data.severity_rating || "Not specified"}
+              </td>
+              <td data-label="Care Level">
+                {data.patient_type || "Not specified"}
+              </td>
               <td data-label="Status">
                 <p
-                  className={`follow-up ${data.status === "Draft"
-                    ? "in-progress"
-                    : data.status === "Closed"
+                  className={`follow-up ${
+                    data.status === "Draft"
+                      ? "in-progress"
+                      : data.status === "Closed"
                       ? "closed"
                       : "Open"
-                    }`}
+                  }`}
                 >
                   {data.status || "Not specified"}
                 </p>
               </td>
-              <td
-                data-label="Action"
-                onClick={(event) => handleNonClickableColumnClick(event)}
-                className="action-col"
-              >
-                <div className="table-actions">
-                  {!data.is_resolved && (
-                    <Pencil
-                      size={20}
-                      onClick={() =>
-                        navigateToModify(
-                          data.original_report ? data.original_report : data.id
-                        )
-                      }
-                    />
-                  )}
-                  <Eye
-                    size={20}
-                    onClick={() =>
-                      handleRowClick(
-                        data.original_report ? data.original_report : data.id
-                      )
-                    }
-                  />
-                </div>
-              </td>
+              {permissions?.adverse_drug_reaction?.includes(
+                "change_incident"
+              ) ||
+                permissions?.adverse_drug_reaction?.includes(
+                  "view_details"
+                ) && (
+                  <td
+                    data-label="Action"
+                    onClick={(event) => handleNonClickableColumnClick(event)}
+                    className="action-col"
+                  >
+                    <div className="table-actions">
+                      <PermissionsGuard
+                        model={"adverse_drug_reaction"}
+                        codename={"change_incident"}
+                        isPage={false}
+                      >
+                        {!data.is_resolved && (
+                          <Pencil
+                            size={20}
+                            onClick={() =>
+                              navigateToModify(
+                                data.original_report
+                                  ? data.original_report
+                                  : data.id
+                              )
+                            }
+                          />
+                        )}
+                      </PermissionsGuard>
+
+                      <PermissionsGuard
+                        model={"adverse_drug_reaction"}
+                        codename={"view_details"}
+                        isPage={false}
+                      >
+                        <Eye
+                          size={20}
+                          onClick={() =>
+                            handleRowClick(
+                              data.original_report
+                                ? data.original_report
+                                : data.id
+                            )
+                          }
+                        />
+                      </PermissionsGuard>
+                    </div>
+                  </td>
+                )}
             </tr>
           ))
         ) : (
@@ -680,6 +725,5 @@ const DrugReactionTable = ({
     </table>
   );
 };
-
 
 export default DrugReactionList;

@@ -26,6 +26,7 @@ import DeletePopup from "@/components/forms/DeletePopup";
 import EditReviewTemplateForm from "@/components/forms/EditReviewTemplateForm";
 import SortControl from "@/utils/SortControl";
 import CloseIcon from "@/components/CloseIcon";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 export const ReviewTemplates = () => {
   const router = useRouter();
@@ -166,214 +167,269 @@ export const ReviewTemplates = () => {
     setSortConfig(config);
   };
 
-  return isLoading ? (
-    <div className="dashboard-page-content">
-      <p>Loading...</p>
-    </div>
-  ) : (
-    <div className="dashboard-page-content">
-      {showNewUserForm && (
-        <div className="new-user-form-popup">
-          <div className="popup">
-            <div className="popup-content">
-              <CloseIcon onClick={handleShowNewUserForm} />
-
-              <div className="form">
-                <NewReviewTemplatesForm discardFn={handleShowNewUserForm} />
-              </div>
-            </div>
-          </div>
+  return (
+    <PermissionsGuard model={"tasks"} codename={"view_reviewtemplates"}>
+      {isLoading ? (
+        <div className="dashboard-page-content">
+          <p>Loading...</p>
         </div>
-      )}
-      {showEditTemplateForm && (
-        <div className="new-user-form-popup">
-          <div className="popup">
-            <div className="popup-content">
-              <div className="close">
-                <SquareX
-                  onClick={handleShowEditTemplateForm}
-                  className="close-icon"
-                />
-              </div>
+      ) : (
+        <div className="dashboard-page-content">
+          {showNewUserForm && (
+            <div className="new-user-form-popup">
+              <div className="popup">
+                <div className="popup-content">
+                  <CloseIcon onClick={handleShowNewUserForm} />
 
-              <div className="form">
-                <EditReviewTemplateForm
-                  data={reviewTemplate}
-                  discardFn={handleShowEditTemplateForm}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {showDeleteForm && (
-        <div className="new-user-form-popup delete-form-popup">
-          <div className="popup">
-            <div className="popup-content">
-              <div className="form">
-                <DeletePopup
-                  text={"Do you really want to delete this template"}
-                  cancelFn={handleShowDeleteForm}
-                  apiUrl={`/permissions/review-templates/${clickedTemplateId}/`}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      <div className="actions template-actions">
-        <div className="title">
-          <div>
-            <h3>Review Templates</h3>
-            <span>
-              {isEmpty
-                ? reviewTemplates.length
-                : searchResults.length > 0
-                  ? searchResults.length
-                  : reviewTemplates.length}
-            </span>{" "}
-            <span>Available</span>
-          </div>
-        </div>
-
-        <div className="filters">
-          <input
-            onChange={(e) => {
-              search(e.target.value);
-            }}
-            type="search"
-            name=""
-            id=""
-            placeholder="Search templates by name or id"
-          />
-        </div>
-        <div className="review-templates-btns">
-          <button
-            type="button"
-            onClick={handleShowNewUserForm}
-            className="btn tertiary-button new-user-button"
-          >
-            <CirclePlus size={20} />
-            <span>Add New Template</span>
-          </button>
-          <SortControl
-            options={[
-              { value: "name", label: "Name" },
-              { value: "created_at", label: "Date added" },
-            ]}
-            defaultField="created_at"
-            defaultDirection="desc"
-            onChange={handleSortChange}
-          />
-        </div>
-      </div>
-      {/* users table */}
-
-      <div className="templates-list">
-        {isSearching ? (
-          isSearchingTheDatabase ? (
-            <div className="searching_database">
-              <p>Searching database...</p>
-            </div>
-          ) : searchResults && searchResults.length > 0 ? (
-            searchResults.map((reviewTemplate, index) => (
-              <div className="template-card card" key={index}>
-                <h3>{reviewTemplate.name}</h3>
-                <DateFormatter dateString={reviewTemplate.created_at} />
-
-                <p>{reviewTemplate.description}</p>
-
-                <div className="template-action-btns">
-                  <div
-                    className="delete-btn"
-                    onClick={() => handleShowDeleteForm(reviewTemplate.id)}
-                  >
-                    <Trash2 size={20} />
-                  </div>
-                  <div
-                    className="edit-btn"
-                    onClick={() => {
-                      fetchTemplateDetails(reviewTemplate.id);
-                    }}
-                  >
-                    <SquarePen size={20} />
-                  </div>
-                  <div
-                    className="details-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRowClick(reviewTemplate.id);
-                    }}
-                  >
-                    <Eye size={18} />
-                    <span>View details</span>
+                  <div className="form">
+                    <NewReviewTemplatesForm discardFn={handleShowNewUserForm} />
                   </div>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="no-data-found">
-              <p>No data found with your search</p>
             </div>
-          )
-        ) : sortedReviewTemplates.length > 0 ? (
-          sortedReviewTemplates.map((reviewTemplate, index) => (
-            <div className="template-card card" key={index}>
-              <h3>{reviewTemplate.name}</h3>
-              <DateFormatter dateString={reviewTemplate.created_at} />
+          )}
+          {showEditTemplateForm && (
+            <div className="new-user-form-popup">
+              <div className="popup">
+                <div className="popup-content">
+                  <div className="close">
+                    <SquareX
+                      onClick={handleShowEditTemplateForm}
+                      className="close-icon"
+                    />
+                  </div>
 
-              <p>{reviewTemplate.description}</p>
-
-              <div className="template-action-btns">
-                <div className="delete-btn">
-                  <Trash2
-                    size={18}
-                    onClick={() => handleShowDeleteForm(reviewTemplate.id)}
-                  />
+                  <div className="form">
+                    <EditReviewTemplateForm
+                      data={reviewTemplate}
+                      discardFn={handleShowEditTemplateForm}
+                    />
+                  </div>
                 </div>
-                <div
-                  className="edit-btn"
-                  onClick={() => {
-                    fetchTemplateDetails(reviewTemplate.id);
-                  }}
+              </div>
+            </div>
+          )}
+          {showDeleteForm && (
+            <div className="new-user-form-popup delete-form-popup">
+              <div className="popup">
+                <div className="popup-content">
+                  <div className="form">
+                    <DeletePopup
+                      text={"Do you really want to delete this template"}
+                      cancelFn={handleShowDeleteForm}
+                      apiUrl={`/permissions/review-templates/${clickedTemplateId}/`}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="actions template-actions">
+            <div className="title">
+              <div>
+                <h3>Review Templates</h3>
+                <span>
+                  {isEmpty
+                    ? reviewTemplates.length
+                    : searchResults.length > 0
+                      ? searchResults.length
+                      : reviewTemplates.length}
+                </span>{" "}
+                <span>Available</span>
+              </div>
+            </div>
+
+            <div className="filters">
+              <input
+                onChange={(e) => {
+                  search(e.target.value);
+                }}
+                type="search"
+                name=""
+                id=""
+                placeholder="Search templates by name or id"
+              />
+            </div>
+            <div className="review-templates-btns">
+              <PermissionsGuard
+                model={"tasks"}
+                codename={"add_reviewtemplates"}
+                isPage={false}
+              >
+                <button
+                  type="button"
+                  onClick={handleShowNewUserForm}
+                  className="btn tertiary-button new-user-button"
                 >
-                  <SquarePen size={18} />
+                  <CirclePlus size={20} />
+                  <span>Add New Template</span>
+                </button>
+              </PermissionsGuard>
+
+              <SortControl
+                options={[
+                  { value: "name", label: "Name" },
+                  { value: "created_at", label: "Date added" },
+                ]}
+                defaultField="created_at"
+                defaultDirection="desc"
+                onChange={handleSortChange}
+              />
+            </div>
+          </div>
+          {/* users table */}
+
+          <div className="templates-list">
+            {isSearching ? (
+              isSearchingTheDatabase ? (
+                <div className="searching_database">
+                  <p>Searching database...</p>
                 </div>
-                <div
-                  className="details-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRowClick(reviewTemplate.id);
-                  }}
-                >
-                  <div className="eye-icon">
-                    <Eye size={18} />
+              ) : searchResults && searchResults.length > 0 ? (
+                searchResults.map((reviewTemplate, index) => (
+                  <div className="template-card card" key={index}>
+                    <h3>{reviewTemplate.name}</h3>
+                    <DateFormatter dateString={reviewTemplate.created_at} />
+
+                    <p>{reviewTemplate.description}</p>
+
+                    <div className="template-action-btns">
+                      <PermissionsGuard
+                        model={"tasks"}
+                        codename={"delete_reviewtemplates"}
+                        isPage={false}
+                      >
+                        <div
+                          className="delete-btn"
+                          onClick={() =>
+                            handleShowDeleteForm(reviewTemplate.id)
+                          }
+                        >
+                          <Trash2 size={20} />
+                        </div>
+                      </PermissionsGuard>
+
+                      <PermissionsGuard
+                        model={"tasks"}
+                        codename={"change_reviewtemplates"}
+                        isPage={false}
+                      >
+                        <div
+                          className="edit-btn"
+                          onClick={() => {
+                            fetchTemplateDetails(reviewTemplate.id);
+                          }}
+                        >
+                          <SquarePen size={20} />
+                        </div>
+                      </PermissionsGuard>
+
+                      <PermissionsGuard
+                        model={"tasks"}
+                        codename={"view_reviewtemplates"}
+                        isPage={false}
+                      >
+                        <div
+                          className="details-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRowClick(reviewTemplate.id);
+                          }}
+                        >
+                          <Eye size={18} />
+                          <span>View details</span>
+                        </div>
+                      </PermissionsGuard>
+                    </div>
                   </div>
-
-                  <span>View details</span>
+                ))
+              ) : (
+                <div className="no-data-found">
+                  <p>No data found with your search</p>
                 </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          "No review group available"
-        )}
+              )
+            ) : sortedReviewTemplates.length > 0 ? (
+              sortedReviewTemplates.map((reviewTemplate, index) => (
+                <div className="template-card card" key={index}>
+                  <h3>{reviewTemplate.name}</h3>
+                  <DateFormatter dateString={reviewTemplate.created_at} />
 
-        {/* <tr></tr> */}
-      </div>
+                  <p>{reviewTemplate.description}</p>
 
-      <div className="mobile-users">
-        {reviewTemplates &&
-          reviewTemplates.map((reviewTemplate, index) => (
-            <div key={index} className="user-card">
-              <p>
-                {reviewTemplate?.user?.last_name}{" "}
-                {reviewTemplate?.user?.first_name}
-              </p>
-              <small>{reviewTemplate?.user?.email}</small>
-            </div>
-          ))}
-      </div>
-    </div>
+                  <div className="template-action-btns">
+                    <PermissionsGuard
+                      model={"tasks"}
+                      codename={"delete_reviewtemplates"}
+                      isPage={false}
+                    >
+                      <div className="delete-btn">
+                        <Trash2
+                          size={18}
+                          onClick={() =>
+                            handleShowDeleteForm(reviewTemplate.id)
+                          }
+                        />
+                      </div>
+                    </PermissionsGuard>
+
+                    <PermissionsGuard
+                      model={"tasks"}
+                      codename={"change_reviewtemplates"}
+                      isPage={false}
+                    >
+                      <div
+                        className="edit-btn"
+                        onClick={() => {
+                          fetchTemplateDetails(reviewTemplate.id);
+                        }}
+                      >
+                        <SquarePen size={18} />
+                      </div>
+                    </PermissionsGuard>
+
+                    <PermissionsGuard
+                      model={"tasks"}
+                      codename={"view_reviewtemplates"}
+                      isPage={false}
+                    >
+                      <div
+                        className="details-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRowClick(reviewTemplate.id);
+                        }}
+                      >
+                        <div className="eye-icon">
+                          <Eye size={18} />
+                        </div>
+
+                        <span>View details</span>
+                      </div>
+                    </PermissionsGuard>
+                  </div>
+                </div>
+              ))
+            ) : (
+              "No review group available"
+            )}
+
+            {/* <tr></tr> */}
+          </div>
+
+          <div className="mobile-users">
+            {reviewTemplates &&
+              reviewTemplates.map((reviewTemplate, index) => (
+                <div key={index} className="user-card">
+                  <p>
+                    {reviewTemplate?.user?.last_name}{" "}
+                    {reviewTemplate?.user?.first_name}
+                  </p>
+                  <small>{reviewTemplate?.user?.email}</small>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+    </PermissionsGuard>
   );
 };

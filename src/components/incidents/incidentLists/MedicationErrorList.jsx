@@ -21,6 +21,7 @@ import {
   SortNameIcon,
 } from "./StaffIncidentList";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 function formatDate(dateString) {
   if (!dateString || isNaN(new Date(dateString).getTime())) {
@@ -169,7 +170,7 @@ const MedicationErrorList = () => {
 
   const navigateToModify = (incidentId) => {
     router.push(`/incidents/medication-error/${incidentId}/update/`);
-    localStorage.setItem("medicationErrorIncidentId", incidentId)
+    localStorage.setItem("medicationErrorIncidentId", incidentId);
   };
 
   const handleNonClickableColumnClick = (event) => {
@@ -272,7 +273,10 @@ const MedicationErrorList = () => {
                           />
                         </div>
                         <div className="popup-buttons">
-                          <button onClick={clearFilters} className="outline-button">
+                          <button
+                            onClick={clearFilters}
+                            className="outline-button"
+                          >
                             <X size={20} variant="stroke" />
                             Clear
                           </button>
@@ -357,8 +361,9 @@ const MedicationErrorList = () => {
                           {pageNumbers.map((number) => (
                             <button
                               key={number}
-                              className={`pagination-button ${currentPage === number ? "active" : ""
-                                }`}
+                              className={`pagination-button ${
+                                currentPage === number ? "active" : ""
+                              }`}
                               onClick={() => handlePageChange(number)}
                             >
                               {number}
@@ -383,7 +388,9 @@ const MedicationErrorList = () => {
                   <>
                     <MedicationErrorTable
                       incidentData={currentMedicationData}
-                      handleNonClickableColumnClick={handleNonClickableColumnClick}
+                      handleNonClickableColumnClick={
+                        handleNonClickableColumnClick
+                      }
                       handleRowClick={handleRowClick}
                       navigateToModify={navigateToModify}
                       selectedItems={selectedItems}
@@ -403,8 +410,9 @@ const MedicationErrorList = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${currentPage === number ? "active" : ""
-                            }`}
+                          className={`pagination-button ${
+                            currentPage === number ? "active" : ""
+                          }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}
@@ -439,6 +447,8 @@ const MedicationErrorTable = ({
   handleSelectedItems,
   setIncidentData,
 }) => {
+  const { permissions } = useGetPermissions();
+
   const [sortDesc, setSortDesc] = useState(false);
   const [nameAZ, setNameAZ] = useState(false);
   const [dateRecent, setDateRecent] = useState(false);
@@ -477,7 +487,6 @@ const MedicationErrorTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const result = a.id - b.id;
@@ -565,7 +574,10 @@ const MedicationErrorTable = ({
           </th>
           <th>Category</th>
           <th>Status</th>
-          <th>Action</th>
+          {permissions?.medication_error?.includes("change_incident") ||
+            permissions?.medication_error?.includes("view_details") && (
+              <th className="action-col">Action</th>
+            )}
         </tr>
       </thead>
       <tbody>
@@ -580,8 +592,9 @@ const MedicationErrorTable = ({
                 )
               }
               key={index}
-              className={`table-card ${selectedItems.includes(medication) ? "selected" : ""
-                }`}
+              className={`table-card ${
+                selectedItems.includes(medication) ? "selected" : ""
+              }`}
             >
               <td data-label="Select">
                 <div
@@ -596,14 +609,20 @@ const MedicationErrorTable = ({
                 </div>
               </td>
               <td data-label="No">{index + 1}</td>
-              <td data-label="ID">{medication.original_report || medication.id}</td>
-              <td data-label="Facility">{medication.report_facility?.name || "Not found"}</td>
+              <td data-label="ID">
+                {medication.original_report || medication.id}
+              </td>
+              <td data-label="Facility">
+                {medication.report_facility?.name || "Not found"}
+              </td>
               <td data-label="Patient Name">
                 {medication.patient?.last_name || medication.patient?.first_name
                   ? `${medication.patient?.last_name} ${medication.patient?.first_name}`
                   : "Not provided"}
               </td>
-              <td data-label="MRN">{medication?.patient?.medical_record_number || "-"}</td>
+              <td data-label="MRN">
+                {medication?.patient?.medical_record_number || "-"}
+              </td>
               <td data-label="Date & Time">
                 <DateFormatter dateString={medication.date_of_error} />,{" "}
                 {medication.time_of_error}
@@ -627,46 +646,62 @@ const MedicationErrorTable = ({
               </td>
               <td data-label="Status">
                 <p
-                  className={`follow-up ${medication.status === "Draft"
-                    ? "in-progress"
-                    : medication.status === "Closed"
+                  className={`follow-up ${
+                    medication.status === "Draft"
+                      ? "in-progress"
+                      : medication.status === "Closed"
                       ? "closed"
                       : "Open"
-                    }`}
+                  }`}
                 >
                   {medication.status || "Not specified"}
                 </p>
               </td>
-              <td
-                data-label="Action"
-                onClick={(event) => handleNonClickableColumnClick(event)}
-                className="action-col"
-              >
-                <div className="table-actions">
-                  {!medication.is_resolved && (
-                    <Pencil
-                      size={20}
-                      onClick={() =>
-                        navigateToModify(
-                          medication.original_report
-                            ? medication.original_report
-                            : medication.id
-                        )
-                      }
-                    />
-                  )}
-                  <Eye
-                    size={20}
-                    onClick={() =>
-                      handleRowClick(
-                        medication.original_report
-                          ? medication.original_report
-                          : medication.id
-                      )
-                    }
-                  />
-                </div>
-              </td>
+
+              {permissions?.medication_error?.includes("change_incident") ||
+                permissions?.medication_error?.includes("view_details") && (
+                  <td
+                    data-label="Action"
+                    onClick={(event) => handleNonClickableColumnClick(event)}
+                    className="action-col"
+                  >
+                    <div className="table-actions">
+                      <PermissionsGuard
+                        model={"medication_error"}
+                        codename={"change_incident"}
+                      >
+                        {!medication.is_resolved && (
+                          <Pencil
+                            size={20}
+                            onClick={() =>
+                              navigateToModify(
+                                medication.original_report
+                                  ? medication.original_report
+                                  : medication.id
+                              )
+                            }
+                          />
+                        )}
+                      </PermissionsGuard>
+
+                      <PermissionsGuard
+                        model={"medication_error"}
+                        codename={"view_details"}
+                      >
+                        <Eye
+                          size={20}
+                          onClick={() =>
+                            handleRowClick(
+                              medication.original_report
+                                ? medication.original_report
+                                : medication.id
+                            )
+                          }
+                        />
+                      </PermissionsGuard>
+                    </div>
+                  </td>
+                )}
             </tr>
           ))
         ) : (
@@ -678,6 +713,5 @@ const MedicationErrorTable = ({
     </table>
   );
 };
-
 
 export default MedicationErrorList;

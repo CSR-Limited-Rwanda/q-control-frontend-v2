@@ -22,6 +22,7 @@ import {
   SortNameIcon2,
 } from "./StaffIncidentList";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 function formatDate(dateString) {
   if (!dateString || isNaN(new Date(dateString).getTime())) {
@@ -239,7 +240,9 @@ const LostAndFoundList = () => {
               <div className="tab-header">
                 <div className="title-container-action">
                   <div className="title-container">
-                    <h2 className="title">Lost & Found Property Tracking List</h2>
+                    <h2 className="title">
+                      Lost & Found Property Tracking List
+                    </h2>
                     <p>{incidentData.length} incident(s) available</p>
                   </div>
                 </div>
@@ -285,7 +288,10 @@ const LostAndFoundList = () => {
                           />
                         </div>
                         <div className="popup-buttons">
-                          <button onClick={clearFilters} className="outline-button">
+                          <button
+                            onClick={clearFilters}
+                            className="outline-button"
+                          >
                             <X size={20} variant="stroke" />
                             Clear
                           </button>
@@ -312,7 +318,10 @@ const LostAndFoundList = () => {
                   {selectedItems.length > 0 ? (
                     <button
                       onClick={() =>
-                        exportExcel(selectedItems, "lost_and_found_incident_list")
+                        exportExcel(
+                          selectedItems,
+                          "lost_and_found_incident_list"
+                        )
                       }
                       className="secondary-button"
                     >
@@ -342,7 +351,9 @@ const LostAndFoundList = () => {
                       ) : currentSearchResults.length > 0 ? (
                         <div className="results-table">
                           <div className="results-count">
-                            <span className="count">{searchResults.length}</span>{" "}
+                            <span className="count">
+                              {searchResults.length}
+                            </span>{" "}
                             result(s) found
                           </div>
                           <LostFoundTable
@@ -369,8 +380,9 @@ const LostAndFoundList = () => {
                             {pageNumbers.map((number) => (
                               <button
                                 key={number}
-                                className={`pagination-button ${currentPage === number ? "active" : ""
-                                  }`}
+                                className={`pagination-button ${
+                                  currentPage === number ? "active" : ""
+                                }`}
                                 onClick={() => handlePageChange(number)}
                               >
                                 {number}
@@ -417,8 +429,9 @@ const LostAndFoundList = () => {
                         {pageNumbers.map((number) => (
                           <button
                             key={number}
-                            className={`pagination-button ${currentPage === number ? "active" : ""
-                              }`}
+                            className={`pagination-button ${
+                              currentPage === number ? "active" : ""
+                            }`}
                             onClick={() => handlePageChange(number)}
                           >
                             {number}
@@ -454,6 +467,8 @@ const LostFoundTable = ({
   handleSelectAll,
   setIncidentData,
 }) => {
+  const { permissions } = useGetPermissions();
+
   const [sortDesc, setSortDesc] = useState(false);
   const [nameAZ, setNameAZ] = useState(false);
   const [nameAZ2, setNameAZ2] = useState(false);
@@ -504,7 +519,6 @@ const LostFoundTable = ({
   };
 
   const handleSorting = (items, sortBy, direction = "asc", field) => {
-
     const sortByNumber = (field) => {
       return [...items].sort((a, b) => {
         const result = a.id - b.id;
@@ -628,7 +642,10 @@ const LostFoundTable = ({
           </th>
 
           <th>Status</th>
-          <th className="action-col">Action</th>
+          {permissions?.lost_and_found?.includes("change_incident") ||
+            permissions?.lost_and_found?.includes("view_details") && (
+              <th className="action-col">Action</th>
+            )}
         </tr>
       </thead>
       <tbody>
@@ -643,8 +660,9 @@ const LostFoundTable = ({
                 )
               }
               key={index}
-              className={`table-card ${selectedItems.includes(incident) ? "selected" : ""
-                }`}
+              className={`table-card ${
+                selectedItems.includes(incident) ? "selected" : ""
+              }`}
             >
               <td data-label="Select">
                 <div
@@ -660,7 +678,9 @@ const LostFoundTable = ({
               </td>
               <td data-label="No">{index + 1}</td>
               <td data-label="ID">{incident.original_report || incident.id}</td>
-              <td data-label="Facility">{incident.report_facility?.name || "Not provided"}</td>
+              <td data-label="Facility">
+                {incident.report_facility?.name || "Not provided"}
+              </td>
               <td data-label="Date & Time Reported">
                 {DateFormatter ? (
                   <DateFormatter dateString={incident.date_reported} />
@@ -676,52 +696,68 @@ const LostFoundTable = ({
               </td>
               <td data-label="Person Reporting">
                 {incident.reported_by?.last_name &&
-                  incident.reported_by?.first_name
+                incident.reported_by?.first_name
                   ? `${incident.reported_by.last_name} ${incident.reported_by.first_name}`
                   : "Not provided"}
               </td>
               <td data-label="Status">
                 <p
-                  className={`follow-up ${incident.status === "Draft"
-                    ? "in-progress"
-                    : incident.status === "Closed"
+                  className={`follow-up ${
+                    incident.status === "Draft"
+                      ? "in-progress"
+                      : incident.status === "Closed"
                       ? "closed"
                       : "Open"
-                    }`}
+                  }`}
                 >
                   {incident.status || "Not specified"}
                 </p>
               </td>
-              <td
-                data-label="Action"
-                onClick={(event) => handleNonClickableColumnClick(event)}
-                className="action-col"
-              >
-                <div className="table-actions">
-                  {!incident.is_resolved && (
-                    <Pencil
-                      size={20}
-                      onClick={() =>
-                        navigateToModify(
-                          incident.original_report
-                            ? incident.original_report
-                            : incident.id
-                        )
-                      }
-                    />
-                  )}
-                  <Eye
-                    size={20}
-                    onClick={() =>
-                      handleRowClick(
-                        incident.original_report
-                          ? incident.original_report
-                          : incident.id
-                      )
-                    }
-                  />
-                </div>
-              </td>
+
+              {permissions?.lost_and_found?.includes("change_incident") ||
+                permissions?.lost_and_found?.includes("view_details") && (
+                  <td
+                    data-label="Action"
+                    onClick={(event) => handleNonClickableColumnClick(event)}
+                    className="action-col"
+                  >
+                    <div className="table-actions">
+                      <PermissionsGuard
+                        model={"lost_and_found"}
+                        codename={"change_incident"}
+                      >
+                        {!incident.is_resolved && (
+                          <Pencil
+                            size={20}
+                            onClick={() =>
+                              navigateToModify(
+                                incident.original_report
+                                  ? incident.original_report
+                                  : incident.id
+                              )
+                            }
+                          />
+                        )}
+                      </PermissionsGuard>
+
+                      <PermissionsGuard
+                        model={"lost_and_found"}
+                        codename={"view_details"}
+                      >
+                        <Eye
+                          size={20}
+                          onClick={() =>
+                            handleRowClick(
+                              incident.original_report
+                                ? incident.original_report
+                                : incident.id
+                            )
+                          }
+                        />
+                      </PermissionsGuard>
+                    </div>
+                  </td>
+                )}
             </tr>
           ))
         ) : (
