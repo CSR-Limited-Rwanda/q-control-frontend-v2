@@ -140,7 +140,7 @@ const DepartmentsPage = () => {
           </select>
         </div>
         {isLoading && <p>Loading...</p>}
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+
         {!isLoading && selectedFacilityId && (
           <div className="departments">
             <div className="departments-titles">
