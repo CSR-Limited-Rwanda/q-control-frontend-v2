@@ -519,7 +519,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         const data = {
           current_step: currentStep,
           facility_id: user.facility.id,
-          department: user.department.id,
           report_facility_id: currentFacility?.id,
           reported_by: {
             first_name: reportedByFirstName,

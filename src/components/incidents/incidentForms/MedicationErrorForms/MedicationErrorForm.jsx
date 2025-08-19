@@ -286,7 +286,6 @@ const MedicationErrorForm = ({ togglePopup }) => {
     const data = {
       // report_facility: checkCurrentAccount(),
       facility_id: user?.facility?.id,
-      department: user?.department?.id,
       report_facility_id: currentFacility?.id,
       patient: {
         first_name: firstName,

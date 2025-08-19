@@ -362,7 +362,6 @@ const DrugReactionForm = ({ togglePopup }) => {
           patient_type: victimType,
           facility: user?.facility?.id,
           report_facility_id: currentFacility?.id,
-          department: user?.department?.id,
           patient_name: {
             first_name: firstName,
             last_name: lastName,
