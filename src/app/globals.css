@@ -325,6 +325,27 @@ form button {
   animation: spin 1s linear infinite;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+form .form-half {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-half .field-group {
+  flex: 1 1 200px;
+}
+
+.form-group input {
+  width: 100%;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);

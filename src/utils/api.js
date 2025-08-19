@@ -216,14 +216,40 @@ export const cleanedData = (data) => {
 
   return Object.entries(data).reduce(
     (acc, [key, value]) => {
+      // Handle arrays (like document IDs)
+      if (Array.isArray(value)) {
+        if (value.length > 0) {
+          acc[key] = value;
+        }
+        return acc;
+      }
+
+      // Handle objects
+      if (value && typeof value === 'object') {
+        // Check if it's an object with first_name and last_name properties
+        if (value.hasOwnProperty('first_name') && value.hasOwnProperty('last_name')) {
+          if (
+            value.first_name !== null &&
+            value.first_name !== undefined &&
+            value.first_name !== "" &&
+            value.last_name !== null &&
+            value.last_name !== undefined &&
+            value.last_name !== ""
+          ) {
+            acc[key] = value;
+          }
+        } else {
+          // For other objects, include them if they're not empty
+          acc[key] = value;
+        }
+        return acc;
+      }
+
+      // Handle primitive values
       if (
         value !== null &&
         value !== undefined &&
-        value !== "" &&
-        value.first_name !== "" &&
-        value.first_name !== null &&
-        value.last_name !== "" &&
-        value.last_name !== null
+        value !== ""
       ) {
         acc[key] = value;
       }
