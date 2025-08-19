@@ -27,30 +27,12 @@ const Step3IncidentType = ({ formData, setFormData, handleChange, isFieldInvalid
 
     // Treatment types
     const treatmentTypes = [
-        { name: "Insertion of urinary catheter" },
-        { name: "Insertion of peripheral IV" },
-        { name: "Insertion of nasogastric tube" },
         { name: "Medication administration" },
-        { name: "Blood product administration" },
-        { name: "Surgical procedure" },
-        { name: "Diagnostic procedure" },
-        { name: "Physical therapy" },
-        { name: "Occupational therapy" },
-        { name: "Speech therapy" },
-        { name: "Respiratory therapy" },
+        { name: "IV therapy" },
+        { name: "Surgery" },
+        { name: "Laboratory" },
+        { name: "Radiology" },
         { name: "Other" }
-    ]
-
-    // Agreement options for falls
-    const agreementOptions = [
-        { name: "Were the side rails up" },
-        { name: "Patient using assistive device" },
-        { name: "Patient oriented x3" },
-        { name: "Call light within reach" },
-        { name: "Restraints in use" },
-        { name: "Chemical" },
-        { name: "Four side rails" },
-        { name: "Wrist restraints" }
     ]
 
     // Other type options
@@ -77,56 +59,6 @@ const Step3IncidentType = ({ formData, setFormData, handleChange, isFieldInvalid
             handleChange({ target: { name: 'other_type_specimen_other', value: '' } })
         }
     }
-
-    // Handle treatment checkbox changes for multiple selections
-    const handleTreatmentCheckboxChange = (treatmentName) => {
-        const currentTreatments = formData.treatment_type ? formData.treatment_type.split(', ') : []
-        let updatedTreatments
-
-        if (currentTreatments.includes(treatmentName)) {
-            // Remove if already selected
-            updatedTreatments = currentTreatments.filter(treatment => treatment !== treatmentName)
-        } else {
-            // Add if not selected
-            updatedTreatments = [...currentTreatments, treatmentName]
-        }
-
-        // Update form data
-        handleChange({
-            target: {
-                name: 'treatment_type',
-                value: updatedTreatments.join(', ')
-            }
-        })
-    }
-
-    // Handle fall agreement checkbox changes for multiple selections  
-    const handleAgreementCheckboxChange = (agreementName) => {
-        const currentAgreements = formData.fall_type_agreement ? formData.fall_type_agreement.split(', ') : []
-        let updatedAgreements
-
-        if (currentAgreements.includes(agreementName)) {
-            // Remove if already selected
-            updatedAgreements = currentAgreements.filter(agreement => agreement !== agreementName)
-        } else {
-            // Add if not selected
-            updatedAgreements = [...currentAgreements, agreementName]
-        }
-
-        // Update form data
-        handleChange({
-            target: {
-                name: 'fall_type_agreement',
-                value: updatedAgreements.join(', ')
-            }
-        })
-    }    // Get selected treatments for rendering
-    const selectedTreatments = formData.treatment_type ? formData.treatment_type.split(', ') : []
-    const isOtherTreatmentSelected = selectedTreatments.includes("Other")
-
-    // Get selected agreements for rendering
-    const selectedAgreements = formData.fall_type_agreement ? formData.fall_type_agreement.split(', ') : []
-    const showRestraintOptions = selectedAgreements.includes('Restraints in use')
 
     return (
         <div className="form-container">
@@ -207,84 +139,6 @@ const Step3IncidentType = ({ formData, setFormData, handleChange, isFieldInvalid
                             )}
                         </div>
                     )}
-
-                    {/* Fall occurred from bed */}
-                    {formData.fall_related_type === "Occurred from bed" && (
-                        <div className="field-group">
-                            <label htmlFor="fell_from">What did patient fall off of? <span className="required">*</span></label>
-                            <input
-                                type="text"
-                                id="fell_from"
-                                name="fell_from"
-                                value={formData.fell_from || ''}
-                                onChange={handleChange}
-                                placeholder="e.g. Bed, Chair, Wheelchair, etc."
-                                className={isFieldInvalid('fell_from') ? 'invalid' : ''}
-                            />
-                            {isFieldInvalid('fell_from') && (
-                                <div className="error-message">
-                                    <span>{getFieldError('fell_from')}</span>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Morse Fall Score */}
-                    <div className="field-group">
-                        <label htmlFor="morse_fall_score">Morse Fall Score <span className="required">*</span></label>
-                        <input
-                            type="number"
-                            id="morse_fall_score"
-                            name="morse_fall_score"
-                            value={formData.morse_fall_score || ''}
-                            onChange={handleChange}
-                            placeholder="Enter score"
-                            className={isFieldInvalid('morse_fall_score') ? 'invalid' : ''}
-                        />
-                        {isFieldInvalid('morse_fall_score') && (
-                            <div className="error-message">
-                                <span>{getFieldError('morse_fall_score')}</span>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Agreement Options - Multi-select */}
-                    <div className="field-group">
-                        <label>Please select all applicable <span className="required">*</span><span className="hint">(You can select multiple)</span></label>
-                        <div className="checkbox-group">
-                            {agreementOptions.map((option, index) => {
-                                // Hide restraint options unless "Restraints in use" is selected
-                                if ((option.name === "Chemical" || option.name === "Four side rails" || option.name === "Wrist restraints") && !showRestraintOptions) {
-                                    return null
-                                }
-
-                                return (
-                                    <div
-                                        key={index}
-                                        className={`checkbox-item ${selectedAgreements.includes(option.name) ? 'selected' : ''}`}
-                                        onClick={() => handleAgreementCheckboxChange(option.name)}
-                                    >
-                                        <div className="checkbox-icon">
-                                            {selectedAgreements.includes(option.name) ? '✓' : '☐'}
-                                        </div>
-                                        <span className="checkbox-label">{option.name}</span>
-                                        <input
-                                            type="checkbox"
-                                            name="fall_type_agreement"
-                                            value={option.name}
-                                            checked={selectedAgreements.includes(option.name)}
-                                            onChange={() => handleAgreementCheckboxChange(option.name)}
-                                        />
-                                    </div>
-                                )
-                            })}
-                        </div>
-                        {isFieldInvalid('fall_type_agreement') && (
-                            <div className="error-message">
-                                <span>{getFieldError('fall_type_agreement')}</span>
-                            </div>
-                        )}
-                    </div>
                 </div>
             )}
 
@@ -293,28 +147,19 @@ const Step3IncidentType = ({ formData, setFormData, handleChange, isFieldInvalid
                 <div className="field-group">
                     <label>Treatment Related Details</label>
                     <div className="field-group">
-                        <label>Select Treatment Types <span className="required">*</span><span className="hint">(You can select multiple)</span></label>
-                        <div className="checkbox-group">
+                        <label htmlFor="treatment_type">Treatment Type <span className="required">*</span></label>
+                        <select
+                            id="treatment_type"
+                            name="treatment_type"
+                            value={formData.treatment_type || ''}
+                            onChange={handleChange}
+                            className={isFieldInvalid('treatment_type') ? 'invalid' : ''}
+                        >
+                            <option value="">Select treatment type</option>
                             {treatmentTypes.map((type, index) => (
-                                <div
-                                    key={index}
-                                    className={`checkbox-item ${selectedTreatments.includes(type.name) ? 'selected' : ''}`}
-                                    onClick={() => handleTreatmentCheckboxChange(type.name)}
-                                >
-                                    <div className="checkbox-icon">
-                                        {selectedTreatments.includes(type.name) ? '✓' : '☐'}
-                                    </div>
-                                    <span className="checkbox-label">{type.name}</span>
-                                    <input
-                                        type="checkbox"
-                                        name="treatment_type"
-                                        value={type.name}
-                                        checked={selectedTreatments.includes(type.name)}
-                                        onChange={() => handleTreatmentCheckboxChange(type.name)}
-                                    />
-                                </div>
+                                <option key={index} value={type.name}>{type.name}</option>
                             ))}
-                        </div>
+                        </select>
                         {isFieldInvalid('treatment_type') && (
                             <div className="error-message">
                                 <span>{getFieldError('treatment_type')}</span>
@@ -323,7 +168,7 @@ const Step3IncidentType = ({ formData, setFormData, handleChange, isFieldInvalid
                     </div>
 
                     {/* Other Treatment Input */}
-                    {isOtherTreatmentSelected && (
+                    {formData.treatment_type === "Other" && (
                         <div className="field-group">
                             <label htmlFor="other_treatment">Please specify other treatment <span className="required">*</span></label>
                             <input
@@ -406,65 +251,6 @@ const Step3IncidentType = ({ formData, setFormData, handleChange, isFieldInvalid
                                 className={isFieldInvalid('equipment_serial_number') ? 'invalid' : ''}
                             />
                         </div>
-                    </div>
-
-                    {/* Equipment Removed from Service Checkbox */}
-                    <div className="field-group">
-                        <div className="checkbox-group">
-                            <div
-                                className={`checkbox-item ${formData.removed_from_service === "Yes" ? 'selected' : ''}`}
-                                onClick={() => handleChange({ target: { name: 'removed_from_service', value: formData.removed_from_service === "Yes" ? "No" : "Yes" } })}
-                            >
-                                <div className="checkbox-icon">
-                                    {formData.removed_from_service === "Yes" ? '✓' : '☐'}
-                                </div>
-                                <span className="checkbox-label">Removed from service</span>
-                                <input
-                                    type="checkbox"
-                                    name="removed_from_service"
-                                    checked={formData.removed_from_service === "Yes"}
-                                    onChange={(e) => handleChange({ target: { name: 'removed_from_service', value: e.target.checked ? "Yes" : "No" } })}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Equipment Malfunction Description */}
-                    <div className="field-group">
-                        <label htmlFor="equipment_malfunction">Equipment Malfunction Description <span className="required">*</span></label>
-                        <textarea
-                            id="equipment_malfunction"
-                            name="equipment_malfunction"
-                            value={formData.equipment_malfunction || ''}
-                            onChange={handleChange}
-                            placeholder="Describe the equipment malfunction"
-                            rows="3"
-                            className={isFieldInvalid('equipment_malfunction') ? 'invalid' : ''}
-                        />
-                        {isFieldInvalid('equipment_malfunction') && (
-                            <div className="error-message">
-                                <span>{getFieldError('equipment_malfunction')}</span>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Engineering Staff Notified */}
-                    <div className="field-group">
-                        <label htmlFor="engineering_staff_notified">Engineering Staff Notified <span className="required">*</span></label>
-                        <textarea
-                            id="engineering_staff_notified"
-                            name="engineering_staff_notified"
-                            value={formData.engineering_staff_notified || ''}
-                            onChange={handleChange}
-                            placeholder="Describe when and how engineering staff was notified"
-                            rows="2"
-                            className={isFieldInvalid('engineering_staff_notified') ? 'invalid' : ''}
-                        />
-                        {isFieldInvalid('engineering_staff_notified') && (
-                            <div className="error-message">
-                                <span>{getFieldError('engineering_staff_notified')}</span>
-                            </div>
-                        )}
                     </div>
                 </div>
             )}

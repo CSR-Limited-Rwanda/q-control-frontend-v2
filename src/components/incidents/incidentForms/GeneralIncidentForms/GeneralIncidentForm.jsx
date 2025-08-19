@@ -21,7 +21,7 @@ const GeneralIncidentForm = ({ initialData = {} }) => {
     return stored ? parseInt(stored, 10) : 1
   }
 
-  const [currentStep, setCurrentStep] = useState(getStoredStep())
+  const [currentStep, setCurrentStep] = useState(1 || getStoredStep())
   const [formData, setFormData] = useState(initialData)
   const [isUploadingFiles, setIsUploadingFiles] = useState(false)
 
@@ -103,7 +103,7 @@ const GeneralIncidentForm = ({ initialData = {} }) => {
     }
   }
   return (
-    <div className='incident-form'>
+    <div className='form-container'>
       <div className="form-header">
         <h2>{isEditing ? 'Edit Incident' : 'New Incident'}</h2>
 
@@ -135,73 +135,71 @@ const GeneralIncidentForm = ({ initialData = {} }) => {
         </div>
       )}
 
-      <div className="fields">
-        {/* from 1 to 7 */}
-        {
-          currentStep === 1 && <Step1IncidentInfo
-            formData={formData}
-            setFormData={setFormData}
-            handleChange={handleChange}
-            isFieldInvalid={isFieldInvalid}
-            getFieldError={getFieldError} />
-        }
-        {
-          currentStep === 2 && <Step2LocationStatus
-            formData={formData}
-            setFormData={setFormData}
-            handleChange={handleChange}
-            isFieldInvalid={isFieldInvalid}
-            getFieldError={getFieldError} />
-        }
-        {
-          currentStep === 3 && <Step3IncidentType
-            formData={formData}
-            setFormData={setFormData}
-            handleChange={handleChange}
-            isFieldInvalid={isFieldInvalid}
-            getFieldError={getFieldError} />
-        }
-        {
-          currentStep === 4 && <Step4Outcome
-            formData={formData}
-            setFormData={setFormData}
-            handleChange={handleChange}
-            isFieldInvalid={isFieldInvalid}
-            getFieldError={getFieldError} />
-        }
-        {
-          currentStep === 5 && <Step5Notification
-            formData={formData}
-            setFormData={setFormData}
-            handleChange={handleChange}
-            isFieldInvalid={isFieldInvalid}
-            getFieldError={getFieldError} />
-        }
-        {
-          currentStep === 6 && <Step6Summary
-            formData={formData}
-            setFormData={setFormData}
-            handleChange={handleChange}
-            isFieldInvalid={isFieldInvalid}
-            getFieldError={getFieldError}
-            onUploadStateChange={handleUploadStateChange} />
-        }
-        {
-          currentStep === 7 && <Step7Completion
-            formData={formData}
-            onStartNew={() => {
-              localStorage.removeItem('generalIncidentId')
-              localStorage.removeItem('generalIncidentCurrentStep')
-              window.location.reload()
-            }}
-            onViewDashboard={() => {
-              localStorage.removeItem('generalIncidentId')
-              localStorage.removeItem('generalIncidentCurrentStep')
-              window.location.href = '/dashboard'
-            }}
-          />
-        }
-      </div>
+      {/* from 1 to 7 */}
+      {
+        currentStep === 1 && <Step1IncidentInfo
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+          isFieldInvalid={isFieldInvalid}
+          getFieldError={getFieldError} />
+      }
+      {
+        currentStep === 2 && <Step2LocationStatus
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+          isFieldInvalid={isFieldInvalid}
+          getFieldError={getFieldError} />
+      }
+      {
+        currentStep === 3 && <Step3IncidentType
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+          isFieldInvalid={isFieldInvalid}
+          getFieldError={getFieldError} />
+      }
+      {
+        currentStep === 4 && <Step4Outcome
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+          isFieldInvalid={isFieldInvalid}
+          getFieldError={getFieldError} />
+      }
+      {
+        currentStep === 5 && <Step5Notification
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+          isFieldInvalid={isFieldInvalid}
+          getFieldError={getFieldError} />
+      }
+      {
+        currentStep === 6 && <Step6Summary
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+          isFieldInvalid={isFieldInvalid}
+          getFieldError={getFieldError}
+          onUploadStateChange={handleUploadStateChange} />
+      }
+      {
+        currentStep === 7 && <Step7Completion
+          formData={formData}
+          onStartNew={() => {
+            localStorage.removeItem('generalIncidentId')
+            localStorage.removeItem('generalIncidentCurrentStep')
+            window.location.reload()
+          }}
+          onViewDashboard={() => {
+            localStorage.removeItem('generalIncidentId')
+            localStorage.removeItem('generalIncidentCurrentStep')
+            window.location.href = '/dashboard'
+          }}
+        />
+      }
 
       {/* Only show buttons if not on Step 7 - Step7Completion handles its own buttons */}
       {currentStep < 7 && (

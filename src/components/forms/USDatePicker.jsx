@@ -58,7 +58,7 @@ const USDatePicker = ({
         <div className="us-date-picker-container">
             {label && (
                 <label htmlFor={name} className="date-picker-label">
-                    {label} {required && <span className="required">*</span>}
+                    {label}
                 </label>
             )}
 
@@ -81,11 +81,11 @@ const USDatePicker = ({
             />
 
             <div className="date-format-hint">
-                Format: MM-DD-YYYY (e.g., 08-19-2025)
+
             </div>
 
             {isInvalid && errorMessage && (
-                <span className="error-message">{errorMessage}</span>
+                <span className="error">{errorMessage}</span>
             )}
         </div>
     )

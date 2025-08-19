@@ -121,123 +121,105 @@ const Step6Summary = ({ formData, setFormData, handleChange, isFieldInvalid, get
     }
 
     return (
-        <div className="step-container">
-            <h3>Step 6: Summary</h3>
-            <form>
-                {/* Brief Summary of Incident */}
-                <div className="field-group">
-                    <label htmlFor="brief_summary_of_incident">Brief Summary of Incident *</label>
-                    <RichTextField
-                        value={formData.brief_summary_of_incident || ''}
-                        onEditorChange={(value) => handleRichTextChange('brief_summary_of_incident', value)}
-                        placeholder="Provide a brief summary of what happened..."
-                    />
-                    {isFieldInvalid('brief_summary_of_incident') && (
-                        <span className="error-message">{getFieldError('brief_summary_of_incident')}</span>
-                    )}
+        <div className="form-container">
+            {/* Form Header */}
+            <div className="form-header">
+                <h2>Step 6: Summary & Documentation</h2>
+                <div className="progress-info">
+                    <span className="step-indicator">Step 6 of 7</span>
                 </div>
+            </div>
 
-                {/* Immediate Actions Taken */}
-                <div className="field-group">
-                    <label htmlFor="immediate_action_taken">Immediate Actions Taken *</label>
-                    <RichTextField
-                        value={formData.immediate_action_taken || ''}
-                        onEditorChange={(value) => handleRichTextChange('immediate_action_taken', value)}
-                        placeholder="Describe the immediate actions that were taken..."
-                    />
-                    {isFieldInvalid('immediate_action_taken') && (
-                        <span className="error-message">{getFieldError('immediate_action_taken')}</span>
-                    )}
-                </div>
-
-                {/* Response */}
-                <div className="field-group">
-                    <label htmlFor="response">Response</label>
-                    <RichTextField
-                        value={formData.response || ''}
-                        onEditorChange={(value) => handleRichTextChange('response', value)}
-                        placeholder="Describe the overall response to the incident..."
-                    />
-                    {isFieldInvalid('response') && (
-                        <span className="error-message">{getFieldError('response')}</span>
-                    )}
-                </div>
-
-                {/* File Upload */}
-                <div className="field-group">
-                    <label htmlFor="documents">Supporting Documents</label>
-                    <input
-                        type="file"
-                        id="documents"
-                        name="documents"
-                        onChange={handleFileChange}
-                        multiple
-                        className="file-input"
-                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
-                        disabled={uploading}
-                    />
-                    <div className="file-help">
-                        You can upload multiple files (PDF, DOC, DOCX, JPG, PNG, TXT)
-                        {uploading && ` - Uploading... ${uploadProgress}%`}
+            {/* Description of Incident */}
+            <div className="field-group">
+                <label htmlFor="description">Description of Incident <span className="required">*</span></label>
+                <RichTextField
+                    name="description"
+                    value={formData.description || ''}
+                    onChange={handleChange}
+                    placeholder="Provide a detailed description of the incident..."
+                    isInvalid={isFieldInvalid('description')}
+                />
+                {isFieldInvalid('description') && (
+                    <div className="error-message">
+                        <span>{getFieldError('description')}</span>
                     </div>
+                )}
+            </div>
 
-                    {/* Upload Progress Bar */}
-                    {uploading && (
-                        <div className="upload-progress">
-                            <div className="progress-bar">
-                                <div
-                                    className="progress-fill"
-                                    style={{ width: `${uploadProgress}%` }}
-                                ></div>
-                            </div>
-                            <span className="progress-text">{uploadProgress}%</span>
+            {/* Upload Documents */}
+            <div className="field-group">
+                <label htmlFor="document_upload">Supporting Documents <span className="hint">(Optional)</span></label>
+                <input
+                    type="file"
+                    id="document_upload"
+                    multiple
+                    onChange={handleFileChange}
+                    disabled={uploading}
+                    className="file-upload-input"
+                />
+
+                {/* Upload Progress */}
+                {uploading && (
+                    <div className="upload-progress">
+                        <div className="progress-bar">
+                            <div
+                                className="progress-fill"
+                                style={{ width: `${uploadProgress}%` }}
+                            ></div>
                         </div>
-                    )}
+                        <span className="progress-text">{uploadProgress}% uploaded</span>
+                    </div>
+                )}
 
-                    {formData.uploaded_files && formData.uploaded_files.length > 0 && (
-                        <div className="uploaded-files">
-                            <p>Uploaded files:</p>
-                            <ul>
-                                {Array.from(formData.uploaded_files).map((file, index) => (
-                                    <li key={index}>
-                                        <span className="file-name">{file.name}</span>
-                                        <span className="file-size">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                </div>
+                {/* Uploaded Files Display */}
+                {formData.uploaded_files && formData.uploaded_files.length > 0 && (
+                    <div className="uploaded-files">
+                        <h5>Uploaded Files:</h5>
+                        <ul className="file-list">
+                            {Array.from(formData.uploaded_files).map((file, index) => (
+                                <li key={index} className="file-item">
+                                    <span className="file-name">{file.name}</span>
+                                    <span className="file-size">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
 
-                {/* Summary Information */}
+            {/* Summary Information */}
+            <div className="field-group">
+                <label>Incident Summary Review</label>
                 <div className="summary-info">
-                    <h4>Incident Summary</h4>
                     <div className="summary-grid">
                         <div className="summary-item">
-                            <strong>Incident Type:</strong> {formData.incident_type || 'Not specified'}
+                            <strong>Incident Type:</strong> <span>{formData.incident_type || 'Not specified'}</span>
                         </div>
                         <div className="summary-item">
-                            <strong>Location:</strong> {formData.location || 'Not specified'}
+                            <strong>Location:</strong> <span>{formData.location || 'Not specified'}</span>
                         </div>
                         <div className="summary-item">
-                            <strong>Date:</strong> {formData.incident_date || 'Not specified'}
+                            <strong>Date:</strong> <span>{formData.incident_date || 'Not specified'}</span>
                         </div>
                         <div className="summary-item">
-                            <strong>Outcome:</strong> {formData.outcome || 'Not specified'}
+                            <strong>Outcome:</strong> <span>{formData.outcome || 'Not specified'}</span>
                         </div>
                         {formData.patient_visitor && (
                             <>
                                 <div className="summary-item">
-                                    <strong>Patient/Visitor:</strong> {formData.patient_visitor.first_name} {formData.patient_visitor.last_name}
+                                    <strong>Patient/Visitor:</strong>
+                                    <span>{formData.patient_visitor.first_name} {formData.patient_visitor.last_name}</span>
                                 </div>
                                 <div className="summary-item">
-                                    <strong>Profile Type:</strong> {formData.patient_visitor.profile_type}
+                                    <strong>Profile Type:</strong>
+                                    <span>{formData.patient_visitor.profile_type}</span>
                                 </div>
                             </>
                         )}
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     )
 }

@@ -14,13 +14,10 @@ const useUpdate = () => {
 
         try {
             const cleanedFormData = cleanedData(formData)
-            console.log("Cleaned update data: ", cleanedFormData)
             const response = await api.put(`/incidents/general-visitor/${incidentId}/`, cleanedFormData)
 
-            // Check if the response is successful (200-299 status codes)
             if (response.status >= 200 && response.status < 300) {
                 setSuccess(true)
-                console.log("Incident updated successfully:", response.data)
                 return response.data
             } else {
                 throw new Error(`HTTP error! status: ${response.status}`)
@@ -29,11 +26,9 @@ const useUpdate = () => {
         } catch (err) {
             console.error('API Error:', err)
 
-            // Handle different types of backend errors
             let errorMessage = 'An error occurred while updating the incident'
 
             if (err.response) {
-                // Backend responded with an error status
                 const responseData = err.response.data
 
                 if (responseData?.error) {
@@ -50,16 +45,13 @@ const useUpdate = () => {
 
                 console.error('Backend Error:', responseData)
             } else if (err.request) {
-                // Network error
                 errorMessage = 'Network error - please check your connection'
             } else {
-                // Other error
                 errorMessage = err.message || errorMessage
             }
 
             setError(errorMessage)
             setSuccess(false)
-            // Re-throw the error so the calling function knows it failed
             throw new Error(errorMessage)
         } finally {
             setIsLoading(false)
@@ -75,10 +67,8 @@ const useUpdate = () => {
         try {
             const response = await api.patch(`/incidents/general-visitor/${incidentId}/`, partialData)
 
-            // Check if the response is successful (200-299 status codes)
             if (response.status >= 200 && response.status < 300) {
                 setSuccess(true)
-                console.log("Incident patched successfully:", response.data)
                 return response.data
             } else {
                 throw new Error(`HTTP error! status: ${response.status}`)
@@ -87,11 +77,9 @@ const useUpdate = () => {
         } catch (err) {
             console.error('API Error:', err)
 
-            // Handle different types of backend errors
             let errorMessage = 'An error occurred while updating the incident'
 
             if (err.response) {
-                // Backend responded with an error status
                 const responseData = err.response.data
 
                 if (responseData?.error) {
@@ -108,16 +96,13 @@ const useUpdate = () => {
 
                 console.error('Backend Error:', responseData)
             } else if (err.request) {
-                // Network error
                 errorMessage = 'Network error - please check your connection'
             } else {
-                // Other error
                 errorMessage = err.message || errorMessage
             }
 
             setError(errorMessage)
             setSuccess(false)
-            // Re-throw the error so the calling function knows it failed
             throw new Error(errorMessage)
         } finally {
             setIsLoading(false)

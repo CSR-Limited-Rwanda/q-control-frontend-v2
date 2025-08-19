@@ -14,14 +14,11 @@ const usePost = () => {
 
         try {
             const cleanedFormData = cleanedData(formData)
-            console.log("Cleaned form data: ", cleanedFormData)
             const response = await api.post('/incidents/general-visitor/', cleanedFormData)
 
-            // Check if the response is successful (200-299 status codes)
             if (response.status >= 200 && response.status < 300) {
                 setSuccess(true)
-                console.log("Incident submitted successfully:", response.data)
-                // store generalIncidentId in local state,
+
                 localStorage.setItem('generalIncidentId', response.data.id)
                 return response.data
             } else {
@@ -31,11 +28,9 @@ const usePost = () => {
         } catch (err) {
             console.error('API Error:', err)
 
-            // Handle different types of backend errors
             let errorMessage = 'An error occurred while submitting the incident'
 
             if (err.response) {
-                // Backend responded with an error status
                 const responseData = err.response.data
 
                 if (responseData?.error) {
@@ -52,16 +47,16 @@ const usePost = () => {
 
                 console.error('Backend Error:', responseData)
             } else if (err.request) {
-                // Network error
+
                 errorMessage = 'Network error - please check your connection'
             } else {
-                // Other error
+
                 errorMessage = err.message || errorMessage
             }
 
             setError(errorMessage)
             setSuccess(false)
-            // Re-throw the error so the calling function knows it failed
+
             throw new Error(errorMessage)
         } finally {
             setIsLoading(false)
