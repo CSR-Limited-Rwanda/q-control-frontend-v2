@@ -180,7 +180,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     }));
     const incidentData = {
       facility_id: user?.facility?.id,
-      department: user?.department?.id,
       current_step: currentStep,
       incident_status: statusType,
       report_facility_id: currentFacility?.id,
