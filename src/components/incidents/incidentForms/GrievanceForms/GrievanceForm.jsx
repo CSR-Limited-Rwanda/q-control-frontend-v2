@@ -153,7 +153,6 @@ const GrievanceForm = ({ togglePopup }) => {
     const data = {
       current_step: currentStep,
       facility_id: user.facility.id,
-      department: user.department.id,
       report_facility_id: currentFacility?.id,
       date: incidentDate,
       patient_name: {

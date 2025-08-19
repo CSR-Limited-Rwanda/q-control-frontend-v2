@@ -32,10 +32,13 @@ textarea {
 
 .date-input {
   display: flex;
-  align-items: center;
+
   border: 1px solid #f1f1f1;
   border-radius: var(--base-border-radius);
   padding: 14px 16px;
+  padding-left: 10px;
+  flex-direction: column;
+  gap: 10px;
 
   input {
     border: 0;
@@ -46,6 +49,11 @@ textarea {
 
   .yyy {
     width: 4rem;
+  }
+
+  .date-warning {
+    color: rgb(231, 46, 5);
+    font-size: 13px;
   }
 }
 
