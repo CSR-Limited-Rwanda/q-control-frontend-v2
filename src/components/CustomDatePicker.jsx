@@ -91,10 +91,24 @@ const CustomDatePicker = ({
       setWarning("Day must be a number.");
       return false;
     }
-    if (value.length === 2 && (parseInt(value) < 1 || parseInt(value) > 31)) {
-      console.log("Day validation failed: Out of range", value);
-      setWarning("Day must be between 01 and 31.");
-      return false;
+    if (value.length === 2) {
+      const parsedDay = parseInt(value);
+      let maxDays = 31;
+      if (month.length === 2) {
+        const parsedMonth = parseInt(month);
+        if ([4, 6, 9, 11].includes(parsedMonth)) {
+          maxDays = 30;
+        } else if (parsedMonth === 2) {
+          maxDays = 29; // Allow up to 29 for February; leap year check in full validation
+        }
+      }
+      if (parsedDay < 1 || parsedDay > maxDays) {
+        console.log("Day validation failed: Out of range for month", value);
+        setWarning(
+          `Day must be between 01 and ${maxDays} for the selected month.`
+        );
+        return false;
+      }
     }
     return true;
   };
