@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import api, { API_URL } from "@/utils/api";
 import DateFormatter from "@/components/DateFormatter";
@@ -20,9 +22,9 @@ const GrivanceDocumentHistory = ({ incidentId }) => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          toast.error("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          toast.error("Failed to fetch document History");
           console.error(error);
         }
         setGettingDocumentHistory(false);

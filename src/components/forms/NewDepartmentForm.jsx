@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState } from "react";
 import { X, SquareCheckBig, LoaderCircle, Plus, Square } from "lucide-react";
 import ErrorMessage from "../messages/ErrorMessage";
@@ -16,8 +18,6 @@ const NewDepartmentForm = ({ setShowNewDepartmentForm, staff, facility }) => {
     facility || null
   );
   const [addToAllFacilities, setAddToAllFacilities] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSubmit = async (e) => {
     const departmentData = {
@@ -29,7 +29,7 @@ const NewDepartmentForm = ({ setShowNewDepartmentForm, staff, facility }) => {
     };
 
     if (!name || !headOfDepartment) {
-      setErrorMessage("Please fill all required fields");
+      toast.error("Please fill all required fields");
 
       return;
     }
@@ -42,7 +42,7 @@ const NewDepartmentForm = ({ setShowNewDepartmentForm, staff, facility }) => {
         const message = response.data.facilities_added
           ? response.data.facilities_added.map((fa) => fa)
           : facility.name;
-        setSuccessMessage(
+        toast.success(
           response.data.facilities_added
             ? `Department created and added to ${message.join(", ")}`
             : `Department created and added to ${message}`
@@ -50,7 +50,7 @@ const NewDepartmentForm = ({ setShowNewDepartmentForm, staff, facility }) => {
         setLoading(false);
       } else if (response.status === 409) {
         const message = response.data.facilities_added.map((fa) => fa);
-        setSuccessMessage(
+        toast.success(
           `Department exits in ${facility.name} it is added to ${message.join(
             ", "
           )}`
@@ -59,13 +59,13 @@ const NewDepartmentForm = ({ setShowNewDepartmentForm, staff, facility }) => {
       }
     } catch (error) {
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error creating department"
+          error.response.data.error ||
+          "Error creating department"
         );
       } else {
-        setErrorMessage("Unknown error creating department");
+        toast.error("Unknown error creating department");
       }
       setLoading(false);
     }

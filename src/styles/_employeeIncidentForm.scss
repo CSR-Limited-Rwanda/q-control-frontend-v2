@@ -1,13 +1,11 @@
-@import "../styles/variables";
-
 .facility-card {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: lighten($color: $primary-color, $amount: 60);
+  background-color: var(--primary-light);
   // width: fit-content;
   padding: 1rem;
-  border: 1px solid lighten($color: $primary-color, $amount: 30);
+  border: 1px solid var(--border);
   border-radius: var(--base-border-radius);
 
   .facility {
@@ -25,10 +23,10 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    background-color: lighten($color: $primary-color, $amount: 50);
+    background-color: var(--primary-light);
     padding: 0.5rem 1rem;
     border-radius: var(--base-border-radius);
-    border: 1px solid lighten($color: $primary-color, $amount: 30);
+    border: 1px solid var(--border);
 
     .delete-witness {
       cursor: pointer;

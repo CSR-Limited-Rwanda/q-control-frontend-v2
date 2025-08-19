@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import DashboardLayout from "@/app/dashboard/layout";
@@ -84,9 +86,9 @@ const MedicationDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          toast.error("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch incident reviews");
+          toast.error("Failed to fetch incident reviews");
           console.error(error);
         }
       }
@@ -104,9 +106,9 @@ const MedicationDetailsContent = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          toast.error("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          toast.error("Failed to fetch document History");
           console.error(error);
         }
       }
@@ -209,7 +211,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
-      } catch (error) {}
+      } catch (error) { }
     };
     fetchDocuments();
   }, []);

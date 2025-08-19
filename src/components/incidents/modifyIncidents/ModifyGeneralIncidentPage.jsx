@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState, useRef, useEffect } from "react";
 import RichTexField from "@/components/forms/RichTextField";
 import CustomDatePicker from "@/components/CustomDatePicker";
@@ -22,7 +24,7 @@ import BackToPage from "@/components/BackToPage";
 // We need to resolve the issue with status prio to
 const ModifyGeneralIncidentForm = ({ data }) => {
   const { incidentId } = useParams();
-  const { user } = useAuthentication()
+  const { user } = useAuthentication();
   const [incident, setIncident] = useState(data);
   const [restraintOn, setRestraintOn] = useState(
     incident.fall_type_agreement || []
@@ -63,17 +65,17 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-
         setUploadingDocuments(false);
-        window.customToast.success("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      window.customToast.error(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-
     }
   };
+
+  console.log(data);
 
   const handleCheckboxChange = (option) => {
     let updatedOptions;
@@ -185,7 +187,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   const [agreement, setAgreement] = useState(
     (incident.fall_type_agreement &&
       incident.fall_type_agreement.split(", ")) ||
-    []
+      []
   );
   const [treatmentRelated, setTreatmentRelated] = useState(null);
   const [equipmentMalfunction, setEquipmentMalfunction] = useState(null);
@@ -263,6 +265,14 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   const [fallTypeOther, setFallTypeOther] = useState("");
 
   const specialTypes = ["Unusable", "Mislabeled", "Missing"];
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department
+  );
+
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartmentId(event.target.value);
+  };
 
   localStorage.setItem("patientId", incident?.patient_visitor?.id);
 
@@ -291,6 +301,31 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   const handleMaintenanceNotified = (checked) => {
     setMaintenanceNotified(checked);
   };
+
+  useEffect(() => {
+    if (!data.report_facility.id) return;
+
+    const fetchDepartments = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/departments/`, {
+          params: { facility_id: data.report_facility.id },
+        });
+        if (response.status === 200) {
+          console.log(response.data.results);
+          setDepartments(response.data.results);
+        }
+      } catch (error) {
+        toast.error("Error fetching departments");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, [data.report_facility.id]);
+
   const handleSaveDraft = () => {
     setStatus("Draft");
     setSavingDraft(true);
@@ -306,7 +341,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
   const handleModify = async (incidentStatus) => {
     const incidentData = {
       action: "modify",
-      report_facility: user.facility.id,
+      report_facility: data.report_facility.id,
+      department: parseInt(selectedDepartmentId),
       category: category,
       severity_rating: severityRating,
       patient_visitor: {
@@ -383,6 +419,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       treatment_type: selectedTreatment,
     };
 
+    console.log("Incident Data to be sent: ", incidentData);
+
     try {
       const response = await api.patch(
         `/incidents/general-visitor/${generalIncidentId}/`,
@@ -390,17 +428,17 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       );
 
       if (response.status === 200) {
-        window.customToast.success("Incident is updated successfully");
+        toast.success("Incident is updated successfully");
         setIsLoading(false);
         setSavingDraft(false);
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       if (error.response) {
-        window.customToast.error(
+        toast.error(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error updating the incident"
+            error.response.data.error ||
+            "Error updating the incident"
         );
       } else {
         alert("Unknown error updating the incident");
@@ -421,11 +459,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
 
     fetchIncidentDocuments();
@@ -476,12 +511,13 @@ const ModifyGeneralIncidentForm = ({ data }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
+                className={`follow-up ${
+                  status === "Draft"
+                    ? "in-progress"
+                    : status === "Closed"
                     ? "closed"
                     : "Open"
-                  }`}
+                }`}
               >
                 {status}
               </span>
@@ -490,6 +526,22 @@ const ModifyGeneralIncidentForm = ({ data }) => {
           <div>
             <h3>General info</h3>
             <div className="inputs-group modify-inputs">
+              <div className="department-select field">
+                <label htmlFor="department">Department</label>
+                <select
+                  id="department"
+                  value={selectedDepartmentId}
+                  onChange={handleDepartmentChange}
+                  disabled={isLoading}
+                >
+                  <option value="">Select a department</option>
+                  {departments.map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="field date">
                 <label htmlFor="">Category</label>
                 <CustomSelectInput
@@ -702,8 +754,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                 </label>
                 <div
                   className="check-boxes check-boxes-row"
-                //  onChange={(e) => setRoute(e.target.value)}
-                //  value={route}
+                  //  onChange={(e) => setRoute(e.target.value)}
+                  //  value={route}
                 >
                   {statusesPrionToIncident.map((status, index) => (
                     <div
@@ -1275,7 +1327,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                           style={{
                             display:
                               specialTypes.includes(type.name) &&
-                                otherTypes !== "Specimen"
+                              otherTypes !== "Specimen"
                                 ? "none"
                                 : "block",
                           }}

@@ -4,6 +4,7 @@ import api, { cleanedData } from "@/utils/api";
 import CustomDatePicker from "../CustomDatePicker";
 import { howComplaintIsReceived } from "@/constants/constants";
 import RichTexField from "./RichTextField";
+import toast from "react-hot-toast";
 import {
   ArrowLeft,
   LoaderCircle,
@@ -16,7 +17,6 @@ import CloseIcon from "../CloseIcon";
 
 const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [userError, setUserError] = useState("");
   const [fetchingStaff, setFetchingStaff] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -73,7 +73,7 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
   const handleSubmit = async () => {
     setIsLoading(true);
     setError("");
-    setSuccessMessage("");
+    toast.success("");
     const complaintData = {
       date_of_complaint: dateOfComplaint,
       patient_name: patientName,
@@ -93,7 +93,7 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
         cleanedData(complaintData)
       );
       if (response.status === 200) {
-        setSuccessMessage("Complaint submitted successfully");
+        toast.success("Complaint submitted successfully");
         setIsLoading(false);
         setTimeout(() => {
           handleSubmitComplaint();
@@ -104,8 +104,8 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
       if (error.response) {
         setError(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error while submitting the complaint"
+          error.response.data.error ||
+          "Error while submitting the complaint"
         );
       } else {
         setError("Unknown error while submitting the complaint");
@@ -126,8 +126,8 @@ const EditComplaintForm = ({ complaint, handleSubmitComplaint }) => {
         if (error.response) {
           setUserError(
             error.response.data.message ||
-              error.response.data.error ||
-              "We could no get a list of users"
+            error.response.data.error ||
+            "We could no get a list of users"
           );
         }
         console.error(error);

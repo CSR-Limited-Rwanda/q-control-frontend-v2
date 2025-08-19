@@ -1,4 +1,6 @@
 "use client"
+
+import toast from "react-hot-toast";
 import api, { API_URL } from "@/utils/api";
 import DashboardLayout from "@/app/dashboard/layout";
 import ModifyPageLoader from "@/components/loader";
@@ -31,7 +33,7 @@ const PageContent = () => {
           `/incidents/general-visitor/${generalIncidentId}/`
         );
         if (response.status === 200) {
-
+          toast.success("Incident data modified successfully");
           setIncidentData(response.data.incident);
 
           setIsLoading(false);
@@ -40,11 +42,11 @@ const PageContent = () => {
         // setIsLoading(false);
 
         if (error.response.status && error.response.status === 403) {
-          window.customToast.error("You are not allowed to view this incident");
+          toast.error("You are not allowed to view this incident");
         } else if (error.response.status === 404) {
           setIsError(true);
         } else {
-          window.customToast.error("There was an error");
+          toast.error("There was an error");
         }
       } finally {
         setIsLoading(false);

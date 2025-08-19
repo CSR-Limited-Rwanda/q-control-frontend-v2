@@ -360,7 +360,7 @@ form,
   left: 0.75rem;
 }
 
-.input__icon--left + .input__field {
+.input__icon--left+.input__field {
   padding-left: 2.5rem;
 }
 
@@ -368,7 +368,7 @@ form,
   right: 0.75rem;
 }
 
-.input__icon--right + .input__field {
+.input__icon--right+.input__field {
   padding-right: 2.5rem;
 }
 
@@ -481,7 +481,7 @@ form,
     color: #a5a3a9;
   }
 
-  & > :first-child {
+  &> :first-child {
     padding-left: 0;
   }
 
@@ -743,13 +743,13 @@ form,
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: lighten($color: #145c9e, $amount: 60);
-  // width: fit-content;
+  background-color: var(--primary-light);
   padding: 1rem;
-  border: 1px solid lighten($color: #145c9e, $amount: 30);
+  border: 1px solid var(--border);
   border-radius: 0.8rem;
-  border: 1px solid lighten($color: #145c9e, $amount: 30);
+  border: 1px solid var(--border);
   border-radius: var(--base-border-radius);
+  color: gray;
 
   .facility {
     color: gray;
@@ -758,6 +758,7 @@ form,
 
 // Responsive styles
 @media (max-width: 768px) {
+
   button,
   .btn {
     span {

@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useRef, useState, useEffect } from "react";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import CustomSelectInput from "@/components/CustomSelectInput";
@@ -13,7 +15,7 @@ import {
   errorTypes,
 } from "@/constants/constants";
 import { SquareCheck, SaveAll, LoaderCircle, Square } from "lucide-react";
-import '@/styles/_modifyIncident.scss';
+import "@/styles/_modifyIncident.scss";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
 import CustomTimeInput from "@/components/CustomTimeInput";
@@ -109,6 +111,38 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
     localStorage.getItem("medicationErrorIncidentId")
   );
 
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department.id
+  );
+
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartmentId(event.target.value);
+  };
+
+  useEffect(() => {
+    if (!data.report_facility.id) return;
+
+    const fetchDepartments = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/departments/`, {
+          params: { facility_id: data.report_facility.id },
+        });
+        if (response.status === 200) {
+          console.log(response.data.results);
+          setDepartments(response.data.results);
+        }
+      } catch (error) {
+        toast.error("Error fetching departments");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, [data.report_facility.id]);
   const handleDrugOrderedRoute = (drug) => {
     // check if the route is not in the array of routes, then add it else, remove it
 
@@ -178,6 +212,8 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
   const handleModify = async (incidentStatus) => {
     const incidentData = {
       action: "modify",
+      report_facility: data.report_facility.id,
+      department: parseInt(selectedDepartmentId),
       patient: {
         first_name: firstName || "",
         last_name: lastName || "",
@@ -186,6 +222,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
         date_of_birth: dateOfBirth,
         profile_type: "Patient",
       },
+
       provider_info: {
         first_name: physicianFirstName || "",
         last_name: physicianLastName || "",
@@ -223,7 +260,6 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
     };
 
     try {
-
       const response = await api.patch(
         `/incidents/medication-error/${medicationErrorIncidentId}/`,
         cleanedData(incidentData)
@@ -231,20 +267,20 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        window.customToast.success("Incident updated successfully");
+        toast.success("Incident updated successfully");
         setIncident(response.data.incident);
 
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       if (error.response) {
-        window.customToast.error(
+        toast.error(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while updating the incident"
+            error.response.data.error ||
+            "Error while updating the incident"
         );
       } else {
-        window.customToast.error("Unknown error while updating the incident");
+        toast.error("Unknown error while updating the incident");
       }
 
       setIsLoading(false);
@@ -297,11 +333,8 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
 
     fetchIncidentDocuments();
@@ -324,15 +357,13 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-
         setUploadingDocuments(false);
-        window.customToast.success("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      window.customToast.error(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-
     }
   };
   return data.is_resolved ? (
@@ -380,12 +411,13 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${status === "Draft"
-                ? "in-progress"
-                : status === "Closed"
+              className={`follow-up ${
+                status === "Draft"
+                  ? "in-progress"
+                  : status === "Closed"
                   ? "closed"
                   : "Open"
-                }`}
+              }`}
             >
               {status}
             </span>
@@ -394,6 +426,22 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
         <form className="modify-forms">
           <div className="inputs-group modify-inputs">
             <h3 className="full">General info</h3>
+            <div className="department-select field">
+              <label htmlFor="department">Department</label>
+              <select
+                id="department"
+                value={selectedDepartmentId}
+                onChange={handleDepartmentChange}
+                disabled={isLoading}
+              >
+                <option value="">Select a department</option>
+                {departments.map((department) => (
+                  <option key={department.id} value={department.id}>
+                    {department.name}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="half">
               <div className="field name">
                 <label htmlFor="employeeFirstName">First name</label>
@@ -596,7 +644,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                     key={index}
                   >
                     {drugOrderedRoutes &&
-                      drugOrderedRoutes.includes(route.value) ? (
+                    drugOrderedRoutes.includes(route.value) ? (
                       <SquareCheck color="#F87C47" />
                     ) : (
                       <Square />
@@ -646,7 +694,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                     key={index}
                   >
                     {drugGivenRoutes &&
-                      drugGivenRoutes.includes(route.value) ? (
+                    drugGivenRoutes.includes(route.value) ? (
                       <SquareCheck color="#F87C47" />
                     ) : (
                       <Square />
@@ -734,8 +782,9 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 {errorTypes.map((error, index) => (
                   <div
                     key={index}
-                    className={`type full full-width-type ${descriptionError === error.name ? "selected" : ""
-                      }`}
+                    className={`type full full-width-type ${
+                      descriptionError === error.name ? "selected" : ""
+                    }`}
                     onClick={() => handleTypeSelection(error.name)}
                   >
                     <h5>{error.name}</h5>
@@ -758,8 +807,9 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 </h2>
                 {contributingFactors.map((item, index) => (
                   <div
-                    className={`type full full-width-type ${contributingfactors === item.factor ? "selected" : ""
-                      }`}
+                    className={`type full full-width-type ${
+                      contributingfactors === item.factor ? "selected" : ""
+                    }`}
                     onClick={() => handleContributingFactor(item.factor)}
                     key={index}
                   >
@@ -781,10 +831,11 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 {severityCategories.map((category, index) => (
                   <div
                     key={index}
-                    className={`type full full-width-type ${selectedCategory.value === category.value
-                      ? "selected"
-                      : ""
-                      }`}
+                    className={`type full full-width-type ${
+                      selectedCategory.value === category.value
+                        ? "selected"
+                        : ""
+                    }`}
                     onClick={() =>
                       handleSelectedCategory({
                         category: category.category,

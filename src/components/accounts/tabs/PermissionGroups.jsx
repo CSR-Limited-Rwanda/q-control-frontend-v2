@@ -12,13 +12,14 @@ import DeletePermissionGroup from "../forms/DeletePermissionGroupForm";
 import EditPermissionGroupForm from "../forms/EditPermissionGroupForm";
 import PermissionsGuard from "@/components/PermissionsGuard";
 
+import toast from "react-hot-toast";
+
 const PermissionGroups = ({ permissions }) => {
   const router = useRouter();
   const { setSelectedGroup } = useGroupContext();
   const [groups, setGroups] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const [showNewUserForm, setShowNewUserForm] = useState(false);
   const [showEditPermissionForm, setShowEditPermissionForm] = useState(false);
@@ -84,7 +85,7 @@ const PermissionGroups = ({ permissions }) => {
             setShowDeleteModal(false);
             window.location.reload();
           }
-        } catch (error) {}
+        } catch (error) { }
         handleFetchGroups();
       } else {
         throw new Error("Failed to delete group");
@@ -154,10 +155,10 @@ const PermissionGroups = ({ permissions }) => {
         setGroups(response.data);
         return;
       } else {
-        setErrorMessage("Error fetching groups. Contact support.");
+        toast.error("Error fetching groups. Contact support.");
       }
     } catch (error) {
-      setErrorMessage("Error fetching groups. Contact support.");
+      toast.error("Error fetching groups. Contact support.");
     } finally {
       setIsLoading(false);
       setIsSearching(false);

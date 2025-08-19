@@ -8,9 +8,11 @@ import DashboardLayout from "./dashboard/layout";
 import { useAuthentication } from "@/context/authContext";
 import { HelplineActions, quickActions } from "@/constants/quickActions";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
 	const { user } = useAuthentication();
+
 	return (
 		<DashboardLayout>
 			<div className="welcome-page">

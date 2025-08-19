@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { useParams, useRouter } from "next/navigation";
@@ -30,7 +32,6 @@ export const ReviewTemplates = () => {
   const router = useRouter();
   const [reviewTemplates, setReviewTemplates] = useState([]);
   const [reviewTemplate, setReviewTemplate] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showNewUserForm, setShowNewUserForm] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -105,13 +106,13 @@ export const ReviewTemplates = () => {
         }
       } catch (error) {
         if (error.response) {
-          setErrorMessage(
+          toast.error(
             error.response.data.message ||
-              error.response.data.error ||
-              "Error setting a list of users"
+            error.response.data.error ||
+            "Error setting a list of users"
           );
         } else {
-          setErrorMessage("Unknown error fetching users");
+          toast.error("Unknown error fetching users");
         }
 
         setIsLoading(false);
@@ -130,15 +131,15 @@ export const ReviewTemplates = () => {
       }
     } catch (error) {
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get tasks"
+          error.response.data?.error ||
+          "Failed to get tasks"
         );
       } else if (error.request) {
-        setErrorMessage("No response from server");
+        toast.error("No response from server");
       } else {
-        setErrorMessage("Failed to make request");
+        toast.error("Failed to make request");
       }
     }
   };
@@ -231,8 +232,8 @@ export const ReviewTemplates = () => {
                   {isEmpty
                     ? reviewTemplates.length
                     : searchResults.length > 0
-                    ? searchResults.length
-                    : reviewTemplates.length}
+                      ? searchResults.length
+                      : reviewTemplates.length}
                 </span>{" "}
                 <span>Available</span>
               </div>

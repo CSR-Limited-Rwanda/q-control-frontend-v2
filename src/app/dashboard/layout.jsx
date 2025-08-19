@@ -65,14 +65,12 @@ const DashboardLayout = ({ children }) => {
     <div className="dashboard">
       {/* Sidebar */}
       <aside
-        className={`sidebar ${isSidebarCollapsed ? "collapsed" : ""} ${
-          showMobileMenu ? "mobile-open" : ""
-        }`}
+        className={`sidebar ${isSidebarCollapsed ? "collapsed" : ""} ${showMobileMenu ? "mobile-open" : ""
+          }`}
       >
         <div className="logo">
           <Image src={"/logo.svg"} width={52} height={32} alt="logo" />
           <h2 className="brand-name">Q-Control</h2>
-          <CloseIcon onClick={handleMobileMenu} />
         </div>
         <nav className="sidebar-nav">
           {menuItems.map((item, index) => (

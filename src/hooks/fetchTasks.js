@@ -111,7 +111,7 @@ export const completeTask = async (taskId) => {
 
 export const submitTask = async (taskId) => {
     try {
-        const response = await api.patch(`/tasks/${taskId}/`, { status: "submit" });
+        const response = await api.patch(`/tasks/${taskId}/`, { action: "submit" });
         if (response.status === 200) {
             return {
                 success: true,

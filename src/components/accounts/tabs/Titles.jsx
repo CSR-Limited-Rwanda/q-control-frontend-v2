@@ -14,6 +14,8 @@ import { openDropdown } from "@/utils/dropdownUtils";
 import PermissionsGuard from "@/components/PermissionsGuard";
 import { useGetPermissions } from "@/hooks/fetchPermissions";
 
+import toast from "react-hot-toast";
+
 const DEFAULT_PAGE_SIZE = 10;
 const Titles = () => {
   const { permissions } = useGetPermissions();
@@ -33,8 +35,6 @@ const Titles = () => {
   const [selectedTitle, setSelectedTitle] = useState(null);
   const [showTitleDetails, setShowTitleDetails] = useState(false);
   const [showNewTitleForm, setShowNewTitleForm] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -72,7 +72,7 @@ const Titles = () => {
       }
     } catch (error) {
       console.error("Error fetching titles:", error);
-      setErrorMessage("Error fetching titles");
+      toast.error("Error fetching titles");
     } finally {
       setIsFetchingTitles(false);
       setIsSearching(false);
@@ -316,9 +316,8 @@ const Titles = () => {
             {total_pages > 1 && (
               <button
                 onClick={() => handlePageChange(total_pages)}
-                className={`pagination-button ${
-                  total_pages === page ? "active" : ""
-                }`}
+                className={`pagination-button ${total_pages === page ? "active" : ""
+                  }`}
               >
                 {total_pages}
               </button>

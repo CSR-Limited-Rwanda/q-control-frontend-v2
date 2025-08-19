@@ -3,6 +3,8 @@ import api from "@/utils/api";
 import { ArrowLeft, LoaderCircle, Send, X } from "lucide-react";
 import CloseIcon from "../CloseIcon";
 
+import toast from "react-hot-toast";
+
 const SendComplaintToDepartment = ({ complaint, onClose }) => {
   const [step, setStep] = useState(1);
   const [facilities, setFacilities] = useState([]);
@@ -13,7 +15,6 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
   const [files, setFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   // Fetch facilities on component mount
   useEffect(() => {
@@ -66,7 +67,7 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
 
     setIsLoading(true);
     setError("");
-    setSuccessMessage("");
+    toast.success("");
 
     try {
       // Upload files if any exist
@@ -101,7 +102,7 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
       );
 
       if (response.status === 200) {
-        setSuccessMessage("Complaint sent successfully");
+        toast.success("Complaint sent successfully");
 
         setTimeout(() => {
           onClose();
@@ -149,9 +150,8 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
                     <div
                       key={dept.id}
                       onClick={() => setSelectedDepartment(dept.id)}
-                      className={`department-item ${
-                        selectedDepartment === dept.id ? "selected" : ""
-                      }`}
+                      className={`department-item ${selectedDepartment === dept.id ? "selected" : ""
+                        }`}
                     >
                       {dept.name}
                     </div>
@@ -206,9 +206,8 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
           <button
             onClick={step === 1 ? () => setStep(2) : handleSubmit}
             disabled={step === 1 ? !selectedDepartment : isLoading}
-            className={`submit-button ${
-              isLoading || (step === 1 && !selectedDepartment) ? "disabled" : ""
-            }`}
+            className={`submit-button ${isLoading || (step === 1 && !selectedDepartment) ? "disabled" : ""
+              }`}
           >
             {isLoading ? (
               <LoaderCircle size={18} className="loading-icon" />

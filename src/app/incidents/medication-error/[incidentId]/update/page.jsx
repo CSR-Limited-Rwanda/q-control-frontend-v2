@@ -1,4 +1,6 @@
 'use client'
+
+import toast from "react-hot-toast";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import DashboardLayout from "@/app/dashboard/layout";
@@ -28,17 +30,18 @@ const PageContent = () => {
         );
 
         if (response.status === 200) {
+          toast.success("Incident data modified successfully");
           setIncidentData(response.data.incident);
 
           setIsLoading(false);
         }
       } catch (error) {
         if (error.response.status && error.response.status === 403) {
-          window.customToast.error("You are not allowed to view this incident");
+          toast.error("You are not allowed to view this incident");
         } else if (error.response.status === 404) {
           setIsError(true);
         } else {
-          window.customToast.error("There was an error");
+          toast.error("There was an error");
         }
 
       } finally {
@@ -47,13 +50,12 @@ const PageContent = () => {
     };
     fetchIncidentData();
   }, [incidentId]);
-  return isLoading ? (
-    "Getting data..."
-  ) : incidentData && !isError ? (
-    <ModifyMedicalErrorForm data={incidentData} />
-  ) : (
-    "No data"
-  );
+  return <div className="modify-page">
+    {
+      isLoading ? "Getting data..."
+        : <ModifyMedicalErrorForm data={incidentData} />
+    }
+  </div>;
 };
 
 const BreadCrumbs = () => {

@@ -1,4 +1,6 @@
 'use client'
+
+import toast from "react-hot-toast";
 import React, { useState } from "react";
 import { Check, LoaderCircle, X } from 'lucide-react';
 import api, { API_URL } from "@/utils/api";
@@ -24,11 +26,11 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
     } catch (error) {
       setIsLoading(false);
       if (error.response.status === 403) {
-        window.customToast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       } else if (error.response.status === 400) {
-        window.customToast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
-        window.customToast.error("Unknown error while resolving incident");
+        toast.error("Unknown error while resolving incident");
       }
 
     }

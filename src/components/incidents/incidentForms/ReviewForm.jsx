@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState } from "react";
 // import { Editor } from "@tinymce/tinymce-react";
 import api, { API_URL } from "@/utils/api";
@@ -19,7 +21,7 @@ const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
         { content: content }
       );
       if (response.status === 201) {
-        window.customToast.success("Review added successfully");
+        toast.success("Review added successfully");
         setContent("");
         setSubmittingReview(false);
         toggleReviewForm();
@@ -27,11 +29,11 @@ const ReviewForm = ({ incidentId, toggleReviewForm, incidentName }) => {
     } catch (error) {
 
       if (error.response.data) {
-        window.customToast.error(
+        toast.error(
           error.response.data.error || "Error adding review"
         );
       } else {
-        window.customToast.error("Failed to add review");
+        toast.error("Failed to add review");
       }
       setSubmittingReview(false);
     }

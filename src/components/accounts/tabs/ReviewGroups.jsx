@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import api, { createUrlParams } from "@/utils/api";
@@ -35,7 +37,6 @@ const ReviewGroups = () => {
     has_previous: false,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
   const [showNewUserForm, setShowNewUserForm] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,11 +65,11 @@ const ReviewGroups = () => {
       if (response.status === 200) {
         setReviewGroupsData(response.data);
       } else {
-        setErrorMessage("Error fetching review groups.");
+        toast.error("Error fetching review groups.");
       }
     } catch (error) {
       console.error("Error fetching review groups:", error);
-      setErrorMessage("Error fetching review groups");
+      toast.error("Error fetching review groups");
     } finally {
       setIsLoading(false);
       setIsSearching(false);
@@ -308,9 +309,8 @@ const ReviewGroups = () => {
                   {/* Always show first page */}
                   <button
                     onClick={() => handlePageChange(1)}
-                    className={`pagination-button ${
-                      1 === page ? "active" : ""
-                    }`}
+                    className={`pagination-button ${1 === page ? "active" : ""
+                      }`}
                   >
                     1
                   </button>
@@ -361,9 +361,8 @@ const ReviewGroups = () => {
                   {total_pages > 1 && (
                     <button
                       onClick={() => handlePageChange(total_pages)}
-                      className={`pagination-button ${
-                        total_pages === page ? "active" : ""
-                      }`}
+                      className={`pagination-button ${total_pages === page ? "active" : ""
+                        }`}
                     >
                       {total_pages}
                     </button>

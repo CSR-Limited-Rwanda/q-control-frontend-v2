@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import api, { calculateAge, cleanedData } from "@/utils/api";
@@ -129,6 +131,11 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
     localStorage.getItem("grievanceId")
   );
 
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department
+  );
+
   const handleShowInvestigationForm = () => {
     setShowInvestigationFrom(!showInvestigationFrom);
   };
@@ -160,11 +167,11 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
 
       if (response.status === 200 || 201) {
         setUploadingDocuments(false);
-        window.customToast.success("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      window.customToast.error(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
     }
   };
@@ -182,6 +189,36 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
 
     // setInputValue("");
   };
+
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartmentId(event.target.value);
+  };
+
+  useEffect(() => {
+    console.log(data)
+    if (!data.report_facility) return;
+
+    const fetchDepartments = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/departments/`, {
+          params: { facility_id: data.report_facility },
+        });
+        if (response.status === 200) {
+          console.log("first")
+          console.log(response.data.results);
+          setDepartments(response.data.results);
+        }
+      } catch (error) {
+        toast.error("Error fetching departments");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, [data.report_facility]);
 
   useEffect(() => {
     // get documents
@@ -217,6 +254,8 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
     const incidentData = {
       action: "modify",
       date: formatDate(incidentDate),
+      report_facility: data.report_facility,
+      department: parseInt(selectedDepartmentId),
       patient_name:
         patientFirstName && patientLastName
           ? {
@@ -274,20 +313,20 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        window.customToast.success("Incident updated successfully");
+        toast.success("Incident updated successfully");
         setIncident(response.data.incident);
 
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       if (error.response) {
-        window.customToast.error(
+        toast.error(
           error.response.data.message ||
           error.response.data.error ||
           "Error while updating the incident"
         );
       } else {
-        window.customToast.error("Unknown error while updating the incident");
+        toast.error("Unknown error while updating the incident");
       }
       setIsLoading(false);
       setSavingDraft(false);
@@ -391,6 +430,22 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         <form className="modify-forms">
           <div className="inputs-group modify-inputs">
             <h3 className="full">General info</h3>
+            <div className="department-select field">
+                <label htmlFor="department">Department</label>
+                <select
+                  id="department"
+                  value={selectedDepartmentId}
+                  onChange={handleDepartmentChange}
+                  disabled={isLoading}
+                >
+                  <option value="">Select a department</option>
+                  {departments.map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             <div className="field">
               <label htmlFor="incidentDate">Date</label>
 

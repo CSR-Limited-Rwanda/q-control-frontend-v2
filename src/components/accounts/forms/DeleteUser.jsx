@@ -4,15 +4,15 @@ import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import React from "react";
 
+import toast from "react-hot-toast";
+
 const DeleteUserForm = ({ handleClose, userId }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState("");
-  const [successMessage, setSuccessMessage] = React.useState("");
 
   const handleDelete = async () => {
     if (!userId) {
-      setErrorMessage("User ID is missing.");
+      toast.error("User ID is missing.");
       return;
     }
 
@@ -20,7 +20,7 @@ const DeleteUserForm = ({ handleClose, userId }) => {
     try {
       const response = await api.delete(`/users/${userId}/`);
       if (response.status === 204) {
-        setSuccessMessage("User deleted successfully");
+        toast.success("User deleted successfully");
         setTimeout(() => {
           router.push("/accounts");
         }, 1000);
@@ -29,13 +29,13 @@ const DeleteUserForm = ({ handleClose, userId }) => {
       handleDelete();
 
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error deleting user"
+          error.response.data.error ||
+          "Error deleting user"
         );
       } else {
-        setErrorMessage("Unknown error deleting user");
+        toast.error("Unknown error deleting user");
       }
     } finally {
       setIsLoading(false);

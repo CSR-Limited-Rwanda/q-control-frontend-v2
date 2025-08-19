@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import CloseIcon from "@/components/CloseIcon";
 import PrimaryButton from "@/components/PrimaryButton";
 import api from "@/utils/api";
@@ -6,8 +8,6 @@ import { X } from "lucide-react";
 import React, { useState } from "react";
 
 const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -16,8 +16,8 @@ const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
   });
 
   const handleSubmit = async () => {
-    setErrorMessage("");
-    setSuccessMessage("");
+    toast.error("");
+    toast.success("");
     const data = {
       name: formData.name,
       description: formData.description,
@@ -30,7 +30,7 @@ const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
           data
         );
         if (response.status === 200) {
-          setSuccessMessage("Title updated successfully");
+          toast.success("Title updated successfully");
           setTimeout(() => {
             window.location.reload();
           }, 1000);
@@ -38,7 +38,7 @@ const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
       } else {
         const response = await api.post("/titles/", data);
         if (response.status === 201) {
-          setSuccessMessage("Title created successfully");
+          toast.success("Title created successfully");
           setTimeout(() => {
             window.location.reload();
           }, 1000);
@@ -55,7 +55,7 @@ const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
       } else {
         message = error?.message || "Unknown error occurred";
       }
-      setErrorMessage(message);
+      toast.error(message);
       return;
     } finally {
       setIsLoading(false);

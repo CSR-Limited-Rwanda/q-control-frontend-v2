@@ -1,5 +1,3 @@
-@import "./variables";
-
 .page-content {
   padding: 0;
   position: relative;
@@ -44,11 +42,11 @@
         .type {
           padding: 6px;
           border-radius: var(--base-border-radius);
-          border: 1px solid $secondary-color;
+          border: 1px solid var(--secondary);
           font-size: 14px;
           font-weight: normal;
           text-transform: capitalize;
-          color: $secondary-color;
+          color: var(--secondary);
           margin-left: 12px;
         }
       }
@@ -72,7 +70,7 @@
           gap: 5px;
         }
 
-        > span {
+        >span {
           font-weight: bold;
         }
       }
@@ -136,7 +134,7 @@
           font-weight: 600;
 
           &:hover {
-            background-color: $secondary-color;
+            background-color: var(--secondary);
             color: white;
           }
         }
@@ -309,7 +307,7 @@
         .profile-pic {
           height: 52px;
           width: 52px;
-          background-color: $primary-color;
+          background-color: var(--primary)-color;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -321,8 +319,8 @@
       }
 
       .patient-type {
-        background-color: $secondary-color-shade;
-        color: $secondary-color;
+        background-color: var(--secondary)-shade;
+        color: var(--secondary);
         padding: 8px 24px;
         border-radius: var(--base-border-radius);
         text-transform: capitalize;
@@ -342,7 +340,7 @@
       padding: 12px;
       border-bottom: 1px solid whitesmoke;
 
-      & > div {
+      &>div {
         flex: 1 1 150px;
         display: grid;
         gap: 8px;
@@ -371,7 +369,7 @@
       }
 
       .active {
-        background-color: $secondary-color-shade;
+        background-color: var(--secondary)-shade;
       }
     }
 
@@ -389,7 +387,7 @@
             align-items: center;
             gap: 12px;
 
-            & > div {
+            &>div {
               flex: 1 1 220px;
               display: grid;
               gap: 8px;
@@ -404,7 +402,7 @@
               gap: 12px;
 
               .status {
-                background-color: $secondary-color-shade;
+                background-color: var(--secondary)-shade;
                 padding: 6px;
                 border-radius: var(--base-border-radius);
               }
@@ -423,7 +421,7 @@
             gap: 24px;
             flex-wrap: wrap;
 
-            & > div {
+            &>div {
               flex: 1 1 150px;
               display: grid;
               height: fit-content;
@@ -489,7 +487,7 @@
           flex-wrap: wrap;
           gap: 48px;
 
-          & > div {
+          &>div {
             flex: 1 1 220px;
             display: grid;
             gap: 8px;
@@ -508,7 +506,7 @@
             height: 12px;
             width: 12px;
             border-radius: 50%;
-            background-color: $secondary-color;
+            background-color: var(--secondary);
             margin-top: 5px;
           }
 
@@ -519,7 +517,7 @@
 
             .formatted-date {
               font-size: 12px;
-              color: $gray-color;
+              color: var(--gray-color);
             }
           }
         }
@@ -538,7 +536,7 @@
 
           .profile {
             .logged-in {
-              background-color: $secondary-color;
+              background-color: var(--secondary);
             }
           }
 
@@ -553,7 +551,7 @@
               gap: 8px;
 
               .title {
-                background-color: $primary-color-shade;
+                background-color: var(--primary)-color-shade;
                 padding: 6px 12px;
                 border-radius: var(--base-border-radius);
                 display: flex;
@@ -561,7 +559,7 @@
                 justify-content: center;
 
                 small {
-                  color: $primary-color;
+                  color: var(--primary)-color;
                   font-size: 12px;
                 }
               }
@@ -595,13 +593,13 @@
 .profile-place-holder {
   height: 52px;
   width: 52px;
-  background-color: $primary-color-shade;
+  background-color: var(--primary)-color-shade;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--base-border-radius);
   font-weight: bold;
-  color: $primary-color;
+  color: var(--primary)-color;
   font-size: 18px;
 }
 
@@ -617,7 +615,7 @@
     .progress {
       .step {
         .number {
-          background-color: $dark-secondary-color-shade;
+          background-color: var(--dark-secondary);
         }
       }
     }
@@ -642,7 +640,7 @@
 
 @media screen and (max-width: 840px) {
   .breadcrumbs {
-    > * {
+    >* {
       display: none;
     }
 
@@ -702,6 +700,7 @@
   }
 
   .details {
+
     h3,
     h4 {
       font-size: 14px;
@@ -726,7 +725,7 @@
         }
 
         .active {
-          background-color: $secondary-color-shade;
+          background-color: var(--secondary)-shade;
         }
       }
 

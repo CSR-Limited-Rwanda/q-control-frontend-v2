@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
 // import axios from "axios";
+import toast from "react-hot-toast";
 import api, {
   API_URL,
   cleanedData,
@@ -137,8 +138,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   };
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   // form
   const [category, setCategory] = useState("");
@@ -164,9 +163,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   const [facilityId, setFacilityId] = useState(
     localStorage.getItem("facilityId")
   );
-  const [departmentId, setDepartmentId] = useState(
-    localStorage.getItem("departmentId")
-  );
+
   // Incident Location
 
   const [location, setLocation] = useState("");
@@ -318,21 +315,21 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
       if (response.status === 200) {
         setCurrentStep(currentStep + 1);
-        setErrorMessage("");
-        setSuccessMessage("Data posted successfully");
+        toast.error("");
+        toast.success("Data posted successfully");
       } else {
-        setSuccessMessage("");
-        setErrorMessage(`Unexpected status code: ${response.status}`);
+        toast.success("");
+        toast.error(`Unexpected status code: ${response.status}`);
       }
     } catch (error) {
       if (error.response) {
         console.error("API error:", error.response.data);
-        setSuccessMessage("");
-        setErrorMessage(error.response.data.message || "API error occurred");
+        toast.success("");
+        toast.error(error.response.data.message || "API error occurred");
       } else {
         console.error("Unexpected error:", error);
-        setSuccessMessage("");
-        setErrorMessage("Something went wrong");
+        toast.success("");
+        toast.error("Something went wrong");
         // setErrorFetching("An error occurred while posting incident data.");
       }
     } finally {
@@ -357,7 +354,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         setUserId(response?.data?.created_by);
         setCurrentStep(currentStep + 1);
         setIsLoading(false);
-        window.customToast.success("Data posted successfully");
+        toast.success("Data posted successfully");
         localStorage.setItem("updateNewIncident", "true");
         console.log(localStorage.getItem("updateNewIncident"));
         postDocumentHistory(
@@ -372,13 +369,13 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       setIsLoading(false);
       if (error?.response?.data) {
         // setErrorFetching(error?.response?.data?.error);
-        window.customToast.error(
+        toast.error(
           error?.response?.data?.message ||
-            "Error while creating new incident, please try again"
+          "Error while creating new incident, please try again"
         );
         return;
       } else {
-        window.customToast.error("Something went wrong");
+        toast.error("Something went wrong");
         // setErrorFetching("An error occurred while posting incident data.");
         return;
       }
@@ -402,7 +399,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       );
 
       if (response.status === 201 || response.status === 200) {
-        window.customToast.success("Media Posted Successfully");
+        toast.success("Media Posted Successfully");
         console.log(response);
         console.log("Files submitted successfully:", response.data);
       }
@@ -434,7 +431,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           localStorage.setItem("updateNewIncident", "false");
           setCurrentStep(currentStep + 1);
           setIsLoading(false);
-          window.customToast.success("Data posted successfully");
+          toast.success("Data posted successfully");
 
           handleFileSubmit(response?.data?.id);
         }
@@ -443,12 +440,12 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           console.error("API error:", error.response.data);
           console.log(error);
           // setErrorFetching(error.response.data.error);
-          window.customToast.error(
+          toast.error(
             error.response.data.message || "API error occurred"
           );
         } else {
           console.error("Unexpected error:", error);
-          window.customToast.error("Something went wrong");
+          toast.error("Something went wrong");
           // setErrorFetching("An error occurred while posting incident data.");
         }
       }
@@ -478,7 +475,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       if (isValid) {
         const incidentPostData = {
           facility_id: user.facility.id,
-          department: user.department.id,
           status: "Draft",
           current_step: currentStep,
           category: category,
@@ -515,7 +511,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           );
         }
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 2) {
       isValid = validateStep({
@@ -525,12 +521,12 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       });
 
       if (statusPrior.length === 0) {
-        window.customToast.error("Please select at least one status");
+        toast.error("Please select at least one status");
         isValid = false;
       }
 
       if (selectedStatus === "others" && !otherStatus) {
-        window.customToast.error("Please enter a status for 'others'");
+        toast.error("Please enter a status for 'others'");
         isValid = false;
       }
       let statusPriorUpdatedOptions = [...statusPrior];
@@ -558,7 +554,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("generalIncidentId")
         );
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 3) {
       if (incidentType === "Fall related") {
@@ -576,12 +572,12 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         }
 
         if (!agreement) {
-          window.customToast.error("Please indicate your agreement");
+          toast.error("Please indicate your agreement");
           isValid = false;
         }
         if (fallType === "Fall from" && !fallFromDetails) {
           console.log("Fall from details is missing");
-          window.customToast.error("Specify all the equipment");
+          toast.error("Specify all the equipment");
           isValid = false;
         }
 
@@ -599,7 +595,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           };
 
           if (fallType === "Fall from" && !fallFromDetails) {
-            window.customToast.error("Specify all the required places");
+            toast.error("Specify all the required places");
             isValid = false;
           }
           console.log("Fall Related Data:", incidentPostData);
@@ -608,7 +604,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             localStorage.getItem("generalIncidentId")
           );
         } else {
-          setErrorMessage("Please fill in all required fields.");
+          toast.error("Please fill in all required fields.");
         }
       } else if (incidentType === "Treatment related") {
         const type = "treatment";
@@ -629,7 +625,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             localStorage.getItem("generalIncidentId")
           );
         } else {
-          setErrorMessage("Please fill in all required fields.");
+          toast.error("Please fill in all required fields.");
         }
       } else if (incidentType === "equipment malfunction") {
         const type = "equipment";
@@ -662,7 +658,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             localStorage.getItem("generalIncidentId")
           );
         } else {
-          setErrorMessage("Please fill in all required fields.");
+          toast.error("Please fill in all required fields.");
         }
       } else if (incidentType === "Other") {
         setIncidentType("Other");
@@ -683,7 +679,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             localStorage.getItem("generalIncidentId")
           );
         } else {
-          setErrorMessage("Please fill in all required fields.");
+          toast.error("Please fill in all required fields.");
         }
       }
     } else if (currentStep === 4) {
@@ -692,7 +688,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       });
 
       if (selectedOutcome === "Other" && !otherOutcome) {
-        window.customToast.error(
+        toast.error(
           "Please enter a description for the selected outcome"
         );
         isValid = false;
@@ -716,7 +712,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("generalIncidentId")
         );
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     } else if (currentStep === 5) {
       isValid = validateStep({
@@ -763,14 +759,14 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           localStorage.getItem("generalIncidentId")
         );
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
   };
   const validateFallFrom = (data) => {
     let isValid = true;
     if (data.fall_related_type === "fall from" && !data.fell_from) {
-      window.customToast.error("Specify the equipment you fell from");
+      toast.error("Specify the equipment you fell from");
       isValid = false;
     }
 
@@ -1018,9 +1014,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
             <div className="form-half">
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor first name</label>
                 <input
@@ -1035,9 +1030,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                 />
               </div>
               <div
-                className={`field name ${
-                  showSuggestions ? "suggestions-field" : ""
-                }`}
+                className={`field name ${showSuggestions ? "suggestions-field" : ""
+                  }`}
               >
                 <label htmlFor="patientName">Patient/Visitor last name</label>
                 <input
@@ -1209,8 +1203,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </label>
               <div
                 className="check-boxes check-boxes-row"
-                //  onChange={(e) => setRoute(e.target.value)}
-                //  value={route}
+              //  onChange={(e) => setRoute(e.target.value)}
+              //  value={route}
               >
                 {statusesPrionToIncident.map((status, index) => (
                   <div
@@ -1716,7 +1710,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                         style={{
                           display:
                             specialTypes.includes(type.name) &&
-                            otherTypes !== "Specimen"
+                              otherTypes !== "Specimen"
                               ? "none"
                               : "block",
                         }}
@@ -1951,10 +1945,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           ""
         )}
       </form>
-      <MessageComponent
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-      />
       <div className="buttons">
         {currentStep > 1 && currentStep < 7 ? (
           <button
@@ -1978,9 +1968,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           >
             <span>{isLoading ? "Saving..." : "Save Incident"}</span>
             <i
-              className={`fa-solid fa-arrow-right ${
-                isLoading ? "loading" : ""
-              }`}
+              className={`fa-solid fa-arrow-right ${isLoading ? "loading" : ""
+                }`}
             ></i>
           </button>
         ) : currentStep < 7 ? (

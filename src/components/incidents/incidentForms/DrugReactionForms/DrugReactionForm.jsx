@@ -10,6 +10,7 @@ import CustomDatePicker from "@/components/CustomDatePicker";
 import RichTexField from "@/components/forms/RichTextField";
 import FormCompleteMessage from "@/components/forms/FormCompleteMessage";
 import postDocumentHistory from "../../documentHistory/postDocumentHistory";
+import toast from "react-hot-toast";
 import {
   drugRoutes,
   incidentTypesData,
@@ -29,8 +30,6 @@ const DrugReactionForm = ({ togglePopup }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   // form
   const [firstName, setFirstName] = useState("");
@@ -172,7 +171,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         } else if (error?.message) {
           errorMessage = error.message;
         }
-        setErrorMessage(errorMessage);
+        toast.error(errorMessage);
         console.error(error);
       }
     };
@@ -249,8 +248,8 @@ const DrugReactionForm = ({ togglePopup }) => {
 
   async function handleNewDrugAdverseReaction(drugReactionData) {
     try {
-      setErrorMessage("");
-      setSuccessMessage("");
+      toast.error("");
+      toast.success("");
       setIsLoading(true);
       const response = await api.post(
         `${API_URL}/incidents/adverse-drug-reaction/`,
@@ -265,19 +264,19 @@ const DrugReactionForm = ({ togglePopup }) => {
         const id = response.data.id;
         localStorage.setItem("drugReactionId", id.toString());
         localStorage.setItem("updateNewIncident", "true");
-        setSuccessMessage("Incident Created Successfully");
+        toast.success("Incident Created Successfully");
         setCurrentStep(currentStep + 1);
 
         postDocumentHistory(id, "added a new incident", "create");
       }
     } catch (error) {
       if (error?.response?.data.data) {
-        window.customToast.error(
+        toast.error(
           error.response.data.message ||
-            "Error while creating new incident, please try again"
+          "Error while creating new incident, please try again"
         );
       } else {
-        window.customToast.error("Something went wrong");
+        toast.error("Something went wrong");
       }
       console.error(error);
 
@@ -289,8 +288,8 @@ const DrugReactionForm = ({ togglePopup }) => {
 
   async function updateDrugAdverseReaction(drugReactionData) {
     try {
-      setErrorMessage("");
-      setSuccessMessage("");
+      toast.error("");
+      toast.success("");
       setIsLoading(true);
       const id = localStorage.getItem("drugReactionId");
 
@@ -305,13 +304,13 @@ const DrugReactionForm = ({ togglePopup }) => {
       );
       if (response.status === 200) {
         if (currentStep === 8) {
-          setSuccessMessage("Incident Saved Successfully");
+          toast.success("Incident Saved Successfully");
           setCurrentStep(currentStep + 1);
 
           postDocumentHistory(id, "added a new incident", "create");
         } else {
           setCurrentStep(currentStep + 1);
-          setSuccessMessage("Data posted Successfully");
+          toast.success("Data posted Successfully");
         }
         if (currentStep === 9) {
           localStorage.setItem("updateNewIncident", "false");
@@ -319,12 +318,12 @@ const DrugReactionForm = ({ togglePopup }) => {
       }
     } catch (error) {
       if (error.response.data) {
-        window.customToast.error(
+        toast.error(
           error.response.data.message ||
-            "Failed to update the data. Please try again."
+          "Failed to update the data. Please try again."
         );
       } else {
-        window.customToast.error("Something went wrong");
+        toast.error("Something went wrong");
       }
       console.error(error);
 
@@ -336,8 +335,8 @@ const DrugReactionForm = ({ togglePopup }) => {
 
   const handleNextStep = () => {
     // Clear previous messages
-    setErrorMessage("");
-    setSuccessMessage("");
+    toast.error("");
+    toast.success("");
 
     let isValid = true;
     let drugReactionData;
@@ -392,7 +391,7 @@ const DrugReactionForm = ({ togglePopup }) => {
           updateDrugAdverseReaction(cleanedData(drugReactionData));
         }
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
     if (currentStep === 2) {
@@ -420,7 +419,7 @@ const DrugReactionForm = ({ togglePopup }) => {
 
         updateDrugAdverseReaction(drugReactionData);
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
     if (currentStep === 3) {
@@ -459,7 +458,7 @@ const DrugReactionForm = ({ togglePopup }) => {
 
         updateDrugAdverseReaction(drugReactionData);
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
     if (currentStep === 4) {
@@ -518,7 +517,7 @@ const DrugReactionForm = ({ togglePopup }) => {
 
         updateDrugAdverseReaction(drugReactionData);
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
     if (currentStep === 5) {
@@ -532,7 +531,7 @@ const DrugReactionForm = ({ togglePopup }) => {
       }
 
       if (!isAnySelected) {
-        setErrorMessage("Please select at least one option");
+        toast.error("Please select at least one option");
         isValid = false;
       }
 
@@ -543,10 +542,10 @@ const DrugReactionForm = ({ togglePopup }) => {
             "other (describe)"
           )
             ? selectedAgreements
-                .filter((el) => el !== "other (describe)")
-                .join(", ") +
-              ", " +
-              agreementDescription
+              .filter((el) => el !== "other (describe)")
+              .join(", ") +
+            ", " +
+            agreementDescription
             : selectedAgreements.join(", "),
         };
         updateDrugAdverseReaction(drugReactionData);
@@ -577,7 +576,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         };
         updateDrugAdverseReaction(drugReactionData);
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
 
@@ -622,7 +621,7 @@ const DrugReactionForm = ({ togglePopup }) => {
 
         updateDrugAdverseReaction(drugReactionData);
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
     if (currentStep === 8) {
@@ -641,7 +640,7 @@ const DrugReactionForm = ({ togglePopup }) => {
 
         updateDrugAdverseReaction(drugReactionData);
       } else {
-        setErrorMessage("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.");
       }
     }
   };
@@ -1325,17 +1324,17 @@ const DrugReactionForm = ({ togglePopup }) => {
               <div>
                 {outcomeType === "Moderate"
                   ? outComeData.Moderate.map((el, i) => (
-                      <div key={i} className="outcome-data check-box">
-                        <input
-                          type="checkbox"
-                          name="moderateOutcome"
-                          id={el.name}
-                          value={el.name}
-                          onChange={handleOutcomeDescription}
-                        />
-                        <label htmlFor={el.name}>{el.name}</label>
-                      </div>
-                    ))
+                    <div key={i} className="outcome-data check-box">
+                      <input
+                        type="checkbox"
+                        name="moderateOutcome"
+                        id={el.name}
+                        value={el.name}
+                        onChange={handleOutcomeDescription}
+                      />
+                      <label htmlFor={el.name}>{el.name}</label>
+                    </div>
+                  ))
                   : null}
               </div>
 
@@ -1352,17 +1351,17 @@ const DrugReactionForm = ({ togglePopup }) => {
               <div>
                 {outcomeType === "Severe"
                   ? outComeData.Severe.map((el, i) => (
-                      <div key={i} className="outcome-data check-box">
-                        <input
-                          type="checkbox"
-                          name="severeOutcome"
-                          id={el.name}
-                          value={el.name}
-                          onChange={handleOutcomeDescription}
-                        />
-                        <label htmlFor={el.name}>{el.name}</label>
-                      </div>
-                    ))
+                    <div key={i} className="outcome-data check-box">
+                      <input
+                        type="checkbox"
+                        name="severeOutcome"
+                        id={el.name}
+                        value={el.name}
+                        onChange={handleOutcomeDescription}
+                      />
+                      <label htmlFor={el.name}>{el.name}</label>
+                    </div>
+                  ))
                   : null}
               </div>
 
@@ -1555,10 +1554,6 @@ const DrugReactionForm = ({ togglePopup }) => {
           />
         )}
       </form>
-      <MessageComponent
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-      />
       <div className="buttons">
         {currentStep > 1 && currentStep < 8 ? (
           <button

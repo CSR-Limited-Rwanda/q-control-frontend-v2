@@ -80,6 +80,10 @@ const ModifyLostFound = ({ data }) => {
   const [age, setAge] = useState(incident?.reported_by?.age);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadingDocuments, setUploadingDocuments] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department.id
+  );
   const handleResolveOutcome = () => {
     setResolveOutcome((prev) => !prev);
   };
@@ -113,7 +117,37 @@ const ModifyLostFound = ({ data }) => {
     setIsLoading(true);
   };
 
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartmentId(event.target.value);
+  };
+
   useEffect(() => {
+    if (!data.report_facility.id) return;
+
+    const fetchDepartments = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/departments/`, {
+          params: { facility_id: data.report_facility.id },
+        });
+        if (response.status === 200) {
+          console.log(response.data.results);
+          setDepartments(response.data.results);
+        }
+      } catch (error) {
+        toast.error("Error fetching departments");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, [data.report_facility.id]);
+
+
+  useEffect(() => {
+    console.log(data)
     const fetchIncidentDocuments = async () => {
       try {
         const response = await api.get(
@@ -150,11 +184,11 @@ const ModifyLostFound = ({ data }) => {
       if (response.status === 200 || response.status === 201) {
 
         setUploadingDocuments(false);
-        window.customToast.success("Files uploaded successfully");
+        toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
       }
     } catch (error) {
-      window.customToast.error(error?.response?.data?.error);
+      toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
 
     }
@@ -178,7 +212,8 @@ const ModifyLostFound = ({ data }) => {
 
     const incidentData = {
       action: "modify",
-      report_facility: user.facility.id,
+      report_facility: data.report_facility.id,
+      department: parseInt(selectedDepartmentId),
       property_name: propertyName,
       reported_by: {
         first_name: reporterFirstName || "",
@@ -224,14 +259,14 @@ const ModifyLostFound = ({ data }) => {
       if (response.status === 200) {
         setIsLoading(false);
         setSavingDraft(false);
-        window.customToast.success("Incident updated successfully");
+        toast.success("Incident updated successfully");
         setIncident(response.data.incident);
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
       setIsLoading(false);
       setSavingDraft(false);
-      window.customToast.error("Error updating the incident");
+      toast.error("Error updating the incident");
 
     }
   };
@@ -305,6 +340,22 @@ const ModifyLostFound = ({ data }) => {
         <form className="modify-forms">
           <div className="inputs-group modify-inputs">
             <h3 className="full">General info</h3>
+            <div className="department-select field">
+                <label htmlFor="department">Department</label>
+                <select
+                  id="department"
+                  value={selectedDepartmentId}
+                  onChange={handleDepartmentChange}
+                  disabled={isLoading}
+                >
+                  <option value="">Select a department</option>
+                  {departments.map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             <div className="field">
               <label htmlFor="propertyName">Property Name</label>
               <input

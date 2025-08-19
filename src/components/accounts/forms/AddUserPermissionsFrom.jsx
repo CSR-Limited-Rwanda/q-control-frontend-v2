@@ -3,6 +3,8 @@ import { Check, LoaderCircle, PlusIcon, Search } from "lucide-react";
 import { useParams } from "react-router-dom";
 import api from "@/utils/api";
 
+import toast from "react-hot-toast";
+
 const AddUserPermissionsFrom = ({
   existingUsers,
   setExistingUsers,
@@ -12,8 +14,6 @@ const AddUserPermissionsFrom = ({
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingState, setLoadingState] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const handleFilter = (string) => {
     const filtered = users.filter(
@@ -30,8 +30,8 @@ const AddUserPermissionsFrom = ({
 
   const handleAddUser = async (user) => {
     setLoadingState((prev) => ({ ...prev, [user.id]: true }));
-    setErrorMessage("");
-    setSuccessMessage("");
+    toast.error("");
+    toast.success("");
     const payload = {
       id: parseInt(groupId),
     };
@@ -44,14 +44,14 @@ const AddUserPermissionsFrom = ({
       );
 
       if (response.status === 200) {
-        setSuccessMessage("User added successfully");
+        toast.success("User added successfully");
         setExistingUsers((prev) => [...prev, user]);
       } else {
-        setErrorMessage("Group ID is not defined");
+        toast.error("Group ID is not defined");
       }
     } catch (error) {
 
-      setErrorMessage("Error adding user");
+      toast.error("Error adding user");
     } finally {
       setLoadingState((prev) => ({ ...prev, [user.id]: false })); // Reset the loading state for the clicked user
     }
@@ -67,7 +67,7 @@ const AddUserPermissionsFrom = ({
 
         }
       } catch (error) {
-        setErrorMessage("Error getting users");
+        toast.error("Error getting users");
       } finally {
         setIsLoading(false);
       }
@@ -110,9 +110,9 @@ const AddUserPermissionsFrom = ({
               </div>
               <div className="action">
                 {existingUsers &&
-                existingUsers.some(
-                  (existingUser) => existingUser.id === user.id
-                ) ? (
+                  existingUsers.some(
+                    (existingUser) => existingUser.id === user.id
+                  ) ? (
                   <>
                     <Check />
                     Added

@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState, useRef } from "react";
 import api, { API_URL, cleanedData } from "@/utils/api";
 import mediaAPI from "@/utils/mediaApi";
@@ -33,8 +35,6 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const currentStepRef = useRef(currentStep);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [conductedBy, setConductedBy] = useState({
     first_name: "",
     last_name: "",
@@ -105,8 +105,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response) {
         setError(
           error.response.message ||
-            error.response.error ||
-            "Error uploading files"
+          error.response.error ||
+          "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -138,8 +138,8 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       if (error.response) {
         setError(
           error.response.message ||
-            error.response.error ||
-            "Error uploading files"
+          error.response.error ||
+          "Error uploading files"
         );
       } else {
         setError("Unknown error uploading files");
@@ -157,7 +157,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       last_name === "" ||
       relationship_to_patient === ""
     ) {
-      window.customToast.error(
+      toast.error(
         "Please enter a valid party name and relationship"
       );
       return;
@@ -259,7 +259,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
         data
       );
       if (response.status === 201) {
-        window.customToast.success(
+        toast.success(
           "Grievance investigation saved successfully"
         );
         localStorage.setItem("grievanceInvestigationId", response.data.id);
@@ -270,12 +270,12 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       setIsLoading(false);
 
       if (error.response.data) {
-        window.customToast.error(
+        toast.error(
           error.response.data.message ||
-            "Error saving the grievance investigation"
+          "Error saving the grievance investigation"
         );
       } else {
-        window.customToast.error(
+        toast.error(
           "There was a error. report the error to admin"
         );
       }
@@ -293,7 +293,7 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
         data
       );
       if (response.status === 200) {
-        window.customToast.success(
+        toast.success(
           "Grievance investigation updated successfully"
         );
         setCurrentStep(currentStep + 1);
@@ -303,12 +303,12 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
       setIsLoading(false);
 
       if (error.response.data) {
-        window.customToast.error(
+        toast.error(
           error.response.data.message ||
-            "Error updating the grievance investigation"
+          "Error updating the grievance investigation"
         );
       } else {
-        window.customToast.error(
+        toast.error(
           "There was a error. report the error to admin"
         );
       }
@@ -676,10 +676,6 @@ const GrievanceInvestigationForm = ({ incidentId }) => {
           ""
         )}
       </form>
-      <MessageComponent
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-      />
       <div className="form-buttons buttons">
         {currentStep > 1 && currentStep < 4 ? (
           <button

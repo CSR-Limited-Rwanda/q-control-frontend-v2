@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -139,9 +141,10 @@ function DrugReactionDetailsContent() {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+
+          toast.error("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch incident reviews");
+          toast.error("Failed to fetch incident reviews");
           console.error(error);
         }
       }
@@ -155,13 +158,14 @@ function DrugReactionDetailsContent() {
           `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
+          toast.success("Fetched document history successfully");
           localStorage.setItem("documentHistoryCount", response.data.length);
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-          window.customToast.error("Authentication error");
+          toast.error("Authentication error");
         } else {
-          window.customToast.error("Failed to fetch document History");
+          toast.error("Failed to fetch document History");
           console.error(error);
         }
       }
@@ -204,7 +208,7 @@ function DrugReactionDetailsContent() {
               generalInformation={
                 <DrugReactionGeneraInfo
                   data={currentIncidentData}
-                  //   incidentStatuses={incidentStatus}
+                //   incidentStatuses={incidentStatus}
                 />
               }
               otherInformation={
@@ -255,7 +259,7 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
 
           localStorage.setItem("incidentDocumentCount", response.data.length);
         }
-      } catch (error) {}
+      } catch (error) { }
     };
     fetchDocuments();
   }, []);
@@ -268,13 +272,13 @@ function DrugReactionDetails() {
     <div>
       <DashboardLayout
         children={<DrugReactionDetailsContent />}
-        // breadCrumbs={
-        //   changeBreadCrumbs ? (
-        //     <FacilityDetailsBreadCrumbs incidentID={drugReactionId} />
-        //   ) : (
-        //     <BreadCrumbs />
-        //   )
-        // }
+      // breadCrumbs={
+      //   changeBreadCrumbs ? (
+      //     <FacilityDetailsBreadCrumbs incidentID={drugReactionId} />
+      //   ) : (
+      //     <BreadCrumbs />
+      //   )
+      // }
       />
     </div>
   );

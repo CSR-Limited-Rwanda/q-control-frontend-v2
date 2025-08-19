@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState, useEffect, useMemo } from "react";
 import {
   MoveRight,
@@ -23,7 +25,6 @@ const DepartmentsPage = () => {
   const [facilities, setFacilities] = useState([]);
   const [selectedFacilityId, setSelectedFacilityId] = useState();
   const [selectedDepartment, setSelectedDepartment] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
   const [showAddDepartment, setShowAddDepartment] = useState(false);
   const [sortConfig, setSortConfig] = useState({
     field: "created_at",
@@ -41,7 +42,7 @@ const DepartmentsPage = () => {
           setFacilities(response.data);
         }
       } catch (error) {
-        setErrorMessage("Error fetching facilities");
+        toast.error("Error fetching facilities");
         console.error(error);
       } finally {
         setIsLoading(false);
@@ -65,7 +66,7 @@ const DepartmentsPage = () => {
           setDepartments(response.data.results);
         }
       } catch (error) {
-        setErrorMessage("Error fetching departments");
+        toast.error("Error fetching departments");
         console.error(error);
       } finally {
         setIsLoading(false);

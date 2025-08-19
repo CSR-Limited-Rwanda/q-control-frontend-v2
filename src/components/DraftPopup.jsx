@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import { X, Eye, Info } from "lucide-react";
 import React from "react";
 import { useState, useEffect } from "react";
@@ -8,19 +10,19 @@ import api from "@/utils/api";
 const DraftPopup = ({ incidentType, incidentString }) => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [incident, setIncident] = useState(null);
-
   useEffect(() => {
     const fetchDrafts = async () => {
       // API call to fetch drafts data
       try {
         const response = await api.get(`incidents/overview/draft/user/`);
         if (response.status === 200) {
+          toast.success("Drafts fetched successfully");
           setIncident(response.data[incidentType]);
 
           setPopupOpen(response.data[incidentType].length > 0 ? true : false);
         }
       } catch (error) {
-        window.customToast.error(error.message);
+        toast.error(error.message);
         console.error(error);
       }
     };

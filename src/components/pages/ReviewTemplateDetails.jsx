@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/app/dashboard/layout";
 import Link from "next/link";
@@ -37,7 +39,6 @@ const ReviewTemplatesDetailsContent = () => {
   const [task, setTask] = useState({});
   const [taskId, setTaskId] = useState({});
   const [reviewTemplate, setReviewTemplate] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [loadingTask, setLoadingTask] = useState(true);
   const [showAddTaskForm, setShowAddTaskForm] = useState(false);
@@ -60,10 +61,10 @@ const ReviewTemplatesDetailsContent = () => {
           setReviewTemplate(response.data);
         }
       } catch (error) {
-        setErrorMessage(
+        toast.error(
           error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get review group members"
+          error.response.data?.error ||
+          "Failed to get review group members"
         );
       } finally {
         setIsLoading(false);
@@ -85,21 +86,21 @@ const ReviewTemplatesDetailsContent = () => {
           if (Array.isArray(response.data.results)) {
             setTasks(response.data.results);
           } else {
-            setErrorMessage("Received data in unexpected format");
+            toast.error("Received data in unexpected format");
             setTasks([]);
           }
         }
       } catch (error) {
         if (error.response) {
-          setErrorMessage(
+          toast.error(
             error.response.data?.message ||
-              error.response.data?.error ||
-              "Failed to get tasks"
+            error.response.data?.error ||
+            "Failed to get tasks"
           );
         } else if (error.request) {
-          setErrorMessage("No response from server");
+          toast.error("No response from server");
         } else {
-          setErrorMessage("Failed to make request");
+          toast.error("Failed to make request");
         }
       } finally {
         setIsLoading(false);
@@ -134,15 +135,15 @@ const ReviewTemplatesDetailsContent = () => {
       }
     } catch (error) {
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get tasks"
+          error.response.data?.error ||
+          "Failed to get tasks"
         );
       } else if (error.request) {
-        setErrorMessage("No response from server");
+        toast.error("No response from server");
       } else {
-        setErrorMessage("Failed to make request");
+        toast.error("Failed to make request");
       }
     } finally {
       setIsLoading(false);
@@ -267,9 +268,8 @@ const ReviewTemplatesDetailsContent = () => {
                 <p className="review-created">Created by</p>
                 <p className="review-created-by-name">
                   {reviewTemplate.created_by
-                    ? `${reviewTemplate.created_by.first_name || "N/A"} ${
-                        reviewTemplate.created_by.last_name || "N/A"
-                      }`
+                    ? `${reviewTemplate.created_by.first_name || "N/A"} ${reviewTemplate.created_by.last_name || "N/A"
+                    }`
                     : "N/A"}
                 </p>
               </div>
@@ -277,9 +277,8 @@ const ReviewTemplatesDetailsContent = () => {
                 <p className="review-update">Last updated by</p>
                 <p>
                   {reviewTemplate.updated_by
-                    ? `${reviewTemplate.updated_by.first_name || "N/A"} ${
-                        reviewTemplate.updated_by.last_name
-                      }`
+                    ? `${reviewTemplate.updated_by.first_name || "N/A"} ${reviewTemplate.updated_by.last_name
+                    }`
                     : "N/A"}
                 </p>
               </div>

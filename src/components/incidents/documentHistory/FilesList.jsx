@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { X, ArrowDownToLine, LoaderCircle } from "lucide-react";
 import Link from "next/link";
@@ -42,7 +44,7 @@ const FilesList = ({
         `/incidents/${apiLink}/${incidentId}/documents/${file.id}/delete/`
       );
       if (response.status === 200) {
-        setSuccessMessage("File deleted successfully");
+        toast.success("File deleted successfully");
         setDeletingFile(false);
         setDocuments((prevFiles) =>
           prevFiles.filter((prevFile) => prevFile.id !== file.id)
@@ -60,13 +62,13 @@ const FilesList = ({
       }
     } catch (error) {
       if (error.response) {
-        setErrorMessage(
+        toast.error(
           error.response.data.message ||
-            error.response.data.error ||
-            "Error deleting file"
+          error.response.data.error ||
+          "Error deleting file"
         );
       } else {
-        setErrorMessage("Unknown error deleting file");
+        toast.error("Unknown error deleting file");
       }
 
       setDeletingFile(false);
@@ -75,7 +77,7 @@ const FilesList = ({
 
   const indexOfLastDocument = currentPage * documentsPerPage;
   const indexOfFirstDocument = indexOfLastDocument - documentsPerPage;
-  const currentDocuments = Array.isArray(documents) 
+  const currentDocuments = Array.isArray(documents)
     ? documents.slice(indexOfFirstDocument, indexOfLastDocument)
     : [];
 
@@ -115,10 +117,10 @@ const FilesList = ({
                       doc.type === ".pdf"
                         ? "/images/file_types/pdf2-svgrepo-com 1.svg"
                         : doc.type === ".xlsx"
-                        ? "/images/file_types/excel2-svgrepo-com 1.svg"
-                        : doc.type === ".doc" || doc.type === ".docx"
-                        ? "/images/file_types/word2-svgrepo-com 1.svg"
-                        : "/images/file_types/file-link-stroke-rounded.svg"
+                          ? "/images/file_types/excel2-svgrepo-com 1.svg"
+                          : doc.type === ".doc" || doc.type === ".docx"
+                            ? "/images/file_types/word2-svgrepo-com 1.svg"
+                            : "/images/file_types/file-link-stroke-rounded.svg"
                     }
                     alt=""
                   />

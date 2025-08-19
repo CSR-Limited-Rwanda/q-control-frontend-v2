@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import React, { useState } from "react";
 import { ArrowLeft, ArrowRight, UserPlusIcon, X } from "lucide-react";
 import BasicInfo from "./basicInfo";
@@ -38,8 +40,6 @@ const NewUserForm = ({
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState();
-  const [successMessage, setSuccessMessage] = useState();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [maxStep, setMaxStep] = useState(isEditMode ? 2 : 3);
@@ -55,8 +55,8 @@ const NewUserForm = ({
   };
 
   const handleSubmit = async () => {
-    setErrorMessage("");
-    setSuccessMessage("");
+    toast.error("");
+    toast.success("");
     const data = saveBasicInfo();
 
     try {
@@ -64,7 +64,7 @@ const NewUserForm = ({
       if (isEditMode) {
         const response = await api.put(`/users/${existingUserData.id}/`, data);
         if (response.status === 200) {
-          setSuccessMessage("User updated successfully");
+          toast.success("User updated successfully");
           // setTimeout(() => {
           //   // window.location.reload();
           // }, 1000);
@@ -72,7 +72,7 @@ const NewUserForm = ({
       } else {
         const response = await api.post("/users/", data);
         if (response.status === 201) {
-          setSuccessMessage("User created successfully");
+          toast.success("User created successfully");
           setTimeout(() => {
             window.location.reload();
           }, 1000);
@@ -88,7 +88,7 @@ const NewUserForm = ({
       } else {
         message = error?.message || "Unknown error occurred";
       }
-      setErrorMessage(message);
+      toast.error(message);
       return;
     } finally {
       setIsLoading(false);
@@ -125,7 +125,7 @@ const NewUserForm = ({
       permissions_groups: formData.permissionGroups.map((group) => group.id),
       // permissions: formData.permissions,
     };
-    setErrorMessage("");
+    toast.error("");
 
     if (isEditMode) {
       delete payload.access_to_departments;
@@ -136,7 +136,7 @@ const NewUserForm = ({
       localStorage.setItem("userInfo", JSON.stringify(payload));
       return payload;
     } catch (error) {
-      setErrorMessage(
+      toast.error(
         "An error occurred while saving the data. Please try again."
       );
     }

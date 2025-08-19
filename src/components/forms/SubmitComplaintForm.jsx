@@ -1,4 +1,6 @@
 "use client";
+
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import api from "@/utils/api";
 import { X, CircleCheck, LoaderCircle, Square } from "lucide-react";
@@ -9,7 +11,6 @@ import CloseIcon from "../CloseIcon";
 
 const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [userError, setUserError] = useState("");
   const [fetchingStaff, setFetchingStaff] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -75,7 +76,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
     try {
       const response = await api.post("complaints/", complaintData);
       if (response.status === 201) {
-        setSuccessMessage("Complaint submitted successfully");
+        toast.success("Complaint submitted successfully");
         setIsLoading(false);
         setTimeout(() => {
           handleSubmitComplaint();
@@ -269,9 +270,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
         </div>
       </form>
       {error && <div className="error-message">{error}</div>}
-      {successMessage && (
-        <div className="success-message">{successMessage}</div>
-      )}
+
       {resolvedByStaff && (
         <button onClick={handleSubmit} className="primary-button" type="button">
           {isLoading ? (
