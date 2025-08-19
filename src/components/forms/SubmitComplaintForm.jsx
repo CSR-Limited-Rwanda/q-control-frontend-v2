@@ -86,8 +86,8 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
       if (error.response) {
         setError(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while submitting the complaint"
+            error.response.data.error ||
+            "Error while submitting the complaint"
         );
       } else {
         setError("Unknown error while submitting the complaint");
@@ -108,8 +108,8 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
         if (error.response) {
           setUserError(
             error.response.data.message ||
-            error.response.data.error ||
-            "We could no get a list of users"
+              error.response.data.error ||
+              "We could no get a list of users"
           );
         }
         console.error(error);
@@ -270,9 +270,7 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
         </div>
       </form>
       {error && <div className="error-message">{error}</div>}
-      {successMessage && (
-        <div className="success-message">{successMessage}</div>
-      )}
+
       {resolvedByStaff && (
         <button onClick={handleSubmit} className="primary-button" type="button">
           {isLoading ? (
