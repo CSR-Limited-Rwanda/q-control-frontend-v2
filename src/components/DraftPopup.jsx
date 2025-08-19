@@ -6,8 +6,10 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import api from "@/utils/api";
+import { useAuthentication } from "@/context/authContext";
 
 const DraftPopup = ({ incidentType, incidentString }) => {
+  const { user } = useAuthentication();
   const [popupOpen, setPopupOpen] = useState(false);
   const [incident, setIncident] = useState(null);
   useEffect(() => {
@@ -55,7 +57,7 @@ const DraftPopup = ({ incidentType, incidentString }) => {
         </div>
         <div className="actions-buttons">
           <Link
-            href="/users/profile/"
+            href={`/accounts/${user.profileId}`}
             onClick={() => {
               localStorage.setItem("setDraftActive", "drafts");
             }}

@@ -193,11 +193,13 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           : null,
       job_title: jobTitle,
 
-      supervisor: {
-        first_name: supervisorFirstName,
-        last_name: supervisorLastName,
-        profile_type: "Supervisor",
-      },
+      ...(toldSupervisor && {
+        supervisor: {
+          first_name: supervisorFirstName,
+          last_name: supervisorLastName,
+          profile_type: "Supervisor",
+        },
+      }),
       date_of_injury_or_near_miss: dateOfInjury,
       time_of_injury_or_near_miss: timeOfInjury,
       witnesses: witnessesList.length > 0 ? witnessesList : null,
@@ -363,6 +365,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
     } catch (error) {
       console.error("Error submitting step 4: ", error);
+      console.log(error);
       return;
     }
     setSuccess(true);
@@ -411,6 +414,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             first_name: el.first_name,
             last_name: el.last_name,
           }));
+
           updateStepOne(
             cleanedData({
               current_step: currentStep,
@@ -429,11 +433,13 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
                   : null,
               job_title: jobTitle,
 
-              supervisor: {
-                first_name: supervisorFirstName,
-                last_name: supervisorLastName,
-                profile_type: "Supervisor",
-              },
+              ...(toldSupervisor && {
+                supervisor: {
+                  first_name: supervisorFirstName,
+                  last_name: supervisorLastName,
+                  profile_type: "Supervisor",
+                },
+              }),
               date_of_injury_or_near_miss: dateOfInjury,
               time_of_injury_or_near_miss: timeOfInjury,
               witnesses: witnessesList.length > 0 ? witnessesList : null,
