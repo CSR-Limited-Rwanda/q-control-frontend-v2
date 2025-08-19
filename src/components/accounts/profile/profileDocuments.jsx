@@ -17,14 +17,14 @@ const ProfileDocuments = () => {
         if (response.status === 200) {
           setDocuments(response.data.documents);
           setIsLoading(false);
-
+          toast.success("Documents fetched successfully");
         }
       } catch (error) {
         if (error.response) {
           toast.error(
             error.response.data.message ||
-            error.response.data.error ||
-            "Error getting your documents"
+              error.response.data.error ||
+              "Error getting your documents"
           );
         } else {
           toast.error("Unknown error getting your documents");
@@ -36,7 +36,6 @@ const ProfileDocuments = () => {
   }, []);
   return (
     <div className="profile-documents">
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
       {isLoading ? (
         "Loading..."
       ) : (

@@ -241,10 +241,6 @@ const ReviewGroups = () => {
 
         {isLoading && reviewGroups.length < 1 ? (
           <LoaderCircle className="loading-icon" />
-        ) : errorMessage ? (
-          <div className="message error">
-            <span>{errorMessage}</span>
-          </div>
         ) : (
           <div className="users-table">
             {reviewGroups.length > 0 ? (
@@ -309,8 +305,9 @@ const ReviewGroups = () => {
                   {/* Always show first page */}
                   <button
                     onClick={() => handlePageChange(1)}
-                    className={`pagination-button ${1 === page ? "active" : ""
-                      }`}
+                    className={`pagination-button ${
+                      1 === page ? "active" : ""
+                    }`}
                   >
                     1
                   </button>
@@ -361,8 +358,9 @@ const ReviewGroups = () => {
                   {total_pages > 1 && (
                     <button
                       onClick={() => handlePageChange(total_pages)}
-                      className={`pagination-button ${total_pages === page ? "active" : ""
-                        }`}
+                      className={`pagination-button ${
+                        total_pages === page ? "active" : ""
+                      }`}
                     >
                       {total_pages}
                     </button>

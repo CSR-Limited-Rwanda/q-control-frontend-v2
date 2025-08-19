@@ -20,6 +20,7 @@ import { format } from "date-fns";
 import { openDropdown } from "@/utils/dropdownUtils";
 import SortableHeader from "@/components/SortableHeader";
 import useSorting from "@/hooks/useSorting";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -145,7 +146,7 @@ const Accounts = ({ permissions }) => {
   }
 
   return (
-    <>
+    <PermissionsGuard model={"accounts"} codename={"view_list"}>
       <div className="users-container">
         <div className="filters">
           <div className="list-of-users">
@@ -197,10 +198,6 @@ const Accounts = ({ permissions }) => {
         </div>
         {isLoading && users.length < 1 ? (
           <LoaderCircle className="loading-icon" />
-        ) : errorMessage ? (
-          <div className="message error">
-            <span>{errorMessage}</span>
-          </div>
         ) : (
           <div className="users-table">
             {users.length > 0 ? (
@@ -320,8 +317,9 @@ const Accounts = ({ permissions }) => {
                   {/* Always show first page */}
                   <button
                     onClick={() => handlePageChange(1)}
-                    className={`pagination-button ${1 === page ? "active" : ""
-                      }`}
+                    className={`pagination-button ${
+                      1 === page ? "active" : ""
+                    }`}
                   >
                     1
                   </button>
@@ -372,8 +370,9 @@ const Accounts = ({ permissions }) => {
                   {total_pages > 1 && (
                     <button
                       onClick={() => handlePageChange(total_pages)}
-                      className={`pagination-button ${total_pages === page ? "active" : ""
-                        }`}
+                      className={`pagination-button ${
+                        total_pages === page ? "active" : ""
+                      }`}
                     >
                       {total_pages}
                     </button>
@@ -400,7 +399,7 @@ const Accounts = ({ permissions }) => {
       {showNewUserForm && (
         <NewUserForm handleClose={() => setShowNewUserForm(false)} />
       )}
-    </>
+    </PermissionsGuard>
   );
 };
 
