@@ -19,7 +19,7 @@ import EmployeeIncidentForm from "@/components/incidents/incidentForms/EmployeeI
 import LostAndFoundForm from "@/components/incidents/incidentForms/LostAndFoundForms/LostAndFoundForm";
 import GrievanceForm from "@/components/incidents/incidentForms/GrievanceForms/GrievanceForm";
 import MedicationErrorForm from "@/components/incidents/incidentForms/MedicationErrorForms/MedicationErrorForm";
-import DrugReactionForm from "@/components/incidents/incidentForms/DrugReactionForms/DrugReactionForm";
+import DrugReactionForm from "@/components/incidents/incidentForms/DrugReactionForms/DrugReactionFormOld";
 import WorkplaceViolenceIncidentForm from "@/components/incidents/incidentForms/WorkplaceViolenceForms/WorkPlaceViolenceForm";
 import SubmitComplaintForm from "@/components/forms/SubmitComplaintForm";
 import { menuItems } from "@/constants/menuItems";

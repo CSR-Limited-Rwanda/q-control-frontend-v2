@@ -64,11 +64,41 @@ const DrugReactionForm = ({ initialData = {} }) => {
         }
 
         try {
+            // Prepare form data with required API structure
+            const submitData = {
+                ...formData,
+                // Always set these default values for drug reaction incidents
+                status: "Draft",
+                current_step: currentStep,
+                is_resolved: false,
+                // Ensure nested objects have profile_type
+                patient_name: {
+                    ...formData.patient_name,
+                    profile_type: "Patient"
+                },
+                observers_name: formData.observers_name ? {
+                    ...formData.observers_name,
+                    profile_type: "Staff"
+                } : undefined,
+                name_of_physician_notified: formData.name_of_physician_notified ? {
+                    ...formData.name_of_physician_notified,
+                    profile_type: "Physician"
+                } : undefined,
+                name_of_family_notified: formData.name_of_family_notified ? {
+                    ...formData.name_of_family_notified,
+                    profile_type: "Family"
+                } : undefined,
+                notified_by: formData.notified_by ? {
+                    ...formData.notified_by,
+                    profile_type: "Staff"
+                } : undefined
+            }
+
             if (isEditing) {
-                await updateIncident(storedIncidentId, formData)
+                await updateIncident(storedIncidentId, submitData)
                 toast.success('Step updated successfully')
             } else {
-                await postIncident(formData)
+                await postIncident(submitData)
                 toast.success('Step saved successfully')
             }
 
@@ -157,11 +187,11 @@ const DrugReactionForm = ({ initialData = {} }) => {
     }
 
     return (
-        <div className="form-container">
+        <div className="incident-form-container">
             <div className="form-header">
                 <h2>Anaphylaxis/Adverse Drug Reaction Report</h2>
                 <div className="step-indicator">
-                    Step {currentStep} of 8
+                    Step {currentStep} of 8: {getStepTitle()}
                 </div>
             </div>
 

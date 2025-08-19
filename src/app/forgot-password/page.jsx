@@ -78,8 +78,6 @@ const page = () => {
                 <div className="form">
                     <h1>Forgot Password</h1>
                     <p>Please enter your email to reset your password.</p>
-                    {errorMessage && <p className="error-message">{errorMessage}</p>}
-                    {successMessage && <p className="success-message">{successMessage}</p>}
 
                     {
                         resetCodeSent ?
