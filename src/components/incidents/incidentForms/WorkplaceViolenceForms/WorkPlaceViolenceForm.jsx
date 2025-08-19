@@ -36,7 +36,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
   );
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [victimAlone, setVictimAlone] = useState(false);
   const [errorFetching, setErrorFetching] = useState([]);
@@ -571,7 +571,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         setIsLoading(true);
         // return
         const payload = {
-          department: checkCurrentAccount(),
           ...incidentData,
         };
 
@@ -596,7 +595,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         }
       } catch (error) {
         setIsLoading(false);
-
+        console.log(error);
         if (error.message) {
           appendError(error.message);
           toast.error(

@@ -165,12 +165,6 @@ const NewUserForm = ({
               <PermissionGroups formData={formData} setFormData={setFormData} />
             )}
 
-            {successMessage && (
-              <div className="success message">
-                <span>{successMessage}</span>
-              </div>
-            )}
-
             <div className="buttons">
               {currentStep > 1 && (
                 <SecondaryButton

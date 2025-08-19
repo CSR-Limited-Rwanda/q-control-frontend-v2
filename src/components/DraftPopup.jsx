@@ -49,8 +49,7 @@ const DraftPopup = ({ incidentType, incidentString }) => {
 
             <p>
               Your last draft incidents were not submitted. Click the{" "}
-              <span className="orange-color">"View drafts"</span> to view or{" "}
-              <span className="orange-color">"Clear drafts"</span> to clear
+              <span className="orange-color">"View drafts"</span> below to view
               them.
             </p>
           </div>
