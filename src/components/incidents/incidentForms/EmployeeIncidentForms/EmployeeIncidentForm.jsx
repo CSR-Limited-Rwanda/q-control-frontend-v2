@@ -76,8 +76,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     localStorage.getItem("departmentId")
   );
 
-  console.log(facilityId);
-
   useEffect(() => {
     currentStepRef.current = currentStep;
   }, [currentStep]);
@@ -187,12 +185,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       patient_info:
         firstName && lastName
           ? {
-            first_name: firstName,
-            last_name: lastName,
-            profile_type: "Patient",
-            age: age,
-            date_of_birth: dateBirth,
-          }
+              first_name: firstName,
+              last_name: lastName,
+              profile_type: "Patient",
+              age: age,
+              date_of_birth: dateBirth,
+            }
           : null,
       job_title: jobTitle,
 
@@ -279,9 +277,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         !dateSeenDoctor &&
         !timeSeenDoctor
       ) {
-        toast.error(
-          "Please fill all required fields for Doctor information"
-        );
+        toast.error("Please fill all required fields for Doctor information");
         isValid = false;
         return;
       }
@@ -303,10 +299,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           doctor_consulted_info:
             doctorFirstName && doctorLastName
               ? {
-                first_name: doctorFirstName,
-                last_name: doctorLastName,
-                profile_type: "Physician",
-              }
+                  first_name: doctorFirstName,
+                  last_name: doctorLastName,
+                  profile_type: "Physician",
+                }
               : null,
 
           previous_injury: injuredBody,
@@ -394,7 +390,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         "Time of Injury": timeOfInjury,
       });
 
-
       if (
         toldSupervisor &&
         !supervisorFirstName.trim() &&
@@ -426,12 +421,12 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               patient_info:
                 firstName && lastName
                   ? {
-                    first_name: firstName,
-                    last_name: lastName,
-                    profile_type: "Patient",
-                    age: age,
-                    date_of_birth: dateBirth,
-                  }
+                      first_name: firstName,
+                      last_name: lastName,
+                      profile_type: "Patient",
+                      age: age,
+                      date_of_birth: dateBirth,
+                    }
                   : null,
               job_title: jobTitle,
 
