@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import "@/styles/_dashboard.scss";
 import "@/styles/_components.scss";

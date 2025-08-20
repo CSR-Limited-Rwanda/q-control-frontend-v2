@@ -1,4 +1,3 @@
-// ReusableDatePicker.js
 "use client";
 import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { CalendarDays } from "lucide-react";
@@ -24,6 +23,7 @@ const CustomDatePicker = ({
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   const [year, setYear] = useState("");
+  const [warning, setWarning] = useState("");
 
   const dayRef = useRef(null);
   const yearRef = useRef(null);
@@ -39,42 +39,120 @@ const CustomDatePicker = ({
       setYear("");
       setMonth("");
       setDay("");
+      setWarning("");
     }
   }, [selectedDate]);
 
-  // Automatically update selectedDate when full date is entered
-  useEffect(() => {
-    if (year.length === 4 && month.length === 2 && day.length === 2) {
-      const formatted = `${year.padStart(4, "0")}-${month.padStart(
-        2,
-        "0"
-      )}-${day.padStart(2, "0")}`;
-      setSelectedDate(formatted);
+  // Validate date format and non-future date
+   useEffect(() => {
+     if (year.length === 4 && month.length === 2 && day.length === 2) {
+       const formatted = `${year.padStart(4, "0")}-${month.padStart(
+         2,
+         "0"
+       )}-${day.padStart(2, "0")}`;
+       console.log("Validating full date:", formatted);
+       const isValidDate = dayjs(formatted, "YYYY-MM-DD", true).isValid();
+       const isFutureDate = dayjs(formatted).isAfter(dayjs(), "day");
 
+       if (!isValidDate) {
+         console.log("Validation failed: Invalid date");
+         setWarning("Invalid date entered. Please enter a valid date.");
+       } else if (isFutureDate) {
+         console.log("Validation failed: Date is in the future");
+         setWarning("Please enter a date that is today or in the past.");
+       } else {
+         console.log("Validation passed: Setting date", formatted);
+         setWarning("");
+         setSelectedDate(formatted);
+       }
+     } else {
+       console.log("Incomplete date, clearing warning");
+       setWarning("");
+     }
+   }, [year, month, day]);
+
+  const validateMonth = (value) => {
+    if (!/^\d{0,2}$/.test(value)) {
+      console.log("Month validation failed: Not a number", value);
+      setWarning("Month must be a number.");
+      return false;
     }
-  }, [year, month, day]);
+    if (value.length === 2 && (parseInt(value) < 1 || parseInt(value) > 12)) {
+      console.log("Month validation failed: Out of range", value);
+      setWarning("Month must be between 01 and 12.");
+      return false;
+    }
+    return true;
+  };
+
+  const validateDay = (value) => {
+    if (!/^\d{0,2}$/.test(value)) {
+      console.log("Day validation failed: Not a number", value);
+      setWarning("Day must be a number.");
+      return false;
+    }
+    if (value.length === 2) {
+      const parsedDay = parseInt(value);
+      let maxDays = 31;
+      if (month.length === 2) {
+        const parsedMonth = parseInt(month);
+        if ([4, 6, 9, 11].includes(parsedMonth)) {
+          maxDays = 30;
+        } else if (parsedMonth === 2) {
+          maxDays = 29; // Allow up to 29 for February; leap year check in full validation
+        }
+      }
+      if (parsedDay < 1 || parsedDay > maxDays) {
+        console.log("Day validation failed: Out of range for month", value);
+        setWarning(
+          `Day must be between 01 and ${maxDays} for the selected month.`
+        );
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const validateYear = (value) => {
+    if (!/^\d{0,4}$/.test(value)) {
+      console.log("Year validation failed: Not a number", value);
+      setWarning("Year must be a number.");
+      return false;
+    }
+    if (value.length === 4 && parseInt(value) < 1900) {
+      console.log("Year validation failed: Too early", value);
+      setWarning("Year must be 1900 or later.");
+      return false;
+    }
+    return true;
+  };
 
   const handleMonthChange = (e) => {
     const value = e.target.value;
-    if (/^\d{0,2}$/.test(value)) {
+    console.log("Month input:", value);
+    if (validateMonth(value)) {
       setMonth(value);
+      setWarning("");
       if (value.length === 2) dayRef.current?.focus();
     }
   };
 
   const handleDayChange = (e) => {
     const value = e.target.value;
-    if (/^\d{0,2}$/.test(value)) {
+    console.log("Day input:", value);
+    if (validateDay(value)) {
       setDay(value);
+      setWarning("");
       if (value.length === 2) yearRef.current?.focus();
     }
   };
 
   const handleYearChange = (e) => {
     const value = e.target.value;
-    if (/^\d{0,4}$/.test(value)) {
+    console.log("Year input:", value);
+    if (validateYear(value)) {
       setYear(value);
-      // No selectedDate update here — we wait for useEffect
+      setWarning("");
     }
   };
 
@@ -83,98 +161,38 @@ const CustomDatePicker = ({
       className="date-input"
       onClick={(e) => stopPropagation && e.stopPropagation()}
     >
-      <input
-        type="text"
-        placeholder="MM"
-        maxLength="2"
-        value={month || ""}
-        onChange={handleMonthChange}
-        className="date-input-field"
-      />
-      /
-      <input
-        type="text"
-        ref={dayRef}
-        placeholder="DD"
-        maxLength="2"
-        value={day || ""}
-        onChange={handleDayChange}
-      />
-      /
-      <input
-        className="yyy"
-        type="text"
-        ref={yearRef}
-        placeholder="YYYY"
-        maxLength="4"
-        value={year || ""}
-        onChange={handleYearChange}
-      />
+      <div className="date-container">
+        <input
+          type="text"
+          placeholder="MM"
+          maxLength="2"
+          value={month || ""}
+          onChange={handleMonthChange}
+          className="date-input-field"
+        />
+        /
+        <input
+          type="text"
+          ref={dayRef}
+          placeholder="DD"
+          maxLength="2"
+          value={day || ""}
+          onChange={handleDayChange}
+        />
+        /
+        <input
+          className="yyy"
+          type="text"
+          ref={yearRef}
+          placeholder="YYYY"
+          maxLength="4"
+          value={year || ""}
+          onChange={handleYearChange}
+        />
+      </div>
+      {warning && <div className="date-warning">{warning}</div>}
     </div>
   );
 };
-
-// function CustomDatePickers({ selectedDate, setSelectedDate }) {
-//   // Internal handler to safely process date changes
-//   const handleDateChange = (newValue) => {
-//     try {
-//       // Ensure we always pass either null or a valid dayjs object
-//       if (!newValue || !dayjs.isDayjs(newValue)) {
-//         setSelectedDate(null);
-//         return;
-//       }
-
-//       if (!newValue.isValid()) {
-//         setSelectedDate(null);
-//         return;
-//       }
-
-//       setSelectedDate(newValue);
-//     } catch (error) {
-//       console.error("Date parsing error:", error);
-//       setSelectedDate(null);
-//     }
-//   };
-
-//   // Safely get value for the DatePicker
-//   const getDateValue = () => {
-//     try {
-//       if (
-//         !selectedDate ||
-//         !dayjs.isDayjs(selectedDate) ||
-//         !selectedDate.isValid()
-//       ) {
-//         return null;
-//       }
-//       return selectedDate;
-//     } catch {
-//       return null;
-//     }
-//   };
-
-//   return (
-//     <LocalizationProvider dateAdapter={AdapterDayjs}>
-//       <DemoContainer components={["DatePicker"]}>
-//         <DatePicker
-//           label="Basic date picker"
-//           format="DD/MM/YYYY"
-//           value={getDateValue()}
-//           onChange={handleDateChange}
-//           clearable
-//           slotProps={{
-//             textField: {
-//               size: "small",
-//               error: false, // Prevent error state from showing
-//             },
-//           }}
-//           // Handle any parsing errors gracefully
-//           onError={() => {
-//             handleDateChange(null);
-//           }}
-//         />
-//       </DemoContainer>
-//     </LocalizationProvider>
-//   );
-// }
 
 export default CustomDatePicker;
