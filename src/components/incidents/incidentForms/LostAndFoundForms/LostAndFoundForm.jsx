@@ -410,54 +410,12 @@ const LostAndFoundForm = ({ togglePopup }) => {
 
       <form className="newIncidentForm">
         {currentStep === 1 && (
-          <Step1InfoForm
-            reporterFirstName={reporterFirstName}
-            setReporterFirstName={setReporterFirstName}
-            reporterLastName={reporterLastName}
-            setReporterLastName={setReporterLastName}
-            patientFirstName={patientFirstName}
-            setPatientFirstName={setPatientFirstName}
-            patientLastName={patientLastName}
-            setPatientLastName={setPatientLastName}
-            dateReporting={dateReporting}
-            setDateReporting={setDateReporting}
-            timeReporting={timeReporting}
-            setTimeReporting={setTimeReporting}
-            relationship={relationship}
-            setRelationship={setRelationship}
-            propertyName={propertyName}
-            setPropertyName={setPropertyName}
-            descriptionOfProperty={descriptionOfProperty}
-            setDescriptionOfProperty={setDescriptionOfProperty}
+          <Step1InfoForm reporterFirstName={reporterFirstName} setReporterFirstName={setReporterFirstName} reporterLastName={reporterLastName} setReporterLastName={setReporterLastName}  patientFirstName={patientFirstName}  setPatientFirstName={setPatientFirstName} patientLastName={patientLastName} setPatientLastName={setPatientLastName}  dateReporting={dateReporting} setDateReporting={setDateReporting} timeReporting={timeReporting} setTimeReporting={setTimeReporting} relationship={relationship} setRelationship={setRelationship} propertyName={propertyName} setPropertyName={setPropertyName} descriptionOfProperty={descriptionOfProperty} setDescriptionOfProperty={setDescriptionOfProperty}
           />
         )}
 
         {currentStep === 2 && (
-          <Step2ActionsForm
-            actionTaken={actionTaken}
-            setActionTaken={setActionTaken}
-            checkboxChecked={checkboxChecked}
-            handleCheckboxChange={handleCheckboxChange}
-            location={location}
-            setLocation={setLocation}
-            dateFound={dateFound}
-            setDateFound={setDateFound}
-            timeFound={timeFound}
-            setTimeFound={setTimeFound}
-            personWhoFoundPropertyFirstName={personWhoFoundPropertyFirstName}
-            setPersonWhoFoundPropertyFirstName={setPersonWhoFoundPropertyFirstName}
-            personWhoFoundPropertyLastName={personWhoFoundPropertyLastName}
-            setPersonWhoFoundPropertyLastName={setPersonWhoFoundPropertyLastName}
-            checkboxReturnedChecked={checkboxReturnedChecked}
-            handleCheckboxReturn={handleCheckboxReturn}
-            locationReturned={locationReturned}
-            setLocationReturned={setLocationReturned}
-            propertyReturnedTo={propertyReturnedTo}
-            setPropertyReturnedTo={setPropertyReturnedTo}
-            dateReturned={dateReturned}
-            setDateReturned={setDateReturned}
-            timeReturned={timeReturned}
-            setTimeReturned={setTimeReturned}
+          <Step2ActionsForm actionTaken={actionTaken} setActionTaken={setActionTaken} checkboxChecked={checkboxChecked} handleCheckboxChange={handleCheckboxChange} location={location} setLocation={setLocation} dateFound={dateFound} setDateFound={setDateFound} timeFound={timeFound} setTimeFound={setTimeFound}  personWhoFoundPropertyFirstName={personWhoFoundPropertyFirstName}  setPersonWhoFoundPropertyFirstName={setPersonWhoFoundPropertyFirstName} personWhoFoundPropertyLastName={personWhoFoundPropertyLastName}  setPersonWhoFoundPropertyLastName={setPersonWhoFoundPropertyLastName} checkboxReturnedChecked={checkboxReturnedChecked} handleCheckboxReturn={handleCheckboxReturn} locationReturned={locationReturned} setLocationReturned={setLocationReturned} propertyReturnedTo={propertyReturnedTo}  setPropertyReturnedTo={setPropertyReturnedTo} dateReturned={dateReturned}  setDateReturned={setDateReturned} timeReturned={timeReturned} setTimeReturned={setTimeReturned}
           />
         )}
 
