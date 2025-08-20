@@ -574,10 +574,10 @@ const MedicationErrorTable = ({
           </th>
           <th>Category</th>
           <th>Status</th>
-          {permissions?.medication_error?.includes("change_incident") ||
-            permissions?.medication_error?.includes("view_details") && (
-              <th className="action-col">Action</th>
-            )}
+          {(permissions?.medication_error?.includes("change_incident") ||
+            permissions?.medication_error?.includes("view_details")) && (
+            <th className="action-col">Action</th>
+          )}
         </tr>
       </thead>
       <tbody>
@@ -658,50 +658,52 @@ const MedicationErrorTable = ({
                 </p>
               </td>
 
-              {permissions?.medication_error?.includes("change_incident") ||
-                permissions?.medication_error?.includes("view_details") && (
-                  <td
-                    data-label="Action"
-                    onClick={(event) => handleNonClickableColumnClick(event)}
-                    className="action-col"
-                  >
-                    <div className="table-actions">
-                      <PermissionsGuard
-                        model={"medication_error"}
-                        codename={"change_incident"}
-                      >
-                        {!medication.is_resolved && (
-                          <Pencil
-                            size={20}
-                            onClick={() =>
-                              navigateToModify(
-                                medication.original_report
-                                  ? medication.original_report
-                                  : medication.id
-                              )
-                            }
-                          />
-                        )}
-                      </PermissionsGuard>
-
-                      <PermissionsGuard
-                        model={"medication_error"}
-                        codename={"view_details"}
-                      >
-                        <Eye
+              {(permissions?.medication_error?.includes("change_incident") ||
+                permissions?.medication_error?.includes("view_details")) && (
+                <td
+                  data-label="Action"
+                  onClick={(event) => handleNonClickableColumnClick(event)}
+                  className="action-col"
+                >
+                  <div className="table-actions">
+                    <PermissionsGuard
+                      model={"medication_error"}
+                      codename={"change_incident"}
+                      isPage={false}
+                    >
+                      {!medication.is_resolved && (
+                        <Pencil
                           size={20}
                           onClick={() =>
-                            handleRowClick(
+                            navigateToModify(
                               medication.original_report
                                 ? medication.original_report
                                 : medication.id
                             )
                           }
                         />
-                      </PermissionsGuard>
-                    </div>
-                  </td>
-                )}
+                      )}
+                    </PermissionsGuard>
+
+                    <PermissionsGuard
+                      model={"medication_error"}
+                      codename={"view_details"}
+                      isPage={false}
+                    >
+                      <Eye
+                        size={20}
+                        onClick={() =>
+                          handleRowClick(
+                            medication.original_report
+                              ? medication.original_report
+                              : medication.id
+                          )
+                        }
+                      />
+                    </PermissionsGuard>
+                  </div>
+                </td>
+              )}
             </tr>
           ))
         ) : (

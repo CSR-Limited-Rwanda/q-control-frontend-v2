@@ -37,7 +37,6 @@ const AddUserPermissionsFrom = ({
     };
 
     try {
-
       const response = await api.post(
         `/users/${user.user.id}/permissions/`,
         payload
@@ -50,7 +49,6 @@ const AddUserPermissionsFrom = ({
         toast.error("Group ID is not defined");
       }
     } catch (error) {
-
       toast.error("Error adding user");
     } finally {
       setLoadingState((prev) => ({ ...prev, [user.id]: false })); // Reset the loading state for the clicked user
@@ -64,7 +62,6 @@ const AddUserPermissionsFrom = ({
         if (response.status === 200) {
           setUsers(response.data.results);
           setFilteredUsers(response.data.results);
-
         }
       } catch (error) {
         toast.error("Error getting users");
@@ -80,7 +77,6 @@ const AddUserPermissionsFrom = ({
       {successMessage && (
         <div className="message success">{successMessage}</div>
       )}
-      {errorMessage && <div className="message error">{errorMessage}</div>}
 
       <div className="search-input">
         {isLoading ? (
@@ -98,7 +94,6 @@ const AddUserPermissionsFrom = ({
       </div>
 
       <div className="search-results">
-        {errorMessage && <p className="error">{errorMessage}</p>}
         {filteredUsers.length > 0 &&
           filteredUsers?.map((user) => (
             <div key={user.id} className="search-result">
@@ -110,9 +105,9 @@ const AddUserPermissionsFrom = ({
               </div>
               <div className="action">
                 {existingUsers &&
-                  existingUsers.some(
-                    (existingUser) => existingUser.id === user.id
-                  ) ? (
+                existingUsers.some(
+                  (existingUser) => existingUser.id === user.id
+                ) ? (
                   <>
                     <Check />
                     Added

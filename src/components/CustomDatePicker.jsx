@@ -44,32 +44,32 @@ const CustomDatePicker = ({
   }, [selectedDate]);
 
   // Validate date format and non-future date
-   useEffect(() => {
-     if (year.length === 4 && month.length === 2 && day.length === 2) {
-       const formatted = `${year.padStart(4, "0")}-${month.padStart(
-         2,
-         "0"
-       )}-${day.padStart(2, "0")}`;
-       console.log("Validating full date:", formatted);
-       const isValidDate = dayjs(formatted, "YYYY-MM-DD", true).isValid();
-       const isFutureDate = dayjs(formatted).isAfter(dayjs(), "day");
+  useEffect(() => {
+    if (year.length === 4 && month.length === 2 && day.length === 2) {
+      const formatted = `${year.padStart(4, "0")}-${month.padStart(
+        2,
+        "0"
+      )}-${day.padStart(2, "0")}`;
+      console.log("Validating full date:", formatted);
+      const isValidDate = dayjs(formatted, "YYYY-MM-DD", true).isValid();
+      const isFutureDate = dayjs(formatted).isAfter(dayjs(), "day");
 
-       if (!isValidDate) {
-         console.log("Validation failed: Invalid date");
-         setWarning("Invalid date entered. Please enter a valid date.");
-       } else if (isFutureDate) {
-         console.log("Validation failed: Date is in the future");
-         setWarning("Please enter a date that is today or in the past.");
-       } else {
-         console.log("Validation passed: Setting date", formatted);
-         setWarning("");
-         setSelectedDate(formatted);
-       }
-     } else {
-       console.log("Incomplete date, clearing warning");
-       setWarning("");
-     }
-   }, [year, month, day]);
+      if (!isValidDate) {
+        console.log("Validation failed: Invalid date");
+        setWarning("Invalid date entered. Please enter a valid date.");
+      } else if (isFutureDate) {
+        console.log("Validation failed: Date is in the future");
+        setWarning("Please enter a date that is today or in the past.");
+      } else {
+        console.log("Validation passed: Setting date", formatted);
+        setWarning("");
+        setSelectedDate(formatted);
+      }
+    } else {
+      console.log("Incomplete date, clearing warning");
+      setWarning("");
+    }
+  }, [year, month, day, setSelectedDate]);
 
   const validateMonth = (value) => {
     if (!/^\d{0,2}$/.test(value)) {

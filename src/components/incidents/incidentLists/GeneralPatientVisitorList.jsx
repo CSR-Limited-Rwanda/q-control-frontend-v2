@@ -617,10 +617,10 @@ const GeneralIncidentTable = ({
           </th>
           <th>Care level</th>
           <th>Status</th>
-          {permissions?.general_patient_visitor?.includes("change_incident") ||
-            permissions?.general_patient_visitor?.includes("view_details") && (
-              <th className="action-col">Action</th>
-            )}
+          {(permissions?.general_patient_visitor?.includes("change_incident") ||
+            permissions?.general_patient_visitor?.includes("view_details")) && (
+            <th className="action-col">Action</th>
+          )}
         </tr>
       </thead>
       <tbody>
@@ -691,57 +691,56 @@ const GeneralIncidentTable = ({
                   {incident.status || "Not specified"}
                 </p>
               </td>
-              {permissions?.general_patient_visitor?.includes(
+              {(permissions?.general_patient_visitor?.includes(
                 "change_incident"
-              ) 
-              ||
+              ) ||
                 permissions?.general_patient_visitor?.includes(
                   "view_details"
-                ) && (
-                  <td
-                    data-label="Action"
-                    onClick={(event) => handleNonClickableColumnClick(event)}
-                    className="action-col"
-                  >
-                    <div className="table-actions">
-                      <PermissionsGuard
-                        model={"general_patient_visitor"}
-                        codename={"change_incident"}
-                        isPage={false}
-                      >
-                        {!incident.is_resolved && (
-                          <Pencil
-                            size={20}
-                            onClick={() =>
-                              navigateToModify(
-                                incident.original_report
-                                  ? incident.original_report
-                                  : incident.id
-                              )
-                            }
-                          />
-                        )}
-                      </PermissionsGuard>
-
-                      <PermissionsGuard
-                        model={"general_patient_visitor"}
-                        codename={"view_details"}
-                        isPage={false}
-                      >
-                        <Eye
+                )) && (
+                <td
+                  data-label="Action"
+                  onClick={(event) => handleNonClickableColumnClick(event)}
+                  className="action-col"
+                >
+                  <div className="table-actions">
+                    <PermissionsGuard
+                      model={"general_patient_visitor"}
+                      codename={"change_incident"}
+                      isPage={false}
+                    >
+                      {!incident.is_resolved && (
+                        <Pencil
                           size={20}
                           onClick={() =>
-                            handleRowClick(
+                            navigateToModify(
                               incident.original_report
                                 ? incident.original_report
                                 : incident.id
                             )
                           }
                         />
-                      </PermissionsGuard>
-                    </div>
-                  </td>
-                )}
+                      )}
+                    </PermissionsGuard>
+
+                    <PermissionsGuard
+                      model={"general_patient_visitor"}
+                      codename={"view_details"}
+                      isPage={false}
+                    >
+                      <Eye
+                        size={20}
+                        onClick={() =>
+                          handleRowClick(
+                            incident.original_report
+                              ? incident.original_report
+                              : incident.id
+                          )
+                        }
+                      />
+                    </PermissionsGuard>
+                  </div>
+                </td>
+              )}
             </tr>
           ))
         ) : (

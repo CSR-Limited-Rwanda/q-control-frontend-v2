@@ -64,9 +64,6 @@ const LostAndFoundForm = ({ togglePopup }) => {
   const [dateReturned, setDateReturned] = useState("");
   const [timeReturned, setTimeReturned] = useState("");
   const [actionTaken, setActionTaken] = useState("");
-  const [departmentId, setDepartmentId] = useState(
-    localStorage.getItem("departmentId")
-  );
 
   function formatTime(time) {
     if (!time) return undefined;
@@ -149,7 +146,6 @@ const LostAndFoundForm = ({ togglePopup }) => {
     const data = {
       current_step: currentStep,
       facility_id: user.facility.id,
-      department: departmentId,
       report_facility_id: currentFacility?.id,
       reported_by: {
         first_name: reporterFirstName,

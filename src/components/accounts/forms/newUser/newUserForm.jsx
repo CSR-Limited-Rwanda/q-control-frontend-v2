@@ -136,9 +136,7 @@ const NewUserForm = ({
       localStorage.setItem("userInfo", JSON.stringify(payload));
       return payload;
     } catch (error) {
-      toast.error(
-        "An error occurred while saving the data. Please try again."
-      );
+      toast.error("An error occurred while saving the data. Please try again.");
     }
   };
 
@@ -165,16 +163,6 @@ const NewUserForm = ({
             )}
             {currentStep === 3 && (
               <PermissionGroups formData={formData} setFormData={setFormData} />
-            )}
-            {errorMessage && (
-              <div className="error message">
-                <span>{errorMessage}</span>
-              </div>
-            )}
-            {successMessage && (
-              <div className="success message">
-                <span>{successMessage}</span>
-              </div>
             )}
 
             <div className="buttons">

@@ -571,10 +571,10 @@ const StaffTable = ({
           </th>
           <th>Claim contact & PH</th>
           <th>Status</th>
-          {permissions?.staff_incident_reports?.includes("change_incident") ||
-            permissions?.staff_incident_reports?.includes("view_details") && (
-              <th className="action-col">Action</th>
-            )}
+          {(permissions?.staff_incident_reports?.includes("change_incident") ||
+            permissions?.staff_incident_reports?.includes("view_details")) && (
+            <th className="action-col">Action</th>
+          )}
         </tr>
       </thead>
       <tbody>
@@ -640,54 +640,54 @@ const StaffTable = ({
                 </p>
               </td>
 
-              {permissions?.staff_incident_reports?.includes(
+              {(permissions?.staff_incident_reports?.includes(
                 "change_incident"
               ) ||
                 permissions?.staff_incident_reports?.includes(
                   "view_details"
-                ) && (
-                  <td
-                    data-label="Action"
-                    onClick={(event) => handleNonClickableColumnClick(event)}
-                    className="action-col"
-                  >
-                    <div className="table-actions">
-                      <PermissionsGuard
-                        model={"staff_incident_reports"}
-                        codename={"change_incident"}
-                        isPage={false}
-                      >
-                        <Pencil
-                          size={20}
-                          onClick={() =>
-                            navigateToModify(
-                              employee.original_report
-                                ? employee.original_report
-                                : employee.id
-                            )
-                          }
-                        />
-                      </PermissionsGuard>
+                )) && (
+                <td
+                  data-label="Action"
+                  onClick={(event) => handleNonClickableColumnClick(event)}
+                  className="action-col"
+                >
+                  <div className="table-actions">
+                    <PermissionsGuard
+                      model={"staff_incident_reports"}
+                      codename={"change_incident"}
+                      isPage={false}
+                    >
+                      <Pencil
+                        size={20}
+                        onClick={() =>
+                          navigateToModify(
+                            employee.original_report
+                              ? employee.original_report
+                              : employee.id
+                          )
+                        }
+                      />
+                    </PermissionsGuard>
 
-                      <PermissionsGuard
-                        model={"staff_incident_reports"}
-                        codename={"view_details"}
-                        isPage={false}
-                      >
-                        <Eye
-                          size={20}
-                          onClick={() =>
-                            handleRowClick(
-                              employee.original_report
-                                ? employee.original_report
-                                : employee.id
-                            )
-                          }
-                        />
-                      </PermissionsGuard>
-                    </div>
-                  </td>
-                )}
+                    <PermissionsGuard
+                      model={"staff_incident_reports"}
+                      codename={"view_details"}
+                      isPage={false}
+                    >
+                      <Eye
+                        size={20}
+                        onClick={() =>
+                          handleRowClick(
+                            employee.original_report
+                              ? employee.original_report
+                              : employee.id
+                          )
+                        }
+                      />
+                    </PermissionsGuard>
+                  </div>
+                </td>
+              )}
             </tr>
           ))
         ) : (

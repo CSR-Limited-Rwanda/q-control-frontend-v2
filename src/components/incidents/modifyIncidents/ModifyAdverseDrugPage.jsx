@@ -18,14 +18,14 @@ import postDocumentHistory from "../documentHistory/postDocumentHistory";
 import FilesList from "../documentHistory/FilesList";
 import mediaAPI from "@/utils/mediaApi";
 import { usePermission, useDepartments } from "@/context/PermissionsContext";
-import '@/styles/_modifyIncident.scss';
+import "@/styles/_modifyIncident.scss";
 import CantModify from "@/components/CantModify";
 import { useAuthentication } from "@/context/authContext";
 import BackToPage from "@/components/BackToPage";
 const ModifyAdverseDruReactionForm = ({ data }) => {
   const [savingDraft, setSavingDraft] = useState(false);
   const { incidentId } = useParams();
-  const { user } = useAuthentication()
+  const { user } = useAuthentication();
   const [incident, setIncident] = useState(data);
   const [currentStep, setCurrentStep] = useState(1);
   const [status, setStatus] = useState(incident?.status);
@@ -37,16 +37,24 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   const [firstName, setFirstName] = useState(
     incident?.patient_name?.first_name
   );
-  const [lastName, setLastName] = useState(incident?.patient_name?.last_name ?? "");
+  const [lastName, setLastName] = useState(
+    incident?.patient_name?.last_name ?? ""
+  );
   const [sex, setSex] = useState(incident?.patient_name?.gender ?? "");
-  const [incidentDate, setIncidentDate] = useState(incident?.incident_date ?? "");
-  const [incidentTime, setIncidentTime] = useState(incident?.incident_time ?? "");
+  const [incidentDate, setIncidentDate] = useState(
+    incident?.incident_date ?? ""
+  );
+  const [incidentTime, setIncidentTime] = useState(
+    incident?.incident_time ?? ""
+  );
   const [incidentMr, setIncidentMr] = useState(
     incident?.patient_name?.medical_record_number ?? ""
   );
   const [address, setAddress] = useState(incident?.patient_name?.address ?? "");
   const [state, setState] = useState(incident?.patient_name?.state ?? "");
-  const [zipCode, setZipCode] = useState(incident?.patient_name?.zip_code ?? "");
+  const [zipCode, setZipCode] = useState(
+    incident?.patient_name?.zip_code ?? ""
+  );
   const [city, setCity] = useState(incident?.patient_name?.city ?? "");
   const [phoneNumber, setPhoneNumber] = useState(
     incident?.patient_name?.phone_number ?? ""
@@ -81,9 +89,15 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   const [observersLastName, setObserversLastName] = useState(
     incident?.observers_name?.last_name ?? ""
   );
-  const [timeOfReport, setTimeOfReport] = useState(incident?.time_of_report ?? "");
-  const [dateOfReport, setDateOfReport] = useState(incident?.date_of_report ?? "");
-  const [eventDetails, setEventDetails] = useState(incident?.event_detail ?? "");
+  const [timeOfReport, setTimeOfReport] = useState(
+    incident?.time_of_report ?? ""
+  );
+  const [dateOfReport, setDateOfReport] = useState(
+    incident?.date_of_report ?? ""
+  );
+  const [eventDetails, setEventDetails] = useState(
+    incident?.event_detail ?? ""
+  );
   const [suspectedMedication, setSuspectedMeedication] = useState(
     incident?.suspected_medication ?? ""
   );
@@ -99,7 +113,9 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   const [dateInformation, setDateInformation] = useState(
     incident?.date_of_information ?? ""
   );
-  const [reaction, setReaction] = useState(incident?.information_reaction ?? "");
+  const [reaction, setReaction] = useState(
+    incident?.information_reaction ?? ""
+  );
   const [adverseReactionDate, setAdverseReactionDate] = useState(
     incident?.date_of_adverse_reaction ?? ""
   );
@@ -148,11 +164,11 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
     incident?.other_route_description ?? ""
   );
   const [infoSource, setInfoSource] = useState(() => {
-    if (incident?.nurse_note) return "Nurse note"
-    if (incident?.progress_note) return "Progress note"
-    if (incident?.other_information_can_be_found_in) return "Other"
-    return ""
-  })
+    if (incident?.nurse_note) return "Nurse note";
+    if (incident?.progress_note) return "Progress note";
+    if (incident?.other_information_can_be_found_in) return "Other";
+    return "";
+  });
 
   const [nurseNote, setNurseNote] = useState(!!incident?.nurse_note);
   const [progressNote, setProgressNote] = useState(!!incident?.progress_note);
@@ -184,7 +200,41 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   const permission = usePermission();
   const department = useDepartments();
 
-  const coerceBool = (v) => v === true || v === "true" || v === 1 || v === "1"
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department
+  );
+
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartmentId(event.target.value);
+    console.log(event.target.value);
+  };
+
+  useEffect(() => {
+    console.log(data);
+    if (!data.report_facility.id) return;
+
+    const fetchDepartments = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/departments/`, {
+          params: { facility_id: data.report_facility.id },
+        });
+        if (response.status === 200) {
+          console.log(response.data.results);
+          setDepartments(response.data.results);
+        }
+      } catch (error) {
+        toast.error("Error fetching departments");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, [data.report_facility.id]);
+  const coerceBool = (v) => v === true || v === "true" || v === 1 || v === "1";
 
   useEffect(() => {
     // get documents
@@ -195,11 +245,8 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
 
     fetchIncidentDocuments();
@@ -222,7 +269,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-
         setUploadingDocuments(false);
         toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -230,7 +276,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
     } catch (error) {
       toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-
     }
   };
   const handleOutcomeDescription = (e) => {
@@ -242,7 +287,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         prevSelected.filter((item) => item !== value)
       );
     }
-
   };
 
   const handleReactionTreated = () => {
@@ -259,7 +303,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         prevSelected.filter((item) => item !== value)
       );
     }
-
   };
   const handleSelection = (agreementName) => {
     setSelectedAgreements((prevSelected) => {
@@ -279,32 +322,38 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   };
 
   const handleProgressNote = (value) => {
-    setInfoSource(value)
-    setNurseNote(value === "Nurse note")
-    setProgressNote(value === "Progress note")
-    const isOther = value === "Other" || value === "imaging reports"
-    setOtherNote(isOther)
-    setOtherNoteDescription(isOther && value === "imaging reports" ? "imaging reports" : "")
+    setInfoSource(value);
+    setNurseNote(value === "Nurse note");
+    setProgressNote(value === "Progress note");
+    const isOther = value === "Other" || value === "imaging reports";
+    setOtherNote(isOther);
+    setOtherNoteDescription(
+      isOther && value === "imaging reports" ? "imaging reports" : ""
+    );
   };
 
   const handleModify = async (incidentStatus) => {
     setIsLoading(true);
 
-    let src = infoSource
+    let src = infoSource;
     if (!src) {
-      if (coerceBool(nurseNote)) src === "Nurse note"
-      else if (coerceBool(progressNote)) src = "Progress note"
-      else if (coerceBool(otherNote)) src = "Other"
+      if (coerceBool(nurseNote)) src === "Nurse note";
+      else if (coerceBool(progressNote)) src = "Progress note";
+      else if (coerceBool(otherNote)) src = "Other";
     }
-    const normalizedNurse = src === "Nurse note"
-    const normalizedProg = src === "Progress note"
-    const normalizedOther = src === "Other" || (otherNoteDescription || "").trim().length > 0
+    const normalizedNurse = src === "Nurse note";
+    const normalizedProg = src === "Progress note";
+    const normalizedOther =
+      src === "Other" || (otherNoteDescription || "").trim().length > 0;
 
-    const normalizedOtherDesc = normalizedOther ? (otherNoteDescription || "") : ""
+    const normalizedOtherDesc = normalizedOther
+      ? otherNoteDescription || ""
+      : "";
 
     const incidentData = {
       action: "modify",
-      report_facility: user.facility.id,
+      report_facility: data.report_facility.id,
+      department: parseInt(selectedDepartmentId),
       patient_type: victimType,
       patient_name: {
         first_name: firstName,
@@ -387,7 +436,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       severity_rating: severityRating,
     };
     try {
-
       const response = await api.patch(
         `/incidents/adverse-drug-reaction/${incidentId}/`,
         cleanedData(incidentData)
@@ -402,15 +450,13 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       }
     } catch (error) {
       if (error.response) {
-
         toast.error(
           error.response.data.error ||
-          error.response.data.message ||
-          "Error updating incident"
+            error.response.data.message ||
+            "Error updating incident"
         );
       } else {
         toast.error("Unknown error updating incident");
-
       }
 
       setIsLoading(false);
@@ -473,12 +519,13 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${status === "Draft"
-                ? "in-progress"
-                : status === "Closed"
+              className={`follow-up ${
+                status === "Draft"
+                  ? "in-progress"
+                  : status === "Closed"
                   ? "closed"
                   : "Open"
-                }`}
+              }`}
             >
               {status}
             </span>
@@ -487,6 +534,22 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
         <form className="modify-forms">
           <div className="inputs-group modify-inputs">
             <h3 className="full">General Info</h3>
+            <div className="department-select field">
+              <label htmlFor="department">Department</label>
+              <select
+                id="department"
+                value={selectedDepartmentId}
+                onChange={handleDepartmentChange}
+                disabled={isLoading}
+              >
+                <option value="">Select a department</option>
+                {departments.map((department) => (
+                  <option key={department.id} value={department.id}>
+                    {department.name}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="field date">
               <label htmlFor="">Select type</label>
               <CustomSelectInput
@@ -942,18 +1005,18 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
               <div>
                 {outcomeType === "Moderate"
                   ? outComeData.Moderate.map((el, i) => (
-                    <div key={i} className="outcome-data check-box">
-                      <input
-                        type="checkbox"
-                        name="moderateOutcome"
-                        id={el.name}
-                        value={el.name}
-                        onChange={handleOutcomeDescription}
-                        checked={selectedDescription.includes(el.name)}
-                      />
-                      <label htmlFor={el.name}>{el.name}</label>
-                    </div>
-                  ))
+                      <div key={i} className="outcome-data check-box">
+                        <input
+                          type="checkbox"
+                          name="moderateOutcome"
+                          id={el.name}
+                          value={el.name}
+                          onChange={handleOutcomeDescription}
+                          checked={selectedDescription.includes(el.name)}
+                        />
+                        <label htmlFor={el.name}>{el.name}</label>
+                      </div>
+                    ))
                   : null}
               </div>
 
@@ -970,18 +1033,18 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
               <div>
                 {outcomeType === "Severe"
                   ? outComeData.Severe.map((el, i) => (
-                    <div key={i} className="outcome-data check-box">
-                      <input
-                        type="checkbox"
-                        name="severeOutcome"
-                        id={el.name}
-                        value={el.name}
-                        onChange={handleOutcomeDescription}
-                        checked={selectedDescription.includes(el.name)}
-                      />
-                      <label htmlFor={el.name}>{el.name}</label>
-                    </div>
-                  ))
+                      <div key={i} className="outcome-data check-box">
+                        <input
+                          type="checkbox"
+                          name="severeOutcome"
+                          id={el.name}
+                          value={el.name}
+                          onChange={handleOutcomeDescription}
+                          checked={selectedDescription.includes(el.name)}
+                        />
+                        <label htmlFor={el.name}>{el.name}</label>
+                      </div>
+                    ))
                   : null}
               </div>
 

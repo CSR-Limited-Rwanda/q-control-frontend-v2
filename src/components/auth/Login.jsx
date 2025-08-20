@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
 import toast from "react-hot-toast";
-import '@/styles/_login.scss';
+import "@/styles/_login.scss";
 import { CheckSquare, Key, Mail, Square } from "lucide-react";
 import React, { useState } from "react";
 import Button from "../forms/Button";
@@ -12,7 +12,6 @@ const LoginPopup = () => {
   // login form
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
 
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -34,7 +33,10 @@ const LoginPopup = () => {
 
       if (result.success) {
         // Use the auth context login method
-        const loginSuccess = await login(result.accessToken, result.refreshToken);
+        const loginSuccess = await login(
+          result.accessToken,
+          result.refreshToken
+        );
 
         if (loginSuccess) {
           toast.success("Login successful!");
@@ -52,14 +54,19 @@ const LoginPopup = () => {
   };
   return (
     <div className="login-page">
-      <div className="background">
-        {/* holds the background */}
-      </div>
+      <div className="background">{/* holds the background */}</div>
       <div className="login-page-content">
         <div className="form">
-          <img src="/logo-blue.svg" alt="" className='logo' />
+          <img src="/logo-blue.svg" alt="" className="logo" />
           <h1>Log into your account</h1>
-          <p>Please enter your credentials to access the cohesive quality control platform</p>
+          <p>
+            Please enter your credentials to access the cohesive quality control
+            platform
+          </p>
+
+          {/* {errorMessage && <p className="message error">{errorMessage}</p>}
+
+          {successMessage && <p className="message success">{successMessage}</p>} */}
 
           <form>
             <div className="form-control">
@@ -91,10 +98,11 @@ const LoginPopup = () => {
 
             <div className="links">
               {/* remember me */}
-              <div className="remember-me" onClick={() => setRememberMe(!rememberMe)}>
-                {
-                  rememberMe ? <CheckSquare size={20} /> : <Square size={20} />
-                }
+              <div
+                className="remember-me"
+                onClick={() => setRememberMe(!rememberMe)}
+              >
+                {rememberMe ? <CheckSquare size={20} /> : <Square size={20} />}
                 <label htmlFor="rememberMe">Remember me</label>
               </div>
               {/* forgot password */}
@@ -102,7 +110,11 @@ const LoginPopup = () => {
                 <a href="/forgot-password">Forgot password?</a>
               </div>
             </div>
-            <Button text={"Login"} isLoading={isLoading} onClick={handleSubmit} />
+            <Button
+              text={"Login"}
+              isLoading={isLoading}
+              onClick={handleSubmit}
+            />
           </form>
         </div>
       </div>

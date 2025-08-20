@@ -97,11 +97,7 @@ const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
               required
             />
           </div>
-          {errorMessage && (
-            <div className="error message">
-              <span>{errorMessage}</span>
-            </div>
-          )}
+
           {successMessage && (
             <div className="success message">
               <span>{successMessage}</span>

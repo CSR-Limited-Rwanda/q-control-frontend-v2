@@ -617,12 +617,12 @@ const GrievanceTable = ({
             </div>
           </th>
           <th>Status</th>
-          {permissions?.patient_visitor_grievance?.includes(
+          {(permissions?.patient_visitor_grievance?.includes(
             "change_incident"
           ) ||
             permissions?.patient_visitor_grievance?.includes(
               "view_details"
-            ) && <th className="action-col">Action</th>}
+            )) && <th className="action-col">Action</th>}
         </tr>
       </thead>
       <tbody>
@@ -687,12 +687,12 @@ const GrievanceTable = ({
                 </p>
               </td>
 
-              {permissions?.patient_visitor_grievance?.includes(
+              {(permissions?.patient_visitor_grievance?.includes(
                 "change_incident"
               ) ||
                 permissions?.patient_visitor_grievance?.includes(
                   "view_details"
-                ) && (
+                )) && (
                   <td
                     data-label="Action"
                     onClick={(event) => handleNonClickableColumnClick(event)}
@@ -702,6 +702,7 @@ const GrievanceTable = ({
                       <PermissionsGuard
                         model={"patient_visitor_grievance"}
                         codename="change_incident"
+                        isPage={false}
                       >
                         {!grievance.is_resolved && (
                           <Pencil
@@ -719,6 +720,7 @@ const GrievanceTable = ({
                       <PermissionsGuard
                         model={"patient_visitor_grievance"}
                         codename="view_details"
+                        isPage={false}
                       >
                         <Eye
                           size={20}

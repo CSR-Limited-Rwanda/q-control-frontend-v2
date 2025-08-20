@@ -76,8 +76,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     localStorage.getItem("departmentId")
   );
 
-  console.log(facilityId);
-
   useEffect(() => {
     currentStepRef.current = currentStep;
   }, [currentStep]);
@@ -180,27 +178,28 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
     }));
     const incidentData = {
       facility_id: user?.facility?.id,
-      department: user?.department?.id,
       current_step: currentStep,
       incident_status: statusType,
       report_facility_id: currentFacility?.id,
       patient_info:
         firstName && lastName
           ? {
-            first_name: firstName,
-            last_name: lastName,
-            profile_type: "Patient",
-            age: age,
-            date_of_birth: dateBirth,
-          }
+              first_name: firstName,
+              last_name: lastName,
+              profile_type: "Patient",
+              age: age,
+              date_of_birth: dateBirth,
+            }
           : null,
       job_title: jobTitle,
 
-      supervisor: {
-        first_name: supervisorFirstName,
-        last_name: supervisorLastName,
-        profile_type: "Supervisor",
-      },
+      ...(toldSupervisor && {
+        supervisor: {
+          first_name: supervisorFirstName,
+          last_name: supervisorLastName,
+          profile_type: "Supervisor",
+        },
+      }),
       date_of_injury_or_near_miss: dateOfInjury,
       time_of_injury_or_near_miss: timeOfInjury,
       witnesses: witnessesList.length > 0 ? witnessesList : null,
@@ -279,9 +278,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         !dateSeenDoctor &&
         !timeSeenDoctor
       ) {
-        toast.error(
-          "Please fill all required fields for Doctor information"
-        );
+        toast.error("Please fill all required fields for Doctor information");
         isValid = false;
         return;
       }
@@ -303,10 +300,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
           doctor_consulted_info:
             doctorFirstName && doctorLastName
               ? {
-                first_name: doctorFirstName,
-                last_name: doctorLastName,
-                profile_type: "Physician",
-              }
+                  first_name: doctorFirstName,
+                  last_name: doctorLastName,
+                  profile_type: "Physician",
+                }
               : null,
 
           previous_injury: injuredBody,
@@ -368,6 +365,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
     } catch (error) {
       console.error("Error submitting step 4: ", error);
+      console.log(error);
       return;
     }
     setSuccess(true);
@@ -394,7 +392,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
         "Time of Injury": timeOfInjury,
       });
 
-
       if (
         toldSupervisor &&
         !supervisorFirstName.trim() &&
@@ -417,6 +414,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
             first_name: el.first_name,
             last_name: el.last_name,
           }));
+
           updateStepOne(
             cleanedData({
               current_step: currentStep,
@@ -426,20 +424,22 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               patient_info:
                 firstName && lastName
                   ? {
-                    first_name: firstName,
-                    last_name: lastName,
-                    profile_type: "Patient",
-                    age: age,
-                    date_of_birth: dateBirth,
-                  }
+                      first_name: firstName,
+                      last_name: lastName,
+                      profile_type: "Patient",
+                      age: age,
+                      date_of_birth: dateBirth,
+                    }
                   : null,
               job_title: jobTitle,
 
-              supervisor: {
-                first_name: supervisorFirstName,
-                last_name: supervisorLastName,
-                profile_type: "Supervisor",
-              },
+              ...(toldSupervisor && {
+                supervisor: {
+                  first_name: supervisorFirstName,
+                  last_name: supervisorLastName,
+                  profile_type: "Supervisor",
+                },
+              }),
               date_of_injury_or_near_miss: dateOfInjury,
               time_of_injury_or_near_miss: timeOfInjury,
               witnesses: witnessesList.length > 0 ? witnessesList : null,

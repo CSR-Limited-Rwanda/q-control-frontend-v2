@@ -39,7 +39,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
     incident?.severity_rating
   );
   const [status, setStatus] = useState(incident?.status);
-  const [selfInjury, setSelfInjury] = useState(
+   const [selfInjury, setSelfInjury] = useState(
     incident?.type_of_incident &&
     JSON.parse(incident.type_of_incident).incidents.includes("Other Types")
   );
@@ -117,6 +117,11 @@ const ModifyWorkplaceIncident = ({ data }) => {
     incident?.type_of_incident
       ? JSON.parse(incident?.type_of_incident).incidents
       : []
+  );
+
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department.id
   );
 
   const [otherExplanation, setOtherExplanation] = useState("");
@@ -208,6 +213,10 @@ const ModifyWorkplaceIncident = ({ data }) => {
     localStorage.getItem("workplaceViolenceId")
   );
 
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartmentId(event.target.value);
+  };
+
   const handleInjuryCheckChange = (value) => {
     setInjuryCheck(value);
   };
@@ -229,6 +238,31 @@ const ModifyWorkplaceIncident = ({ data }) => {
 
     fetchIncidentDocuments();
   }, []);
+
+  useEffect(() => {
+    console.log(data)
+    if (!data.report_facility.id) return;
+
+    const fetchDepartments = async () => {
+      try {
+        setIsLoading(true);
+        const response = await api.get(`/departments/`, {
+          params: { facility_id: data.report_facility.id },
+        });
+        if (response.status === 200) {
+          console.log(response.data.results);
+          setDepartments(response.data.results);
+        }
+      } catch (error) {
+        toast.error("Error fetching departments");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, [data.report_facility.id]);
 
   const handlePreviousContact = (value) => {
     setPreviousContact(value);
@@ -593,8 +627,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
 
     const incidentData = {
       action: "modify",
-      report_facility: user.facility.id,
-      department: user.department.id,
+      report_facility: data.report_facility.id,
+      department: parseInt(selectedDepartmentId),
       injuryData,
       victim_has_contact_with_assailant: previousContact,
       type_of_incident: jsonData,
@@ -780,6 +814,22 @@ const ModifyWorkplaceIncident = ({ data }) => {
             </p>
           </div>
           <div className="step inputs-group">
+          <div className="department-select field">
+                <label htmlFor="department">Department</label>
+                <select
+                  id="department"
+                  value={selectedDepartmentId}
+                  onChange={handleDepartmentChange}
+                  disabled={isLoading}
+                >
+                  <option value="">Select a department</option>
+                  {departments.map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             <h4>
               Type of incident{" "}
               <span>
