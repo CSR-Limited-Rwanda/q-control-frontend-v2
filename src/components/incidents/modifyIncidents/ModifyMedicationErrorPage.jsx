@@ -113,7 +113,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
 
   const [departments, setDepartments] = useState([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
-    data.department.id
+    data.department ? data.department.id : ""
   );
 
   const handleDepartmentChange = (event) => {
@@ -121,6 +121,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
   };
 
   useEffect(() => {
+    console.log(data)
     if (!data.report_facility.id) return;
 
     const fetchDepartments = async () => {
@@ -274,6 +275,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       }
     } catch (error) {
       if (error.response) {
+        console.log("error", error)
         toast.error(
           error.response.data.message ||
             error.response.data.error ||
