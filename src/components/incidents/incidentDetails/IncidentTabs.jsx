@@ -12,7 +12,7 @@ const IncidentTabs = ({
   investigation,
   showInvestigationTab,
   reviewsCount,
-  incidentDocumentHistoryCount
+  incidentDocumentHistoryCount,
 }) => {
   const [activeTab, setActiveTab] = useState("documentHistoryCount");
   useState(0);
@@ -25,6 +25,7 @@ const IncidentTabs = ({
   useEffect(() => {
     const intervalId = setInterval(() => {
       const currentCount = localStorage.getItem("incidentDocumentCount") || "0";
+
       const parsedCount = parseInt(currentCount, 10);
       setIncidentDocumentCount(isNaN(parsedCount) ? 0 : parsedCount);
     }, 1000);
@@ -32,7 +33,7 @@ const IncidentTabs = ({
     return () => {
       clearInterval(intervalId);
     };
-  }, []);// Empty dependency array to run only once (on mount)
+  }, []); // Empty dependency array to run only once (on mount)
 
   return (
     <div className="incident-type-tabs">
@@ -76,7 +77,7 @@ const IncidentTabs = ({
           }`}
         >
           <p>Documents</p>
-          <div className="counter">{incidentDocumentHistoryCount}</div>
+          <div className="counter">{incidentDocumentCount}</div>
         </div>
         {showInvestigationTab && (
           <div

@@ -72,7 +72,6 @@ const LostFoundDetailsContent = () => {
 
   useEffect(() => {
     fetchIncidentDetails();
-
   }, [incidentId, useOriginalVersion]);
   useEffect(() => {
     const getDocumentHistory = async () => {
@@ -118,6 +117,7 @@ const LostFoundDetailsContent = () => {
             showClosedManager={false}
             model={"lost_and_found"}
             versionCodeName={"view_lostandfoundversion"}
+            localStorageName={"lostAndFoundId"}
           />
 
           <div className="details">
@@ -185,14 +185,17 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
     const fetchDocuments = async () => {
       try {
         const response = await api.get(
-          `/incidents/lost-and-found/${incidentId}/documents/`
+          `/incidents/lost-found/${incidentId}/documents/`
         );
         if (response.status === 200) {
-          setDocuments(response.data);
+          setDocuments(response.data.results);
 
-          localStorage.setItem("incidentDocumentCount", response.data.length);
+          localStorage.setItem(
+            "incidentDocumentCount",
+            response.data.results.length
+          );
         }
-      } catch (error) { }
+      } catch (error) {}
     };
     fetchDocuments();
   }, [incidentId]);
@@ -234,13 +237,13 @@ const LostFoundDetails = () => {
     <div>
       <DashboardLayout
         children={<LostFoundDetailsContent />}
-      // breadCrumbs={
-      //   changeBreadCrumbs ? (
-      //     <FacilityDetailsBreadCrumbs incidentID={incidentId} />
-      //   ) : (
-      //     <BreadCrumbs />
-      //   )
-      // }
+        // breadCrumbs={
+        //   changeBreadCrumbs ? (
+        //     <FacilityDetailsBreadCrumbs incidentID={incidentId} />
+        //   ) : (
+        //     <BreadCrumbs />
+        //   )
+        // }
       />
     </div>
   );

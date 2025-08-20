@@ -94,6 +94,7 @@ const GeneralIncidentDetailsContent = () => {
             showClosedManager={false}
             model={"general_patient_visitor"}
             versionCodeName={"view_generalpatientvisitorversion"}
+            localStorageName={"generalIncidentId"}
           />
           <div className="details">
             <IncidentDetails
@@ -164,9 +165,12 @@ const IncidentDocuments = ({ incidentId }) => {
           `/incidents/general-visitor/${incidentId}/documents/`
         );
         if (response.status === 200) {
-          setDocuments(response.data);
+          setDocuments(response.data.results);
 
-          localStorage.setItem("incidentDocumentCount", response.data.length);
+          localStorage.setItem(
+            "incidentDocumentCount",
+            response.data.results.length
+          );
         }
       } catch (error) {
         console.error("Error fetching documents:", error);

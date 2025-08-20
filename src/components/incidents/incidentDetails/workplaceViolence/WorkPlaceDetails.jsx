@@ -137,6 +137,7 @@ const WorkPlaceDetailsContent = () => {
               showClosedManager={true}
               model={"workplace_violence_reports"}
               versionCodeName={"view_workplaceviolenceversion"}
+              localStorageName={"workplaceViolenceId"}
             />
           ) : (
             ""
@@ -223,9 +224,12 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
           `/incidents/workplace-violence/${incidentId}/documents/`
         );
         if (response.status === 200) {
-          setDocuments(response.data);
+          setDocuments(response.data.results);
 
-          localStorage.setItem("incidentDocumentCount", response.data.length);
+          localStorage.setItem(
+            "incidentDocumentCount",
+            response.data.results.length
+          );
         }
       } catch (error) {}
     };

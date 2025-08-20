@@ -30,7 +30,7 @@ import CloseIcon from "@/components/CloseIcon";
 import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
-  const { permissions } = useGetPermissions()
+  const { permissions } = useGetPermissions();
   const [incident, setIncident] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
@@ -195,7 +195,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
   };
 
   useEffect(() => {
-    console.log(data)
+    console.log(data);
     if (!data.report_facility) return;
 
     const fetchDepartments = async () => {
@@ -205,7 +205,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
           params: { facility_id: data.report_facility },
         });
         if (response.status === 200) {
-          console.log("first")
+          console.log("first");
           console.log(response.data.results);
           setDepartments(response.data.results);
         }
@@ -230,7 +230,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
         }
-      } catch (error) { }
+      } catch (error) {}
     };
 
     fetchIncidentDocuments();
@@ -243,7 +243,6 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
   };
   const handleSaveAndSubmit = () => {
     setStatus("Open");
-    setIsLoading(true);
     handleModify("Open");
     setIsLoading(true);
   };
@@ -259,32 +258,32 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       patient_name:
         patientFirstName && patientLastName
           ? {
-            first_name: patientFirstName,
-            last_name: patientLastName,
-            age: age,
-            date_of_birth: dateBirth,
-            medical_record_number: medicalRecord,
-            profile_type: "Patient",
-          }
+              first_name: patientFirstName,
+              last_name: patientLastName,
+              age: age,
+              date_of_birth: dateBirth,
+              medical_record_number: medicalRecord,
+              profile_type: "Patient",
+            }
           : null,
 
       form_initiated_by:
         formInitiatedByFirstName && formInitiatedByLastName
           ? {
-            first_name: formInitiatedByFirstName,
-            last_name: formInitiatedByLastName,
-            profile_type: "Staff",
-          }
+              first_name: formInitiatedByFirstName,
+              last_name: formInitiatedByLastName,
+              profile_type: "Staff",
+            }
           : null,
       title: formInitiatedByTitle,
       complaint_made_by:
         complaintByFirstName && complaintByLastName
           ? {
-            first_name: complaintByFirstName,
-            last_name: complaintByLastName,
-            phone_number: phoneNumber,
-            profile_type: "Patient",
-          }
+              first_name: complaintByFirstName,
+              last_name: complaintByLastName,
+              phone_number: phoneNumber,
+              profile_type: "Patient",
+            }
           : null,
       relationship_to_patient: patientRelationship,
       source_of_information: sourceOfInformation,
@@ -295,15 +294,17 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       administrator_notified:
         administratorFirstName && administratorLastName
           ? {
-            first_name: administratorFirstName,
-            last_name: administratorLastName,
-            profile_type: "Staff",
-          }
+              first_name: administratorFirstName,
+              last_name: administratorLastName,
+              profile_type: "Staff",
+            }
           : null,
       notification_date: grivanceDate,
       notification_time: grivanceTime,
       status: incidentStatus,
     };
+
+    console.log(incidentData);
 
     try {
       const response = await api.patch(
@@ -315,6 +316,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         setSavingDraft(false);
         toast.success("Incident updated successfully");
         setIncident(response.data.incident);
+        console.log(response.data);
 
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
@@ -322,8 +324,8 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       if (error.response) {
         toast.error(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error while updating the incident"
+            error.response.data.error ||
+            "Error while updating the incident"
         );
       } else {
         toast.error("Unknown error while updating the incident");
@@ -353,7 +355,9 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
         <h2 className="title">Modifying grievance incident</h2>
         {investigation ? (
           <>
-            {permissions?.staff_incident_reports?.includes("view_grievanceinvestigation") && (
+            {permissions?.patient_visitor_grievance?.includes(
+              "view_grievanceinvestigation"
+            ) && (
               <Link
                 href={`/incidents/grievance/${grievanceId}`}
                 onClick={() => {
@@ -366,11 +370,12 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
                 </button>
               </Link>
             )}
-
           </>
         ) : (
           <>
-            {permissions?.staff_incident_reports?.includes("add_grievanceinvestigation") && (
+            {permissions?.patient_visitor_grievance?.includes(
+              "add_grievanceinvestigation"
+            ) && (
               <button
                 onClick={handleShowInvestigationForm}
                 className="tertiary-button"
@@ -416,12 +421,13 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
           <p>
             Status :{" "}
             <span
-              className={`follow-up ${status === "Draft"
-                ? "in-progress"
-                : status === "Closed"
+              className={`follow-up ${
+                status === "Draft"
+                  ? "in-progress"
+                  : status === "Closed"
                   ? "closed"
                   : "Open"
-                }`}
+              }`}
             >
               {status}
             </span>
@@ -431,21 +437,21 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
           <div className="inputs-group modify-inputs">
             <h3 className="full">General info</h3>
             <div className="department-select field">
-                <label htmlFor="department">Department</label>
-                <select
-                  id="department"
-                  value={selectedDepartmentId}
-                  onChange={handleDepartmentChange}
-                  disabled={isLoading}
-                >
-                  <option value="">Select a department</option>
-                  {departments.map((department) => (
-                    <option key={department.id} value={department.id}>
-                      {department.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <label htmlFor="department">Department</label>
+              <select
+                id="department"
+                value={selectedDepartmentId}
+                onChange={handleDepartmentChange}
+                disabled={isLoading}
+              >
+                <option value="">Select a department</option>
+                {departments.map((department) => (
+                  <option key={department.id} value={department.id}>
+                    {department.name}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="field">
               <label htmlFor="incidentDate">Date</label>
 
