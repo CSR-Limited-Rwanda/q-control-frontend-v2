@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { format, parseISO } from "date-fns";
-import { File } from 'lucide-react';
+import { File } from "lucide-react";
 import DateFormatter from "@/components/DateFormatter";
 
-import "../../../../styles/_medication_details.scss"
+import "../../../../styles/_medication_details.scss";
+import { useEffect } from "react";
 
 const GrievanceInvestigationInfo = ({ data, incidentStatuses }) => {
   const formattedDate = (dateString) => {
@@ -14,16 +15,20 @@ const GrievanceInvestigationInfo = ({ data, incidentStatuses }) => {
       return "Not provided";
     }
   };
-  return data ? (
+
+  useEffect(() => {
+    console.log(data);
+  }, []);
+  return data.lenght > 0 ? (
     <>
-      {data.map((investigation) => (
-        <div className="incident-details">
+      {data.map((investigation, index) => (
+        <div key={index} className="incident-details">
           <div className="number-mrn">
             <div className="phone-number">
               <small>Investigation conducted by</small>
               <h4>
                 {investigation.conducted_by?.last_name ||
-                  investigation.conducted_by?.first_name
+                investigation.conducted_by?.first_name
                   ? `${investigation.conducted_by?.last_name} ${investigation.conducted_by?.first_name}`
                   : "Not provided"}
               </h4>
@@ -85,7 +90,9 @@ const GrievanceInvestigationInfo = ({ data, incidentStatuses }) => {
             <div className="phone-number">
               <small>Date extension letter sent to patient and/or family</small>
               <h4>
-                <DateFormatter dateString={investigation.date_extension_letter_sent} />
+                <DateFormatter
+                  dateString={investigation.date_extension_letter_sent}
+                />
               </h4>
             </div>
             <div className="phone-number">
@@ -102,7 +109,10 @@ const GrievanceInvestigationInfo = ({ data, incidentStatuses }) => {
                     <div className="col">
                       <h4>{data.extension_letter_copy.name}</h4>
                       <span>
-                        Added on {formattedDate(investigation.date_extension_letter_sent)}{" "}
+                        Added on{" "}
+                        {formattedDate(
+                          investigation.date_extension_letter_sent
+                        )}{" "}
                       </span>
                     </div>
                   </div>
@@ -120,7 +130,9 @@ const GrievanceInvestigationInfo = ({ data, incidentStatuses }) => {
               </small>
               <h4>
                 {" "}
-                <DateFormatter dateString={investigation.date_response_letter_sent} />
+                <DateFormatter
+                  dateString={investigation.date_response_letter_sent}
+                />
               </h4>
             </div>
             <div className="phone-number">
@@ -137,7 +149,8 @@ const GrievanceInvestigationInfo = ({ data, incidentStatuses }) => {
                     <div className="col">
                       <h4>{investigation.response_letter_copy.name}</h4>
                       <span>
-                        Added on {formattedDate(investigation.date_response_letter_sent)}{" "}
+                        Added on{" "}
+                        {formattedDate(investigation.date_response_letter_sent)}{" "}
                       </span>
                     </div>
                   </div>
@@ -161,16 +174,14 @@ const GrievanceInvestigationInfo = ({ data, incidentStatuses }) => {
             </div>
             <div className="phone-number">
               <small>Grievance report</small>
-              <h4>
-                {investigation.grievance_report.id}
-              </h4>
+              <h4>{investigation.grievance_report.id}</h4>
             </div>
           </div>
         </div>
       ))}
     </>
   ) : (
-    "No investigation has been added to this incident"
+    "No investigation has been added to this incident."
   );
 };
 

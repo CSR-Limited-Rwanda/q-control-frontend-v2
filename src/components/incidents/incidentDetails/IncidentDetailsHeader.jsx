@@ -363,6 +363,7 @@ const IncidentDetailsHeader = ({
           path={apiLink}
           incidentID={incidentDetailsId}
           handleClose={toggleShowSendToDepartmentForm}
+          data={data?.incident}
         />
       ) : (
         ""

@@ -1,9 +1,9 @@
-'use client'
-import "../../../../styles/_medication_details.scss"
+"use client";
+import "../../../../styles/_medication_details.scss";
 import DateFormatter from "@/components/DateFormatter";
 
 const StaffInvestigationInfo = ({ data, incidentStatuses }) => {
-  return data ? (
+  return data.length > 0 ? (
     <>
       {data.map((investigation) => (
         <div key={investigation.id} className="incident-details">
@@ -12,13 +12,17 @@ const StaffInvestigationInfo = ({ data, incidentStatuses }) => {
             <div className="phone-number">
               <small>Name of injured staff</small>
               <h4>
-                {investigation.name_of_injured_staff?.last_name || "Not provided"}{" "}
-                {investigation.name_of_injured_staff?.first_name || "Not provided"}
+                {investigation.name_of_injured_staff?.last_name ||
+                  "Not provided"}{" "}
+                {investigation.name_of_injured_staff?.first_name ||
+                  "Not provided"}
               </h4>
             </div>
             <div className="phone-number">
               <small>Sex</small>
-              <h4>{investigation.name_of_injured_staff?.gender || "Not provided"}</h4>
+              <h4>
+                {investigation.name_of_injured_staff?.gender || "Not provided"}
+              </h4>
             </div>
             <div className="phone-number">
               <small>Date of hire</small>
@@ -41,19 +45,28 @@ const StaffInvestigationInfo = ({ data, incidentStatuses }) => {
           <div className="number-mrn">
             <div className="phone-number">
               <small>Address</small>
-              <h4>{investigation.name_of_injured_staff?.address || "Not provided"}</h4>
+              <h4>
+                {investigation.name_of_injured_staff?.address || "Not provided"}
+              </h4>
             </div>
             <div className="phone-number">
               <small>City</small>
-              <h4>{investigation.name_of_injured_staff?.city || "Not provided"}</h4>
+              <h4>
+                {investigation.name_of_injured_staff?.city || "Not provided"}
+              </h4>
             </div>
             <div className="phone-number">
               <small>State</small>
-              <h4>{investigation.name_of_injured_staff?.state || "Not provided"}</h4>
+              <h4>
+                {investigation.name_of_injured_staff?.state || "Not provided"}
+              </h4>
             </div>
             <div className="phone-number">
               <small>Zip code</small>
-              <h4>{investigation.name_of_injured_staff?.zip_code || "Not provided"}</h4>
+              <h4>
+                {investigation.name_of_injured_staff?.zip_code ||
+                  "Not provided"}
+              </h4>
             </div>
           </div>
           <br />
@@ -74,13 +87,17 @@ const StaffInvestigationInfo = ({ data, incidentStatuses }) => {
               <h4>{investigation.accident_details || "Not provided"}</h4>
             </div>
             <div className="field small-field">
-              <label htmlFor="city">What staff were doing prior to the event</label>
+              <label htmlFor="city">
+                What staff were doing prior to the event
+              </label>
               <h4>{investigation.employee_prior_activity || "Not provided"}</h4>
             </div>
           </div>
           <div className="number-mrn">
             <div className="field small-field">
-              <label htmlFor="city">Equipment or tools that were being used</label>
+              <label htmlFor="city">
+                Equipment or tools that were being used
+              </label>
               <h4>{investigation.equipment_or_tools || "Not provided"}</h4>
             </div>
           </div>
@@ -115,7 +132,8 @@ const StaffInvestigationInfo = ({ data, incidentStatuses }) => {
           <div className="number-mrn">
             <div className="field small-field">
               <label htmlFor="city">
-                Were safety regulations in place and used? If not, what was wrong?
+                Were safety regulations in place and used? If not, what was
+                wrong?
               </label>
               <h4>{investigation.safety_regulations || "Not provided"}</h4>
             </div>

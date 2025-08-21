@@ -22,6 +22,7 @@ import SendForReview from "../sendForReview/sendForReview";
 import "../../../../styles/_generalIncidentDetailsPage.scss";
 import IncidentReviewsTab from "@/components/IncidentReviewsTab";
 import IncidentActivitiesTab from "@/components/Activities";
+import toast from "react-hot-toast";
 
 const GeneralIncidentDetailsContent = () => {
   const { incidentId } = useParams();
@@ -69,8 +70,11 @@ const GeneralIncidentDetailsContent = () => {
 
       setIsFetching(false); // Stop loading state
     } catch (error) {
-      console.error("Error fetching incident details:", error);
-      setIsFetching(false);
+      if (error) {
+        toast.error(error?.response?.data?.error);
+        console.error("Error fetching incident details:", error);
+        setIsFetching(false);
+      }
     }
   };
 

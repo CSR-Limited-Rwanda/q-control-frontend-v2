@@ -1,10 +1,11 @@
-"use client"
+"use client";
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import DashboardLayout from "@/app/dashboard/layout";
 import api from "@/utils/api";
 import { ArrowRight } from "lucide-react";
 import ModifyStaffIncident from "@/components/incidents/modifyIncidents/ModifyStaffIncidentPage";
+import toast from "react-hot-toast";
 
 const ModifyStaffIncidentPageContent = () => {
   const [error, setError] = useState();
@@ -13,7 +14,9 @@ const ModifyStaffIncidentPageContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [investigation, setInvestigation] = useState();
-  const [staffIncidentId, setStaffIncidentId] = useState(localStorage.getItem("staffIncidentId"))
+  const [staffIncidentId, setStaffIncidentId] = useState(
+    localStorage.getItem("staffIncidentId")
+  );
 
   useEffect(() => {
     const fetchIncidentData = async () => {
@@ -23,12 +26,16 @@ const ModifyStaffIncidentPageContent = () => {
         );
 
         if (response.status === 200) {
-
           setIncident(response.data.incident);
           setIsLoading(false);
           setInvestigation(response.data.has_investigation);
+          console.log(response.data);
         }
       } catch (error) {
+        if (error) {
+          toast.error(error?.response?.data?.error);
+          console.log(error);
+        }
         if (error.response.status === 404) {
           setIsError(true);
         }
