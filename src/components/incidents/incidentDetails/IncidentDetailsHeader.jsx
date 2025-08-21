@@ -40,6 +40,7 @@ const IncidentDetailsHeader = ({
   model,
   isPage,
   versionCodeName,
+  localStorageName,
 }) => {
   // Default to "Most Recent" if available, otherwise "Original Version"
   const permissions = usePermission();
@@ -246,18 +247,22 @@ const IncidentDetailsHeader = ({
               </button>
               <div className="actions-popup">
                 <>
-                <PermissionsGuard model={model} codename={"send_for_review"} isPage={false}>
-                <div
-                    className="action"
-                    onClick={toggleShowSendToDepartmentForm}
+                  <PermissionsGuard
+                    model={model}
+                    codename={"send_for_review"}
+                    isPage={false}
                   >
-                    <div className="icon">
-                      <SendHorizontal />
+                    <div
+                      className="action"
+                      onClick={toggleShowSendToDepartmentForm}
+                    >
+                      <div className="icon">
+                        <SendHorizontal />
+                      </div>
+                      <span>Send for review</span>
                     </div>
-                    <span>Send for review</span>
-                  </div>
-                </PermissionsGuard>
-                 
+                  </PermissionsGuard>
+
                   <PermissionsGuard
                     model={model}
                     codename={"close_incident"}
@@ -281,9 +286,10 @@ const IncidentDetailsHeader = ({
                   isPage={false}
                 >
                   <Link
-                    href={"modify/"}
+                    href={`${incidentDetailsId}/update/`}
                     onClick={() => {
                       localStorage.setItem("canModifyDraft", true);
+                      localStorage.setItem(localStorageName, incidentDetailsId);
                     }}
                     className="action"
                   >

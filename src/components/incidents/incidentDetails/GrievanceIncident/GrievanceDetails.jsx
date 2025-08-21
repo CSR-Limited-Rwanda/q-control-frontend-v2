@@ -75,6 +75,7 @@ const GrievanceDetailsContent = () => {
       setIsFetching(false);
     } catch (error) {
       setIsFetching(false);
+      console.log(error);
     }
   };
 
@@ -143,6 +144,7 @@ const GrievanceDetailsContent = () => {
               showClosedManager={false}
               model={"patient_visitor_grievance"}
               versionCodeName={"view_grievanceversion"}
+              localStorageName={"grievanceId"}
             />
           ) : (
             ""
@@ -222,11 +224,14 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
           `/incidents/grievance/${incidentId}/documents/`
         );
         if (response.status === 200) {
-          setDocuments(response.data);
+          setDocuments(response.data.results);
 
-          localStorage.setItem("incidentDocumentCount", response.data.length);
+          localStorage.setItem(
+            "incidentDocumentCount",
+            response.data.results.length
+          );
         }
-      } catch (error) { }
+      } catch (error) {}
     };
     fetchDocuments();
   }, []);
@@ -249,13 +254,13 @@ const GrievanceDetails = () => {
     <div>
       <DashboardLayout
         children={<GrievanceDetailsContent />}
-      // breadCrumbs={
-      //   changeBreadCrumbs ? (
-      //     <FacilityDetailsBreadCrumbs incidentID={grievanceId} />
-      //   ) : (
-      //     <BreadCrumbs />
-      //   )
-      // }
+        // breadCrumbs={
+        //   changeBreadCrumbs ? (
+        //     <FacilityDetailsBreadCrumbs incidentID={grievanceId} />
+        //   ) : (
+        //     <BreadCrumbs />
+        //   )
+        // }
       />
     </div>
   );

@@ -135,6 +135,7 @@ const MedicationDetailsContent = () => {
               showClosedManager={false}
               model={"medication_error"}
               versionCodeName={"view_medicationerrorversion"}
+              localStorageName={"medicationErrorIncidentId"}
             />
           ) : (
             ""
@@ -207,11 +208,14 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
           `/incidents/medication-error/${incidentId}/documents/`
         );
         if (response.status === 200) {
-          setDocuments(response.data);
+          setDocuments(response.data.results);
 
-          localStorage.setItem("incidentDocumentCount", response.data.length);
+          localStorage.setItem(
+            "incidentDocumentCount",
+            response.data.results.length
+          );
         }
-      } catch (error) { }
+      } catch (error) {}
     };
     fetchDocuments();
   }, []);
