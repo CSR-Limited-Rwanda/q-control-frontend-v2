@@ -356,7 +356,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
 
     const incidentData = {
       action: "modify",
-      report_facility: data.report_facility.id,
+      report_facility: data?.report_facility?.id,
       department: parseInt(selectedDepartmentId),
       patient_type: victimType,
       patient_name: {

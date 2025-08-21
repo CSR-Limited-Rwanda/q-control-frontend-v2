@@ -216,9 +216,7 @@ function DrugReactionDetailsContent() {
               }
               otherInformation={
                 <DrugReactionOtherInformation
-                  data={{
-                    currentIncidentData,
-                  }}
+                  data={currentIncidentData}
                 />
               }
               documentHistory={

@@ -14,6 +14,52 @@ import {
   Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import PermissionsGuard from "@/components/PermissionsGuard";
+
+const incidentConfigs = [
+  {
+    title: "General Incident Reports",
+    icon: <FileText size={24} />,
+    link: "/incidents/general/",
+    model: "general_patient_visitor",
+  },
+  {
+    title: "Anaphylaxis/Adverse Drug Reaction Reports",
+    icon: <Syringe size={24} />,
+    link: "/incidents/drug-reaction/",
+    model: "adverse_drug_reaction",
+  },
+  {
+    title: "Staff Incident Reports",
+    icon: <Users size={24} />,
+    link: "/incidents/staff/",
+    model: "staff_incident_reports",
+  },
+  {
+    title: "Complaint & Grievance Reports",
+    icon: <Paperclip size={24} />,
+    link: "/incidents/grievance/",
+    model: "patient_visitor_grievance",
+  },
+  {
+    title: "Lost & Found Property Reports",
+    icon: <Settings size={24} />,
+    link: "/incidents/lost-and-found/",
+    model: "lost_and_found",
+  },
+  {
+    title: "Workplace Violence Incident Reports",
+    icon: <Briefcase size={24} />,
+    link: "/incidents/workplace-violence/",
+    model: "workplace_violence_reports",
+  },
+  {
+    title: "Medication Error Reports",
+    icon: <PillBottle size={24} />,
+    link: "/incidents/medication-error/",
+    model: "medication_error",
+  },
+];
 
 const page = () => {
   const router = useRouter();
@@ -24,132 +70,38 @@ const page = () => {
   return (
     <DashboardLayout>
       <div className="tabs-content">
-        {/* {activeTab === "all" && (
-           
-          )} */}
         <div className="incidents-reports">
-          <div
-            onClick={() => handleClick("/incidents/general/")}
-            className="incident-report"
-          >
-            <div className="icon">
-              <FileText size={24} variant={"stroke"} />
-            </div>
-            <div className="text">
-              <h3>General Incident Reports</h3>
-              {/* <small>Last updated on 24 June, 2023</small> */}
-            </div>
-          </div>
-
-          <div
-            onClick={() => handleClick("/incidents/drug-reaction/")}
-            className="incident-report"
-          >
-            <div className="list-icon">
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-            </div>
-            <div className="icon">
-              <Syringe size={24} variant={"stroke"} />
-            </div>
-            <div className="text">
-              <h3>Anaphylaxis/Adverse Drug Reaction Reports</h3>
-              {/* <small>Last updated on 24 June, 2023</small> */}
-            </div>
-          </div>
-
-          <div
-            onClick={() => handleClick("/incidents/staff/")}
-            className="incident-report"
-          >
-            <div className="list-icon">
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-            </div>
-            <div className="icon">
-              <Users size={24} variant={"stroke"} />
-            </div>
-            <div className="text">
-              <h3>Staff Incident Reports</h3>
-              {/* <small>Last updated on 24 June, 2023</small> */}
-            </div>
-          </div>
-
-          <div
-            onClick={() => handleClick("/incidents/grievance/")}
-            className="incident-report"
-          >
-            <div className="list-icon">
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-            </div>
-            <div className="icon">
-              <Paperclip size={24} variant={"stroke"} />
-            </div>
-            <div className="text">
-              <h3>Complaint & Grievance Reports</h3>
-              {/* <small>Last updated on 24 June, 2023</small> */}
-            </div>
-          </div>
-
-          <div
-            onClick={() => handleClick("/incidents/lost-and-found/")}
-            className="incident-report"
-          >
-            <div className="list-icon">
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-            </div>
-            <div className="icon">
-              <Settings size={24} variant={"stroke"} />
-            </div>
-            <div className="text">
-              <h3>Lost & Found Property Reports</h3>
-              {/* <small>Last updated on 24 June, 2023</small> */}
-            </div>
-          </div>
-
-          <div
-            onClick={() => handleClick("/incidents/workplace-violence/")}
-            className="incident-report"
-          >
-            <div className="list-icon">
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-            </div>
-            <div className="icon">
-              <Briefcase size={24} variant={"stroke"} />
-            </div>
-            <div className="text">
-              <h3>Workplace Violence Incident Reports</h3>
-              {/* <small>Last updated on 24 June, 2023</small> */}
-            </div>
-          </div>
-
-          <div
-            onClick={() => handleClick("/incidents/medication-error/")}
-            className="incident-report"
-          >
-            <div className="list-icon">
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-            </div>
-            <div className="icon">
-              <PillBottle size={24} variant={"stroke"} />
-            </div>
-            <div className="text">
-              <h3>Medication Error Reports</h3>
-              {/* <small>Last updated on 24 June, 2023</small> */}
-            </div>
-          </div>
-        </div>
-        {/* {activeTab === "drafts" && (
-            <div className="drafts">
-              <div className="drafts">
-                <DraftsTab />
+          {incidentConfigs.map(({ title, icon, link, model }) => (
+            <PermissionsGuard
+              key={link}
+              model={model}
+              codename="view_list"
+              isPage={false}
+            >
+              <div
+                onClick={() => handleClick(link)}
+                className="incident-report"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleClick(link);
+                  }
+                }}
+              >
+                <div className="list-icon">
+                  <i className="fa-solid fa-ellipsis-vertical" />
+                  <i className="fa-solid fa-ellipsis-vertical" />
+                </div>
+                <div className="icon">{icon}</div>
+                <div className="text">
+                  <h3>{title}</h3>
+                </div>
               </div>
-            </div>
-          )} */}
+            </PermissionsGuard>
+          ))}
+        </div>
       </div>
     </DashboardLayout>
   );

@@ -114,6 +114,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
 
   const [departments, setDepartments] = useState([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department ? data.department.id : "",
     data.department ? data.department.id : ""
   );
 
@@ -278,6 +279,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       }
     } catch (error) {
       if (error.response) {
+        console.log("error", error)
         toast.error(
           error.response.data.message ||
             error.response.data.error ||
