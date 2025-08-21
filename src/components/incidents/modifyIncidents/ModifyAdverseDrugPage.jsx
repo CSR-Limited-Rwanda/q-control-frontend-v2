@@ -202,7 +202,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
 
   const [departments, setDepartments] = useState([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
-    data.department
+    data.department || ""
   );
 
   const handleDepartmentChange = (event) => {
@@ -210,30 +210,34 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
     console.log(event.target.value);
   };
 
-  useEffect(() => {
-    console.log(data);
-    if (!data.report_facility.id) return;
+  useEffect(
+    () => {
+      console.log(data);
+      if (!data.report_facility) return;
 
-    const fetchDepartments = async () => {
-      try {
-        setIsLoading(true);
-        const response = await api.get(`/departments/`, {
-          params: { facility_id: data.report_facility.id },
-        });
-        if (response.status === 200) {
-          console.log(response.data.results);
-          setDepartments(response.data.results);
+      const fetchDepartments = async () => {
+        try {
+          setIsLoading(true);
+          const response = await api.get(`/departments/`, {
+            params: { facility_id: data.report_facility.id },
+          });
+          if (response.status === 200) {
+            console.log(response.data.results);
+            setDepartments(response.data.results);
+          }
+        } catch (error) {
+          toast.error("Error fetching departments");
+          console.error(error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        toast.error("Error fetching departments");
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      };
 
-    fetchDepartments();
-  }, [data.report_facility.id]);
+      fetchDepartments();
+    },
+    data.report_facility ? [data.report_facility.id] : []
+  );
+
   const coerceBool = (v) => v === true || v === "true" || v === 1 || v === "1";
 
   useEffect(() => {

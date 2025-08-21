@@ -141,7 +141,6 @@ function DrugReactionDetailsContent() {
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
-
           toast.error("Authentication error");
         } else {
           toast.error("Failed to fetch incident reviews");
@@ -188,6 +187,7 @@ function DrugReactionDetailsContent() {
             showClosedManager={false}
             model={"adverse_drug_reaction"}
             versionCodeName={"view_adversedrugreactionvisitorversion"}
+            localStorageName={"adverseDrugReactionId"}
           />
 
           <div className="details">
@@ -208,7 +208,7 @@ function DrugReactionDetailsContent() {
               generalInformation={
                 <DrugReactionGeneraInfo
                   data={currentIncidentData}
-                //   incidentStatuses={incidentStatus}
+                  //   incidentStatuses={incidentStatus}
                 />
               }
               otherInformation={
@@ -255,11 +255,14 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
           `/incidents/adverse-drug-reaction/${incidentId}/documents/`
         );
         if (response.status === 200) {
-          setDocuments(response.data);
+          setDocuments(response.data.results);
 
-          localStorage.setItem("incidentDocumentCount", response.data.length);
+          localStorage.setItem(
+            "incidentDocumentCount",
+            response.data.results.length
+          );
         }
-      } catch (error) { }
+      } catch (error) {}
     };
     fetchDocuments();
   }, []);
@@ -272,13 +275,13 @@ function DrugReactionDetails() {
     <div>
       <DashboardLayout
         children={<DrugReactionDetailsContent />}
-      // breadCrumbs={
-      //   changeBreadCrumbs ? (
-      //     <FacilityDetailsBreadCrumbs incidentID={drugReactionId} />
-      //   ) : (
-      //     <BreadCrumbs />
-      //   )
-      // }
+        // breadCrumbs={
+        //   changeBreadCrumbs ? (
+        //     <FacilityDetailsBreadCrumbs incidentID={drugReactionId} />
+        //   ) : (
+        //     <BreadCrumbs />
+        //   )
+        // }
       />
     </div>
   );

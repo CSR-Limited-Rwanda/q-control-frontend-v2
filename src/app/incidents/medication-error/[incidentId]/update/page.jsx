@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import toast from "react-hot-toast";
 import React, { useState, useEffect } from "react";
@@ -19,7 +19,7 @@ const PageContent = () => {
   const [isError, setIsError] = useState(false);
   const [medicationErrorIncidentId, setMedicationErrorIncidentId] = useState(
     localStorage.getItem("medicationErrorIncidentId")
-  )
+  );
 
   useEffect(() => {
     const fetchIncidentData = async () => {
@@ -36,6 +36,7 @@ const PageContent = () => {
           setIsLoading(false);
         }
       } catch (error) {
+        console.log(error);
         if (error.response.status && error.response.status === 403) {
           toast.error("You are not allowed to view this incident");
         } else if (error.response.status === 404) {
@@ -43,19 +44,21 @@ const PageContent = () => {
         } else {
           toast.error("There was an error");
         }
-
       } finally {
         setIsLoading(false);
       }
     };
     fetchIncidentData();
   }, [incidentId]);
-  return <div className="modify-page">
-    {
-      isLoading ? "Getting data..."
-        : <ModifyMedicalErrorForm data={incidentData} />
-    }
-  </div>;
+  return (
+    <div className="modify-page">
+      {isLoading ? (
+        "Getting data..."
+      ) : (
+        <ModifyMedicalErrorForm data={incidentData} />
+      )}
+    </div>
+  );
 };
 
 const BreadCrumbs = () => {
@@ -64,7 +67,9 @@ const BreadCrumbs = () => {
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <MoveRight />
       <Link href={"/incidents/"}>Incidents</Link> <MoveRight />
-      <Link href={"/incidents/medication_error/"}>Medication Error List</Link>{" "}
+      <Link href={"/incidents/medication_error/"}>
+        Medication Error List
+      </Link>{" "}
       <MoveRight />
       <Link href={`/incidents/medication_error/${incidentId}/`}>
         #{incidentId}
@@ -76,17 +81,13 @@ const BreadCrumbs = () => {
 };
 
 const ModifyMedicalErrorIncidentPage = () => {
-  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null)
+  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null);
 
   useEffect(() => {
-    const storedValue = localStorage.getItem("changeBreadCrumbs")
+    const storedValue = localStorage.getItem("changeBreadCrumbs");
     setChangeBreadCrumbs(storedValue);
-  }, [])
-  return (
-    <DashboardLayout
-      children={<PageContent />}
-    />
-  );
+  }, []);
+  return <DashboardLayout children={<PageContent />} />;
 };
 
 export default ModifyMedicalErrorIncidentPage;

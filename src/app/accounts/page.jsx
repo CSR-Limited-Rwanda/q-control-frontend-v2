@@ -98,7 +98,7 @@ const AccountsPage = () => {
     if (storedTab) {
       setActiveTab(storedTab);
     } else {
-      setActiveTab(tabs[0].id);
+      setActiveTab(baseTabs[0].id);
     }
   }, []);
   return (

@@ -23,6 +23,7 @@ import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
 import BackToPage from "@/components/BackToPage";
 const ModifyMedicalErrorForm = ({ data, incidentId }) => {
+  console.log(data);
   const permission = usePermission();
   const department = useDepartments();
   const [incident, setIncident] = useState(data);
@@ -113,36 +114,39 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
 
   const [departments, setDepartments] = useState([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
-    data.department.id
+    data.department ? data.department.id : ""
   );
 
   const handleDepartmentChange = (event) => {
     setSelectedDepartmentId(event.target.value);
   };
 
-  useEffect(() => {
-    if (!data.report_facility.id) return;
+  useEffect(
+    () => {
+      if (!data.report_facility) return;
 
-    const fetchDepartments = async () => {
-      try {
-        setIsLoading(true);
-        const response = await api.get(`/departments/`, {
-          params: { facility_id: data.report_facility.id },
-        });
-        if (response.status === 200) {
-          console.log(response.data.results);
-          setDepartments(response.data.results);
+      const fetchDepartments = async () => {
+        try {
+          setIsLoading(true);
+          const response = await api.get(`/departments/`, {
+            params: { facility_id: data.report_facility.id },
+          });
+          if (response.status === 200) {
+            console.log(response.data.results);
+            setDepartments(response.data.results);
+          }
+        } catch (error) {
+          toast.error("Error fetching departments");
+          console.error(error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        toast.error("Error fetching departments");
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      };
 
-    fetchDepartments();
-  }, [data.report_facility.id]);
+      fetchDepartments();
+    },
+    data.report_facilit ? [data.report_facility.id] : []
+  );
   const handleDrugOrderedRoute = (drug) => {
     // check if the route is not in the array of routes, then add it else, remove it
 

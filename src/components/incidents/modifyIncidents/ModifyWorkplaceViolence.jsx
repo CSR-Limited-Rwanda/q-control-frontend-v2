@@ -19,11 +19,11 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
 import { useAuthentication } from "@/context/authContext";
-import '@/styles/_modifyIncident.scss';
+import "@/styles/_modifyIncident.scss";
 import BackToPage from "@/components/BackToPage";
 
 const ModifyWorkplaceIncident = ({ data }) => {
-  const { user } = useAuthentication()
+  const { user } = useAuthentication();
   const { incidentId } = useParams();
   const [incident, setIncident] = useState(data);
   const [departmentId, setDepartmentId] = useState(
@@ -39,9 +39,9 @@ const ModifyWorkplaceIncident = ({ data }) => {
     incident?.severity_rating
   );
   const [status, setStatus] = useState(incident?.status);
-   const [selfInjury, setSelfInjury] = useState(
+  const [selfInjury, setSelfInjury] = useState(
     incident?.type_of_incident &&
-    JSON.parse(incident.type_of_incident).incidents.includes("Other Types")
+      JSON.parse(incident.type_of_incident).incidents.includes("Other Types")
   );
   const [otherType, setOtherType] = useState(false);
   const [otherExplain, setOtherExplain] = useState(false);
@@ -76,7 +76,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
   );
   const [explainselfinjury, setExplainSelfInjury] = useState(
     incident?.type_of_incident &&
-    JSON.parse(incident?.type_of_incident).explanation
+      JSON.parse(incident?.type_of_incident).explanation
   );
   const [otherinjury, setOtherInjury] = useState("");
   const [background, setBackground] = useState("");
@@ -85,13 +85,13 @@ const ModifyWorkplaceIncident = ({ data }) => {
   const [selectedInjuries, setSelectedInjuries] = useState(
     (incident?.physical_injury_description &&
       incident?.physical_injury_description.split(", ")) ||
-    []
+      []
   );
   const [selectedRelationship, setSelectedRelationship] = useState("");
   const [selectedBackground, setSelectedBackground] = useState(
     (incident?.type_of_incident &&
       JSON.parse(incident?.type_of_incident).incidents) ||
-    []
+      []
   );
   const [weapons, setWeapons] = useState(data.weapons_were_involved);
   const [previousContact, setPreviousContact] = useState(
@@ -121,7 +121,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
 
   const [departments, setDepartments] = useState([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
-    data.department.id
+    data.department ? data.department.id : ""
   );
 
   const [otherExplanation, setOtherExplanation] = useState("");
@@ -198,7 +198,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
   const [uploadingDocuments, setUploadingDocuments] = useState(false);
   const [witnesses, setWitnesses] = useState(
     incident?.incident_witness?.map((witness) => ({
-
       first_name: witness?.first_name ?? "",
       last_name: witness?.last_name ?? "",
       email: witness?.email ?? "",
@@ -229,40 +228,40 @@ const ModifyWorkplaceIncident = ({ data }) => {
         );
         if (response.status === 200) {
           setUploadedFiles(response.data.results);
-
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
 
     fetchIncidentDocuments();
   }, []);
 
-  useEffect(() => {
-    console.log(data)
-    if (!data.report_facility.id) return;
+  useEffect(
+    () => {
+      console.log(data);
+      if (!data.report_facility) return;
 
-    const fetchDepartments = async () => {
-      try {
-        setIsLoading(true);
-        const response = await api.get(`/departments/`, {
-          params: { facility_id: data.report_facility.id },
-        });
-        if (response.status === 200) {
-          console.log(response.data.results);
-          setDepartments(response.data.results);
+      const fetchDepartments = async () => {
+        try {
+          setIsLoading(true);
+          const response = await api.get(`/departments/`, {
+            params: { facility_id: data.report_facility.id },
+          });
+          if (response.status === 200) {
+            console.log(response.data.results);
+            setDepartments(response.data.results);
+          }
+        } catch (error) {
+          toast.error("Error fetching departments");
+          console.error(error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        toast.error("Error fetching departments");
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      };
 
-    fetchDepartments();
-  }, [data.report_facility.id]);
+      fetchDepartments();
+    },
+    data.report_facility ? [data.report_facility.id] : []
+  );
 
   const handlePreviousContact = (value) => {
     setPreviousContact(value);
@@ -284,7 +283,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-
         setUploadingDocuments(false);
         toast.success("Files uploaded successfully");
         setUploadedFiles(response.data.files);
@@ -292,7 +290,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
     } catch (error) {
       toast.error(error?.response?.data?.error);
       setUploadingDocuments(false);
-
     }
   };
 
@@ -317,7 +314,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
     setInjuries(list);
   };
   const handleAddInjury = () => {
-
     if (
       currentInjury.first_name &&
       currentInjury.last_name &&
@@ -330,9 +326,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
         injury_description: "",
       });
     } else {
-      toast.error(
-        "Please fill in both person injured and injury details"
-      );
+      toast.error("Please fill in both person injured and injury details");
     }
   };
 
@@ -348,7 +342,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
   // };
 
   const handleAddWitness = () => {
-
     if (
       currentWitness.first_name &&
       currentWitness.last_name &&
@@ -362,7 +355,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
         phone_number: "",
         address: "",
       });
-
     }
   };
 
@@ -395,9 +387,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
       setSelectedBackground([]);
       setSelectedRelationship([]);
     } else {
-      toast.error(
-        "Please fill all fields before adding a person."
-      );
+      toast.error("Please fill all fields before adding a person.");
     }
   };
 
@@ -618,7 +608,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
           profile_type: "Victim",
         })),
       };
-
     } else {
       injuryData = {
         there_were_injuries: injuryCheck,
@@ -675,19 +664,19 @@ const ModifyWorkplaceIncident = ({ data }) => {
       persons_injured:
         injuryCheck === "Yes"
           ? injuries.map((injury) => ({
-            first_name: injury.first_name,
-            last_name: injury.last_name,
-            injury_description: injury.injury_description,
-            profile_type: "Victim",
-          }))
-          : [
-            {
-              first_name: "N/A",
-              last_name: "N/A",
-              injury_description: "N/A",
+              first_name: injury.first_name,
+              last_name: injury.last_name,
+              injury_description: injury.injury_description,
               profile_type: "Victim",
-            },
-          ],
+            }))
+          : [
+              {
+                first_name: "N/A",
+                last_name: "N/A",
+                injury_description: "N/A",
+                profile_type: "Victim",
+              },
+            ],
       notification: securityalert,
       incident_witnesses: witnesses.map((witness) => ({
         id: witness?.id ?? null,
@@ -703,10 +692,10 @@ const ModifyWorkplaceIncident = ({ data }) => {
       name_of_supervisor:
         firstName && lastName
           ? {
-            first_name: firstName,
-            last_name: lastName,
-            profile_type: "Supervisor",
-          }
+              first_name: firstName,
+              last_name: lastName,
+              profile_type: "Supervisor",
+            }
           : null,
       title_of_supervisor: title,
       date_notified: date,
@@ -716,10 +705,10 @@ const ModifyWorkplaceIncident = ({ data }) => {
       reported_by:
         reportedByFirstName && reportedByLastName
           ? {
-            first_name: reportedByFirstName,
-            last_name: reportedByLastName,
-            profile_type: "Reporter",
-          }
+              first_name: reportedByFirstName,
+              last_name: reportedByLastName,
+              profile_type: "Reporter",
+            }
           : null,
       reported_by_title: reportedTitle,
       date_reported: dateReported,
@@ -728,7 +717,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
     };
 
     try {
-
       const response = await api.patch(
         `incidents/workplace-violence/${workplaceViolenceId}/`,
         cleanedData(incidentData)
@@ -749,8 +737,8 @@ const ModifyWorkplaceIncident = ({ data }) => {
       if (error.response) {
         toast.error(
           error.response.data?.message ||
-          error.response.data?.error ||
-          "Error while updating the incident"
+            error.response.data?.error ||
+            "Error while updating the incident"
         );
       } else {
         toast.error("Unknown error while updating the incident");
@@ -802,34 +790,35 @@ const ModifyWorkplaceIncident = ({ data }) => {
             <p>
               Status :{" "}
               <span
-                className={`follow-up ${status === "Draft"
-                  ? "in-progress"
-                  : status === "Closed"
+                className={`follow-up ${
+                  status === "Draft"
+                    ? "in-progress"
+                    : status === "Closed"
                     ? "closed"
                     : "Open"
-                  }`}
+                }`}
               >
                 {status}
               </span>
             </p>
           </div>
           <div className="step inputs-group">
-          <div className="department-select field">
-                <label htmlFor="department">Department</label>
-                <select
-                  id="department"
-                  value={selectedDepartmentId}
-                  onChange={handleDepartmentChange}
-                  disabled={isLoading}
-                >
-                  <option value="">Select a department</option>
-                  {departments.map((department) => (
-                    <option key={department.id} value={department.id}>
-                      {department.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="department-select field">
+              <label htmlFor="department">Department</label>
+              <select
+                id="department"
+                value={selectedDepartmentId}
+                onChange={handleDepartmentChange}
+                disabled={isLoading}
+              >
+                <option value="">Select a department</option>
+                {departments.map((department) => (
+                  <option key={department.id} value={department.id}>
+                    {department.name}
+                  </option>
+                ))}
+              </select>
+            </div>
             <h4>
               Type of incident{" "}
               <span>
@@ -944,8 +933,9 @@ const ModifyWorkplaceIncident = ({ data }) => {
               {injuresTypes.map((injury) => (
                 <div
                   key={injury}
-                  className={`type ${selectedInjuries.includes(injury) ? "selected" : ""
-                    }`}
+                  className={`type ${
+                    selectedInjuries.includes(injury) ? "selected" : ""
+                  }`}
                   onClick={() => handleTypeSelection(injury)}
                 >
                   <p>{injury}</p>
@@ -976,8 +966,9 @@ const ModifyWorkplaceIncident = ({ data }) => {
             <h4>Select Incident type</h4>
             <div className="types checkbox-grid">
               <div
-                className={`type full-width-type ${selectedType === "Type 1" ? "selected" : ""
-                  }`}
+                className={`type full-width-type ${
+                  selectedType === "Type 1" ? "selected" : ""
+                }`}
                 onClick={() => handleSelection("Type 1")}
               >
                 <h5>Type 1 (Criminal Intent/External)</h5>
@@ -986,8 +977,9 @@ const ModifyWorkplaceIncident = ({ data }) => {
               </div>
 
               <div
-                className={`type full-width-type ${selectedType === "Type 2" ? "selected" : ""
-                  }`}
+                className={`type full-width-type ${
+                  selectedType === "Type 2" ? "selected" : ""
+                }`}
                 onClick={() => handleSelection("Type 2")}
               >
                 <h5>Type 2 (Patient/Family/Guest)</h5>
@@ -996,8 +988,9 @@ const ModifyWorkplaceIncident = ({ data }) => {
               </div>
 
               <div
-                className={`type full-width-type ${selectedType === "Type 3" ? "selected" : ""
-                  }`}
+                className={`type full-width-type ${
+                  selectedType === "Type 3" ? "selected" : ""
+                }`}
                 onClick={() => handleSelection("Type 3")}
               >
                 <h5>Type 3 (Worker on Worker)</h5>
@@ -1006,8 +999,9 @@ const ModifyWorkplaceIncident = ({ data }) => {
               </div>
 
               <div
-                className={`type full-width-type ${selectedType === "Type 4" ? "selected" : ""
-                  }`}
+                className={`type full-width-type ${
+                  selectedType === "Type 4" ? "selected" : ""
+                }`}
                 onClick={() => handleSelection("Type 4")}
               >
                 <h5>Type 4 (Domestic/Intimate Parter)</h5>
@@ -1017,8 +1011,9 @@ const ModifyWorkplaceIncident = ({ data }) => {
               </div>
 
               <div
-                className={`type full-width-type ${selectedType === "Type 5" ? "selected" : ""
-                  }`}
+                className={`type full-width-type ${
+                  selectedType === "Type 5" ? "selected" : ""
+                }`}
                 onClick={() => handleSelection("Type 5")}
               >
                 <h5>Type 5 (ideological)</h5>
@@ -1584,15 +1579,15 @@ const ModifyWorkplaceIncident = ({ data }) => {
                 >
                   {injuries.length > 0
                     ? injuries.map((injury, index) => (
-                      <button
-                        key={index}
-                        className="new-party"
-                        onClick={() => handleRemoveInjury(index)}
-                      >
-                        {injury?.first_name} {injury?.last_name}{" "}
-                        <CircleMinus />
-                      </button>
-                    ))
+                        <button
+                          key={index}
+                          className="new-party"
+                          onClick={() => handleRemoveInjury(index)}
+                        >
+                          {injury?.first_name} {injury?.last_name}{" "}
+                          <CircleMinus />
+                        </button>
+                      ))
                     : null}
                 </div>
                 <label htmlFor="personInjured">Who was injured</label>
@@ -1673,15 +1668,15 @@ const ModifyWorkplaceIncident = ({ data }) => {
                 >
                   {witnesses.length > 0
                     ? witnesses.map((witness, index) => (
-                      <button
-                        key={index}
-                        className="new-party"
-                        onClick={() => handleRemoveWitness(witness)}
-                      >
-                        {witness?.first_name} {witness?.last_name}{" "}
-                        <CircleMinus />
-                      </button>
-                    ))
+                        <button
+                          key={index}
+                          className="new-party"
+                          onClick={() => handleRemoveWitness(witness)}
+                        >
+                          {witness?.first_name} {witness?.last_name}{" "}
+                          <CircleMinus />
+                        </button>
+                      ))
                     : null}
                 </div>
                 <label htmlFor="witnessName">Witness</label>

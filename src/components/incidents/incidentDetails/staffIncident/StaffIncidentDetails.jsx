@@ -41,6 +41,7 @@ const EmployeeDetailsContent = () => {
         response = await api.get(`/incidents/staff-incident/${incidentId}/`);
         setIncidentDetails(response.data);
         setCurrentIncidentData(response.data.incident);
+        console.log(response.data);
       } else {
         const res = await api.get(
           `${API_URL}/incidents/staff-incident/${incidentId}/`
@@ -52,11 +53,13 @@ const EmployeeDetailsContent = () => {
           response = await api.get(
             `${API_URL}/incidents/staff-incident/${incidentId}/versions/${latestIncident.id}/`
           );
+          console.log(response.data);
         } else {
           response = res;
         }
         setLatestIncidentDetails(response.data);
         setCurrentIncidentData(response.data.incident);
+        console.log(response.data);
       }
 
       // 🔽 NEW: fetch investigation separately
@@ -88,7 +91,6 @@ const EmployeeDetailsContent = () => {
           `${API_URL}/incidents/staff-incident/${incidentId}/reviews/`
         );
         if (response.status === 200) {
-
           localStorage.setItem("incidentReviewsCount", response.data.length);
         }
       } catch (error) {
@@ -139,6 +141,7 @@ const EmployeeDetailsContent = () => {
             showClosedManager={true}
             model={"staff_incident_reports"}
             versionCodeName={"view_staffincidentreportversion"}
+            localStorageName={"staffIncidentId"}
           />
 
           <div className="details">
@@ -210,11 +213,14 @@ const IncidentDocuments = ({ incidentId, apiLink }) => {
           `/incidents/staff-incident/${incidentId}/documents/`
         );
         if (response.status === 200) {
-          setDocuments(response.data);
+          setDocuments(response.data.results);
 
-          localStorage.setItem("incidentDocumentCount", response.data.length);
+          localStorage.setItem(
+            "incidentDocumentCount",
+            response.data.results.length
+          );
         }
-      } catch (error) { }
+      } catch (error) {}
     };
     fetchDocuments();
   }, []);
