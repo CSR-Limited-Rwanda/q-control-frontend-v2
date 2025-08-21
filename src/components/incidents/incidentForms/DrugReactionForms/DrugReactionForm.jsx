@@ -360,8 +360,7 @@ const DrugReactionForm = ({ togglePopup }) => {
         drugReactionData = {
           current_step: currentStep,
           patient_type: victimType,
-          facility: user?.facility?.id,
-          report_facility_id: currentFacility?.id,
+          report_facility: currentFacility?.id,
           patient_name: {
             first_name: firstName,
             last_name: lastName,
@@ -389,6 +388,8 @@ const DrugReactionForm = ({ togglePopup }) => {
         if (localStorage.getItem("updateNewIncident") === "true") {
           updateDrugAdverseReaction(cleanedData(drugReactionData));
         }
+
+        // console.log('data submitted:', drugReactionData)
       } else {
         toast.error("Please fill in all required fields.");
       }
