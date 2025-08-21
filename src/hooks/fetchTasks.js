@@ -138,7 +138,7 @@ export const submitTask = async (taskId) => {
 
 export const approveTask = async (taskId) => {
     try {
-        const response = await api.patch(`/tasks/${taskId}/`, { status: "approve" });
+        const response = await api.patch(`/tasks/${taskId}/`, { action: "approve" });
 
         if (response.status === 200) {
             return {
@@ -156,6 +156,33 @@ export const approveTask = async (taskId) => {
         let errorMessage = "An error occurred while approving the task.";
         if (error.response && error.response.data) {
             errorMessage = error.response.data.error || error.response.data.message || errorMessage;
+        }
+        return {
+            success: false,
+            message: errorMessage,
+        };
+    }
+}
+
+export const fetchTaskPermissions = async (taskId) => {
+    try {
+        const response = await api.get(`/tasks/${taskId}/permissions`);
+        if (response.status === 200) {
+            return {
+                success: true,
+                data: response.data,
+            };
+        } else {
+            return {
+                success: false,
+                message: "Failed to fetch task permissions.",
+            };
+        }
+    } catch (error) {
+        console.error(error);
+        let errorMessage = "An error occurred while fetching task permissions.";
+        if (error.response && error.response.data) {
+            errorMessage = error.response.data.error || errorMessage;
         }
         return {
             success: false,
