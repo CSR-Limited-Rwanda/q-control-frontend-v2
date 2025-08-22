@@ -1,7 +1,7 @@
 "use client";
 import "@/styles/sendForReview.scss";
 import api from "@/utils/api";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,9 +13,13 @@ import {
 import Button from "@/components/forms/Button";
 import { ReviewTemplates } from "./ReviewTemplates";
 import UsersList from "./UsersList";
+import toast from "react-hot-toast";
+import NewReviewTemplatesForm from "@/components/forms/NewReviewTemplatesForm";
+import CloseIcon from "@/components/CloseIcon";
 
-const SendForReview = ({ path, incidentID, handleClose }) => {
+const SendForReview = ({ path, incidentID, handleClose, data }) => {
   // template related fields
+  console.log(data);
   const [selectedChoice, setSelectedChoice] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
@@ -32,8 +36,48 @@ const SendForReview = ({ path, incidentID, handleClose }) => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [departments, setDepartments] = useState([]);
+  const [showNewTemplateForm, setShowNewTemplateForm] = useState(false);
+
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(
+    data.department?.id ? data.department.id : data.department
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   const popupContentRef = useRef(null);
+
+  const handleShowNewTemplateForm = () => {
+    setShowNewTemplateForm(!showNewTemplateForm);
+  };
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartmentId(event.target.value);
+  };
+  useEffect(
+    () => {
+      if (!data.report_facility) return;
+
+      const fetchDepartments = async () => {
+        try {
+          setIsLoading(true);
+          const response = await api.get(`/departments/`, {
+            params: { facility_id: data.report_facility.id },
+          });
+          if (response.status === 200) {
+            console.log(response.data.results);
+            setDepartments(response.data.results);
+          }
+        } catch (error) {
+          toast.error("Error fetching departments");
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchDepartments();
+    },
+    data.report_facility ? [data.report_facility.id] : []
+  );
 
   const handlePopupClick = (e) => {
     if (
@@ -49,6 +93,7 @@ const SendForReview = ({ path, incidentID, handleClose }) => {
       action: "send-for-review",
       review_template: selectedTemplate.id,
       description: comment,
+      department: parseInt(selectedDepartmentId),
     };
     await sendForReview(path, incidentID, payload);
   };
@@ -60,6 +105,7 @@ const SendForReview = ({ path, incidentID, handleClose }) => {
       description: comment,
       require_approval_for_all_groups: requireApprovalEachMember,
       task_days: taskDays,
+      department: parseInt(selectedDepartmentId),
     };
     await sendForReview(path, incidentID, payload);
   };
@@ -152,7 +198,19 @@ const SendForReview = ({ path, incidentID, handleClose }) => {
     }
   };
 
-  return (
+  return showNewTemplateForm ? (
+    <div className="new-user-form-popup">
+      <div className="popup">
+        <div className="popup-content">
+          <CloseIcon onClick={handleShowNewTemplateForm} />
+
+          <div className="form">
+            <NewReviewTemplatesForm discardFn={handleShowNewTemplateForm} />
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : (
     <div className="popup" onClick={handlePopupClick}>
       {showSuccessMessage ? (
         <div className="popup-content" ref={popupContentRef}>
@@ -165,13 +223,27 @@ const SendForReview = ({ path, incidentID, handleClose }) => {
       ) : (
         <div className="popup-content" ref={popupContentRef}>
           <h2>Send Incident for Review {currentStep}</h2>
-          <p>Are you sure you want to send this incident for review?</p>
-
+          {/* <p>Are you sure you want to send this incident for review?</p> */}
+          <label htmlFor="department">Department</label>
+          <select
+            id="department"
+            value={selectedDepartmentId}
+            onChange={handleDepartmentChange}
+            disabled={isLoading}
+          >
+            <option value="">Select a department</option>
+            {departments.map((department) => (
+              <option key={department.id} value={department.id}>
+                {department.name}
+              </option>
+            ))}
+          </select>
           {selectedChoice === "template" && currentStep === 2 ? (
             <ReviewTemplates
               setCurrentStep={setCurrentStep}
               selectedTemplate={selectedTemplate}
               setSelectedTemplate={setSelectedTemplate}
+              handleShowNewTemplateForm={handleShowNewTemplateForm}
             />
           ) : selectedChoice === "template" && currentStep === 3 ? (
             <div className="template-confirmation">

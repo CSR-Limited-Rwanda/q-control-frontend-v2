@@ -75,8 +75,12 @@ const EmployeeDetailsContent = () => {
 
       setIsFetching(false);
     } catch (error) {
-      console.error("Error fetching incident details:", error);
-      setIsFetching(false);
+      if (error) {
+        toast.error(error?.response?.data?.error);
+        console.log(error);
+        console.error("Error fetching incident details:", error);
+        setIsFetching(false);
+      }
     }
   };
 
