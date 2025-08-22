@@ -144,7 +144,7 @@ const DrugReactionList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incidents/drug-reaction/${incidentId}/update/`);
+    router.push(`/incidents/drug-reaction/${incidentId}/modify/`);
     localStorage.setItem("adverseDrugReactionId", incidentId);
   };
 

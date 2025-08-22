@@ -22,7 +22,7 @@ import "@/styles/_modifyIncident.scss";
 import CantModify from "@/components/CantModify";
 import { useAuthentication } from "@/context/authContext";
 import BackToPage from "@/components/BackToPage";
-const ModifyAdverseDruReactionForm = ({ data }) => {
+const UpdateAdverseDruReactionForm = ({ data }) => {
   const [savingDraft, setSavingDraft] = useState(false);
   const { incidentId } = useParams();
   const { user } = useAuthentication();
@@ -344,13 +344,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       setStatus(data.status);
       return;
     }
-    if (!selectedDepartmentId) {
-      toast.error("Please select a department");
-      setIsLoading(false);
-      setSavingDraft(false);
-      setStatus(data.status);
-      return;
-    }
 
     let src = infoSource;
     if (!src) {
@@ -368,40 +361,44 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       : "";
 
     const incidentData = {
-      action: "modify",
       report_facility: data?.report_facility?.id,
       department: parseInt(selectedDepartmentId),
       patient_type: victimType,
-      patient_name: {
-        first_name: firstName,
-        last_name: lastName,
-        gender: sex,
-        address: address,
-        state: state,
-        zip_code: zipCode,
-        city: city,
-        phone_number: phoneNumber,
-        medical_record_number: incidentMr,
-        profile_type: "Patient",
-      },
+      ...(firstName && lastName
+        ? {
+            patient_name: {
+              first_name: firstName,
+              last_name: lastName,
+              gender: sex,
+              address: address,
+              state: state,
+              zip_code: zipCode,
+              city: city,
+              phone_number: phoneNumber,
+              medical_record_number: incidentMr,
+              profile_type: "Patient",
+            },
+          }
+        : {}),
       incident_date: incidentDate,
       incident_time: incidentTime,
-
       provider: provider,
-
-      observers_name: {
-        first_name: observersFirstName,
-        last_name: observersLastName,
-        profile_type: "Staff",
-        address: address,
-        city: city,
-        state: state,
-        gender: sex,
-      },
+      ...(observersFirstName && observersLastName
+        ? {
+            observers_name: {
+              first_name: observersFirstName,
+              last_name: observersLastName,
+              profile_type: "Staff",
+              address: address,
+              city: city,
+              state: state,
+              gender: sex,
+            },
+          }
+        : {}),
       time_of_report: timeOfReport,
       date_of_report: dateOfReport,
       event_detail: eventDetails,
-
       suspected_medication: suspectedMedication,
       dose: dose,
       frequency: frequency,
@@ -409,7 +406,6 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       rate_of_administration: rateOfAdministration,
       date_of_medication_order: dateOfMedicationOrder,
       other_route_description: description,
-
       date_of_information: dateInformation,
       information_reaction: reaction,
       date_of_adverse_reaction: adverseReactionDate,
@@ -418,42 +414,54 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
       progress_note: normalizedProg,
       other_information_can_be_found_in: normalizedOther,
       other_information_description: normalizedOtherDesc,
-
       reaction_was_treated: isReactionTreated,
       treatment_description: treatmentDescription,
-
       incident_type_classification: selectedAgreements.join(", "),
-
       outcome_type: outcomeType,
       description: selectedDescription.join(", "),
       anaphylaxis_outcome: adrOutcome.join(", "),
       adverse_event_to_be_reported_to_FDA: fdaReported,
-      name_of_physician_notified: {
-        first_name: physicianNotifiedFirstName,
-        last_name: physicianNotifiedLastName,
-        profile_type: "Staff",
-      },
+      ...(physicianNotifiedFirstName && physicianNotifiedLastName
+        ? {
+            name_of_physician_notified: {
+              first_name: physicianNotifiedFirstName,
+              last_name: physicianNotifiedLastName,
+              profile_type: "Staff",
+            },
+          }
+        : {}),
       date_physician_was_notified: physcianDate,
       time_physician_was_notified: physcianTime,
-      name_of_family_notified: {
-        first_name: familyNotifiedFirstName,
-        last_name: familyNotifiedLastName,
-        profile_type: "Patient",
-      },
+      ...(familyNotifiedFirstName && familyNotifiedLastName
+        ? {
+            name_of_family_notified: {
+              first_name: familyNotifiedFirstName,
+              last_name: familyNotifiedLastName,
+              profile_type: "Patient",
+            },
+          }
+        : {}),
       date_family_was_notified: familyDate,
       time_family_was_notified: familyTime,
-      notified_by: {
-        first_name: notifiedByFirstName,
-        last_name: notifiedByLastName,
-        profile_type: "Nurse",
-      },
+      ...(notifiedByFirstName && notifiedByLastName
+        ? {
+            notified_by: {
+              first_name: notifiedByFirstName,
+              last_name: notifiedByLastName,
+              profile_type: "Nurse",
+            },
+          }
+        : {}),
       brief_summary_incident: briefSummary,
       immediate_actions_taken: immediateActionsTaken,
       status: incidentStatus,
       severity_rating: severityRating,
     };
+
+    setIsLoading(true);
+
     try {
-      const response = await api.patch(
+      const response = await api.put(
         `/incidents/adverse-drug-reaction/${incidentId}/`,
         cleanedData(incidentData)
       );
@@ -483,13 +491,11 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
 
   const handleSaveDraft = () => {
     setStatus("Draft");
-    setSavingDraft(true);
     handleModify("Draft");
   };
 
   const handleSaveAndSubmit = () => {
     setStatus("Open");
-    setIsLoading(true);
     handleModify("Open");
   };
 
@@ -500,7 +506,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
           link={"/incidents/drug-reaction"}
           pageName={"ADR incidents"}
         />
-        <h2 className="title">Modifying Adverse Drug Incident</h2>
+        <h2 className="title">Updating Adverse Drug Incident</h2>
         <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
@@ -1274,4 +1280,4 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
   );
 };
 
-export default ModifyAdverseDruReactionForm;
+export default UpdateAdverseDruReactionForm;

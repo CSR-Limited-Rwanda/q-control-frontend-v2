@@ -19,8 +19,6 @@ const LoginPopup = () => {
 
   const handleSubmit = async () => {
     // validate form
-    toast.error("");
-    toast.success("");
 
     if (!username || !password) {
       toast.error("Email and password are required");

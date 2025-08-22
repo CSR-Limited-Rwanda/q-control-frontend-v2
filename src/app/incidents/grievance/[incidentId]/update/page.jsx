@@ -7,6 +7,7 @@ import api from "@/utils/api";
 import ModifyGrievanceIncident from "@/components/incidents/modifyIncidents/ModifyGrievanceIncidentPage";
 import { MoveRight } from "lucide-react";
 import NoResources from "@/components/NoResources";
+import UpdateGrievanceIncident from "@/components/incidents/updateIncidents/UpdateGrievanceIncidentPage";
 
 const ModifyGrievanceIncidentPageContent = () => {
   const [error, setError] = useState();
@@ -28,7 +29,6 @@ const ModifyGrievanceIncidentPageContent = () => {
           setInvestigation(response.data.has_investigation);
           setIncident(response.data.incident);
           setIsLoading(false);
-
         }
       } catch (error) {
         if (error.response.status === 404) {
@@ -45,7 +45,7 @@ const ModifyGrievanceIncidentPageContent = () => {
   return isLoading ? (
     "Getting data..."
   ) : incident && !isError ? (
-    <ModifyGrievanceIncident
+    <UpdateGrievanceIncident
       data={incident}
       incidentId={incidentId}
       investigation={investigation}

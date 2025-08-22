@@ -30,8 +30,7 @@ const AddUserPermissionsFrom = ({
 
   const handleAddUser = async (user) => {
     setLoadingState((prev) => ({ ...prev, [user.id]: true }));
-    toast.error("");
-    toast.success("");
+
     const payload = {
       id: parseInt(groupId),
     };

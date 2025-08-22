@@ -182,7 +182,7 @@ const LostAndFoundList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incidents/lost-and-found/${incidentId}/update/`);
+    router.push(`/incidents/lost-and-found/${incidentId}/modify/`);
     localStorage.setItem("lostAndFoundId", incidentId);
   };
 
@@ -644,8 +644,8 @@ const LostFoundTable = ({
           <th>Status</th>
           {(permissions?.lost_and_found?.includes("change_incident") ||
             permissions?.lost_and_found?.includes("view_details")) && (
-              <th className="action-col">Action</th>
-            )}
+            <th className="action-col">Action</th>
+          )}
         </tr>
       </thead>
       <tbody>
@@ -716,50 +716,50 @@ const LostFoundTable = ({
 
               {(permissions?.lost_and_found?.includes("change_incident") ||
                 permissions?.lost_and_found?.includes("view_details")) && (
-                  <td
-                    data-label="Action"
-                    onClick={(event) => handleNonClickableColumnClick(event)}
-                    className="action-col"
-                  >
-                    <div className="table-actions">
-                      <PermissionsGuard
-                        model={"lost_and_found"}
-                        codename={"change_incident"}
-                        isPage={false}
-                      >
-                        {!incident.is_resolved && (
-                          <Pencil
-                            size={20}
-                            onClick={() =>
-                              navigateToModify(
-                                incident.original_report
-                                  ? incident.original_report
-                                  : incident.id
-                              )
-                            }
-                          />
-                        )}
-                      </PermissionsGuard>
-
-                      <PermissionsGuard
-                        model={"lost_and_found"}
-                        codename={"view_details"}
-                        isPage={false}
-                      >
-                        <Eye
+                <td
+                  data-label="Action"
+                  onClick={(event) => handleNonClickableColumnClick(event)}
+                  className="action-col"
+                >
+                  <div className="table-actions">
+                    <PermissionsGuard
+                      model={"lost_and_found"}
+                      codename={"change_incident"}
+                      isPage={false}
+                    >
+                      {!incident.is_resolved && (
+                        <Pencil
                           size={20}
                           onClick={() =>
-                            handleRowClick(
+                            navigateToModify(
                               incident.original_report
                                 ? incident.original_report
                                 : incident.id
                             )
                           }
                         />
-                      </PermissionsGuard>
-                    </div>
-                  </td>
-                )}
+                      )}
+                    </PermissionsGuard>
+
+                    <PermissionsGuard
+                      model={"lost_and_found"}
+                      codename={"view_details"}
+                      isPage={false}
+                    >
+                      <Eye
+                        size={20}
+                        onClick={() =>
+                          handleRowClick(
+                            incident.original_report
+                              ? incident.original_report
+                              : incident.id
+                          )
+                        }
+                      />
+                    </PermissionsGuard>
+                  </div>
+                </td>
+              )}
             </tr>
           ))
         ) : (

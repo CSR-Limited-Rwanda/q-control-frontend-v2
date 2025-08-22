@@ -160,7 +160,7 @@ const GrievanceForm = ({ togglePopup }) => {
         last_name: patientLastName,
         profile_type: "Patient",
         age: age,
-        date_of_birth: dateBirth,
+        date_of_birth: dateBirth || null,
         medical_record_number: medicalRecord,
       },
 
@@ -183,8 +183,8 @@ const GrievanceForm = ({ togglePopup }) => {
         selectedOption === "other"
           ? otherInput
           : selectedOption
-            ? selectedOption
-            : null,
+          ? selectedOption
+          : null,
     };
 
     try {
@@ -208,8 +208,8 @@ const GrievanceForm = ({ togglePopup }) => {
       if (error.response) {
         toast.error(
           error.response?.data.message ||
-          error.response?.data.error ||
-          "Error while saving incident"
+            error.response?.data.error ||
+            "Error while saving incident"
         );
       } else {
         toast.error("Unknown error while saving incident");
@@ -329,8 +329,8 @@ const GrievanceForm = ({ togglePopup }) => {
               selectedOption === "other"
                 ? otherInput
                 : selectedOption
-                  ? selectedOption
-                  : null,
+                ? selectedOption
+                : null,
           });
         }
       } else {
@@ -343,9 +343,7 @@ const GrievanceForm = ({ togglePopup }) => {
       });
 
       if (adversePatientOutcome && !outcome.trim()) {
-        toast.error(
-          "Please identify outcome for adverse patient outcome."
-        );
+        toast.error("Please identify outcome for adverse patient outcome.");
         isValid = false;
       }
 

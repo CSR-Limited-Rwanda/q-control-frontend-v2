@@ -138,7 +138,7 @@ const PatientVisitorGrievanceList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incidents/grievance/${incidentId}/update/`);
+    router.push(`/incidents/grievance/${incidentId}/modify/`);
     localStorage.setItem("grievanceId", incidentId);
   };
 
@@ -693,49 +693,49 @@ const GrievanceTable = ({
                 permissions?.patient_visitor_grievance?.includes(
                   "view_details"
                 )) && (
-                  <td
-                    data-label="Action"
-                    onClick={(event) => handleNonClickableColumnClick(event)}
-                    className="action-col"
-                  >
-                    <div className="table-actions">
-                      <PermissionsGuard
-                        model={"patient_visitor_grievance"}
-                        codename="change_incident"
-                        isPage={false}
-                      >
-                        {!grievance.is_resolved && (
-                          <Pencil
-                            size={20}
-                            onClick={() =>
-                              navigateToModify(
-                                grievance.original_report
-                                  ? grievance.original_report
-                                  : grievance.id
-                              )
-                            }
-                          />
-                        )}
-                      </PermissionsGuard>
-                      <PermissionsGuard
-                        model={"patient_visitor_grievance"}
-                        codename="view_details"
-                        isPage={false}
-                      >
-                        <Eye
+                <td
+                  data-label="Action"
+                  onClick={(event) => handleNonClickableColumnClick(event)}
+                  className="action-col"
+                >
+                  <div className="table-actions">
+                    <PermissionsGuard
+                      model={"patient_visitor_grievance"}
+                      codename="change_incident"
+                      isPage={false}
+                    >
+                      {!grievance.is_resolved && (
+                        <Pencil
                           size={20}
                           onClick={() =>
-                            handleRowClick(
+                            navigateToModify(
                               grievance.original_report
                                 ? grievance.original_report
                                 : grievance.id
                             )
                           }
                         />
-                      </PermissionsGuard>
-                    </div>
-                  </td>
-                )}
+                      )}
+                    </PermissionsGuard>
+                    <PermissionsGuard
+                      model={"patient_visitor_grievance"}
+                      codename="view_details"
+                      isPage={false}
+                    >
+                      <Eye
+                        size={20}
+                        onClick={() =>
+                          handleRowClick(
+                            grievance.original_report
+                              ? grievance.original_report
+                              : grievance.id
+                          )
+                        }
+                      />
+                    </PermissionsGuard>
+                  </div>
+                </td>
+              )}
             </tr>
           ))
         ) : (
@@ -999,12 +999,16 @@ const ComplaintsTab = () => {
                         filters.resolved_by_staff === null
                           ? "Any"
                           : filters.resolved_by_staff
-                            ? "Yes"
-                            : "No"
+                          ? "Yes"
+                          : "No"
                       }
                       setSelected={(value) => {
                         const resolvedByStaff =
-                          value === "Yes" ? true : value === "No" ? false : null;
+                          value === "Yes"
+                            ? true
+                            : value === "No"
+                            ? false
+                            : null;
                         setFilters({
                           ...filters,
                           resolved_by_staff: resolvedByStaff,
@@ -1040,7 +1044,10 @@ const ComplaintsTab = () => {
                         <X size={20} variant="stroke" />
                         Clear
                       </button>
-                      <button onClick={applyFilters} className="secondary-button">
+                      <button
+                        onClick={applyFilters}
+                        className="secondary-button"
+                      >
                         <div className="icon">
                           <SlidersHorizontal size={20} variant="stroke" />
                         </div>
@@ -1060,7 +1067,10 @@ const ComplaintsTab = () => {
                   placeholder="Search by ID, Name, or MRN"
                 />
               </div>
-              <button onClick={toggleOpenFilters} className="date-filter-button">
+              <button
+                onClick={toggleOpenFilters}
+                className="date-filter-button"
+              >
                 <div className="icon">
                   <SlidersHorizontal size={24} variant="stroke" />
                 </div>
@@ -1147,10 +1157,11 @@ const ComplaintsTab = () => {
                                   </td>
                                   <td data-label="Resolved by staff">
                                     <p
-                                      className={`follow-up ${complaint.resolved_by_staff === false
-                                        ? "in-progress"
-                                        : "Open"
-                                        }`}
+                                      className={`follow-up ${
+                                        complaint.resolved_by_staff === false
+                                          ? "in-progress"
+                                          : "Open"
+                                      }`}
                                     >
                                       {(complaint.resolved_by_staff
                                         ? "Yes"
@@ -1176,8 +1187,9 @@ const ComplaintsTab = () => {
                           {pageNumbers.map((number) => (
                             <button
                               key={number}
-                              className={`pagination-button ${currentPage === number ? "active" : ""
-                                }`}
+                              className={`pagination-button ${
+                                currentPage === number ? "active" : ""
+                              }`}
                               onClick={() => handlePageChange(number)}
                             >
                               {number}
@@ -1240,7 +1252,9 @@ const ComplaintsTab = () => {
                       <tbody>
                         {showComplaintDetails && (
                           <ComplaintDetails
-                            handleShowComplainDetails={handleShowComplaintDetails}
+                            handleShowComplainDetails={
+                              handleShowComplaintDetails
+                            }
                             complaint={selectedComplaint}
                           />
                         )}
@@ -1252,8 +1266,12 @@ const ComplaintsTab = () => {
                             >
                               <td data-label="No">{index + 1}</td>
                               <td data-label="ID">{complaint.id}</td>
-                              <td data-label="Patient Name">{complaint.patient_name || "Not provided"}</td>
-                              <td data-label="MRN">{complaint.medical_record_number || "-"}</td>
+                              <td data-label="Patient Name">
+                                {complaint.patient_name || "Not provided"}
+                              </td>
+                              <td data-label="MRN">
+                                {complaint.medical_record_number || "-"}
+                              </td>
                               <td data-label="Date of Complaint">
                                 <DateFormatter
                                   dateString={complaint.date_of_complaint}
@@ -1261,16 +1279,20 @@ const ComplaintsTab = () => {
                               </td>
                               <td data-label="Resolved by staff">
                                 <p
-                                  className={`follow-up ${complaint.resolved_by_staff === false
-                                    ? "in-progress"
-                                    : "Open"
-                                    }`}
+                                  className={`follow-up ${
+                                    complaint.resolved_by_staff === false
+                                      ? "in-progress"
+                                      : "Open"
+                                  }`}
                                 >
-                                  {(complaint.resolved_by_staff ? "Yes" : "No") ||
-                                    "Not specified"}
+                                  {(complaint.resolved_by_staff
+                                    ? "Yes"
+                                    : "No") || "Not specified"}
                                 </p>
                               </td>
-                              <td data-label="How complaint was taken">{complaint.how_complaint_was_taken || "-"}</td>
+                              <td data-label="How complaint was taken">
+                                {complaint.how_complaint_was_taken || "-"}
+                              </td>
                             </tr>
                           ))
                         ) : (
@@ -1291,8 +1313,9 @@ const ComplaintsTab = () => {
                       {pageNumbers.map((number) => (
                         <button
                           key={number}
-                          className={`pagination-button ${currentPage === number ? "active" : ""
-                            }`}
+                          className={`pagination-button ${
+                            currentPage === number ? "active" : ""
+                          }`}
                           onClick={() => handlePageChange(number)}
                         >
                           {number}

@@ -45,7 +45,6 @@ const PermissionGroups = ({ formData, setFormData }) => {
       setGroups(response.data);
     } catch (error) {
       toast.error("Failed to fetch groups");
-
     } finally {
       setIsLoading(false);
       setIsSearching(false);
@@ -107,10 +106,12 @@ const PermissionGroups = ({ formData, setFormData }) => {
     try {
       const response = await api.get(`/departments/?facility_id=${facilityId}`);
       if (response.status === 200) {
-        const formattedDepartments = response.data.results.map((department) => ({
-          value: department.id,
-          label: department.name,
-        }));
+        const formattedDepartments = response.data.results.map(
+          (department) => ({
+            value: department.id,
+            label: department.name,
+          })
+        );
         setDepartments(formattedDepartments);
       }
     } catch (error) {
@@ -131,7 +132,6 @@ const PermissionGroups = ({ formData, setFormData }) => {
       const response = await api.get("/permissions/");
       setPermissions(response.data);
     } catch (error) {
-
       toast.error("Failed to fetch permissions");
     } finally {
       setIsLoading(false);
@@ -206,12 +206,11 @@ const PermissionGroups = ({ formData, setFormData }) => {
     }));
   }, [facilityDepartmentSelections]);
 
-  useEffect(() => {
-
-  }, [formData.selectedFacilities, formData.facilityDepartmentSelections]);
-  useEffect(() => {
-
-  }, [formData.permissionGroups]);
+  useEffect(() => {}, [
+    formData.selectedFacilities,
+    formData.facilityDepartmentSelections,
+  ]);
+  useEffect(() => {}, [formData.permissionGroups]);
 
   return (
     <div className="form">
@@ -318,8 +317,6 @@ const PermissionGroups = ({ formData, setFormData }) => {
             <h3>Permission Roles</h3>
             {isLoading && groups.length < 1 ? (
               <p>Loading...</p>
-            ) : errorMessage ? (
-              <p>{errorMessage}</p>
             ) : (
               <div>
                 {groups.map((group) => (

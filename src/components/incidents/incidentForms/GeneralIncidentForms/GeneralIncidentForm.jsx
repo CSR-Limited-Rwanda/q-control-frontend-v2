@@ -315,7 +315,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
       if (response.status === 200) {
         setCurrentStep(currentStep + 1);
-        toast.error("");
+
         toast.success("Data posted successfully");
       } else {
         toast.success("");
@@ -371,7 +371,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         // setErrorFetching(error?.response?.data?.error);
         toast.error(
           error?.response?.data?.message ||
-          "Error while creating new incident, please try again"
+            "Error while creating new incident, please try again"
         );
         return;
       } else {
@@ -440,9 +440,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           console.error("API error:", error.response.data);
           console.log(error);
           // setErrorFetching(error.response.data.error);
-          toast.error(
-            error.response.data.message || "API error occurred"
-          );
+          toast.error(error.response.data.message || "API error occurred");
         } else {
           console.error("Unexpected error:", error);
           toast.error("Something went wrong");
@@ -489,7 +487,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             state: state,
             gender: sex,
             age: age,
-            date_of_birth: dateOfBirth,
+            date_of_birth: dateOfBirth || null,
             zip_code: zipCode,
             city: city,
             phone_number: phoneNumber,
@@ -688,9 +686,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
       });
 
       if (selectedOutcome === "Other" && !otherOutcome) {
-        toast.error(
-          "Please enter a description for the selected outcome"
-        );
+        toast.error("Please enter a description for the selected outcome");
         isValid = false;
       }
 
@@ -1014,8 +1010,9 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
             <div className="form-half">
               <div
-                className={`field name ${showSuggestions ? "suggestions-field" : ""
-                  }`}
+                className={`field name ${
+                  showSuggestions ? "suggestions-field" : ""
+                }`}
               >
                 <label htmlFor="patientName">Patient/Visitor first name</label>
                 <input
@@ -1030,8 +1027,9 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                 />
               </div>
               <div
-                className={`field name ${showSuggestions ? "suggestions-field" : ""
-                  }`}
+                className={`field name ${
+                  showSuggestions ? "suggestions-field" : ""
+                }`}
               >
                 <label htmlFor="patientName">Patient/Visitor last name</label>
                 <input
@@ -1203,8 +1201,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
               </label>
               <div
                 className="check-boxes check-boxes-row"
-              //  onChange={(e) => setRoute(e.target.value)}
-              //  value={route}
+                //  onChange={(e) => setRoute(e.target.value)}
+                //  value={route}
               >
                 {statusesPrionToIncident.map((status, index) => (
                   <div
@@ -1710,7 +1708,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                         style={{
                           display:
                             specialTypes.includes(type.name) &&
-                              otherTypes !== "Specimen"
+                            otherTypes !== "Specimen"
                               ? "none"
                               : "block",
                         }}
@@ -1968,8 +1966,9 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           >
             <span>{isLoading ? "Saving..." : "Save Incident"}</span>
             <i
-              className={`fa-solid fa-arrow-right ${isLoading ? "loading" : ""
-                }`}
+              className={`fa-solid fa-arrow-right ${
+                isLoading ? "loading" : ""
+              }`}
             ></i>
           </button>
         ) : currentStep < 7 ? (

@@ -26,6 +26,7 @@ import Link from "next/link";
 import SendForReview from "./sendForReview/sendForReview";
 import { NewReviewForm } from "@/components/IncidentReviewsTab";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 // import GenerateReport from "../../../../components/general/popups/generateReport";
 
 const IncidentDetailsHeader = ({
@@ -43,7 +44,12 @@ const IncidentDetailsHeader = ({
   localStorageName,
 }) => {
   // Default to "Most Recent" if available, otherwise "Original Version"
-  const permissions = usePermission();
+  const { permissions } = useGetPermissions();
+  console.log(permissions);
+  console.log(
+    "Permission: ",
+    permissions?.general_patient_visitor?.includes("change_incident")
+  );
   const defaultVersion = data?.modifications?.versions?.find(
     (mod) => mod.latest
   )
@@ -53,6 +59,7 @@ const IncidentDetailsHeader = ({
   const [showActions, setShowActions] = useState(false);
   const [showSendToDepartmentForm, setShowSendToDepartmentForm] =
     useState(false);
+
   const [showMarkResolvedPopup, setShowMarkResolvedPopup] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showPreviewForm, setShowPreviewForm] = useState(false);
@@ -280,11 +287,22 @@ const IncidentDetailsHeader = ({
                   </PermissionsGuard>
                 </>
 
-                <PermissionsGuard
-                  model={model}
-                  codename={"change_incident"}
-                  isPage={false}
-                >
+                {permissions &&
+                permissions[model]?.includes("change_incident") ? (
+                  <Link
+                    href={`${incidentDetailsId}/modify/`}
+                    onClick={() => {
+                      localStorage.setItem("canModifyDraft", true);
+                      localStorage.setItem(localStorageName, incidentDetailsId);
+                    }}
+                    className="action"
+                  >
+                    <div className="icon">
+                      <Pencil size={20} variant={"stroke"} />
+                    </div>
+                    <span>Modify Incident</span>
+                  </Link>
+                ) : (
                   <Link
                     href={`${incidentDetailsId}/update/`}
                     onClick={() => {
@@ -296,9 +314,9 @@ const IncidentDetailsHeader = ({
                     <div className="icon">
                       <Pencil size={20} variant={"stroke"} />
                     </div>
-                    <span>Modify</span>
+                    <span>Update Incident</span>
                   </Link>
-                </PermissionsGuard>
+                )}
 
                 <div onClick={toggleShowReviewForm} className="action">
                   <div className="icon">

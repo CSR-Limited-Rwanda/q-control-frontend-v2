@@ -160,7 +160,7 @@ const GeneralPatientVisitorList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incidents/general/${incidentId}/update/`);
+    router.push(`/incidents/general/${incidentId}/modify/`);
     localStorage.setItem("generalIncidentId", incidentId);
   };
 

@@ -22,7 +22,7 @@ import { useAuthentication } from "@/context/authContext";
 import "@/styles/_modifyIncident.scss";
 import BackToPage from "@/components/BackToPage";
 
-const ModifyWorkplaceIncident = ({ data }) => {
+const UpdateWorkplaceIncident = ({ data }) => {
   const { user } = useAuthentication();
   const { incidentId } = useParams();
   const [incident, setIncident] = useState(data);
@@ -609,7 +609,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
       setStatus(data.status);
       return;
     }
-
     let dataToStringify;
 
     if (
@@ -655,7 +654,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
     }
 
     const incidentData = {
-      action: "modify",
+    
       report_facility: data.report_facility.id,
       department: parseInt(selectedDepartmentId),
       injuryData,
@@ -666,32 +665,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
       date_of_incident: date,
       time_of_incident: time,
       description: detail,
-      // initiated_by: [
-      //     ...parties["Assailant"].map((party) => ({
-      //         party_type: "Assailant",
-      //         first_name: party.first_name,
-      //         last_name: party.last_name,
-      //         email: party.email,
-      //         phone_number: party.phone_number,
-      //         title: party.title,
-      //         assailant_relationship_to_patient:
-      //             party.assailant_relationship_to_patient,
-      //         assailant_background: party.assailant_background,
-      //         profile_type: "Assailant"
-      //     })),
-      //     ...parties["Victim"].map((party) => ({
-      //         party_type: "Victim",
-      //         first_name: party.first_name,
-      //         last_name: party.last_name,
-      //         email: party.email,
-      //         phone_number: party.phone_number,
-      //         title: party.title,
-      //         assailant_relationship_to_patient:
-      //             party.assailant_relationship_to_patient,
-      //         assailant_background: party.assailant_background,
-      //         profile_type: "Victim"
-      //     })),
-      // ],
       type_of_contact: typeOfContact,
       victim_was_alone: victimAlone,
       location: location,
@@ -700,15 +673,16 @@ const ModifyWorkplaceIncident = ({ data }) => {
       weapons_were_involved: weapons,
       weapon_used: weaponField,
       there_were_injuries: injuryCheck,
-      time_notified: notificationTime,
       persons_injured:
         injuryCheck === "Yes"
-          ? injuries.map((injury) => ({
-              first_name: injury.first_name,
-              last_name: injury.last_name,
-              injury_description: injury.injury_description,
-              profile_type: "Victim",
-            }))
+          ? injuries
+              .filter((injury) => injury.first_name && injury.last_name)
+              .map((injury) => ({
+                first_name: injury.first_name,
+                last_name: injury.last_name,
+                injury_description: injury.injury_description,
+                profile_type: "Victim",
+              }))
           : [
               {
                 first_name: "N/A",
@@ -718,38 +692,42 @@ const ModifyWorkplaceIncident = ({ data }) => {
               },
             ],
       notification: securityalert,
-      incident_witnesses: witnesses.map((witness) => ({
-        id: witness?.id ?? null,
-        first_name: witness?.first_name,
-        last_name: witness?.last_name,
-        email: witness?.email,
-        phone_number: witness?.phone_number,
-        address: witness?.address,
-        profile_type: "Witness",
-      })),
+      incident_witnesses: witnesses
+        .filter((witness) => witness?.first_name && witness?.last_name)
+        .map((witness) => ({
+          id: witness?.id ?? null,
+          first_name: witness?.first_name,
+          last_name: witness?.last_name,
+          email: witness?.email,
+          phone_number: witness?.phone_number,
+          address: witness?.address,
+          profile_type: "Witness",
+        })),
       termination_of_incident: jsonTermination,
       immediate_supervisor: departmentManagerNotified,
-      name_of_supervisor:
-        firstName && lastName
-          ? {
+      ...(firstName && lastName
+        ? {
+            name_of_supervisor: {
               first_name: firstName,
               last_name: lastName,
               profile_type: "Supervisor",
-            }
-          : null,
+            },
+          }
+        : {}),
       title_of_supervisor: title,
       date_notified: date,
       notification_time: notificationTime,
       action_taken: action,
       prevention_suggestion: suggestions,
-      reported_by:
-        reportedByFirstName && reportedByLastName
-          ? {
+      ...(reportedByFirstName && reportedByLastName
+        ? {
+            reported_by: {
               first_name: reportedByFirstName,
               last_name: reportedByLastName,
               profile_type: "Reporter",
-            }
-          : null,
+            },
+          }
+        : {}),
       reported_by_title: reportedTitle,
       date_reported: dateReported,
       time_reported: timeReported,
@@ -757,7 +735,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
     };
 
     try {
-      const response = await api.patch(
+      const response = await api.put(
         `incidents/workplace-violence/${workplaceViolenceId}/`,
         cleanedData(incidentData)
       );
@@ -794,7 +772,7 @@ const ModifyWorkplaceIncident = ({ data }) => {
           link={"/incidents/workplace-violence/"}
           pageName={"Workplace violence incident"}
         />
-        <h2 className="title">Modifying Workplace Violence Incident</h2>
+        <h2 className="title">Updating Workplace Violence Incident</h2>
         <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
@@ -2190,4 +2168,4 @@ const ModifyWorkplaceIncident = ({ data }) => {
   );
 };
 
-export default ModifyWorkplaceIncident;
+export default UpdateWorkplaceIncident;

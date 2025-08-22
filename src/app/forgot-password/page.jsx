@@ -23,8 +23,7 @@ const page = () => {
   const handleSubmit = async () => {
     localStorage.setItem("passwordResetEmail", username);
     // validate form
-    toast.error("");
-    toast.success("");
+
     setIsLoading(true);
 
     const response = await forgotPassword(username);
@@ -46,8 +45,7 @@ const page = () => {
       toast.error("No email found. Please try again.");
       return;
     }
-    toast.error("");
-    toast.success("");
+
     setIsLoading(true);
     const payload = {
       code: resetCode,

@@ -22,7 +22,7 @@ import CustomTimeInput from "@/components/CustomTimeInput";
 import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
 import BackToPage from "@/components/BackToPage";
-const ModifyMedicalErrorForm = ({ data, incidentId }) => {
+const UpdateMedicalErrorForm = ({ data, incidentId }) => {
   console.log(data);
   const permission = usePermission();
   const department = useDepartments();
@@ -212,43 +212,47 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
     setStatus("Open");
     setIsLoading(true);
     handleModify("Open");
-
   };
   const handleModify = async (incidentStatus) => {
-       if (!selectedDepartmentId) {
-          toast.error("Please select a department");
-          setIsLoading(false);
-          setSavingDraft(false);
-          setStatus(data.status);
-          return;
-        }
-    
+    if (!selectedDepartmentId) {
+      toast.error("Please select a department");
+      setIsLoading(false);
+      setSavingDraft(false);
+      setStatus(data.status);
+      return;
+    }
     const incidentData = {
-      action: "modify",
-      report_facility: data.report_facility.id,
-      department: parseInt(selectedDepartmentId),
-      patient: {
-        first_name: firstName || "",
-        last_name: lastName || "",
-        medical_record_number: mrn,
-        age: age,
-        date_of_birth: dateOfBirth,
-        profile_type: "Patient",
-      },
 
-      provider_info: {
-        first_name: physicianFirstName || "",
-        last_name: physicianLastName || "",
-        profile_type: "Physician",
-      },
+      // report_facility: data.report_facility.id,
+      department: parseInt(selectedDepartmentId),
+      ...(firstName && lastName
+        ? {
+            patient: {
+              first_name: firstName || "",
+              last_name: lastName || "",
+              medical_record_number: mrn,
+              age: age,
+              date_of_birth: dateOfBirth || null,
+              profile_type: "Patient",
+            },
+          }
+        : {}),
+      ...(physicianFirstName && physicianLastName
+        ? {
+            provider_info: {
+              first_name: physicianFirstName || "",
+              last_name: physicianLastName || "",
+              profile_type: "Physician",
+            },
+          }
+        : {}),
       day_of_the_week: dayWeek,
       date_of_error: date,
       time_of_error: time,
       location: location,
-      date_of_birth: incident.date_of_birth || null,
+      date_of_birth: dateOfBirth || null,
       date_of_report: dateNotified,
       time_of_report: timeNotified,
-
       follow_up: actionTaken,
       comment: comment,
       provider_classification: staffClassification,
@@ -273,7 +277,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
     };
 
     try {
-      const response = await api.patch(
+      const response = await api.put(
         `/incidents/medication-error/${medicationErrorIncidentId}/`,
         cleanedData(incidentData)
       );
@@ -389,7 +393,7 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
           link={"/incidents/medication-error/"}
           pageName={"Medication Error incidents"}
         />
-        <h2 className="title">Modifying Medication Error</h2>
+        <h2 className="title">Updating Medication Error</h2>
         <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
@@ -446,7 +450,6 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 id="department"
                 value={selectedDepartmentId}
                 onChange={handleDepartmentChange}
-                
               >
                 <option value="">Select a department</option>
                 {departments.map((department) => (
@@ -930,4 +933,4 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
   );
 };
 
-export default ModifyMedicalErrorForm;
+export default UpdateMedicalErrorForm;

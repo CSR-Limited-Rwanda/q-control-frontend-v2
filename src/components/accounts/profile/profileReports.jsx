@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 const ProfileReports = () => {
   const { accountId } = useParams();
@@ -22,6 +23,7 @@ const ProfileReports = () => {
   const actionRefs = useRef({}); // Store refs for action buttons
   const reportsPerPage = 5;
   const router = useRouter();
+  const { permissions } = useGetPermissions();
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -51,6 +53,49 @@ const ProfileReports = () => {
   }, [accountId]);
 
   const navigateToModify = (incidentId, reportName) => {
+    if (!reportName) {
+      router.push(`/incidents/general/${incidentId}/modify/`);
+      localStorage.setItem("generalIncidentId", incidentId);
+      return;
+    }
+
+    switch (reportName) {
+      case "General Patient Visitor":
+        router.push(`/incidents/general/${incidentId}/modify/`);
+        localStorage.setItem("generalIncidentId", incidentId);
+        break;
+      case "Adverse Drug Reaction":
+        router.push(`/incidents/drug-reaction/${incidentId}/modify/`);
+        localStorage.setItem("adverseDrugReactionId", incidentId);
+        break;
+      case "Lost and Found":
+        router.push(`/incidents/lost-and-found/${incidentId}/modify/`);
+        localStorage.setItem("lostAndFoundId", incidentId);
+        break;
+      case "Medication Error":
+        router.push(`/incidents/medication-error/${incidentId}/modify/`);
+        localStorage.setItem("medicationErrorIncidentId", incidentId);
+        break;
+      case "Staff Incident Report":
+        router.push(`/incidents/staff/${incidentId}/modify/`);
+        localStorage.setItem("staffIncidentId", incidentId);
+        break;
+      case "workplace violence":
+        router.push(`/incidents/workplace-violence/${incidentId}/modify/`);
+        localStorage.setItem("workplaceViolenceId", incidentId);
+        break;
+      case "Grievance":
+        router.push(`/incidents/grievance/${incidentId}/modify/`);
+        localStorage.setItem("grievanceId", incidentId);
+        break;
+      default:
+        router.push(`/incidents/general/${incidentId}/modify/`);
+        localStorage.setItem("generalIncidentId", incidentId);
+        break;
+    }
+  };
+
+  const navigateToUpdate = (incidentId, reportName) => {
     if (!reportName) {
       router.push(`/incidents/general/${incidentId}/update/`);
       localStorage.setItem("generalIncidentId", incidentId);
@@ -92,7 +137,6 @@ const ProfileReports = () => {
         break;
     }
   };
-
   const handleRowClick = (incidentId, reportName) => {
     if (!reportName) {
       router.push(`/incidents/general/${incidentId}/`);
@@ -133,6 +177,27 @@ const ProfileReports = () => {
         router.push(`/incidents/general/${incidentId}/`);
         localStorage.setItem("generalIncidentId", incidentId);
         break;
+    }
+  };
+
+  const getModelName = (reportName) => {
+    switch (reportName) {
+      case "General Patient Visitor":
+        return "general_patient_visitor";
+      case "Lost and Found":
+        return "lost_and_found";
+      case "Medication Error":
+        return "medication_error";
+      case "Grievance":
+        return "patient_visitor_grievance";
+      case "Staff Incident Report":
+        return "staff_incident_reports";
+      case "workplace violence":
+        return "workplace_violence_reports";
+      case "Adverse Drug Reaction":
+        return "adverse_drug_reaction";
+      default:
+        return "general_patient_visitor";
     }
   };
 
@@ -278,23 +343,41 @@ const ProfileReports = () => {
                       className="link"
                       onClick={() => {
                         setShowPopup(null);
-                        handleRowClick(incident.id, incident.reportName);
+                        handleRowClick(incident.id, iRaddent.reportName);
                       }}
                     >
                       <Eye className="icon" />
                       <span>Details</span>
                     </div>
-                    <div
-                      href={`/incidents/general/${incident.id}/update/`}
-                      className="link"
-                      onClick={() => {
-                        setShowPopup(null);
-                        navigateToModify(incident.id, incident.reportName);
-                      }}
-                    >
-                      <Pencil className="icon" />
-                      <span>Modify</span>
-                    </div>
+
+                    {permissions &&
+                    permissions[getModelName(incident.reportName)]?.includes(
+                      "change_incident"
+                    ) ? (
+                      <div
+                        href={`/incidents/general/${incident.id}/modify/`}
+                        className="link"
+                        onClick={() => {
+                          setShowPopup(null);
+                          navigateToModify(incident.id, incident.reportName);
+                        }}
+                      >
+                        <Pencil className="icon" />
+                        <span>Modify</span>
+                      </div>
+                    ) : (
+                      <div
+                        href={`/incidents/general/${incident.id}/modify/`}
+                        className="link"
+                        onClick={() => {
+                          setShowPopup(null);
+                          navigateToUpdate(incident.id, incident.reportName);
+                        }}
+                      >
+                        <Pencil className="icon" />
+                        <span>Update</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

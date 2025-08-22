@@ -138,7 +138,7 @@ const StaffIncidentList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incidents/staff/${incidentId}/update/`);
+    router.push(`/incidents/staff/${incidentId}/modify/`);
     localStorage.setItem("staffIncidentId", incidentId);
   };
 

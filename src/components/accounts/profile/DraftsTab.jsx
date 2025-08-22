@@ -34,7 +34,7 @@ export const DraftCategory = ({
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/${apiLink}/${incidentId}/update/`);
+    router.push(`/${apiLink}/${incidentId}/modify/`);
     localStorage.setItem("canModifyDraft", true);
   };
 
@@ -81,17 +81,13 @@ export const DraftCategory = ({
           setIsLoading(false);
         }
       } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Failed to delete drafts"
-        );
+        toast.error(error.response?.data?.message || "Failed to delete drafts");
         console.error(error);
         setIsLoading(false);
         setSelectedItems([]);
       }
     } else {
-      toast.error(
-        "No draft(s) selected, select draft(s) to be deleted"
-      );
+      toast.error("No draft(s) selected, select draft(s) to be deleted");
       setSelectedItems([]);
     }
     setShowDeleteModal(false);
@@ -101,9 +97,7 @@ export const DraftCategory = ({
     if (selectedItems.length > 0) {
       setShowDeleteModal(true);
     } else {
-      toast.error(
-        "No draft(s) selected, select draft(s) to be deleted"
-      );
+      toast.error("No draft(s) selected, select draft(s) to be deleted");
     }
   };
 
@@ -156,9 +150,9 @@ export const DraftCategory = ({
             <th>
               <div onClick={() => handleSelectAll(incident)}>
                 {selectedItems.length === incident.length &&
-                  incident.every((item) =>
-                    selectedItems.some((selected) => selected.id === item.id)
-                  ) ? (
+                incident.every((item) =>
+                  selectedItems.some((selected) => selected.id === item.id)
+                ) ? (
                   <SquareCheck />
                 ) : (
                   <Square />
@@ -178,8 +172,9 @@ export const DraftCategory = ({
             incident.map((draft, index) => (
               <tr
                 key={index}
-                className={`table-row ${selectedItems.includes(draft) ? "selected" : ""
-                  }`}
+                className={`table-row ${
+                  selectedItems.includes(draft) ? "selected" : ""
+                }`}
               >
                 <td>
                   <div
@@ -201,12 +196,13 @@ export const DraftCategory = ({
                 </td>
                 <td>
                   <p
-                    className={`follow-up ${draft.status === "Draft"
-                      ? "in-progress"
-                      : draft.status === "Closed"
+                    className={`follow-up ${
+                      draft.status === "Draft"
+                        ? "in-progress"
+                        : draft.status === "Closed"
                         ? "closed"
                         : "open"
-                      }`}
+                    }`}
                   >
                     {draft.status || "Not specified"}
                   </p>
@@ -271,8 +267,8 @@ export const DraftsTab = () => {
     } catch (error) {
       setError(
         error.response?.data?.message ||
-        error.response?.error ||
-        "Error fetching drafts data, try again later"
+          error.response?.error ||
+          "Error fetching drafts data, try again later"
       );
       setLoading(false);
       console.error(error);
@@ -289,7 +285,7 @@ export const DraftsTab = () => {
     <div className="draft-list">
       {error && <div className="error-message">{error}</div>}
       {Object.keys(drafts).length === 0 ||
-        Object.values(drafts).every((arr) => arr.length === 0) ? (
+      Object.values(drafts).every((arr) => arr.length === 0) ? (
         <div className="no-drafts">No drafts found</div>
       ) : (
         <div className="drafts-categories">
@@ -338,7 +334,7 @@ export const DraftsTab = () => {
             />
           ) : null}
           {workplaceViolenceIncidents &&
-            workplaceViolenceIncidents.length > 0 ? (
+          workplaceViolenceIncidents.length > 0 ? (
             <DraftCategory
               incident={workplaceViolenceIncidents}
               title={"Workplace violence reports"}

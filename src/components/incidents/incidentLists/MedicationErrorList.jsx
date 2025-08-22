@@ -169,7 +169,7 @@ const MedicationErrorList = () => {
   };
 
   const navigateToModify = (incidentId) => {
-    router.push(`/incidents/medication-error/${incidentId}/update/`);
+    router.push(`/incidents/medication-error/${incidentId}/modify/`);
     localStorage.setItem("medicationErrorIncidentId", incidentId);
   };
 

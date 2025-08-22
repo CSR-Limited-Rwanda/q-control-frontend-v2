@@ -8,7 +8,6 @@ import ModifyLostFound from "@/components/incidents/modifyIncidents/ModifyLostAn
 import { MoveRight } from "lucide-react";
 // import { FacilityBreadCrumbs } from "../../drugReactionincidents/modifyMedicalAdverseDrugReactionIncidentPage";
 import NoResources from "@/components/NoResources";
-import UpdateLostFound from "@/components/incidents/updateIncidents/UpdateLostAndFoundPage";
 
 const ModifyLostFoundPageContent = () => {
   const [error, setError] = useState();
@@ -28,6 +27,7 @@ const ModifyLostFoundPageContent = () => {
           `${API_URL}/incidents/lost-found/${lostAndFoundId}/`
         );
         if (response.status === 200) {
+
           setIncident(response.data.incident);
           setIsLoading(false);
         }
@@ -46,7 +46,7 @@ const ModifyLostFoundPageContent = () => {
   return isLoading ? (
     "Getting data..."
   ) : !isError ? (
-    <UpdateLostFound data={incident} incidentId={incidentId} />
+    <ModifyLostFound data={incident} incidentId={incidentId} />
   ) : (
     "No data"
   );

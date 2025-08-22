@@ -29,7 +29,7 @@ import BackToPage from "@/components/BackToPage";
 import CloseIcon from "@/components/CloseIcon";
 import { useGetPermissions } from "@/hooks/fetchPermissions";
 
-const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
+const UpdateGrievanceIncident = ({ data, incidentId, investigation }) => {
   const { permissions } = useGetPermissions();
   const [incident, setIncident] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
@@ -237,12 +237,10 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
   }, []);
 
   const handleSaveDraft = () => {
-    setStatus("Draft");
     setSavingDraft(true);
     handleModify("Draft");
   };
   const handleSaveAndSubmit = () => {
-    setStatus("Open");
     setIsLoading(true);
     handleModify("Open");
   };
@@ -254,59 +252,60 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
       setStatus(data.status);
       return;
     }
-
     const formatDate = (date) => {
       return format(new Date(date), "yyyy-MM-dd");
     };
     const incidentData = {
-      action: "modify",
       date: formatDate(incidentDate),
       report_facility: data.report_facility,
       department: parseInt(selectedDepartmentId),
-      patient_name:
-        patientFirstName && patientLastName
-          ? {
+      ...(patientFirstName && patientLastName
+        ? {
+            patient_name: {
               first_name: patientFirstName,
               last_name: patientLastName,
-              age: age,
-              date_of_birth: dateBirth || null,
+              age: parseInt(age),
+              date_of_birth: dateBirth ? dateBirth : null,
               medical_record_number: medicalRecord,
               profile_type: "Patient",
-            }
-          : null,
-
-      form_initiated_by:
-        formInitiatedByFirstName && formInitiatedByLastName
-          ? {
+            },
+          }
+        : {}),
+      ...(formInitiatedByFirstName && formInitiatedByLastName
+        ? {
+            form_initiated_by: {
               first_name: formInitiatedByFirstName,
               last_name: formInitiatedByLastName,
               profile_type: "Staff",
-            }
-          : null,
+            },
+          }
+        : {}),
       title: formInitiatedByTitle,
-      complaint_made_by:
-        complaintByFirstName && complaintByLastName
-          ? {
+      ...(complaintByFirstName && complaintByLastName
+        ? {
+            complaint_made_by: {
               first_name: complaintByFirstName,
               last_name: complaintByLastName,
               phone_number: phoneNumber,
               profile_type: "Patient",
-            }
-          : null,
+            },
+          }
+        : {}),
       relationship_to_patient: patientRelationship,
       source_of_information: sourceOfInformation,
       complaint_or_concern: complaintOrConcern,
       initial_corrective_actions: actionTaken,
       adverse_patient_outcome: adversePatientOutcome,
       outcome: outcome,
-      administrator_notified:
-        administratorFirstName && administratorLastName
-          ? {
+      ...(administratorFirstName && administratorLastName
+        ? {
+            administrator_notified: {
               first_name: administratorFirstName,
               last_name: administratorLastName,
               profile_type: "Staff",
-            }
-          : null,
+            },
+          }
+        : {}),
       notification_date: grivanceDate,
       notification_time: grivanceTime,
       status: incidentStatus,
@@ -315,7 +314,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
     console.log(incidentData);
 
     try {
-      const response = await api.patch(
+      const response = await api.put(
         `incidents/grievance/${grievanceId}/`,
         cleanedData(incidentData)
       );
@@ -360,7 +359,7 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
           link={"/incidents/grievance/"}
           pageName={"Grievance incident"}
         />
-        <h2 className="title">Modifying grievance incident</h2>
+        <h2 className="title">Updating grievance incident</h2>
         {investigation ? (
           <>
             {permissions?.patient_visitor_grievance?.includes(
@@ -810,4 +809,4 @@ const ModifyGrievanceIncident = ({ data, incidentId, investigation }) => {
   );
 };
 
-export default ModifyGrievanceIncident;
+export default UpdateGrievanceIncident;
