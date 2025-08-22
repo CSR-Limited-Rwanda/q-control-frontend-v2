@@ -1,6 +1,5 @@
 "use client";
-
-import React from "react";
+import { useState } from "react";
 import DashboardLayout from "../dashboard/layout";
 import Link from "next/link";
 import "@/styles/_incidentTrackingPage.scss";
@@ -63,10 +62,16 @@ const incidentConfigs = [
 
 const page = () => {
   const router = useRouter();
+  const [visibleIncidentCount, setVisibleIncidentCount] = useState(0)
 
   const handleClick = (link) => {
     router.push(link);
   }
+
+  const handleVisibleIncident = () => {
+    setVisibleIncidentCount((prev) => prev + 1)
+  }
+
   return (
     <DashboardLayout>
       <div className="tabs-content">
@@ -101,6 +106,14 @@ const page = () => {
               </div>
             </PermissionsGuard>
           ))}
+
+          {visibleIncidentCount === 0 && (
+            <div className="no-permissions-message">
+              <p>
+                You currently don’t have access to view any incident reports. Please contact your administrator if you believe this is a mistake.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
