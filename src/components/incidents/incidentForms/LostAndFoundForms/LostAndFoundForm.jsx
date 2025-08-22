@@ -3,464 +3,332 @@
 import toast from "react-hot-toast";
 import React, { useState, useEffect, useRef } from "react";
 import { validateStep } from "../../validators/GeneralIncidentFormValidator";
-import api, {
-  API_URL,
-  cleanedData,
-  checkCurrentAccount,
-  calculateAge,
-} from "@/utils/api";
-import RichTexField from "@/components/forms/RichTextField";
-import CustomDatePicker from "@/components/CustomDatePicker";
+import api, { API_URL, cleanedData, calculateAge } from "@/utils/api";
 import Step1InfoForm from "./steps/Step1InfoForm";
 import Step2ActionsForm from "./steps/Step2ActionsForm";
 import Step3CompletionForm from "./steps/Step3CompletionForm";
 import postDocumentHistory from "../../documentHistory/postDocumentHistory";
-import CustomTimeInput from "@/components/CustomTimeInput";
-import {
-  X,
-  Square,
-  SquareCheckBig,
-  CircleCheck,
-  MoveRight,
-} from "lucide-react";
-import { FacilityCard } from "@/components/DashboardContainer";
+import { ArrowLeft, CircleCheck, MoveRight } from "lucide-react";
 import DraftPopup from "@/components/DraftPopup";
 import "../../../../styles/_forms.scss";
 import { useAuthentication } from "@/context/authContext";
 import CloseIcon from "@/components/CloseIcon";
-import MessageComponent from "@/components/MessageComponet";
+import useValidate from "./utils/useValidate";
+import usePost from "./hooks/usePost";
+import useUpdate from "./hooks/useUpdate";
 
-const LostAndFoundForm = ({ togglePopup }) => {
-  const { user } = useAuthentication();
-  const [currentFacility, setCurrentFacility] = useState(user.facility);
-  const [currentStep, setCurrentStep] = useState(1);
-  const currentStepRef = useRef(currentStep);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("lost-property");
-  const [reporterFirstName, setReporterFirstName] = useState("");
-  const [reporterLastName, setReporterLastName] = useState("");
-  const [patientFirstName, setPatientFirstName] = useState("");
-  const [patientLastName, setPatientLastName] = useState("");
-  const [dateReporting, setDateReporting] = useState("");
-  const [timeReporting, setTimeReporting] = useState("");
-  const [dateFound, setDateFound] = useState("");
-  const [propertyName, setPropertyName] = useState("");
+const LostAndFoundForm = ({ initialData = {} }) => {
 
-  const [dateBirth, setDateBirth] = useState("");
-  const [age, setAge] = useState("");
+const getStoredStep = () => {
+  const stored = localStorage.getItem('lostAndFoundCurrentStep')
+  return stored ? parseInt(stored, 10) : 1
+}
 
-  const [timeFound, setTimeFound] = useState("");
-  const [relationship, setRelationship] = useState("");
-  const [descriptionOfProperty, setDescriptionOfProperty] = useState("");
-  const [location, setLocation] = useState("");
-  const [locationReturned, setLocationReturned] = useState("");
-  const [personWhoFoundPropertyFirstName, setPersonWhoFoundPropertyFirstName] =
-    useState("");
-  const [personWhoFoundPropertyLastName, setPersonWhoFoundPropertyLastName] =
-    useState("");
-  const [checkboxChecked, setCheckboxChecked] = useState(false);
-  const [checkboxReturnedChecked, setCheckboxReturnedChecked] = useState(false);
-  const [propertyReturnedTo, setPropertyReturnedTo] = useState("");
-  const [dateReturned, setDateReturned] = useState("");
-  const [timeReturned, setTimeReturned] = useState("");
-  const [actionTaken, setActionTaken] = useState("");
+// Initialize form data with proper default values to prevent null issues
+const getInitialFormData = () => {
+  const defaultData = {
+    // Step 1 fields
+    reported_by: {
+      first_name: '',
+      last_name: '',
+    },
+    taken_by: {
+      first_name: '',
+      last_name: '',
+    },
+    property_name: '',
+    item_description: '',
+    date_reported: '',
+    time_reported: '',
+    relation_to_patient: '',
 
-  function formatTime(time) {
-    if (!time) return undefined;
-    const [h, m] = time.split(":");
-    return `${h.padStart(2, "0")}:${m.padStart(2, "0")}:00`;
+    // Step 2 fields
+    action_taken: '',
+    property_found: false,
+    property_returned: false,
+    location_found: '',
+    date_found: '',
+    time_found: '',
+    location_returned: '',
+    returned_to: '',
+    date_returned: '',
+    time_returned: '',
   }
 
-  useEffect(() => {
-    currentStepRef.current = currentStep;
-  }, [currentStep]);
+  // Merge with initial data if provided
+  return { ...defaultData, ...initialData }
+}
 
-  useEffect(() => {
-    localStorage.setItem("updateNewIncident", "false");
-    const handleKeyDown = (event) => {
-      // Check if Ctrl or Alt key is pressed
-      if (event.key === "Enter") {
-        event.preventDefault();
-        if (currentStepRef.current < 2) {
-          document.getElementById("continue-button").click();
-        } else if (currentStepRef.current === 2) {
-          document.getElementById("save-button").click();
-        } else {
-          return;
-        }
-      }
+const [currentStep, setCurrentStep] = useState(1 || getStoredStep())
+const [formData, setFormData] = useState(getInitialFormData())
 
-      if (event.ctrlKey || event.altKey) {
-        switch (event.key) {
-          case "s": // Ctrl + S
-            event.preventDefault(); // Prevent default browser action
-            if (currentStepRef.current < 2) {
-              document.getElementById("continue-button").click();
-            } else if (currentStepRef.current === 2) {
-              document.getElementById("save-button").click();
-            } else {
-              return;
-            }
-            break;
-          case "b":
-            event.preventDefault();
-            if (currentStepRef.current > 1 && currentStepRef.current <= 2) {
-              document.getElementById("back-button").click();
-            }
+const storedLostFoundId = localStorage.getItem("lost_found_id");
+// Only consider editing if we have an ID AND we're not on step 1
+const isEditing = Boolean(storedLostFoundId && currentStep > 1);
 
-            break;
-          case "f": // Ctrl + F
-            event.preventDefault(); // Prevent default browser action
-            document.getElementById("name").focus();
-            break;
-          case "e": // Ctrl + E
-            event.preventDefault(); // Prevent default browser action
-            document.getElementById("email").focus();
-            break;
-          default:
-            break;
-        }
-      }
-    };
+// Temporarily disable session expiry check to fix Step 2 issues
+// useEffect(() => {
+//  // Only check for session expiry if we're not on completion step (step 3)
+//  // and only if we actually expect to have a stored ID (i.e., after step 1 completion)
+//  if (currentStep > 1 && currentStep < 3 && !storedLostFoundId) {
+//    // Don't redirect immediately - give user a chance to complete step 1 first
+//    const hasCompletedStep1 = localStorage.getItem('lostAndFoundCurrentStep') === '2'
+//    if (hasCompletedStep1) {
+//      setCurrentStep(1)
+//      localStorage.removeItem('lostAndFoundCurrentStep')
+//      toast.error('Session expired. Please start from step 1.')
+//    }
+//  }
+// }, [currentStep, storedLostFoundId])
 
-    // Add event listener when component mounts
-    document.addEventListener("keydown", handleKeyDown);
+// Clear any existing lost_found_id when starting a new form
+useEffect(() => {
+ if (!initialData || Object.keys(initialData).length === 0) {
+   // This is a new form, clear any existing IDs
+   localStorage.removeItem('lost_found_id')
+ }
+}, [initialData])
 
-    // Clean up event listener when component unmounts
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-  const handleChange = (e) => {
-    setSelectedOption(e.target.value);
-    setCurrentStep(1);
-  };
+// Function to initialize edit mode with existing data
+const initializeEditMode = async (incidentId) => {
+  try {
+    console.log("Initializing edit mode for incident:", incidentId)
+    localStorage.setItem('lost_found_id', incidentId)
 
-  const handleDateOfBirth = (date) => {
-    const calculatedAge = calculateAge(date);
-    setDateBirth(date);
-    setAge(calculatedAge);
-  };
+    const existingData = await fetchIncidentData(incidentId)
+    console.log("Loading existing data for editing:", existingData)
 
-  async function postStepOne() {
-    const data = {
-      current_step: currentStep,
-      facility_id: user.facility.id,
-      report_facility_id: currentFacility?.id,
+    // Transform API data to form structure - ensure no null values
+    const formData = {
+      // Step 1 fields
       reported_by: {
-        first_name: reporterFirstName,
-        last_name: reporterLastName,
-        profile_type: "Patient",
+        first_name: existingData.reported_by?.first_name || '',
+        last_name: existingData.reported_by?.last_name || '',
       },
-      property_name: propertyName,
-      item_description: descriptionOfProperty,
-      date_reported: dateReporting,
-      time_reported: timeReporting,
-      relation_to_patient: relationship,
       taken_by: {
-        first_name: patientFirstName,
-        last_name: patientLastName,
-        profile_type: "Staff",
+        first_name: existingData.taken_by?.first_name || '',
+        last_name: existingData.taken_by?.last_name || '',
       },
+      property_name: existingData.property_name || '',
+      item_description: existingData.item_description || '',
+      date_reported: existingData.date_reported || '',
+      time_reported: existingData.time_reported || '',
+      relation_to_patient: existingData.relation_to_patient || '',
 
-      status: "Draft",
-    };
+      // Step 2 fields
+      action_taken: existingData.action_taken || '',
+      property_found: existingData.property_found || false,
+      property_returned: existingData.property_returned || false,
+      location_found: existingData.location_found || '',
+      date_found: existingData.date_found || '',
+      time_found: existingData.time_found || '',
+      location_returned: existingData.location_returned || '',
+      returned_to: existingData.returned_to || '',
+      date_returned: existingData.date_returned || '',
+      time_returned: existingData.time_returned || '',
+    }
 
-    try {
-      const response = await api.post(
-        `${API_URL}/incidents/lost-found/`,
-        cleanedData(data)
-      );
+    console.log("Transformed form data:", formData)
 
-      if (response.status === 200 || response.status === 201) {
-        localStorage.setItem("lost_found_id", response.data.id);
-        toast.success("Data posted successfully");
-        localStorage.setItem("updateNewIncident", "true");
-        if (currentStep <= 3) {
-          setCurrentStep(currentStep + 1);
-        }
+    setFormData(formData)
 
-        setIsLoading(false);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.error("Detailed error:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        headers: error.response?.headers,
-        config: error.config,
-      });
+    // Set step based on completion status
+    if (existingData.status === 'Completed') {
+      setCurrentStep(3) // Go to completion
+    } else {
+      setCurrentStep(existingData.current_step || 1)
+    }
 
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        "Failed to post data";
-      toast.error(errorMessage);
+    toast.success("Form loaded for editing")
+
+  } catch (error) {
+    console.error("Error initializing edit mode:", error)
+    toast.error("Failed to load data for editing")
+  }
+}
+
+// Auto-load existing data when editing (for direct URL access)
+useEffect(() => {
+  const loadExistingData = async () => {
+    if (storedLostFoundId && isEditing) {
+      await initializeEditMode(storedLostFoundId)
     }
   }
 
-  async function patchData(data) {
-    const lostFoundId = localStorage.getItem("lost_found_id");
-    const payload = cleanedData(data);
+  loadExistingData()
+}, [storedLostFoundId, isEditing])
+ 
+  const { invalidFieldNames, validateStep, clearValidationErrors, isFieldInvalid, getFieldError } = useValidate()
+  const { postLostAndFound, isLoading: isPosting, error: postError, success: postSuccess } = usePost()
+  const { updateIncident, fetchIncidentData, isLoading: isUpdating, error: updateError } = useUpdate()
 
-    try {
-      const response = await api.put(
-        `${API_URL}/incidents/lost-found/${lostFoundId}/`,
-        payload
-      );
+  const isLoading = isPosting || isUpdating
 
-      toast.success("Data posted successfully");
+  const handleNextStep = async () => {
+    const isValid = validateStep(currentStep, formData)
 
-      if (currentStep <= 4) {
-        setCurrentStep(currentStep + 1);
+    if (!isValid) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+    try{
+      if (isEditing) {
+        await updateIncident(storedLostFoundId, formData)
+        if (currentStep === 2) {
+          toast.success('Lost and Found report updated successfully!')
+        } else {
+          toast.success('Step updated successfully')
+        }
+      } else {
+        await postLostAndFound(formData)
+        if (currentStep === 2) {
+          toast.success('Lost and Found report saved successfully!')
+        } else {
+          toast.success('Step saved successfully')
+        }
       }
 
-      if (currentStep === 4) {
-        postDocumentHistory(lostFoundId, "added a new incident", "create");
-        localStorage.setItem("updateNewIncident", "false");
+      // Move to next step or completion
+      if (currentStep === 2) {
+        setCurrentStep(3) // Go directly to completion
+        // Don't clean up localStorage here - let the completion step handle it
+        // or the user can manually start over using the "Start Over" button
+      } else {
+        setCurrentStep((prevStep) => prevStep + 1)
       }
     } catch (error) {
-      console.error("PATCH ERROR:", error);
-      if (error.response?.data) {
-        console.error(
-          "SERVER ERROR:",
-          JSON.stringify(error.response.data, null, 2)
-        );
-      }
-      toast.error("Failed to post data");
-    } finally {
-      setIsLoading(false);
+      console.error('Submission failed:', error)
+      toast.error(error.message)
     }
   }
 
-  const handleSaveChange = async () => {
-    if (currentStep === 2) {
-      const isValid = validateStep({
-        action_taken: actionTaken,
-        ...(checkboxReturnedChecked && {
-          returned_to: propertyReturnedTo,
-          date_returned: dateReturned,
-          time_returned: timeReturned,
-          location_returned: locationReturned,
-        }),
-        ...(checkboxChecked && {
-          location_found: location,
-          date_found: dateFound,
-          time_found: timeFound,
-        }),
-      });
-
-      const data = {
-        current_step: currentStep,
-        action_taken: actionTaken,
-        ...(checkboxReturnedChecked && {
-          returned_to: propertyReturnedTo,
-          date_returned: dateReturned,
-          time_returned: timeReturned,
-          location_returned: locationReturned,
-        }),
-        ...(checkboxChecked && {
-          location_found: location,
-          date_found: dateFound,
-          time_found: formatTime(timeFound),
-          is_found: checkboxChecked ? "True" : "False",
-          found_by: {
-            first_name: personWhoFoundPropertyFirstName,
-            last_name: personWhoFoundPropertyLastName,
-            profile_type: "Visitor",
-          },
-        }),
-      };
-      if (isValid) {
-        setIsLoading(true);
-        patchData(data);
-      } else {
-        toast.error("Please fill in all required fields.");
-      }
+  const handleChange = (e) => {
+    // Handle cases where e.target might be undefined
+    if (!e || !e.target) {
+      console.warn('handleChange called with invalid event object:', e)
+      return
     }
-  };
 
-  const handleNextStep = () => {
-    if (currentStep === 1) {
-      const isValid = validateStep({
-        "Reporter first name": reporterFirstName,
-        "Reporter last name": reporterLastName,
-        "Patient first name": patientFirstName,
-        "Patient last name": patientLastName,
-        "Date Reporting": dateReporting,
-        "Time Reporting": timeReporting,
-        "Property Name": propertyName,
-        "Description Of Property": descriptionOfProperty,
-      });
+    const { name, value } = e.target
 
-      if (isValid) {
-        setIsLoading(true);
-        if (localStorage.getItem("updateNewIncident") === "false") {
-          postStepOne();
-        }
-
-        if (localStorage.getItem("updateNewIncident") === "true") {
-          patchData({
-            current_step: currentStep,
-            reported_by: {
-              first_name: reporterFirstName,
-              last_name: reporterLastName,
-              profile_type: "Patient",
-            },
-            property_name: propertyName,
-            item_description: descriptionOfProperty,
-            date_reported: dateReporting,
-            time_reported: timeReporting,
-            relation_to_patient: relationship,
-            person_reporting_info: {
-              first_name: patientFirstName,
-              last_name: patientLastName,
-              profile_type: "Staff",
-            },
-
-            status: "Draft",
-          });
-        }
-      } else {
-        toast.error("Please fill in all required fields.");
-      }
+    if (!name) {
+      console.warn('handleChange called without name property:', e.target)
+      return
     }
-  };
 
-  const handlePreviousStep = () => {
-    currentStep > 1 ? setCurrentStep(currentStep - 1) : setCurrentStep(1);
-  };
+    console.log('handleChange called:', { name, value, currentStep, isEditing })
 
-  const handleCheckboxChange = () => {
-    setCheckboxChecked(!checkboxChecked);
-  };
+    if (name.includes('.')) {
+      const [parentKey, childKey] = name.split('.')
+      setFormData((prevData) => {
+        const newData = {
+          ...prevData,
+          [parentKey]: {
+            ...prevData[parentKey],
+            [childKey]: value || '' // Ensure value is never null
+          }
+        }
+        console.log('Updated nested field:', { parentKey, childKey, value: value || '', newData })
+        return newData
+      })
+    } else {
+      setFormData((prevData) => {
+        const newData = { ...prevData, [name]: value || '' } // Ensure value is never null
+        console.log('Updated direct field:', { name, value: value || '', newData })
+        return newData
+      })
+    }
+  }
 
-  const handleCheckboxReturn = () => {
-    setCheckboxReturnedChecked(!checkboxReturnedChecked);
-  };
-
-  const handleCurrentFacility = (facilityId) => {
-    const selectedFacility = user?.accounts?.find(
-      (facility) => facility.id === parseInt(facilityId)
-    );
-    setCurrentFacility(selectedFacility);
-  };
 
   return (
     <div className="form-container">
       <div className="forms-header">
-        <h2>Lost and Found Property Report</h2>
-        <CloseIcon
-          onClick={() => {
-            togglePopup();
-            localStorage.setItem("updateNewIncident", "false");
-          }}
-        />
-        {currentStep < 3 ? (
-          <div className="form-steps">
-            <div className={currentStep === 1 ? "step current-step" : "step"}>
-              <div className="icon">
-                <CircleCheck size={32} />
-              </div>
-              <div className="name">
-                <p className="step-name">Step 1/2</p>
-                <p className="step-details">Person taking report Info</p>
-              </div>
+        <h2>{isEditing ? 'Edit Lost and Found' : 'New Lost and Found'}</h2>
+          <div className="progress-info">
+            <span>Step {currentStep} of 3 {currentStep === 2 ? '(Final Step - Save & Complete)' : ''}</span>
+          {(isEditing || currentStep > 1) && (
+            <button
+              type="button"
+              className="reset-btn"
+              onClick={() => {
+                if (window.confirm('Are you sure you want to start over? All progress will be lost.')) {
+                  localStorage.removeItem('lost_found_id')
+                  localStorage.removeItem('lostAndFoundCurrentStep')
+                  window.location.reload()
+                }
+              }}
+            >
+              Start Over
+            </button>
+          )}
+        </div>
+      
+      </div>
+
+     {(postError || updateError) && (
+          <div className="error-banner">
+            <p>Error: {postError || updateError}</p>
             </div>
-            <div className="divider"></div>
-            <div className={currentStep === 2 ? "step current-step" : "step"}>
-              <div className="icon">
-                <CircleCheck size={32} />
-              </div>
-              <div className="name">
-                <p className="step-name">Step 2/2</p>
-                <p className="step-details">Actions taken</p>
-              </div>
-            </div>
+        )}
+        {
+          currentStep === 1 && <Step1InfoForm 
+            formData={formData}
+            setFormData={setFormData}
+            handleChange={handleChange}
+            isFieldInvalid={isFieldInvalid}
+            getFieldError={getFieldError}
+          
+          />
+        }
+        {
+          currentStep === 2 && <Step2ActionsForm 
+            formData={formData}
+            setFormData={setFormData}
+            handleChange={handleChange}
+            isFieldInvalid={isFieldInvalid}
+            getFieldError={getFieldError}
+          
+          />
+        }
+        {
+          currentStep === 3 && <Step3CompletionForm 
+            formData={formData}
+           onStartNew={() => {
+            localStorage.removeItem('')
+            localStorage.removeItem('')
+            window.location.reload()
+           }}
+           onViewDashboard={() => {
+            localStorage.removeItem('')
+            localStorage.removeItem('')
+            window.location.href = '/dashboard'
+           }}
+          
+          />
+        }
+        {currentStep < 3 && (
+          <div className="buttons">
+            {
+              currentStep > 1 && (
+                <div className="back-button"  onClick={() => setCurrentStep((prevStep) => prevStep - 1)} disabled={isLoading}>
+                  <ArrowLeft />
+                  Back
+                  </div>
+              )
+            }
+            {
+              currentStep < 3 && (
+                <button onClick={handleNextStep} disabled={isLoading}>
+                  {currentStep === 2 ? 'Save' : 'Next'}
+                </button>
+
+              )
+
+            }
+           
           </div>
-        ) : (
-          ""
         )}
-        {/* <FacilityCard /> */}
-        <DraftPopup
-          incidentString="lost_and_found"
-          incidentType="lost_and_found"
-        />
-      </div>
-      {currentStep === 1 && (
-        <select
-          className="facility-card"
-          name="facility"
-          id="facility"
-          value={currentFacility?.id || ""}
-          onChange={(e) => handleCurrentFacility(e.target.value)}
-        >
-          {user?.accounts?.map((facility) => (
-            <option key={facility.id} value={facility.id}>
-              Submitting for {facility.name}
-            </option>
-          ))}
-        </select>
-      )}
-
-      <form className="newIncidentForm">
-        {currentStep === 1 && (
-          <Step1InfoForm reporterFirstName={reporterFirstName} setReporterFirstName={setReporterFirstName} reporterLastName={reporterLastName} setReporterLastName={setReporterLastName}  patientFirstName={patientFirstName}  setPatientFirstName={setPatientFirstName} patientLastName={patientLastName} setPatientLastName={setPatientLastName}  dateReporting={dateReporting} setDateReporting={setDateReporting} timeReporting={timeReporting} setTimeReporting={setTimeReporting} relationship={relationship} setRelationship={setRelationship} propertyName={propertyName} setPropertyName={setPropertyName} descriptionOfProperty={descriptionOfProperty} setDescriptionOfProperty={setDescriptionOfProperty}
-          />
-        )}
-
-        {currentStep === 2 && (
-          <Step2ActionsForm actionTaken={actionTaken} setActionTaken={setActionTaken} checkboxChecked={checkboxChecked} handleCheckboxChange={handleCheckboxChange} location={location} setLocation={setLocation} dateFound={dateFound} setDateFound={setDateFound} timeFound={timeFound} setTimeFound={setTimeFound}  personWhoFoundPropertyFirstName={personWhoFoundPropertyFirstName}  setPersonWhoFoundPropertyFirstName={setPersonWhoFoundPropertyFirstName} personWhoFoundPropertyLastName={personWhoFoundPropertyLastName}  setPersonWhoFoundPropertyLastName={setPersonWhoFoundPropertyLastName} checkboxReturnedChecked={checkboxReturnedChecked} handleCheckboxReturn={handleCheckboxReturn} locationReturned={locationReturned} setLocationReturned={setLocationReturned} propertyReturnedTo={propertyReturnedTo}  setPropertyReturnedTo={setPropertyReturnedTo} dateReturned={dateReturned}  setDateReturned={setDateReturned} timeReturned={timeReturned} setTimeReturned={setTimeReturned}
-          />
-        )}
-
-        {currentStep === 3 && <Step3CompletionForm />}
-      </form>
-      <div className="incident-form-buttons">
-        {currentStep > 1 && currentStep <= 2 && (
-          <button
-            onClick={handlePreviousStep}
-            id="back-button"
-            className="incident-back-btn"
-          >
-            <i className="fa-solid fa-arrow-left"></i>
-            <span>Back</span>
-          </button>
-        )}
-
-        {currentStep === 2 ? (
-          <button
-            className="primary-button"
-            id="save-button"
-            onClick={handleSaveChange}
-          >
-            <span>{isLoading ? "Processing..." : "Save Incident"}</span>
-            <i className="fa-solid fa-arrow-right"></i>
-          </button>
-        ) : (
-          currentStep < 2 && (
-            <>
-              <button
-                onClick={togglePopup}
-                id="continue-button"
-                className="incident-back-btn"
-              >
-                <span>Cancel</span>
-                <i className="fa-solid fa-arrow-right"></i>
-              </button>
-              <button
-                onClick={handleNextStep}
-                id="continue-button"
-                className="primary-button"
-              >
-                <span>{isLoading ? "Processing..." : "Continue"}</span>
-                <MoveRight />
-              </button>
-            </>
-          )
-        )}
-      </div>
     </div>
   );
 };
