@@ -165,7 +165,8 @@ const Titles = () => {
     fetchTitles(createUrlParams(getSortParams()));
   }, []);
   return (
-    <div className="titles-tab">
+    <PermissionsGuard model={"accounts"} codename={"view_title"}>
+<div className="titles-tab">
       <div className="filters">
         <SearchInput
           value={searchQuery}
@@ -342,6 +343,8 @@ const Titles = () => {
         />
       )}
     </div>
+    </PermissionsGuard>
+    
   );
 };
 

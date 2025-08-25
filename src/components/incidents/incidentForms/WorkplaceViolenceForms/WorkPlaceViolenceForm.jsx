@@ -47,7 +47,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const [otherAssailant, setOtherAssailant] = useState(false);
   const [showWitnesses, setShowWitnesses] = useState(false);
   const [isOtherTerminationOfContract, setIsOtherTerminationOfContract] =
-    useState("");
+    useState(false);
   const [departmentManagerNotified, setDepartmentManagerNotified] =
     useState("");
   const [date, setDate] = useState(null);
@@ -87,6 +87,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const [selectedIncidents, setSelectedIncidents] = useState([]);
   const [otherExplanation, setOtherExplanation] = useState("");
   const [terminationIncidents, setTerminationIncidents] = useState([]);
+  const [otherTerminationIncident, setOtherTerminationIncident] = useState("");
   const [currentInjury, setCurrentInjury] = useState({
     user_data: {
       first_name: "",
@@ -367,7 +368,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       setWeaponField("");
     }
   };
-  const handleTerminationOfContract = () => {
+  const handleOtherTerminationOfContract = () => {
     setIsOtherTerminationOfContract(!isOtherTerminationOfContract);
   };
   const handleShowWitnesses = () => {
@@ -903,7 +904,11 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
       });
       let stringifiedTermination;
 
-      stringifiedTermination = { description: terminationIncidents };
+      stringifiedTermination = {
+        description: terminationIncidents,
+        other: isOtherTerminationOfContract ? otherTerminationIncident : "",
+      };
+
       const jsonTermination = JSON.stringify(stringifiedTermination);
       if (isValid) {
         incidentPostData = {
@@ -2247,93 +2252,95 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                   <div className="check-box">
                     <input
                       type="checkbox"
-                      name="incidentDeescalated"
-                      id="incidentDeescalated"
-                      value="incidentDeescalated"
+                      name="Incident de-escalated"
+                      id="Incident de-escalated"
+                      value="Incident de-escalated"
                       onChange={handleTerminationChange}
                       checked={terminationIncidents?.includes(
-                        "incidentDeescalated"
+                        "Incident de-escalated"
                       )}
                     />
-                    <label htmlFor="incidentDeescalated">
+                    <label htmlFor="Incident de-escalated">
                       Incident de-escalated{" "}
                     </label>
                   </div>
                   <div className="check-box">
                     <input
                       type="checkbox"
-                      name="assailantEscortedOffPremises"
-                      id="assailantEscortedOffPremises"
-                      value="assailantEscortedOffPremises"
+                      name="Assailant escorted off premises"
+                      id="Assailant escorted off premises"
+                      value="Assailant escorted off premises"
                       onChange={handleTerminationChange}
                       checked={terminationIncidents?.includes(
-                        "assailantEscortedOffPremises"
+                        "Assailant escorted off premises"
                       )}
                     />
-                    <label htmlFor="assailantEscortedOffPremises">
+                    <label htmlFor="Assailant escorted off premises">
                       Assailant escorted off premises
                     </label>
                   </div>
                   <div className="check-box">
                     <input
                       type="checkbox"
-                      name="assailantArrested"
-                      id="assailantArrested"
-                      value="assailantArrested"
+                      name="Assailant arrested"
+                      id="Assailant arrested"
+                      value="Assailant arrested"
                       onChange={handleTerminationChange}
                       checked={terminationIncidents?.includes(
-                        "assailantArrested"
+                        "Assailant Arrested"
                       )}
                     />
-                    <label htmlFor="assailantArrested">
-                      Assailant arrested{" "}
+                    <label htmlFor="Assailant Arrested">
+                      Assailant arrested
                     </label>
                   </div>
                   <div className="check-box">
                     <input
                       type="checkbox"
-                      name="letOnOwn"
-                      id="letOnOwn"
-                      value="leftOnOwn"
+                      name="Left on own"
+                      id="Left on own"
+                      value="Left on own"
                       onChange={handleTerminationChange}
-                      checked={terminationIncidents?.includes("leftOnOwn")}
+                      checked={terminationIncidents?.includes("Left on own")}
                     />
-                    <label htmlFor="letOnOwn">Left on own</label>
+                    <label htmlFor="Left on own">Left on own</label>
                   </div>
 
                   <div className="check-box">
                     <input
                       type="checkbox"
-                      name="stayedOnPremise"
-                      id="stayedOnPremise"
-                      value="stayedOnPremise"
+                      name="Stayed on premise"
+                      id="Stayed on premise"
+                      value="Stayed on premise"
                       onChange={handleTerminationChange}
                       checked={terminationIncidents?.includes(
-                        "stayedOnPremise"
+                        "Stayed on premise"
                       )}
                     />
-                    <label htmlFor="stayedOnPremise">Stayed on premises</label>
+                    <label htmlFor="Stayed on premise">
+                      Stayed on premises
+                    </label>
                   </div>
 
                   <div className="check-box">
                     <input
                       type="checkbox"
-                      name="assailantRestrained"
-                      id="assailantRestrained"
-                      value="assailantRestrained"
+                      name="Assailant restrained"
+                      id="Assailant restrained"
+                      value="Assailant restrained"
                       onChange={handleTerminationChange}
                       checked={terminationIncidents?.includes(
-                        "assailantRestrained"
+                        "Assailant restrained"
                       )}
                     />
-                    <label htmlFor="assailantRestrained">
+                    <label htmlFor="Assailant restrained">
                       Assailant restrained
                     </label>
                   </div>
 
                   <div className="check-box">
                     <input
-                      onClick={() => handleTerminationOfContract("other")}
+                      onClick={handleOtherTerminationOfContract}
                       value={isOtherTerminationOfContract}
                       type="checkbox"
                       name="otherTermination"
@@ -2349,6 +2356,10 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
                         name="otherTerminationOfContract"
                         id="otherTerminationOfContract"
                         placeholder="Please explain"
+                        value={otherTerminationIncident}
+                        onChange={(e) => {
+                          setOtherTerminationIncident(e.target.value);
+                        }}
                       />
                     </div>
                   ) : (

@@ -134,11 +134,24 @@ const ProfileDetailsPage = () => {
             <h4>{profile?.id}</h4>
           </div>
           <div className="actions">
-            <OutlineButton
-              prefixIcon={<Key />}
-              span={"Permissions"}
-              onClick={handleShowUserPermissionsForm}
-            />
+            <PermissionsGuard
+              model={"auth"}
+              codename={"view_permission"}
+              isPage={false}
+            >
+              <PermissionsGuard
+                model={"auth"}
+                codename={"change_permission"}
+                isPage={false}
+              >
+                <OutlineButton
+                  prefixIcon={<Key />}
+                  span={"Permissions"}
+                  onClick={handleShowUserPermissionsForm}
+                />
+              </PermissionsGuard>
+            </PermissionsGuard>
+
             <div
               onClick={handleShowActions}
               className={`actions-dropdown ${showActions && "show"}`}
