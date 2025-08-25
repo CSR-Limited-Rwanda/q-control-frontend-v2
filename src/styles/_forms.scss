@@ -32,10 +32,13 @@ textarea {
 
 .date-input {
   display: flex;
-  align-items: center;
+
   border: 1px solid #f1f1f1;
   border-radius: var(--base-border-radius);
   padding: 14px 16px;
+  padding-left: 10px;
+  flex-direction: column;
+  gap: 10px;
 
   input {
     border: 0;
@@ -46,6 +49,11 @@ textarea {
 
   .yyy {
     width: 4rem;
+  }
+
+  .date-warning {
+    color: rgb(231, 46, 5);
+    font-size: 13px;
   }
 }
 
@@ -290,7 +298,7 @@ input[type="number"]:focus {
     display: none;
   }
 
-  input[type="checkbox"]:checked+label {
+  input[type="checkbox"]:checked + label {
     background-color: #f87c47;
     color: white;
   }
@@ -622,9 +630,16 @@ form {
 //Staff Incident Report Step 2
 
 .step-2-status {
-  >select {
+  > select {
     font-size: 14px;
     font-weight: 500;
+  }
+}
+
+.department-select {
+  select {
+    border: 1px solid var(--foreground);
+    padding: 10px 15px;
   }
 }
 
@@ -735,7 +750,7 @@ form {
 }
 
 .step-2-status {
-  >select {
+  > select {
     border-color: var(--gray);
     color: var(--dark-gray);
   }
@@ -785,7 +800,7 @@ form {
   }
 
   .step-2-status {
-    >select {
+    > select {
       border-color: var(--gray);
       color: var(--dark-gray);
     }
@@ -814,7 +829,7 @@ form {
           color: white;
         }
 
-        input[type="checkbox"]:checked+label {
+        input[type="checkbox"]:checked + label {
           background-color: #f87c47;
           color: white;
         }
@@ -969,7 +984,7 @@ form {
   display: grid !important;
   grid-template-columns: 1fr 1fr 1fr;
 
-  >div {
+  > div {
     height: 100% !important;
   }
 }
@@ -1468,11 +1483,11 @@ form {
   .form {
     background-color: var(--body-background);
 
-    >h3 {
+    > h3 {
       padding: 24px 24px 0 0;
     }
 
-    >button {
+    > button {
       margin-inline: 24px;
       margin-bottom: 24px;
     }

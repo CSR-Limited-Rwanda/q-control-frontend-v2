@@ -54,10 +54,7 @@ const TitleDetails = ({ title, handleClose }) => {
 
           <h3>{title.name}</h3>
           <p>{title.description}</p>
-          {errorMessage && <p className="error message">{errorMessage}</p>}
-          {successMessage && (
-            <p className="success message">{successMessage}</p>
-          )}
+
           <div className="actions">
             <PermissionsGuard model="accounts" codename="delete_title">
               <OutlineButton
