@@ -36,7 +36,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   const [departmentId, setDepartmentId] = useState(
     localStorage.getItem("departmentId")
   );
-  const [currentStep, setCurrentStep] = useState(10);
+  const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [victimAlone, setVictimAlone] = useState(false);
   const [errorFetching, setErrorFetching] = useState([]);

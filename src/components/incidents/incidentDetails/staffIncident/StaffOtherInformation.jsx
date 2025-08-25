@@ -22,7 +22,7 @@ const StaffOtherInformation = ({ data, incidentStatuses }) => {
           </div>
           <div className="general-sub-col">
             <h3>Supervisor:</h3>
-            {/* <small>{data.supervisor || "Number"}</small> */}
+            {data.supervisor?.last_name || "Not provided"} {data.supervisor?.first_name || "Not provided"}
           </div>
         </div>
 

@@ -74,8 +74,11 @@ const GrievanceDetailsContent = () => {
       }
       setIsFetching(false);
     } catch (error) {
-      setIsFetching(false);
-      console.log(error);
+      if (error) {
+        toast.error(error?.response?.data?.error);
+        console.error("Error fetching incident details:", error);
+        setIsFetching(false);
+      }
     }
   };
 

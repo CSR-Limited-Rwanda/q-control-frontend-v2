@@ -38,7 +38,7 @@ function DrugReactionContentTab({ data }) {
         <div className="contribution">
           <small>Observers Name</small>
           <h4>
-            {`${data.observers_name?.user?.first_name} ${data.observers_name?.user?.last_name}` ||
+            {`${data.observers_name?.first_name} ${data.observers_name?.last_name}` ||
               "Not provided"}
           </h4>
         </div>

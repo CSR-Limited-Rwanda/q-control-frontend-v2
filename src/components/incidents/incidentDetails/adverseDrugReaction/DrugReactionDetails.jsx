@@ -121,8 +121,11 @@ function DrugReactionDetailsContent() {
 
       setIsFetching(false); // Stop loading state
     } catch (error) {
-      console.error("Error fetching incident details:", error);
-      setIsFetching(false);
+      if (error) {
+        toast.error(error?.response?.data?.error);
+        console.error("Error fetching incident details:", error);
+        setIsFetching(false);
+      }
     }
   };
 
@@ -213,9 +216,7 @@ function DrugReactionDetailsContent() {
               }
               otherInformation={
                 <DrugReactionOtherInformation
-                  data={{
-                    currentIncidentData,
-                  }}
+                  data={currentIncidentData}
                 />
               }
               documentHistory={

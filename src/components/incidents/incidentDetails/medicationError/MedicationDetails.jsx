@@ -67,7 +67,11 @@ const MedicationDetailsContent = () => {
       }
       setIsFetching(false);
     } catch (error) {
-      setIsFetching(false);
+      if (error) {
+        toast.error(error?.response?.data?.error);
+        console.error("Error fetching incident details:", error);
+        setIsFetching(false);
+      }
     }
   };
 

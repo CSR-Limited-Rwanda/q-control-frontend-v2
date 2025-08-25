@@ -1,6 +1,8 @@
 import { Dumbbell, LayoutDashboard, LayoutList, Users } from "lucide-react";
+import { useAuthentication } from "@/context/authContext";
 
 export const menuItems = [
+    
     {
         icon: <LayoutDashboard size={20} />,
         label: 'Dashboard',

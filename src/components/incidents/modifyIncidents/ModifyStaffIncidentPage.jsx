@@ -58,10 +58,10 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   );
 
   const [supervisorFirstName, setSupervisorFirstName] = useState(
-    data.supervisor.first_name
+    data.supervisor?.first_name
   );
   const [supervisorLastName, setSupervisorLastName] = useState(
-    data.supervisor.last_name
+    data.supervisor?.last_name
   );
 
   const [doctorFirstName, setDoctorFirstName] = useState(
@@ -84,7 +84,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const [injuredBody, setInjuredBody] = useState(data.previous_injury);
   const [reportId, setReportID] = useState(null);
   const [witnesses, setWitnesses] = useState(
-    data.witnesses.map((witness) => ({
+    data.witnesses?.map((witness) => ({
       first_name: witness?.first_name || "",
       last_name: witness?.last_name || "",
       profile_type: "Witness",
@@ -95,17 +95,17 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   const currentStepRef = useRef(currentStep);
   const [showInvestigationFrom, setShowInvestigationFrom] = useState(false);
   const [dateBirth, setdateBirth] = useState(data.patient_info?.date_of_birth);
-  const [age, setAge] = useState(data.patient_info?.age || "");
+  const [age, setAge] = useState(data.patient_info?.age || null);
   const [departments, setDepartments] = useState([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(
-    data.department.id
+    data?.department?.id
   );
   const [staffIncidentId, setStaffIncidentId] = useState(
     localStorage.getItem("staffIncidentId")
   );
 
   const [newWitness, setNewWitness] = useState(
-    data.witnesses.map((el) => {
+    data.witnesses?.map((el) => {
       return {
         first_name: el.first_name ?? "",
         last_name: el.last_name ?? "",
@@ -118,30 +118,33 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     setSelectedDepartmentId(event.target.value);
   };
 
-  useEffect(() => {
-    console.log(data);
-    if (!data.report_facility.id) return;
+  useEffect(
+    () => {
+      console.log(data);
+      if (!data.report_facility) return;
 
-    const fetchDepartments = async () => {
-      try {
-        setIsLoading(true);
-        const response = await api.get(`/departments/`, {
-          params: { facility_id: data.report_facility.id },
-        });
-        if (response.status === 200) {
-          console.log(response.data.results);
-          setDepartments(response.data.results);
+      const fetchDepartments = async () => {
+        try {
+          setIsLoading(true);
+          const response = await api.get(`/departments/`, {
+            params: { facility_id: data.report_facility.id },
+          });
+          if (response.status === 200) {
+            console.log(response.data.results);
+            setDepartments(response.data.results);
+          }
+        } catch (error) {
+          toast.error("Error fetching departments");
+          console.error(error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        toast.error("Error fetching departments");
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      };
 
-    fetchDepartments();
-  }, [data.report_facility.id]);
+      fetchDepartments();
+    },
+    data.report_facility ? [data.report_facility.id] : []
+  );
   const handleShowInvestigationForm = () => {
     setShowInvestigationFrom(!showInvestigationFrom);
   };
@@ -241,7 +244,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     setIsLoading(true);
   };
   const handleModify = async (incidentStatus) => {
-    const witnessesList = witnesses.map((el) => ({
+    const witnessesList = witnesses?.map((el) => ({
       first_name: el.first_name,
       last_name: el.last_name,
       profile_type: "Witness",
@@ -257,8 +260,8 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
           ? {
               first_name: firstName,
               last_name: lastName,
-              age: age,
-              date_of_birth: dateBirth,
+              age: age || null,
+              date_of_birth: dateBirth || null,
               profile_type: "Patient",
             }
           : null,
@@ -308,6 +311,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       }
     } catch (error) {
       setIsLoading(false);
+      console.error(error);
 
       if (error.response) {
         toast.error(
@@ -566,7 +570,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
               </div>
             </div>
             <div className="witness-list">
-              {witnesses.map((witness, index) => (
+              {witnesses?.map((witness, index) => (
                 <div className="witness field" key={index}>
                   <span>
                     {witness.first_name} {witness.last_name}
