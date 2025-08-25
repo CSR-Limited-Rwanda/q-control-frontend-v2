@@ -360,6 +360,8 @@ export const ComplainDetails = ({
     setActions(!showActions);
   };
 
+  console.log("Complaint details:", complaint);
+
   return (
     <div className="complain-details-popup">
       {showEditForm ? (
@@ -488,7 +490,11 @@ export const ComplainDetails = ({
               </div>
               <div className="item col">
                 <small>Department</small>
-                <p>{complaint.department}</p>
+                <p>
+                  {complaint?.department.length > 0
+                    ? complaint?.department
+                    : "Not provided"}
+                </p>
               </div>
               <div className="item col">
                 <small>How was the complaint received?</small>
@@ -500,9 +506,11 @@ export const ComplainDetails = ({
                 <div>
                   {complaint.assigned_to ? (
                     <div className="assignees">
-                      {complaint.assigned_to.map((assignee, index) => (
-                        <div key={index}>{assignee.name}</div>
-                      ))}
+                      {complaint.assigned_to?.length > 0
+                        ? complaint.assigned_to.map((assignee, index) => (
+                            <div key={index}>{assignee.name}</div>
+                          ))
+                        : "No assignee"}
                     </div>
                   ) : (
                     ""

@@ -23,6 +23,8 @@ import {
 } from "./StaffIncidentList";
 import PermissionsGuard from "@/components/PermissionsGuard";
 import { useGetPermissions } from "@/hooks/fetchPermissions";
+import { ComplainDetails } from "@/components/accounts/profile/profileComplaints";
+import "@/styles/accounts/_profile.scss";
 
 function formatDate(dateString) {
   if (!dateString || isNaN(new Date(dateString).getTime())) {
@@ -1127,7 +1129,7 @@ const ComplaintsTab = () => {
                           </thead>
                           <tbody>
                             {showComplaintDetails && (
-                              <ComplaintDetails
+                              <ComplainDetails
                                 handleShowComplainDetails={
                                   handleShowComplaintDetails
                                 }
@@ -1210,6 +1212,14 @@ const ComplaintsTab = () => {
                   </div>
                 ) : (
                   <>
+                    {showComplaintDetails && (
+                      <div className="complain-details-popup">
+                        <ComplainDetails
+                          handleShowComplainDetails={handleShowComplaintDetails}
+                          complaint={selectedComplaint}
+                        />
+                      </div>
+                    )}
                     <table>
                       <thead>
                         <tr>
@@ -1249,15 +1259,8 @@ const ComplaintsTab = () => {
                           <th>How complaint was taken</th>
                         </tr>
                       </thead>
+
                       <tbody>
-                        {showComplaintDetails && (
-                          <ComplaintDetails
-                            handleShowComplainDetails={
-                              handleShowComplaintDetails
-                            }
-                            complaint={selectedComplaint}
-                          />
-                        )}
                         {currentGrievanceComplaints.length > 0 ? (
                           currentGrievanceComplaints.map((complaint, index) => (
                             <tr

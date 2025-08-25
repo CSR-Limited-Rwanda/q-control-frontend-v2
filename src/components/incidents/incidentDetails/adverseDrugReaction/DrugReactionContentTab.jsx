@@ -1,7 +1,6 @@
 import DateFormatter from "@/components/DateFormatter";
 
 function DrugReactionContentTab({ data }) {
-
   return (
     <div className="incident-details">
       <div className="number-mrn">
@@ -38,8 +37,11 @@ function DrugReactionContentTab({ data }) {
         <div className="contribution">
           <small>Observers Name</small>
           <h4>
-            {`${data.observers_name?.first_name} ${data.observers_name?.last_name}` ||
-              "Not provided"}
+            {data.observers_name
+              ? `${data.observers_name.first_name || "N/A"} ${
+                  data.observers_name.last_name || "N/A"
+                }`
+              : "Not provided"}
           </h4>
         </div>
       </div>

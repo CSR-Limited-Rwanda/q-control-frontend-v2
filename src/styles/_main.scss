@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 
+@import "./variables.scss";
 * {
   padding: 0;
   margin: 0;
@@ -408,7 +409,7 @@ textarea {
 }
 
 .in-progress {
-  background-color: var(--secondary)-shade;
+  background-color: var(--secondary-light);
   color: var(--secondary);
 }
 

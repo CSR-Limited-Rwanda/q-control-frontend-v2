@@ -12,7 +12,8 @@
     padding: 24px;
     border-radius: var(--base-border-radius);
     height: 100%;
-    
+    cursor: pointer;
+
     .list-icon {
       display: flex;
       align-items: center;
@@ -22,7 +23,7 @@
     }
 
     .icon {
-      background-color: var(--secondary)§-shade;
+      background-color: var(--secondary) §-shade;
       padding: 12px;
       border-radius: var(--base-border-radius);
       color: var(--secondary);
