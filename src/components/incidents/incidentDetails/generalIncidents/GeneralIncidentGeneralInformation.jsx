@@ -1,7 +1,6 @@
-import '../../../../styles/incidents/_grievance.scss'
+import "../../../../styles/incidents/_grievance.scss";
 
 const GeneralIncidentGeneralInformation = ({ data, incidentStatuses }) => {
-
   return (
     <div className="incident-type-data">
       {data.incident_type === "Fall related" ? (
@@ -73,7 +72,7 @@ const GeneralIncidentGeneralInformation = ({ data, incidentStatuses }) => {
           </div>
         </div>
       ) : (
-        "Not General information. This may be because incident type is not specified"
+        "No General information. This may be because incident type is not specified"
       )}
     </div>
   );

@@ -360,7 +360,7 @@ const UpdateGrievanceIncident = ({ data, incidentId, investigation }) => {
           pageName={"Grievance incident"}
         />
         <h2 className="title">Updating grievance incident</h2>
-        {investigation ? (
+        {/* {investigation ? (
           <>
             {permissions?.patient_visitor_grievance?.includes(
               "view_grievanceinvestigation"
@@ -392,7 +392,7 @@ const UpdateGrievanceIncident = ({ data, incidentId, investigation }) => {
               </button>
             )}
           </>
-        )}
+        )} */}
 
         <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>

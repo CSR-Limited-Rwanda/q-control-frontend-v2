@@ -15,6 +15,7 @@ import {
 import { useRouter } from "next/navigation";
 import PermissionsGuard from "@/components/PermissionsGuard";
 import AccessDeniedPage from "@/components/AccessDenied";
+import "@/styles/_main.scss";
 
 const incidentConfigs = [
   {
@@ -75,7 +76,7 @@ const page = () => {
 
   return (
     <DashboardLayout>
-      <div className="tabs-content" >
+      <div className="tabs-content">
         <div className="incidents-reports">
           {incidentConfigs.map(({ title, icon, link, model }) => (
             <PermissionsGuard
