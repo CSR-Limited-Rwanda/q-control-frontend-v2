@@ -102,9 +102,6 @@ const initializeEditMode = async (incidentId) => {
       date_returned: existingData.date_returned || '',
       time_returned: existingData.time_returned || '',
     }
-
-    console.log("Transformed form data:", formData)
-
     setFormData(formData)
 
     if (existingData.status === 'Completed') {
@@ -209,7 +206,6 @@ useEffect(() => {
     }
   }
 
-
   return (
     <div className="form-container">
       <div className="forms-header">
@@ -234,7 +230,6 @@ useEffect(() => {
         </div>
       
       </div>
-
      {(postError || updateError) && (
           <div className="error-banner">
             <p>Error: {postError || updateError}</p>
