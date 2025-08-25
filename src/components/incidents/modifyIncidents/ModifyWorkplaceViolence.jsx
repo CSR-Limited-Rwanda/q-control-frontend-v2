@@ -1857,15 +1857,15 @@ const ModifyWorkplaceIncident = ({ data }) => {
               <div className="check-box">
                 <input
                   type="checkbox"
-                  name="incidentDeescalated"
-                  id="incidentDeescalated"
-                  value="incidentDeescalated"
+                  name="Incident De-escalated"
+                  id="Incident De-escalated"
+                  value="Incident De-escalated"
                   onChange={handleTerminationChange}
                   checked={terminationIncidents?.includes(
-                    "incidentDeescalated"
+                    "Incident De-escalated"
                   )}
                 />
-                <label htmlFor="incidentDeescalated">
+                <label htmlFor="Incident De-escalated">
                   Incident de-escalated{" "}
                 </label>
               </div>
@@ -1922,15 +1922,15 @@ const ModifyWorkplaceIncident = ({ data }) => {
               <div className="check-box">
                 <input
                   type="checkbox"
-                  name="assailantRestrained"
-                  id="assailantRestrained"
-                  value="assailantRestrained"
+                  name="Assailant Restrained"
+                  id="Assailant Restrained"
+                  value="Assailant Restrained"
                   onChange={handleTerminationChange}
                   checked={terminationIncidents?.includes(
-                    "assailantRestrained"
+                    "Assailant Restrained"
                   )}
                 />
-                <label htmlFor="assailantRestrained">
+                <label htmlFor="Assailant Restrained">
                   Assailant restrained
                 </label>
               </div>

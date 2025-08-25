@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import AccessDeniedPage from "@/components/AccessDenied";
 
 const incidentConfigs = [
   {
@@ -62,15 +63,15 @@ const incidentConfigs = [
 
 const page = () => {
   const router = useRouter();
-  const [visibleIncidentCount, setVisibleIncidentCount] = useState(0)
+  const [visibleIncidentCount, setVisibleIncidentCount] = useState(0);
 
   const handleClick = (link) => {
     router.push(link);
-  }
+  };
 
   const handleVisibleIncident = () => {
-    setVisibleIncidentCount((prev) => prev + 1)
-  }
+    setVisibleIncidentCount((prev) => prev + 1);
+  };
 
   return (
     <DashboardLayout>
@@ -107,13 +108,7 @@ const page = () => {
             </PermissionsGuard>
           ))}
 
-          {visibleIncidentCount === 0 && (
-            <div className="no-permissions-message">
-              <p>
-                You currently don’t have access to view any incident reports. Please contact your administrator if you believe this is a mistake.
-              </p>
-            </div>
-          )}
+          {visibleIncidentCount === 0 && <AccessDeniedPage />}
         </div>
       </div>
     </DashboardLayout>

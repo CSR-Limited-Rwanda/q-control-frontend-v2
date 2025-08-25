@@ -255,7 +255,8 @@ small {
 }
 
 // appea animatin for a button
-@keyframes appear {}
+@keyframes appear {
+}
 
 .incidents-tab {
   display: flex;
@@ -291,11 +292,9 @@ textarea {
   background-color: #ffece3;
 }
 
-
 .searching_database {
   padding: 1rem;
 }
-
 
 .results-count {
   padding: 1rem;
@@ -353,7 +352,7 @@ textarea {
     flex: 1 0 0%;
     max-width: 500px;
 
-    >span,
+    > span,
     p {
       color: var(--gray);
     }
@@ -541,8 +540,6 @@ textarea {
   color: var(--secondary);
 }
 
-
-
 .no-access-text {
   color: var(--secondary-dark);
   font-size: 32px;
@@ -630,7 +627,6 @@ textarea {
   .filters_popup {
     left: 0;
   }
-
 }
 
 .search-input {
@@ -1427,7 +1423,6 @@ input[type="checkbox"] {
   }
 
   &:hover {
-
     > :nth-child(2),
     > :nth-child(3),
     > :nth-child(4) {

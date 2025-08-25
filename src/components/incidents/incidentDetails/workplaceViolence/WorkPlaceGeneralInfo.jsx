@@ -1,8 +1,18 @@
 import React from "react";
-import "../../../../styles/_medication_details.scss"
+import "../../../../styles/_medication_details.scss";
 
 const WorkPlaceGeneralInfo = ({ data, incidentStatuses }) => {
-
+  const parseIfNeeded = (value) => {
+    if (typeof value === "string") {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
+    return value;
+  };
+  console.log("Workplace data: ", data);
   return (
     <div className="incident-details">
       <div className="number-mrn">
@@ -30,23 +40,29 @@ const WorkPlaceGeneralInfo = ({ data, incidentStatuses }) => {
       <div className="number-mrn">
         <div className="location">
           <small>Person injured</small>
-          {data.persons_injured ?
-            data.persons_injured.map((person) => (
-              <div key={person.id}>
-                <h4>{person.last_name || "N/A"} {person.first_name || "N/A"}</h4>
-              </div>
-            )) : "No person was injured"}
+          {data.persons_injured
+            ? data.persons_injured.map((person) => (
+                <div key={person.id}>
+                  <h4>
+                    {person.last_name || "N/A"} {person.first_name || "N/A"}
+                  </h4>
+                </div>
+              ))
+            : "No person was injured"}
         </div>
         <div className="location">
           <small>Incident witness(es)</small>
           {/* I am using form choices to get some styling, but we will change it */}
           <h4 className="form-choices">
-            {data.incident_witness ?
-              data.incident_witness.map((witness) =>
-                <div key={witness.id} className="choice">
-                  <h4>{witness.last_name || "N/A"} {witness.first_name || "N/A"}</h4>
-                </div>
-              ) : "No witness"}
+            {data.incident_witness
+              ? data.incident_witness.map((witness) => (
+                  <div key={witness.id} className="choice">
+                    <h4>
+                      {witness.last_name || "N/A"} {witness.first_name || "N/A"}
+                    </h4>
+                  </div>
+                ))
+              : "No witness"}
           </h4>
         </div>
       </div>
@@ -88,7 +104,11 @@ const WorkPlaceGeneralInfo = ({ data, incidentStatuses }) => {
         <div className="location">
           <small>Termination of incident</small>
           <h4>
-            {data?.termination_of_incident}
+            {parseIfNeeded(data?.termination_of_incident).description?.map(
+              (el) => {
+                return el + ", ";
+              }
+            ) || "Not provided"}
           </h4>
         </div>
         <div className="location">

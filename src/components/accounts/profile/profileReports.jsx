@@ -343,7 +343,7 @@ const ProfileReports = () => {
                       className="link"
                       onClick={() => {
                         setShowPopup(null);
-                        handleRowClick(incident.id, iRaddent.reportName);
+                        handleRowClick(incident.id, incident.reportName);
                       }}
                     >
                       <Eye className="icon" />
