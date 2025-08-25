@@ -1,5 +1,8 @@
+'use client'
+import { useEffect,useRef } from "react";
 import { useGetPermissions } from "@/hooks/fetchPermissions";
 import ModifyPageLoader from "./loader";
+import AccessDeniedPage from "./AccessDenied";
 
 const checkUserPermission = (permissions, model, codename) => {
   if (!permissions || !permissions[model]) {
@@ -27,10 +30,23 @@ const checkUserPermission = (permissions, model, codename) => {
   return false;
 };
 
-const PermissionsGuard = ({ model, codename, children, isPage = true }) => {
+const PermissionsGuard = ({
+  model,
+  codename,
+  children,
+  isPage = true,
+  onRenderAllowed
+}) => {
   const { permissions, loading, error } = useGetPermissions();
-
-  // console.log('permissions:', permissions);
+  const hasCalledback = useRef(false)
+  const hasAccess = checkUserPermission(permissions, model, codename);
+  
+  useEffect(() => {
+    if (hasAccess && onRenderAllowed && !hasCalledback.current) {
+      hasCalledback.current = true
+      onRenderAllowed()
+    }
+  }, [hasAccess, onRenderAllowed])
 
   if (loading) {
     return <ModifyPageLoader />;
@@ -41,28 +57,27 @@ const PermissionsGuard = ({ model, codename, children, isPage = true }) => {
   }
 
   if (!permissions) {
-    return <p>You have no access to perform this action.</p>;
+    return (
+      <AccessDeniedPage />
+    )
   }
-
-  const hasAccess = checkUserPermission(permissions, model, codename);
 
   // console.log('hasAccess:', hasAccess, 'for model:', model, 'codename:', codename);
 
   if (!hasAccess && isPage) {
-    return <p>You have no access to perform this action.</p>;
+    return (
+      <AccessDeniedPage />
+    )
   }
 
   if (hasAccess && isPage) {
     return <>{children}</>;
   }
 
-  // if (hasAccess && !isPage) {
-  //   return "";
-  // }
-
   if (!hasAccess && !isPage) {
     return "";
   }
+
 
   return <>{children}</>;
 };

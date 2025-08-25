@@ -116,8 +116,8 @@ const DashboardLayout = ({ children }) => {
                 ""
               )}
             </button>
-            <ProfileMessages />
-            <ProfileNotification />
+            {/* <ProfileMessages /> */}
+            {/* <ProfileNotification /> */}
             <ProfileContainer />
           </div>
         </header>
