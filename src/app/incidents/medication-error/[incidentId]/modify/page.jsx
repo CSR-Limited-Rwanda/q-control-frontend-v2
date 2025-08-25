@@ -10,7 +10,6 @@ import { MoveRight } from "lucide-react";
 import Link from "next/link";
 // import { FacilityBreadCrumbs } from "../../drugReactionincidents/modifyMedicalAdverseDrugReactionIncidentPage";
 import NoResources from "@/components/NoResources";
-import UpdateMedicalErrorForm from "@/components/incidents/updateIncidents/UpdateMedicationErrorPage";
 
 const PageContent = () => {
   const [error, setError] = useState();
@@ -56,7 +55,7 @@ const PageContent = () => {
       {isLoading ? (
         "Getting data..."
       ) : (
-        <UpdateMedicalErrorForm data={incidentData} />
+        <ModifyMedicalErrorForm data={incidentData} />
       )}
     </div>
   );

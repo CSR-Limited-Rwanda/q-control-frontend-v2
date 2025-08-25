@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import toast from "react-hot-toast";
 import api, { API_URL } from "@/utils/api";
@@ -9,14 +9,13 @@ import { useParams } from "next/navigation";
 // import GeneralFieldsForm from "./generalFields";
 // import IncidentTypeForm from "./incidentType";
 // import OutcomeForm from "./outcomeForm";
-import "@/styles/_modifyIncident.scss";
-import ModifyGeneralIncidentForm from "@/components/incidents/modifyIncidents/ModifyGeneralIncidentPage";
-import { MoveRight } from "lucide-react";
+import '@/styles/_modifyIncident.scss';
+import ModifyGeneralIncidentForm from "@/components/incidents/modifyIncidents/ModifyGeneralIncidentPage"
+import { MoveRight } from 'lucide-react';
 import Link from "next/link";
 // import { FacilityBreadCrumbs } from "../../drugReactionincidents/modifyMedicalAdverseDrugReactionIncidentPage.jsx";
 import NoResources from "@/components/NoResources";
 import { useEffect, useState } from "react";
-import UpdateGeneralIncidentForm from "@/components/incidents/updateIncidents/UpdateGeneralIncidentPage";
 
 const PageContent = () => {
   const [incidentData, setIncidentData] = useState([]);
@@ -25,7 +24,7 @@ const PageContent = () => {
   const [isError, setIsError] = useState(false);
   const [generalIncidentId, setGeneralIncidentId] = useState(
     localStorage.getItem("generalIncidentId")
-  );
+  )
   useEffect(() => {
     const fetchIncidentData = async () => {
       try {
@@ -59,7 +58,7 @@ const PageContent = () => {
   return isLoading ? (
     "Getting data..."
   ) : incidentData && !isError ? (
-    <UpdateGeneralIncidentForm data={incidentData} />
+    <ModifyGeneralIncidentForm data={incidentData} />
   ) : (
     "No data"
   );
@@ -81,13 +80,18 @@ const BreadCrumbs = () => {
 };
 
 const ModifyGeneralIncident = ({ incidentId }) => {
-  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null);
+  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null)
 
   useEffect(() => {
-    const storedValue = localStorage.getItem("changeBreadCrumbs");
+    const storedValue = localStorage.getItem("changeBreadCrumbs")
     setChangeBreadCrumbs(storedValue);
-  }, []);
-  return <DashboardLayout children={<PageContent />} />;
+  }, [])
+  return (
+    <DashboardLayout
+      children={<PageContent />}
+
+    />
+  );
 };
 
 export default ModifyGeneralIncident;

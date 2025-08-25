@@ -27,7 +27,7 @@ import CloseIcon from "@/components/CloseIcon";
 
 import { useGetPermissions } from "@/hooks/fetchPermissions";
 
-const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
+const UpdateStaffIncident = ({ data, incidentId, investigation }) => {
   const { permissions } = useGetPermissions();
   const { user } = useAuthentication();
   const [incident, setIncident] = useState(data);
@@ -250,7 +250,6 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       setStatus(data.status);
       return;
     }
-
     const witnessesList = witnesses?.map((el) => ({
       first_name: el.first_name,
       last_name: el.last_name,
@@ -258,26 +257,31 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
     }));
 
     const incidentData = {
-      action: "modify",
+  
       report_facility: data.report_facility.id,
       department: parseInt(selectedDepartmentId),
       incident_status: statusType || "Open",
-      patient_info:
-        firstName && lastName
-          ? {
+      ...(firstName && lastName
+        ? {
+            patient_info: {
               first_name: firstName,
               last_name: lastName,
               age: age || null,
               date_of_birth: dateBirth || null,
               profile_type: "Patient",
-            }
-          : null,
+            },
+          }
+        : {}),
       job_title: jobTitle,
-      supervisor: {
-        first_name: supervisorFirstName,
-        last_name: supervisorLastName,
-        profile_type: "Supervisor",
-      },
+      ...(supervisorFirstName && supervisorLastName
+        ? {
+            supervisor: {
+              first_name: supervisorFirstName,
+              last_name: supervisorLastName,
+              profile_type: "Supervisor",
+            },
+          }
+        : {}),
       date_of_injury_or_near_miss: dateOfInjury || null,
       time_of_injury_or_near_miss: timeOfInjury || null,
       witnesses: witnessesList.length > 0 ? witnessesList : [],
@@ -289,22 +293,23 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       doctor_consulted: seenDoctor,
       doctor_consulted_dated: dateSeenDoctor || null,
       doctor_consulted_time: timeSeenDoctor || null,
-      doctor_consulted_info:
-        doctorFirstName && doctorLastName
-          ? {
+      ...(doctorFirstName && doctorLastName
+        ? {
+            doctor_consulted_info: {
               first_name: doctorFirstName,
               last_name: doctorLastName,
               phone_number: doctorPhone || "",
               profile_type: "Physician",
-            }
-          : null,
+            },
+          }
+        : {}),
       previous_injury: injuredBody,
       previous_injury_date: whenInjured || null,
       status: incidentStatus,
     };
 
     try {
-      const response = await api.patch(
+      const response = await api.put(
         `incidents/staff-incident/${staffIncidentId}/`,
         cleanedData(incidentData)
       );
@@ -346,7 +351,7 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
       )}
       <div className="modify-page-header">
         <BackToPage link={"/incidents/staff/"} pageName={"Staff incidents"} />
-        <h2 className="title">Modifying Staff Incident</h2>
+        <h2 className="title">Updating Staff Incident</h2>
         {investigation ? (
           <>
             {permissions?.staff_incident_reports?.includes(
@@ -806,4 +811,4 @@ const ModifyStaffIncident = ({ data, incidentId, investigation }) => {
   );
 };
 
-export default ModifyStaffIncident;
+export default UpdateStaffIncident;

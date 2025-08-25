@@ -1,34 +1,35 @@
-"use client";
+'use client'
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 import DashboardLayout from "@/app/dashboard/layout";
 import api, { API_URL } from "@/utils/api";
-import ModifyLostFound from "@/components/incidents/modifyIncidents/ModifyLostAndFoundPage";
+import ModifyWorkplaceIncident from "@/components/incidents/modifyIncidents/ModifyWorkplaceViolence";
 import { MoveRight } from "lucide-react";
 // import { FacilityBreadCrumbs } from "../../drugReactionincidents/modifyMedicalAdverseDrugReactionIncidentPage";
 import NoResources from "@/components/NoResources";
-import UpdateLostFound from "@/components/incidents/updateIncidents/UpdateLostAndFoundPage";
 
-const ModifyLostFoundPageContent = () => {
+const ModifyWorkplaceIncidentPageContent = () => {
   const [error, setError] = useState();
   const [incident, setIncident] = useState({});
+  const [incidentData, setIncidentData] = useState([])
   const { incidentId } = useParams();
-  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [lostAndFoundId, setLostAndFoundId] = useState(
-    localStorage.getItem("lostAndFoundId")
-  );
-
+  const [isError, setIsError] = useState(false);
+  const [workplaceViolenceId, setGeneralIncidentId] = useState(
+    localStorage.getItem("workplaceViolenceId")
+  )
   useEffect(() => {
     const fetchIncidentData = async () => {
-      setIsLoading(true);
       try {
         const response = await api.get(
-          `${API_URL}/incidents/lost-found/${lostAndFoundId}/`
+          `/incidents/workplace-violence/${workplaceViolenceId}/`
         );
+
         if (response.status === 200) {
+
           setIncident(response.data.incident);
+
           setIsLoading(false);
         }
       } catch (error) {
@@ -41,28 +42,27 @@ const ModifyLostFoundPageContent = () => {
       }
     };
     fetchIncidentData();
-  }, [incidentId]);
+  }, []);
 
   return isLoading ? (
-    "Getting data..."
-  ) : !isError ? (
-    <UpdateLostFound data={incident} incidentId={incidentId} />
+    "Gettting data..."
+  ) : incident && !isError ? (
+    <ModifyWorkplaceIncident data={incident} incidentId={incidentId} />
   ) : (
-    "No data"
+    <NoResources />
   );
 };
-
 const BreadCrumbs = () => {
   const { incidentId } = useParams();
   return (
     <div className="breadcrumbs">
       <Link href={"/"}>Overview</Link> <MoveRight />
       <Link href={"/incidents/"}>Incidents</Link> <MoveRight />
-      <Link href={"/incidents/lost-and-found/"}>
-        Lost & Found Property report
+      <Link href={"/incidents/workplace-violence/"}>
+        Work Place Violence List
       </Link>{" "}
       <MoveRight />
-      <Link href={`/incidents/lost-and-found/${incidentId}/`}>
+      <Link href={`/incidents/workplace-violence/${incidentId}/`}>
         #{incidentId}
       </Link>{" "}
       <MoveRight />
@@ -70,15 +70,25 @@ const BreadCrumbs = () => {
     </div>
   );
 };
-
-const ModifyLostFoundPage = () => {
-  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null);
+const ModifyWorkplaceIncidentPage = () => {
+  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null)
 
   useEffect(() => {
-    const storedValue = localStorage.getItem("changeBreadCrumbs");
+    const storedValue = localStorage.getItem("changeBreadCrumbs")
     setChangeBreadCrumbs(storedValue);
-  }, []);
-  return <DashboardLayout children={<ModifyLostFoundPageContent />} />;
+  }, [])
+  return (
+    <DashboardLayout
+      children={<ModifyWorkplaceIncidentPageContent />}
+      breadCrumbs={
+        changeBreadCrumbs ? (
+          <FacilityBreadCrumbs facilityIncidentLink={"workplace_violence"} />
+        ) : (
+          <BreadCrumbs />
+        )
+      }
+    />
+  );
 };
 
-export default ModifyLostFoundPage;
+export default ModifyWorkplaceIncidentPage;

@@ -22,7 +22,7 @@ import { useAuthentication } from "@/context/authContext";
 import BackToPage from "@/components/BackToPage";
 
 // We need to resolve the issue with status prio to
-const ModifyGeneralIncidentForm = ({ data }) => {
+const UpdateGeneralIncidentForm = ({ data }) => {
   const { incidentId } = useParams();
   const { user } = useAuthentication();
   const [incident, setIncident] = useState(data);
@@ -328,13 +328,11 @@ const ModifyGeneralIncidentForm = ({ data }) => {
 
   const handleSaveDraft = () => {
     setStatus("Draft");
-    setSavingDraft(true);
     handleModify("Draft");
   };
 
   const handleSaveAndSubmit = () => {
     setStatus("Open");
-    setIsLoading(true);
     handleModify("Open");
   };
 
@@ -347,30 +345,32 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       return;
     }
     const incidentData = {
-      action: "modify",
       report_facility: data.report_facility.id,
       department: parseInt(selectedDepartmentId),
       category: category,
       severity_rating: severityRating,
-      patient_visitor: {
-        first_name: patientVisitorFirstName,
-        last_name: patientVisitorLastName,
-        phone_number: phoneNumber,
-        address: address,
-        state: state,
-        gender: sex,
-        age: age,
-        date_of_birth: dateOfBirth || null,
-        zip_code: zipCode,
-        city: city,
-        medical_record_number: medicalRecoredNumber,
-        profile_type: "Patient",
-      },
+      ...(patientVisitorFirstName && patientVisitorLastName
+        ? {
+            patient_visitor: {
+              first_name: patientVisitorFirstName,
+              last_name: patientVisitorLastName,
+              phone_number: phoneNumber,
+              address: address,
+              state: state,
+              gender: sex,
+              age: parseInt(age),
+              date_of_birth: dateOfBirth || null,
+              zip_code: zipCode,
+              city: city,
+              medical_record_number: medicalRecoredNumber,
+              profile_type: "Patient",
+            },
+          }
+        : {}),
       incident_date: incidentDate,
       incident_time: incidentTime,
       location: location,
       medical_record_number: medicalRecoredNumber,
-
       consulting_diagnosis: contributingDiagnosis,
       patient_status_prior: statusPrior.join(", "),
       incident_type: incidentType,
@@ -379,49 +379,48 @@ const ModifyGeneralIncidentForm = ({ data }) => {
       fell_from: fallFromDetails,
       fall_type_other: fallType === "Other" ? fallTypeOther : null,
       fall_type_agreement: agreement.join(", "),
-      // incident_type: incidentTypesData,
       equipment_type: equipmentType,
       removed_from_service: removedFromService,
       equipment_serial_number: serialNumber,
       equipment_lot_number: lotNumber,
       equipment_manufacturer: equipmentManuFacture,
       equipment_model: equipmentModel,
-      physician_notified: {
-        first_name: physicianNotifiedFirstName,
-        last_name: physicianNotifiedLastName,
-        profile_type:
-          physicianNotifiedFirstName && physicianNotifiedLastName
-            ? "Physician"
-            : null,
-      },
-
+      ...(physicianNotifiedFirstName && physicianNotifiedLastName
+        ? {
+            physician_notified: {
+              first_name: physicianNotifiedFirstName,
+              last_name: physicianNotifiedLastName,
+              profile_type: "Physician",
+            },
+          }
+        : {}),
       date_physician_notified: physcianDate,
       time_physician_notified: physcianTime,
+      ...(familyNotifiedFirstName && familyNotifiedLastName
+        ? {
+            family_notified: {
+              first_name: familyNotifiedFirstName,
+              last_name: familyNotifiedLastName,
 
-      family_notified: {
-        first_name: familyNotifiedFirstName,
-        last_name: familyNotifiedLastName,
-        patient_id: parseInt(localStorage.getItem("patientId")),
-        profile_type:
-          familyNotifiedFirstName && familyNotifiedLastName ? "Family" : null,
-      },
-
+              profile_type: "Family",
+            },
+          }
+        : {}),
       date_family_notified: familyDate,
       time_family_notified: familyTime,
-
-      notified_by: {
-        first_name: notifiedByFirstName,
-        last_name: notifiedByLastName,
-        profile_type:
-          notifiedByFirstName && notifiedByLastName ? "Nurse" : null,
-      },
-
+      ...(notifiedByFirstName && notifiedByLastName
+        ? {
+            notified_by: {
+              first_name: notifiedByFirstName,
+              last_name: notifiedByLastName,
+              profile_type: "Nurse",
+            },
+          }
+        : {}),
       outcome: selectedOutcome,
-
       immediate_action_taken: immediateActionsTaken,
       status: incidentStatus,
       brief_summary_of_incident: briefSummary,
-      status: "Open",
       severity_rating: severityRating,
       treatment_type: selectedTreatment,
     };
@@ -429,7 +428,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
     console.log("Incident Data to be sent: ", incidentData);
 
     try {
-      const response = await api.patch(
+      const response = await api.put(
         `/incidents/general-visitor/${generalIncidentId}/`,
         cleanedData(incidentData)
       );
@@ -441,6 +440,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
+      console.log(error);
       if (error.response) {
         toast.error(
           error.response.data.message ||
@@ -482,7 +482,7 @@ const ModifyGeneralIncidentForm = ({ data }) => {
           link={"/incidents/general/"}
           pageName={"General incidents"}
         />
-        <h2 className="title">Modifying General Incident</h2>
+        <h2 className="title">Updating General Incident</h2>
         <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
             {savingDraft ? (
@@ -1780,4 +1780,4 @@ const ModifyGeneralIncidentForm = ({ data }) => {
     </div>
   );
 };
-export default ModifyGeneralIncidentForm;
+export default UpdateGeneralIncidentForm;

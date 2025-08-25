@@ -16,8 +16,6 @@ const TitlesForm = ({ isEditMode, existingTitleData, handleClose }) => {
   });
 
   const handleSubmit = async () => {
-    toast.error("");
-    toast.success("");
     const data = {
       name: formData.name,
       description: formData.description,

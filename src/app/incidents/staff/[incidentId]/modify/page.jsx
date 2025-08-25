@@ -6,7 +6,6 @@ import api from "@/utils/api";
 import { ArrowRight } from "lucide-react";
 import ModifyStaffIncident from "@/components/incidents/modifyIncidents/ModifyStaffIncidentPage";
 import toast from "react-hot-toast";
-import UpdateStaffIncident from "@/components/incidents/updateIncidents/UpdateStaffIncidentPage";
 
 const ModifyStaffIncidentPageContent = () => {
   const [error, setError] = useState();
@@ -51,7 +50,7 @@ const ModifyStaffIncidentPageContent = () => {
   return isLoading ? (
     "Getting data..."
   ) : incident && !isError ? (
-    <UpdateStaffIncident
+    <ModifyStaffIncident
       data={incident}
       incidentId={incidentId}
       investigation={investigation}

@@ -55,8 +55,6 @@ const NewUserForm = ({
   };
 
   const handleSubmit = async () => {
-    toast.error("");
-    toast.success("");
     const data = saveBasicInfo();
 
     try {
@@ -125,11 +123,11 @@ const NewUserForm = ({
       permissions_groups: formData.permissionGroups.map((group) => group.id),
       // permissions: formData.permissions,
     };
-    toast.error("");
 
     if (isEditMode) {
       delete payload.access_to_departments;
       delete payload.access_to_facilities;
+      delete payload.email;
     }
 
     try {

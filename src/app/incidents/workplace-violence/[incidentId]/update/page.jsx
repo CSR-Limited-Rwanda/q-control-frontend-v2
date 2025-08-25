@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -8,17 +8,18 @@ import ModifyWorkplaceIncident from "@/components/incidents/modifyIncidents/Modi
 import { MoveRight } from "lucide-react";
 // import { FacilityBreadCrumbs } from "../../drugReactionincidents/modifyMedicalAdverseDrugReactionIncidentPage";
 import NoResources from "@/components/NoResources";
+import UpdateWorkplaceIncident from "@/components/incidents/updateIncidents/UpdateWorkplaceViolence";
 
 const ModifyWorkplaceIncidentPageContent = () => {
   const [error, setError] = useState();
   const [incident, setIncident] = useState({});
-  const [incidentData, setIncidentData] = useState([])
+  const [incidentData, setIncidentData] = useState([]);
   const { incidentId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [workplaceViolenceId, setGeneralIncidentId] = useState(
     localStorage.getItem("workplaceViolenceId")
-  )
+  );
   useEffect(() => {
     const fetchIncidentData = async () => {
       try {
@@ -27,7 +28,6 @@ const ModifyWorkplaceIncidentPageContent = () => {
         );
 
         if (response.status === 200) {
-
           setIncident(response.data.incident);
 
           setIsLoading(false);
@@ -47,7 +47,7 @@ const ModifyWorkplaceIncidentPageContent = () => {
   return isLoading ? (
     "Gettting data..."
   ) : incident && !isError ? (
-    <ModifyWorkplaceIncident data={incident} incidentId={incidentId} />
+    <UpdateWorkplaceIncident data={incident} incidentId={incidentId} />
   ) : (
     <NoResources />
   );
@@ -71,12 +71,12 @@ const BreadCrumbs = () => {
   );
 };
 const ModifyWorkplaceIncidentPage = () => {
-  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null)
+  const [changeBreadCrumbs, setChangeBreadCrumbs] = useState(null);
 
   useEffect(() => {
-    const storedValue = localStorage.getItem("changeBreadCrumbs")
+    const storedValue = localStorage.getItem("changeBreadCrumbs");
     setChangeBreadCrumbs(storedValue);
-  }, [])
+  }, []);
   return (
     <DashboardLayout
       children={<ModifyWorkplaceIncidentPageContent />}

@@ -4,6 +4,7 @@ import { fetchReviewTemplates } from "@/hooks/fetchReviewTemplates";
 import { set } from "date-fns";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 export const ReviewTemplates = ({
   setCurrentStep,
@@ -54,14 +55,20 @@ export const ReviewTemplates = ({
                 </div>
               ))}
 
-              <div
-                onClick={handleShowNewTemplateForm}
-                className="btn light"
-                href={"/review-templates/new"}
+              <PermissionsGuard
+                model={"tasks"}
+                codename={"add_reviewtemplate"}
+                isPage={false}
               >
-                <PlusCircle />
-                New template
-              </div>
+                <div
+                  onClick={handleShowNewTemplateForm}
+                  className="btn light"
+                  href={"/review-templates/new"}
+                >
+                  <PlusCircle />
+                  New template
+                </div>
+              </PermissionsGuard>
             </>
           )}
         </div>
