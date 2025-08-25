@@ -69,13 +69,13 @@ const page = () => {
     router.push(link);
   };
 
-  const handleVisibleIncident = () => {
+  const handleVisible = () => {
     setVisibleIncidentCount((prev) => prev + 1);
   };
 
   return (
     <DashboardLayout>
-      <div className="tabs-content">
+      <div className="tabs-content" >
         <div className="incidents-reports">
           {incidentConfigs.map(({ title, icon, link, model }) => (
             <PermissionsGuard
@@ -83,6 +83,7 @@ const page = () => {
               model={model}
               codename="view_list"
               isPage={false}
+              onRenderAllowed={handleVisible}
             >
               <div
                 onClick={() => handleClick(link)}
