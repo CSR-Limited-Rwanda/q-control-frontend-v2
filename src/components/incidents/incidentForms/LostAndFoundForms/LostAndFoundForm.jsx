@@ -1,18 +1,12 @@
 "use client";
 
 import toast from "react-hot-toast";
-import React, { useState, useEffect, useRef } from "react";
-import { validateStep } from "../../validators/GeneralIncidentFormValidator";
-import api, { API_URL, cleanedData, calculateAge } from "@/utils/api";
+import React, { useState, useEffect } from "react";
 import Step1InfoForm from "./steps/Step1InfoForm";
 import Step2ActionsForm from "./steps/Step2ActionsForm";
 import Step3CompletionForm from "./steps/Step3CompletionForm";
-import postDocumentHistory from "../../documentHistory/postDocumentHistory";
-import { ArrowLeft, CircleCheck, MoveRight } from "lucide-react";
-import DraftPopup from "@/components/DraftPopup";
+import { ArrowLeft} from "lucide-react";
 import "../../../../styles/_forms.scss";
-import { useAuthentication } from "@/context/authContext";
-import CloseIcon from "@/components/CloseIcon";
 import useValidate from "./utils/useValidate";
 import usePost from "./hooks/usePost";
 import useUpdate from "./hooks/useUpdate";
@@ -24,7 +18,7 @@ const getStoredStep = () => {
   return stored ? parseInt(stored, 10) : 1
 }
 
-// Initialize form data with proper default values to prevent null issues
+
 const getInitialFormData = () => {
   const defaultData = {
     // Step 1 fields
@@ -55,7 +49,6 @@ const getInitialFormData = () => {
     time_returned: '',
   }
 
-  // Merge with initial data if provided
   return { ...defaultData, ...initialData }
 }
 
@@ -63,33 +56,15 @@ const [currentStep, setCurrentStep] = useState(1 || getStoredStep())
 const [formData, setFormData] = useState(getInitialFormData())
 
 const storedLostFoundId = localStorage.getItem("lost_found_id");
-// Only consider editing if we have an ID AND we're not on step 1
 const isEditing = Boolean(storedLostFoundId && currentStep > 1);
 
-// Temporarily disable session expiry check to fix Step 2 issues
-// useEffect(() => {
-//  // Only check for session expiry if we're not on completion step (step 3)
-//  // and only if we actually expect to have a stored ID (i.e., after step 1 completion)
-//  if (currentStep > 1 && currentStep < 3 && !storedLostFoundId) {
-//    // Don't redirect immediately - give user a chance to complete step 1 first
-//    const hasCompletedStep1 = localStorage.getItem('lostAndFoundCurrentStep') === '2'
-//    if (hasCompletedStep1) {
-//      setCurrentStep(1)
-//      localStorage.removeItem('lostAndFoundCurrentStep')
-//      toast.error('Session expired. Please start from step 1.')
-//    }
-//  }
-// }, [currentStep, storedLostFoundId])
-
-// Clear any existing lost_found_id when starting a new form
 useEffect(() => {
  if (!initialData || Object.keys(initialData).length === 0) {
-   // This is a new form, clear any existing IDs
+  
    localStorage.removeItem('lost_found_id')
  }
 }, [initialData])
 
-// Function to initialize edit mode with existing data
 const initializeEditMode = async (incidentId) => {
   try {
     console.log("Initializing edit mode for incident:", incidentId)
@@ -98,7 +73,7 @@ const initializeEditMode = async (incidentId) => {
     const existingData = await fetchIncidentData(incidentId)
     console.log("Loading existing data for editing:", existingData)
 
-    // Transform API data to form structure - ensure no null values
+   
     const formData = {
       // Step 1 fields
       reported_by: {
@@ -132,9 +107,8 @@ const initializeEditMode = async (incidentId) => {
 
     setFormData(formData)
 
-    // Set step based on completion status
     if (existingData.status === 'Completed') {
-      setCurrentStep(3) // Go to completion
+      setCurrentStep(3) 
     } else {
       setCurrentStep(existingData.current_step || 1)
     }
@@ -147,7 +121,6 @@ const initializeEditMode = async (incidentId) => {
   }
 }
 
-// Auto-load existing data when editing (for direct URL access)
 useEffect(() => {
   const loadExistingData = async () => {
     if (storedLostFoundId && isEditing) {
@@ -158,7 +131,7 @@ useEffect(() => {
   loadExistingData()
 }, [storedLostFoundId, isEditing])
  
-  const { invalidFieldNames, validateStep, clearValidationErrors, isFieldInvalid, getFieldError } = useValidate()
+  const { invalidFieldNames, validateStep, isFieldInvalid, getFieldError } = useValidate()
   const { postLostAndFound, isLoading: isPosting, error: postError, success: postSuccess } = usePost()
   const { updateIncident, fetchIncidentData, isLoading: isUpdating, error: updateError } = useUpdate()
 
@@ -188,11 +161,8 @@ useEffect(() => {
         }
       }
 
-      // Move to next step or completion
       if (currentStep === 2) {
-        setCurrentStep(3) // Go directly to completion
-        // Don't clean up localStorage here - let the completion step handle it
-        // or the user can manually start over using the "Start Over" button
+        setCurrentStep(3) 
       } else {
         setCurrentStep((prevStep) => prevStep + 1)
       }
@@ -203,7 +173,6 @@ useEffect(() => {
   }
 
   const handleChange = (e) => {
-    // Handle cases where e.target might be undefined
     if (!e || !e.target) {
       console.warn('handleChange called with invalid event object:', e)
       return
@@ -225,7 +194,7 @@ useEffect(() => {
           ...prevData,
           [parentKey]: {
             ...prevData[parentKey],
-            [childKey]: value || '' // Ensure value is never null
+            [childKey]: value || '' 
           }
         }
         console.log('Updated nested field:', { parentKey, childKey, value: value || '', newData })
@@ -233,7 +202,7 @@ useEffect(() => {
       })
     } else {
       setFormData((prevData) => {
-        const newData = { ...prevData, [name]: value || '' } // Ensure value is never null
+        const newData = { ...prevData, [name]: value || '' }
         console.log('Updated direct field:', { name, value: value || '', newData })
         return newData
       })

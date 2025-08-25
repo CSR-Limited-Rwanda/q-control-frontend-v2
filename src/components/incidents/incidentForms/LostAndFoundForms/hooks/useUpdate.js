@@ -7,7 +7,6 @@ const useUpdate = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  // Function to fetch existing data for editing
   async function fetchIncidentData(incidentId) {
     setIsLoading(true)
     setError(null)

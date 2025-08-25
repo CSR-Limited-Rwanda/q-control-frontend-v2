@@ -67,13 +67,15 @@ const page = () => {
     setIsLoading(false);
   };
 
-  return (
-    <div className="login-page">
-      <div className="background">{/* holds the background */}</div>
-      <div className="login-page-content">
-        <div className="form">
-          <h1>Forgot Password</h1>
-          <p>Please enter your email to reset your password.</p>
+    return (
+        <div className='login-page'>
+            <div className="background">
+                {/* holds the background */}
+            </div>
+            <div className="login-page-content">
+                <div className="form">
+                    <h1>Forgot Password</h1>
+                    <p>Please enter your email to reset your password.</p>
 
           {resetCodeSent ? (
             <>
