@@ -22,8 +22,11 @@ import SubmitComplaintForm from "@/components/forms/SubmitComplaintForm";
 import SendComplaintToDepartment from "@/components/forms/SendComplaintToDepartment";
 import { useParams } from "next/navigation";
 import CloseIcon from "@/components/CloseIcon";
+import PermissionsGuard from "@/components/PermissionsGuard";
+import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 const UserComplaints = () => {
+  const { permissions } = useGetPermissions();
   const { accountId } = useParams();
   const [complaints, setComplaints] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -196,49 +199,82 @@ const UserComplaints = () => {
                     size={18}
                     onClick={(e) => handleShowPopup(index, e)}
                   />
-                  {showPopup === index && (
-                    <div className="popup-menu">
-                      <div
-                        className="popup-item"
-                        onClick={() => handleShowComplainDetails(complaint)}
-                      >
-                        <FileText size={16} />
-                        <span>Complaint Detail</span>
+                  {(permissions?.complaints?.includes("view_details") ||
+                    permissions?.complaints?.includes("change_complaint") ||
+                    permissions?.complaints?.includes(
+                      "can_send_to_department"
+                    ) ||
+                    permissions?.complaints?.includes("delete_complaint")) &&
+                    showPopup === index && (
+                      <div className="popup-menu">
+                        <PermissionsGuard
+                          model="complaints"
+                          codename="view_details"
+                          isPage={false}
+                        >
+                          <div
+                            className="popup-item"
+                            onClick={() => handleShowComplainDetails(complaint)}
+                          >
+                            <FileText size={16} />
+                            <span>Complaint Detail</span>
+                          </div>
+                        </PermissionsGuard>
+
+                        <PermissionsGuard
+                          model="complaints"
+                          codename="change_complaint"
+                          isPage={false}
+                        >
+                          <div
+                            className="popup-item"
+                            onClick={() => {
+                              setSelectedComplain(complaint);
+                              setShowEditForm(true);
+                              setShowPopup(null);
+                            }}
+                          >
+                            <Pencil size={16} />
+                            <span>Edit Complaint</span>
+                          </div>
+                        </PermissionsGuard>
+
+                        <PermissionsGuard
+                          model="complaints"
+                          codename="can_send_to_department"
+                          isPage={false}
+                        >
+                          <div
+                            className="popup-item"
+                            onClick={() => {
+                              setSelectedComplain(complaint);
+                              setShowSendToDepartmentForm(true);
+                              setShowPopup(null);
+                            }}
+                          >
+                            <SendHorizontal size={16} />
+                            <span>Send to Department</span>
+                          </div>
+                        </PermissionsGuard>
+
+                        <PermissionsGuard
+                          model="complaints"
+                          codename="delete_complaint"
+                          isPage={false}
+                        >
+                          <div
+                            className="popup-item"
+                            onClick={() => {
+                              setShowDeleteConfirm(complaint.id);
+                              setShowPopup(null);
+                            }}
+                          >
+                            <Trash size={16} />
+                            <span>Delete Complaint</span>
+                          </div>
+                        </PermissionsGuard>
                       </div>
-                      <div
-                        className="popup-item"
-                        onClick={() => {
-                          setSelectedComplain(complaint);
-                          setShowEditForm(true);
-                          setShowPopup(null);
-                        }}
-                      >
-                        <Pencil size={16} />
-                        <span>Edit Complaint</span>
-                      </div>
-                      <div
-                        className="popup-item"
-                        onClick={() => {
-                          setSelectedComplain(complaint);
-                          setShowSendToDepartmentForm(true);
-                          setShowPopup(null);
-                        }}
-                      >
-                        <SendHorizontal size={16} />
-                        <span>Send to Department</span>
-                      </div>
-                      <div
-                        className="popup-item"
-                        onClick={() => {
-                          setShowDeleteConfirm(complaint.id);
-                          setShowPopup(null);
-                        }}
-                      >
-                        <Trash size={16} />
-                        <span>Delete Complaint</span>
-                      </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               </div>
             ))
@@ -301,6 +337,8 @@ export const ComplainDetails = ({
   handleShowComplainDetails,
   isDeleting,
 }) => {
+  const { permissions } = useGetPermissions();
+
   const [showActions, setActions] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showSendToDepartmentForm, setShowSendToDepartmentForm] =
@@ -352,45 +390,67 @@ export const ComplainDetails = ({
               <button type="button" className="tertiary-button">
                 <Printer size={19} /> <span>Print</span>
               </button>
-              <div className="action-btn-container">
-                <div
-                  onClick={handleShowActions}
-                  className="btn primary-button actions-button"
-                >
-                  <>
+
+              {(permissions?.complaints?.includes("change_complaint") ||
+                permissions?.complaints?.includes("can_send_to_department") ||
+                permissions?.complaints?.includes("delete_complaint")) && (
+                <div className="action-btn-container">
+                  <div
+                    onClick={handleShowActions}
+                    className="btn primary-button actions-button"
+                  >
                     <span> {showActions ? "Hide actions" : "Actions"} </span>{" "}
                     <ChevronDown
                       size={20}
                       className={`chevron ${showActions && "action-active"}`}
                     />
-                  </>
-                </div>
-                {showActions && (
-                  <div className="details-actions">
-                    <div
-                      onClick={handleShowEditForm}
-                      className="details-action"
-                    >
-                      <Pencil size={16} /> <span>Edit complaint</span>
-                    </div>
-
-                    <div
-                      onClick={handleShowSendToDepartment}
-                      className="details-action"
-                    >
-                      <SendHorizontal size={16} />{" "}
-                      <span>Send to department</span>
-                    </div>
-
-                    <div
-                      onClick={handleShowDeletePopup}
-                      className="details-action"
-                    >
-                      <Trash size={16} /> <span>Delete complaint</span>
-                    </div>
                   </div>
-                )}
-              </div>
+
+                  {showActions && (
+                    <div className="details-actions">
+                      <PermissionsGuard
+                        model="complaints"
+                        codename="change_complaint"
+                        isPage={false}
+                      >
+                        <div
+                          onClick={handleShowEditForm}
+                          className="details-action"
+                        >
+                          <Pencil size={16} /> <span>Edit complaint</span>
+                        </div>
+                      </PermissionsGuard>
+
+                      <PermissionsGuard
+                        model="complaints"
+                        codename="can_send_to_department"
+                        isPage={false}
+                      >
+                        <div
+                          onClick={handleShowSendToDepartment}
+                          className="details-action"
+                        >
+                          <SendHorizontal size={16} />{" "}
+                          <span>Send to department</span>
+                        </div>
+                      </PermissionsGuard>
+
+                      <PermissionsGuard
+                        model="complaints"
+                        codename="delete_complaint"
+                        isPage={false}
+                      >
+                        <div
+                          onClick={handleShowDeletePopup}
+                          className="details-action"
+                        >
+                          <Trash size={16} /> <span>Delete complaint</span>
+                        </div>
+                      </PermissionsGuard>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className="items-group">
               <div className="item row">

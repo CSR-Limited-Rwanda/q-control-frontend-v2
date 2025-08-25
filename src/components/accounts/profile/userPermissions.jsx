@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import api from "@/utils/api";
 import CloseIcon from "@/components/CloseIcon";
+import PermissionsGuard from "@/components/PermissionsGuard";
 
 const UserPermissions = ({ togglePermissions, userId }) => {
   const [permissions, setPermissions] = useState([]);
@@ -87,96 +88,109 @@ const UserPermissions = ({ togglePermissions, userId }) => {
     fetchPermissions();
   }, []);
   return (
-    <div className="popup">
-      <div
-        className="popup-content"
-        style={{
-          maxWidth: "800px",
-          width: "100%",
-          minHeight: "400px",
-          maxHeight: "500px",
-        }}
-      >
-        <h3>User permissions</h3>
-        <p>
-          These are the permission groups and permissions that user have on
-          certain features
-        </p>
-        {success && <div className="message success-message">{success}</div>}
-        {error && <div className="message error-message">{error}</div>}
+    <PermissionsGuard
+      model={"auth"}
+      codename={"view_permission"}
+      isPage={false}
+    >
+      <div className="popup">
+        <div
+          className="popup-content"
+          style={{
+            maxWidth: "800px",
+            width: "100%",
+            minHeight: "400px",
+            maxHeight: "500px",
+          }}
+        >
+          <h3>User permissions</h3>
+          <p>
+            These are the permission groups and permissions that user have on
+            certain features
+          </p>
+          {success && <div className="message success-message">{success}</div>}
+          {error && <div className="message error-message">{error}</div>}
 
-        {selectedGroups && selectedGroups.length > 0 && (
-          <button
-            onClick={handleRemoveUserFromGroups}
-            style={{
-              backgroundColor: "tomato",
-              color: "white",
-              width: "fit-content",
-            }}
+          <PermissionsGuard
+            model={"auth"}
+            codename={"delete_permission"}
+            isPage={false}
           >
-            {isRemoving ? (
-              <LoaderCircle className="loading-icon" size={18} />
-            ) : (
-              <Trash2 size={18} />
-            )}
-            Remove permissions
-          </button>
-        )}
-        <CloseIcon onClick={togglePermissions} />
-
-        {isLoading ? (
-          "Loading..."
-        ) : error ? (
-          <div className="error-message message">{error}</div>
-        ) : permissions && permissions.length > 0 ? (
-          <div className="user-permissions-list form">
-            {permissions.map((permission, index) => (
-              <div
-                key={index}
-                onClick={() => handleToggleFeature(permission.name)}
-                className={`dropdown ${
-                  featureToShow === permission.name && "show"
-                }`}
+            {selectedGroups && selectedGroups.length > 0 && (
+              <button
+                onClick={handleRemoveUserFromGroups}
+                style={{
+                  backgroundColor: "tomato",
+                  color: "white",
+                  width: "fit-content",
+                }}
               >
-                <div className="header">
-                  <div
-                    className="action"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSelectGroup({
-                        id: permission.id,
-                        name: permission.name,
-                      });
-                    }}
-                  >
-                    {selectedGroups.some((g) => g.id === permission.id) ? (
-                      <CheckSquare size={18} color="green" />
-                    ) : (
-                      <Square size={18} color="grey" />
-                    )}
-                  </div>
-                  <p>{permission.name}</p>
-                  <ChevronUp className="icon" />
-                </div>
+                {isRemoving ? (
+                  <LoaderCircle className="loading-icon" size={18} />
+                ) : (
+                  <Trash2 size={18} />
+                )}
+                Remove permissions
+              </button>
+            )}
+          </PermissionsGuard>
+
+          <CloseIcon onClick={togglePermissions} />
+
+          {isLoading ? (
+            "Loading..."
+          ) : error ? (
+            <div className="error-message message">{error}</div>
+          ) : permissions && permissions.length > 0 ? (
+            <div className="user-permissions-list form">
+              {permissions.map((permission, index) => (
                 <div
-                  className="content perms"
-                  style={{ flexDirection: "unset" }}
+                  key={index}
+                  onClick={() => handleToggleFeature(permission.name)}
+                  className={`dropdown ${
+                    featureToShow === permission.name && "show"
+                  }`}
                 >
-                  {permission?.permissions.map((perm, index) => (
-                    <div className="perm" key={index}>
-                      {/* {perm.access ? <CheckmarkSquare02Icon size={18} color="green" /> : <SquareIcon size={18} color="grey" />} */}
-                      <span>{perm.feature}</span>
+                  <div className="header">
+                    <div
+                      className="action"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSelectGroup({
+                          id: permission.id,
+                          name: permission.name,
+                        });
+                      }}
+                    >
+                      {selectedGroups.some((g) => g.id === permission.id) ? (
+                        <CheckSquare size={18} color="green" />
+                      ) : (
+                        <Square size={18} color="grey" />
+                      )}
                     </div>
-                  ))}
+                    <p>{permission.name}</p>
+                    <ChevronUp className="icon" />
+                  </div>
+                  <div
+                    className="content perms"
+                    style={{ flexDirection: "unset" }}
+                  >
+                    {permission?.permissions.map((perm, index) => (
+                      <div className="perm" key={index}>
+                        {/* {perm.access ? <CheckmarkSquare02Icon size={18} color="green" /> : <SquareIcon size={18} color="grey" />} */}
+                        <span>{perm.feature}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="message warning-message">No permissions</div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className="message warning-message">No permissions</div>
+          )}
+        </div>
       </div>
-    </div>
+    </PermissionsGuard>
   );
 };
 
