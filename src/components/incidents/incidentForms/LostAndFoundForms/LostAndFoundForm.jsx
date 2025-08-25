@@ -11,8 +11,7 @@ import useValidate from "./utils/useValidate";
 import usePost from "./hooks/usePost";
 import useUpdate from "./hooks/useUpdate";
 
-const LostAndFoundForm = ({ initialData = {} }) => {
-
+const LostAndFoundForm = ({ initialData = {}, togglePopup }) => {
 const getStoredStep = () => {
   const stored = localStorage.getItem('lostAndFoundCurrentStep')
   return stored ? parseInt(stored, 10) : 1
@@ -54,7 +53,6 @@ const getInitialFormData = () => {
 
 const [currentStep, setCurrentStep] = useState(1 || getStoredStep())
 const [formData, setFormData] = useState(getInitialFormData())
-
 const storedLostFoundId = localStorage.getItem("lost_found_id");
 const isEditing = Boolean(storedLostFoundId && currentStep > 1);
 
@@ -174,7 +172,6 @@ useEffect(() => {
       console.warn('handleChange called with invalid event object:', e)
       return
     }
-
     const { name, value } = e.target
 
     if (!name) {
@@ -268,7 +265,6 @@ useEffect(() => {
             localStorage.removeItem('')
             window.location.href = '/dashboard'
            }}
-          
           />
         }
         {currentStep < 3 && (
@@ -279,22 +275,24 @@ useEffect(() => {
                   <ArrowLeft />
                   Back
                   </div>
-              )
-            }
+              )}
+             <button
+                onClick={togglePopup}
+                id="continue-button"
+                className="incident-back-btn"
+              >
+                <span>Cancel</span>
+                <i className="fa-solid fa-arrow-right"></i>
+              </button>
             {
               currentStep < 3 && (
                 <button onClick={handleNextStep} disabled={isLoading}>
                   {currentStep === 2 ? 'Save' : 'Next'}
                 </button>
-
-              )
-
-            }
-           
+              )}    
           </div>
         )}
     </div>
   );
 };
-
 export default LostAndFoundForm
