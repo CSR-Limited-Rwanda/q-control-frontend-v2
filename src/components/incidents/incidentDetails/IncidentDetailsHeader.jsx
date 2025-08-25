@@ -45,11 +45,7 @@ const IncidentDetailsHeader = ({
 }) => {
   // Default to "Most Recent" if available, otherwise "Original Version"
   const { permissions } = useGetPermissions();
-  console.log(permissions);
-  console.log(
-    "Permission: ",
-    permissions?.general_patient_visitor?.includes("change_incident")
-  );
+
   const defaultVersion = data?.modifications?.versions?.find(
     (mod) => mod.latest
   )

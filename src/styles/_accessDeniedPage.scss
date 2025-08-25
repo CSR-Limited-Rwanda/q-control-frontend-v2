@@ -1,0 +1,33 @@
+.access-denied-page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  max-width: 500px;
+
+  p {
+    text-align: center;
+    font-size: 16px;
+  }
+
+  > span {
+    i {
+      font-size: 12px;
+      text-align: center;
+    }
+  }
+
+  .reports-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--background);
+    background-color: var(--primary);
+    padding: 10px 15px;
+    border-radius: 16px;
+    font-weight: 600;
+  }
+}

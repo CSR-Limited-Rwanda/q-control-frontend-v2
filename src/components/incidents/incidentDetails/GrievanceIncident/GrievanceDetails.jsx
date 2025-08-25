@@ -130,7 +130,7 @@ const GrievanceDetailsContent = () => {
   return (
     <div className="incident-details-page">
       {isFetching ? (
-        <div className="fetching-data">Loading data</div>
+        <div className="fetching-data">Loading data...</div>
       ) : incidentDetails && Object.keys(incidentDetails).length > 0 ? (
         <div className="incident-details">
           {incidentDetails.modifications ? (
