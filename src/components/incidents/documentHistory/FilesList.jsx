@@ -6,6 +6,7 @@ import { X, ArrowDownToLine, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import SliceText from "@/components/SliceText";
 import api from "@/utils/api";
+import "@/styles/_main.scss";
 
 const FilesList = ({
   setDocuments,
@@ -22,7 +23,7 @@ const FilesList = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const documentsPerPage = 5;
+  const documentsPerPage = 12;
 
   const handleSelectFile = (file) => {
     setSelectedFile(file);
@@ -64,8 +65,8 @@ const FilesList = ({
       if (error.response) {
         toast.error(
           error.response.data.message ||
-          error.response.data.error ||
-          "Error deleting file"
+            error.response.data.error ||
+            "Error deleting file"
         );
       } else {
         toast.error("Unknown error deleting file");
@@ -117,10 +118,10 @@ const FilesList = ({
                       doc.type === ".pdf"
                         ? "/images/file_types/pdf2-svgrepo-com 1.svg"
                         : doc.type === ".xlsx"
-                          ? "/images/file_types/excel2-svgrepo-com 1.svg"
-                          : doc.type === ".doc" || doc.type === ".docx"
-                            ? "/images/file_types/word2-svgrepo-com 1.svg"
-                            : "/images/file_types/file-link-stroke-rounded.svg"
+                        ? "/images/file_types/excel2-svgrepo-com 1.svg"
+                        : doc.type === ".doc" || doc.type === ".docx"
+                        ? "/images/file_types/word2-svgrepo-com 1.svg"
+                        : "/images/file_types/file-link-stroke-rounded.svg"
                     }
                     alt=""
                   />
@@ -167,20 +168,22 @@ const FilesList = ({
               alignItems: "center",
             }}
           >
-            <button
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              style={{
-                padding: "8px 12px",
-                cursor: currentPage === 1 ? "not-allowed" : "pointer",
-                background: currentPage === 1 ? "#EBF5FF" : "#145C9E",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-              }}
-            >
-              Previous
-            </button>
+            {currentPage > 1 && (
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                style={{
+                  padding: "8px 12px",
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                  background: currentPage === 1 ? "#EBF5FF" : "#145C9E",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                }}
+              >
+                Prev
+              </button>
+            )}
 
             {Array.from({ length: totalPages }, (_, index) => (
               <button
@@ -199,20 +202,24 @@ const FilesList = ({
               </button>
             ))}
 
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              style={{
-                padding: "8px 12px",
-                cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-                background: currentPage === totalPages ? "#EBF5FF" : "#145C9E",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-              }}
-            >
-              Next
-            </button>
+            {currentPage !== totalPages && (
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: "8px 12px",
+                  cursor:
+                    currentPage === totalPages ? "not-allowed" : "pointer",
+                  background:
+                    currentPage === totalPages ? "#EBF5FF" : "#145C9E",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                }}
+              >
+                Next
+              </button>
+            )}
           </div>
         )}
       </div>

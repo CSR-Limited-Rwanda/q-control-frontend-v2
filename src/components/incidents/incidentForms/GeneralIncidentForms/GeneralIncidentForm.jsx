@@ -625,7 +625,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         } else {
           toast.error("Please fill in all required fields.");
         }
-      } else if (incidentType === "equipment malfunction") {
+      } else if (incidentType === "Equipment malfunction") {
         const type = "equipment";
         isValid = validateStep({
           incident_type: incidentTypesData,

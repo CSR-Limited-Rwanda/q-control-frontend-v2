@@ -226,7 +226,6 @@
 @media screen and (max-width: 768px) {
   .profile-page {
     .profile-details {
-
       .profile-info,
       .profile-tabs {
         flex: 1 1 100%;
@@ -250,7 +249,7 @@
     grid-template-columns: 1fr 160px 100px 50px;
     gap: 1rem;
 
-    >.row {
+    > .row {
       display: flex;
       gap: 10px;
       width: 100%;
@@ -341,7 +340,6 @@
 
 .profile-data {
   .tabs-content {
-    
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -350,6 +348,8 @@
 }
 
 .draft-list {
+  overflow: auto;
+  height: 600px;
   .drafts-title {
     font-size: 16px;
   }
@@ -372,7 +372,7 @@
         justify-content: space-between;
         gap: 10px;
 
-        >button {
+        > button {
           width: fit-content;
           align-self: flex-end;
         }

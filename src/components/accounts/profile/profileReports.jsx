@@ -395,20 +395,22 @@ const ProfileReports = () => {
               alignItems: "center",
             }}
           >
-            <button
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              style={{
-                padding: "8px 12px",
-                cursor: currentPage === 1 ? "not-allowed" : "pointer",
-                background: currentPage === 1 ? "#EBF5FF" : "#145C9E",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-              }}
-            >
-              Previous
-            </button>
+            {currentPage > 1 && (
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                style={{
+                  padding: "8px 12px",
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                  background: currentPage === 1 ? "#EBF5FF" : "#145C9E",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                }}
+              >
+                Prev
+              </button>
+            )}
 
             {Array.from({ length: totalPages }, (_, index) => (
               <button
@@ -427,20 +429,24 @@ const ProfileReports = () => {
               </button>
             ))}
 
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              style={{
-                padding: "8px 12px",
-                cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-                background: currentPage === totalPages ? "#EBF5FF" : "#145C9E",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-              }}
-            >
-              Next
-            </button>
+            {currentPage !== totalPages && (
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: "8px 12px",
+                  cursor:
+                    currentPage === totalPages ? "not-allowed" : "pointer",
+                  background:
+                    currentPage === totalPages ? "#EBF5FF" : "#145C9E",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                }}
+              >
+                Next
+              </button>
+            )}
           </div>
         </>
       ) : (

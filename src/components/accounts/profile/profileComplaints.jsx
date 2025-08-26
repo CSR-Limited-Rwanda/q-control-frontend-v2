@@ -28,7 +28,7 @@ import { useGetPermissions } from "@/hooks/fetchPermissions";
 const UserComplaints = () => {
   const { permissions } = useGetPermissions();
   const { accountId } = useParams();
-  const [complaints, setComplaints] = useState();
+  const [complaints, setComplaints] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [showSubmitComplaint, setShowSubmitComplaint] = useState(false);
@@ -41,6 +41,8 @@ const UserComplaints = () => {
   const actionRefs = useRef({});
   const [isDeleting, setIsDeleting] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const complaintsPerPage = 5;
 
   const handleShowComplainDetails = (complaint) => {
     setSelectedComplain(complaint);
@@ -55,9 +57,11 @@ const UserComplaints = () => {
   const handleShowEditForm = () => {
     setShowEditForm(!showEditForm);
   };
+
   const handleShowSendToDepartmentForm = () => {
     setShowSendToDepartmentForm(!showSendToDepartmentForm);
   };
+
   const handleShowPopup = (index, event) => {
     setShowPopup(showPopup === index ? null : index);
   };
@@ -67,11 +71,20 @@ const UserComplaints = () => {
       setIsDeleting(true);
       await api.delete(`/complaints/${complaintId}/`);
       setIsDeleting(false);
-      setComplaints(
-        complaints.filter((complaint) => complaint.id !== complaintId)
+      const updatedComplaints = complaints.filter(
+        (complaint) => complaint.id !== complaintId
       );
+      setComplaints(updatedComplaints);
       setShowDeleteConfirm(null);
       setShowPopup(null);
+
+      const totalComplaintsAfterDelete = updatedComplaints.length;
+      const totalPagesAfterDelete = Math.ceil(
+        totalComplaintsAfterDelete / complaintsPerPage
+      );
+      if (currentPage > totalPagesAfterDelete && totalPagesAfterDelete > 0) {
+        setCurrentPage(totalPagesAfterDelete);
+      }
     } catch (error) {
       setIsDeleting(false);
       setError(
@@ -83,6 +96,18 @@ const UserComplaints = () => {
     }
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
@@ -90,7 +115,6 @@ const UserComplaints = () => {
         setIsLoading(true);
         const response = await api.get(`/users/${accountId}/complaints/`);
         setComplaints(response.data.results);
-
         setIsLoading(false);
       } catch (error) {
         if (error.response) {
@@ -108,7 +132,16 @@ const UserComplaints = () => {
     };
 
     fetchComplaints();
-  }, []);
+  }, [accountId]);
+
+  const indexOfLastComplaint = currentPage * complaintsPerPage;
+  const indexOfFirstComplaint = indexOfLastComplaint - complaintsPerPage;
+  const currentComplaints = Array.isArray(complaints)
+    ? complaints.slice(indexOfFirstComplaint, indexOfLastComplaint)
+    : [];
+
+  const totalComplaints = complaints ? complaints.length : 0;
+  const totalPages = Math.ceil(totalComplaints / complaintsPerPage);
 
   return isLoading ? (
     "loading..."
@@ -141,143 +174,217 @@ const UserComplaints = () => {
         <SubmitComplaintForm handleSubmitComplaint={handleSubmitComplaint} />
       ) : (
         <div className="user-complaints">
-          {complaints && complaints.length > 0 ? (
-            complaints.map((complaint, index) => (
-              <div
-                key={index}
-                className={`user-complaint ${
-                  complaint.status === "Open" ? "open" : ""
-                }`}
-              >
-                <div className="complaint-content">
-                  <div className="col">
-                    <div className="name-mr">
-                      {
-                        <div className="icon">
-                          <ClipboardPen size={20} />
-                        </div>
-                      }
-                      <div className="name">
-                        <h5>{complaint.patient_name}</h5>
-                        <small>{complaint.medical_record_number}</small>
-                      </div>
-                    </div>
-
-                    <div className="department">
-                      <small>Department</small>
-                      <span>
-                        {complaint?.department.length > 0
-                          ? complaint?.department
-                          : "Not provided"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="col">
-                    <div className="date">
-                      <small>Date of complaint</small>
-                      <span>
-                        {
-                          <DateFormatter
-                            dateString={complaint.date_of_complaint}
-                          />
-                        }
-                      </span>
-                    </div>
-                    <div className="resolved-by-staff">
-                      <small>Resolved by staff</small>
-                      <span>{complaint.resolved_by_staff ? "Yes" : "No"}</span>
-                    </div>
-                  </div>
-                </div>
-
+          {currentComplaints && currentComplaints.length > 0 ? (
+            <>
+              {currentComplaints.map((complaint, index) => (
                 <div
-                  className="complaint-action"
-                  ref={(el) => (actionRefs.current[index] = el)}
+                  key={index}
+                  className={`user-complaint ${
+                    complaint.status === "Open" ? "open" : ""
+                  }`}
                 >
-                  <EllipsisVertical
-                    size={18}
-                    onClick={(e) => handleShowPopup(index, e)}
-                  />
-                  {(permissions?.complaints?.includes("view_details") ||
-                    permissions?.complaints?.includes("change_complaint") ||
-                    permissions?.complaints?.includes(
-                      "can_send_to_department"
-                    ) ||
-                    permissions?.complaints?.includes("delete_complaint")) &&
-                    showPopup === index && (
-                      <div className="popup-menu">
-                        <PermissionsGuard
-                          model="complaints"
-                          codename="view_details"
-                          isPage={false}
-                        >
-                          <div
-                            className="popup-item"
-                            onClick={() => handleShowComplainDetails(complaint)}
-                          >
-                            <FileText size={16} />
-                            <span>Complaint Detail</span>
+                  <div className="complaint-content">
+                    <div className="col">
+                      <div className="name-mr">
+                        {
+                          <div className="icon">
+                            <ClipboardPen size={20} />
                           </div>
-                        </PermissionsGuard>
-
-                        <PermissionsGuard
-                          model="complaints"
-                          codename="change_complaint"
-                          isPage={false}
-                        >
-                          <div
-                            className="popup-item"
-                            onClick={() => {
-                              setSelectedComplain(complaint);
-                              setShowEditForm(true);
-                              setShowPopup(null);
-                            }}
-                          >
-                            <Pencil size={16} />
-                            <span>Edit Complaint</span>
-                          </div>
-                        </PermissionsGuard>
-
-                        <PermissionsGuard
-                          model="complaints"
-                          codename="can_send_to_department"
-                          isPage={false}
-                        >
-                          <div
-                            className="popup-item"
-                            onClick={() => {
-                              setSelectedComplain(complaint);
-                              setShowSendToDepartmentForm(true);
-                              setShowPopup(null);
-                            }}
-                          >
-                            <SendHorizontal size={16} />
-                            <span>Send to Department</span>
-                          </div>
-                        </PermissionsGuard>
-
-                        <PermissionsGuard
-                          model="complaints"
-                          codename="delete_complaint"
-                          isPage={false}
-                        >
-                          <div
-                            className="popup-item"
-                            onClick={() => {
-                              setShowDeleteConfirm(complaint.id);
-                              setShowPopup(null);
-                            }}
-                          >
-                            <Trash size={16} />
-                            <span>Delete Complaint</span>
-                          </div>
-                        </PermissionsGuard>
+                        }
+                        <div className="name">
+                          <h5>{complaint.patient_name}</h5>
+                          <small>{complaint.medical_record_number}</small>
+                        </div>
                       </div>
-                    )}
+
+                      <div className="department">
+                        <small>Department</small>
+                        <span>
+                          {complaint?.department.length > 0
+                            ? complaint?.department
+                            : "Not provided"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="col">
+                      <div className="date">
+                        <small>Date of complaint</small>
+                        <span>
+                          {
+                            <DateFormatter
+                              dateString={complaint.date_of_complaint}
+                            />
+                          }
+                        </span>
+                      </div>
+                      <div className="resolved-by-staff">
+                        <small>Resolved by staff</small>
+                        <span>
+                          {complaint.resolved_by_staff ? "Yes" : "No"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="complaint-action"
+                    ref={(el) => (actionRefs.current[index] = el)}
+                  >
+                    <EllipsisVertical
+                      size={18}
+                      onClick={(e) => handleShowPopup(index, e)}
+                    />
+                    {(permissions?.complaints?.includes("view_details") ||
+                      permissions?.complaints?.includes("change_complaint") ||
+                      permissions?.complaints?.includes(
+                        "can_send_to_department"
+                      ) ||
+                      permissions?.complaints?.includes("delete_complaint")) &&
+                      showPopup === index && (
+                        <div className="popup-menu">
+                          <PermissionsGuard
+                            model="complaints"
+                            codename="view_details"
+                            isPage={false}
+                          >
+                            <div
+                              className="popup-item"
+                              onClick={() =>
+                                handleShowComplainDetails(complaint)
+                              }
+                            >
+                              <FileText size={16} />
+                              <span>Complaint Detail</span>
+                            </div>
+                          </PermissionsGuard>
+
+                          <PermissionsGuard
+                            model="complaints"
+                            codename="change_complaint"
+                            isPage={false}
+                          >
+                            <div
+                              className="popup-item"
+                              onClick={() => {
+                                setSelectedComplain(complaint);
+                                setShowEditForm(true);
+                                setShowPopup(null);
+                              }}
+                            >
+                              <Pencil size={16} />
+                              <span>Edit Complaint</span>
+                            </div>
+                          </PermissionsGuard>
+
+                          <PermissionsGuard
+                            model="complaints"
+                            codename="can_send_to_department"
+                            isPage={false}
+                          >
+                            <div
+                              className="popup-item"
+                              onClick={() => {
+                                setSelectedComplain(complaint);
+                                setShowSendToDepartmentForm(true);
+                                setShowPopup(null);
+                              }}
+                            >
+                              <SendHorizontal size={16} />
+                              <span>Send to Department</span>
+                            </div>
+                          </PermissionsGuard>
+
+                          <PermissionsGuard
+                            model="complaints"
+                            codename="delete_complaint"
+                            isPage={false}
+                          >
+                            <div
+                              className="popup-item"
+                              onClick={() => {
+                                setShowDeleteConfirm(complaint.id);
+                                setShowPopup(null);
+                              }}
+                            >
+                              <Trash size={16} />
+                              <span>Delete Complaint</span>
+                            </div>
+                          </PermissionsGuard>
+                        </div>
+                      )}
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+              {totalComplaints > complaintsPerPage && (
+                <div
+                  className="pagination"
+                  style={{
+                    marginTop: "20px",
+                    display: "flex",
+                    gap: "5px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {currentPage > 1 && (
+                    <button
+                      onClick={handlePrevPage}
+                      disabled={currentPage === 1}
+                      style={{
+                        padding: "8px 12px",
+                        cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                        background: currentPage === 1 ? "#EBF5FF" : "#145C9E",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      Prev
+                    </button>
+                  )}
+
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                      key={index + 1}
+                      onClick={() => handlePageChange(index + 1)}
+                      style={{
+                        padding: "8px 12px",
+                        cursor: "pointer",
+                        background:
+                          currentPage === index + 1 ? "#145C9E" : "#fff",
+                        color: currentPage === index + 1 ? "white" : "black",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+
+                  {currentPage !== totalPages && (
+                    <button
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                      style={{
+                        padding: "8px 12px",
+                        cursor:
+                          currentPage === totalPages
+                            ? "not-allowed"
+                            : "pointer",
+                        background:
+                          currentPage === totalPages ? "#EBF5FF" : "#145C9E",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      Next
+                    </button>
+                  )}
+                </div>
+              )}
+            </>
           ) : (
             <p>No complaints found</p>
           )}

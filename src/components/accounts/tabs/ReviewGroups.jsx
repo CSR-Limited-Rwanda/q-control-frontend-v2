@@ -299,7 +299,7 @@ const ReviewGroups = () => {
                     disabled={!reviewGroupsData.has_previous}
                     className="pagination-button"
                   >
-                    Previous
+                    Prev
                   </button>
 
                   {/* Always show first page */}

@@ -259,6 +259,15 @@ small {
 @keyframes appear {
 }
 
+.pagination {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.profile-tabs {
+  position: relative;
+}
 .incidents-tab {
   display: flex;
   flex-direction: column;
@@ -1146,6 +1155,7 @@ input[type="checkbox"] {
   gap: 1rem;
   padding: 1rem;
   background-color: whitesmoke;
+  // position: relative;
 
   .document {
     display: flex;

@@ -34,6 +34,7 @@ import UserComplaints from "@/components/accounts/profile/profileComplaints";
 import ProfileDocuments from "@/components/accounts/profile/profileDocuments";
 import { useGetPermissions } from "@/hooks/fetchPermissions";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import "@/styles/_components.scss";
 
 const ProfileDetailsPage = () => {
   const { permissions, loading, error: permissionsError } = useGetPermissions();
@@ -152,82 +153,90 @@ const ProfileDetailsPage = () => {
               </PermissionsGuard>
             </PermissionsGuard>
 
-            <div
-              onClick={handleShowActions}
-              className={`actions-dropdown ${showActions && "show"}`}
-            >
-              <div className="header">
-                <span>Actions</span>
-                <ChevronRight className="icon" />
+            {((permissions &&
+              permissions?.accounts?.includes("change_profile")) ||
+              permissions?.accounts?.includes("delete_profile") ||
+              permissions?.auth?.includes("view_permission")) && (
+              <div
+                onClick={handleShowActions}
+                className={`actions-dropdown ${showActions && "show"}`}
+              >
+                <div className="header">
+                  <span>Actions</span>
+                  <ChevronRight className="icon" />
+                </div>
+
+                {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
+                <div className="actions-list">
+                  <PermissionsGuard
+                    model={"accounts"}
+                    codename={"change_profile"}
+                    isPage={false}
+                  >
+                    <>
+                      <div
+                        className="action"
+                        onClick={() => setShowUpdateUserForm(true)}
+                      >
+                        <SquarePen />
+                        <span>Edit user</span>
+                      </div>
+                      <hr />
+                      <div
+                        className="action"
+                        onClick={handleShowActivateUserForm}
+                      >
+                        <UserCheck />
+                        <span>Activate user</span>
+                      </div>
+                      <hr />
+                      <div
+                        className="action"
+                        onClick={handleShowDeactivateUserForm}
+                      >
+                        <UserX />
+                        <span>Deactivate user</span>
+                      </div>
+                      <hr />
+                    </>
+                  </PermissionsGuard>
+
+                  <PermissionsGuard
+                    model={"accounts"}
+                    codename={"delete_profile"}
+                    isPage={false}
+                  >
+                    <>
+                      <div
+                        className="action"
+                        onClick={handleShowDeleteUserForm}
+                      >
+                        <Trash2 />
+                        <span>Delete user</span>
+                      </div>
+                      <hr />
+                    </>
+                  </PermissionsGuard>
+
+                  <PermissionsGuard
+                    model={"auth"}
+                    codename={"view_permission"}
+                    isPage={false}
+                  >
+                    <>
+                      <div
+                        className="action"
+                        onClick={handleShowAccessPermissionsForm}
+                      >
+                        <Key />
+                        <span>Access Permissions</span>
+                      </div>
+                      <hr />
+                    </>
+                  </PermissionsGuard>
+                </div>
               </div>
-
-              {/* actions : Edit, Deactivate, Activate, Delete, Change Password */}
-              <div className="actions-list">
-                <PermissionsGuard
-                  model={"accounts"}
-                  codename={"change_profile"}
-                  isPage={false}
-                >
-                  <>
-                    <div
-                      className="action"
-                      onClick={() => setShowUpdateUserForm(true)}
-                    >
-                      <SquarePen />
-                      <span>Edit user</span>
-                    </div>
-                    <hr />
-                    <div
-                      className="action"
-                      onClick={handleShowActivateUserForm}
-                    >
-                      <UserCheck />
-                      <span>Activate user</span>
-                    </div>
-                    <hr />
-                    <div
-                      className="action"
-                      onClick={handleShowDeactivateUserForm}
-                    >
-                      <UserX />
-                      <span>Deactivate user</span>
-                    </div>
-                    <hr />
-                  </>
-                </PermissionsGuard>
-
-                <PermissionsGuard
-                  model={"accounts"}
-                  codename={"delete_profile"}
-                  isPage={false}
-                >
-                  <>
-                    <div className="action" onClick={handleShowDeleteUserForm}>
-                      <Trash2 />
-                      <span>Delete user</span>
-                    </div>
-                    <hr />
-                  </>
-                </PermissionsGuard>
-
-                <PermissionsGuard
-                  model={"auth"}
-                  codename={"view_permission"}
-                  isPage={false}
-                >
-                  <>
-                    <div
-                      className="action"
-                      onClick={handleShowAccessPermissionsForm}
-                    >
-                      <Key />
-                      <span>Access Permissions</span>
-                    </div>
-                    <hr />
-                  </>
-                </PermissionsGuard>
-              </div>
-            </div>
+            )}
           </div>
         </div>
         <div className="profile-details">

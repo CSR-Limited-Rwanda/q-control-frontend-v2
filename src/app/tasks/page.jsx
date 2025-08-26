@@ -49,6 +49,7 @@ const TasksPage = () => {
     sort_by: "created_at",
     sort_order: "asc",
   });
+  const profileId = user?.profileId;
 
   const loadTasks = async () => {
     const queryParams = createUrlParams(parameters);
@@ -137,7 +138,13 @@ const TasksPage = () => {
 
   return (
     <DashboardLayout>
-      <PermissionsGuard model={"tasks"} codename={"view_list"}>
+      <PermissionsGuard
+        btnLink={`accounts/${profileId}/tasks`}
+        model={"tasks"}
+        codename={"view_list"}
+        btnText="My Tasks"
+        message="You currently don’t have access to view any tasks. To view your tasks, click the button below."
+      >
         {isLoading && <p>Loading tasks...</p>}
         {error && <p className="message error">Error: {error}</p>}
         <div className="filters-container">
