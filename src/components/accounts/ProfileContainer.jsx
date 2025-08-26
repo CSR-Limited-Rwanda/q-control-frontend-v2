@@ -62,16 +62,16 @@ export const ProfileContainer = () => {
             <ListTodo />
             <span>My Tasks</span>
           </div>
-          <hr />
-          <div className="dropdown__item">
+          {/* <hr /> */}
+          {/* <div className="dropdown__item">
             <Lock size={18} />
             <span>Admin</span>
-          </div>
-          <hr />
+          </div> */}
+          {/* <hr />
           <div className="dropdown__item">
             <Settings size={18} />
             <span>Settings</span>
-          </div>
+          </div> */}
           <hr />
           <div onClick={handleLogout} className="dropdown__item">
             <LogOut size={18} />

@@ -181,6 +181,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       current_step: currentStep,
       incident_status: statusType,
       report_facility_id: currentFacility?.id,
+      report_facility: currentFacility?.id,
       patient_info:
         firstName && lastName
           ? {

@@ -54,7 +54,7 @@ const SendForReview = ({ path, incidentID, handleClose, data }) => {
   };
   useEffect(
     () => {
-      if (!data.incident.report_facility) return;
+      if (!data?.incident?.report_facility) return;
 
       const fetchDepartments = async () => {
         try {
