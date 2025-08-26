@@ -14,6 +14,7 @@
 
 1. Can view their profile
 2. Can update their profile
+3. Can list profiles in their department
 
 ## Profile - Cants
 
@@ -30,16 +31,14 @@
 6. Can view details of their own incident reports (limited to assigned department)
 7. Can view a list of unrestricted incident reports assigned to their department or facility
 8. Can view details of unrestricted incident reports assigned to their department or facility
-9. Can send incident reports to a department (limited to assigned department)
-10. Can review incident reports (limited to assigned department)
-11. Can access restricted incident information (with Admin permission)
-12. Can view incident details pages (limited to assigned department)
-13. Can view incident investigation details (limited to assigned department)
-14. Can export incident reports or logs (limited to assigned department)
-15. Can list logs for incident reports (limited to assigned department)
-16. For Staff Incidents: Can access logs and perform additional actions if assigned as Employee Health Dept Head (list, export, review)
-17. For Medication Error/Near Miss and ADR: Can review if assigned to Pharmacy Dept
-18. For Workplace Violence: Can review if assigned to HR Dept
+9. Can review incident reports (limited to assigned department)
+10. Can view incident details pages (limited to assigned department)
+11. Can view incident investigation details (limited to assigned department)
+12. Can export incident reports or logs (limited to assigned department)
+13. Can list logs for incident reports (limited to assigned department)
+14. For Staff Incidents: Can access logs and perform additional actions if assigned as Employee Health Dept Head (list, export, review)
+15. For Medication Error/Near Miss and ADR: Can review if assigned to Pharmacy Dept
+16. For Workplace Violence: Can review if assigned to HR Dept
 
 ## Incidents - Cants
 
@@ -60,14 +59,13 @@
 6. Can view details of their own investigation reports (limited to assigned department)
 7. Can view a list of unrestricted investigation reports assigned to their department or facility
 8. Can view details of unrestricted investigation reports assigned to their department or facility
-9. Can send investigation reports to a department (limited to assigned department)
-10. Can review investigation reports (limited to assigned department)
-11. Can access restricted investigation information (with Admin permission)
-12. Can view investigation details pages (limited to assigned department)
-13. Can export investigation reports or logs (limited to assigned department)
-14. Can list logs for investigation reports (limited to assigned department)
-15. For Staff Incident Investigations: Can access logs and perform additional actions if assigned as Employee Health Dept Head (list, export, review)
-16. For Workplace Violence Investigations: Can review if assigned to HR Dept
+9. Can review investigation reports (limited to assigned department)
+10. Can access restricted investigation information (with Admin permission)
+11. Can view investigation details pages (limited to assigned department)
+12. Can export investigation reports or logs (limited to assigned department)
+13. Can list logs for investigation reports (limited to assigned department)
+14. For Staff Incident Investigations: Can access logs and perform additional actions if assigned as Employee Health Dept Head (list, export, review)
+15. For Workplace Violence Investigations: Can review if assigned to HR Dept
 
 ## Investigations - Cants
 
@@ -119,19 +117,3 @@
 1. Cannot create user accounts
 2. Cannot update user accounts
 3. Cannot deactivate user accounts
-
-## Notifications and Alerts - Cans
-
-1. Can receive and view notifications and alerts (limited to assigned department)
-
-## Notifications and Alerts - Cants
-
-1. Cannot receive notifications or alerts outside their assigned department
-
-## Site Design and Configuration - Cants
-
-1. Cannot access site design
-2. Cannot access site configuration
-3. Cannot perform backups
-4. Cannot manage guest settings
-5. Cannot manage department settings

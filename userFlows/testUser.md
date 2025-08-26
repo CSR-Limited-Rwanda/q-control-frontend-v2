@@ -17,11 +17,11 @@ This document contains comprehensive test user accounts for all roles defined in
 
 _Permissions: Draft/submit incident reports, Upload documents, View drafts and own reports_
 
-| Username | Email           | Full Name    | Role | Facility Assignment |
-| -------- | --------------- | ------------ | ---- | ------------------- |
-| `user1`  | user1@email.com | John Doe     | User | Random Assignment   |
-| `user2`  | user2@email.com | Jane Smith   | User | Random Assignment   |
-| `user3`  | user3@email.com | Mike Johnson | User | Random Assignment   |
+| Username          | Email           | Full Name    | Role | Facility Assignment |
+| ----------------- | --------------- | ------------ | ---- | ------------------- |
+| `user1@email.com` | user1@email.com | John Doe     | User | Random Assignment   |
+| `user2@email.com` | user2@email.com | Jane Smith   | User | Random Assignment   |
+| `user3@email.com` | user3@email.com | Mike Johnson | User | Random Assignment   |
 
 **Key Capabilities:**
 
@@ -39,12 +39,12 @@ _Permissions: Draft/submit incident reports, Upload documents, View drafts and o
 
 _Permissions: Access unrestricted incidents in assigned dept, Add reviews, send to Quality/Risk_
 
-| Username           | Email                      | Full Name     | Role    | Department Focus    |
-| ------------------ | -------------------------- | ------------- | ------- | ------------------- |
-| `manager1`         | manager1@email.com         | Sarah Wilson  | Manager | General Management  |
-| `manager2`         | manager2@email.com         | David Brown   | Manager | General Management  |
-| `pharmacy_manager` | pharmacy_manager@email.com | Lisa Garcia   | Manager | Pharmacy Department |
-| `hr_manager`       | hr_manager@email.com       | Robert Taylor | Manager | Human Resources     |
+| Username                     | Email                      | Full Name     | Role    | Department Focus    |
+| ---------------------------- | -------------------------- | ------------- | ------- | ------------------- |
+| `manager1@email.com`         | manager1@email.com         | Sarah Wilson  | Manager | General Management  |
+| `manager2@email.com`         | manager2@email.com         | David Brown   | Manager | General Management  |
+| `pharmacy_manager@email.com` | pharmacy_manager@email.com | Lisa Garcia   | Manager | Pharmacy Department |
+| `hr_manager@email.com`       | hr_manager@email.com       | Robert Taylor | Manager | Human Resources     |
 
 **Key Capabilities:**
 
@@ -63,10 +63,10 @@ _Permissions: Access unrestricted incidents in assigned dept, Add reviews, send 
 
 _Permissions: Read-only access to facility/dept incidents, View dashboards/logs, export data_
 
-| Username    | Email               | Full Name       | Role     | Access Level  |
-| ----------- | ------------------- | --------------- | -------- | ------------- |
-| `director1` | director1@email.com | Michael Davis   | Director | Facility-wide |
-| `director2` | director2@email.com | Jennifer Miller | Director | Facility-wide |
+| Username              | Email               | Full Name       | Role     | Access Level  |
+| --------------------- | ------------------- | --------------- | -------- | ------------- |
+| `director1@email.com` | director1@email.com | Michael Davis   | Director | Facility-wide |
+| `director2@email.com` | director2@email.com | Jennifer Miller | Director | Facility-wide |
 
 **Key Capabilities:**
 
@@ -83,11 +83,11 @@ _Permissions: Read-only access to facility/dept incidents, View dashboards/logs,
 
 _Permissions: Full access to facility incidents, Modify reports, Export logs, Manage user accounts_
 
-| Username | Email            | Full Name            | Role  | Access Level   |
-| -------- | ---------------- | -------------------- | ----- | -------------- |
-| `admin1` | admin1@email.com | Christopher Anderson | Admin | Facility-bound |
-| `admin2` | admin2@email.com | Amanda Thomas        | Admin | Facility-bound |
-| `admin3` | admin3@email.com | Kevin Jackson        | Admin | Facility-bound |
+| Username           | Email            | Full Name            | Role  | Access Level   |
+| ------------------ | ---------------- | -------------------- | ----- | -------------- |
+| `admin1@email.com` | admin1@email.com | Christopher Anderson | Admin | Facility-bound |
+| `admin2@email.com` | admin2@email.com | Amanda Thomas        | Admin | Facility-bound |
+| `admin3@email.com` | admin3@email.com | Kevin Jackson        | Admin | Facility-bound |
 
 **Key Capabilities:**
 
@@ -107,10 +107,10 @@ _Permissions: Full access to facility incidents, Modify reports, Export logs, Ma
 
 _Permissions: Full access to all facilities' incidents, Modify, add severity, close (except own)_
 
-| Username           | Email                      | Full Name     | Role                 | Access Level   |
-| ------------------ | -------------------------- | ------------- | -------------------- | -------------- |
-| `quality_manager1` | quality_manager1@email.com | Jessica White | Quality/Risk Manager | Cross-facility |
-| `risk_manager1`    | risk_manager1@email.com    | Daniel Harris | Quality/Risk Manager | Cross-facility |
+| Username                     | Email                      | Full Name     | Role                 | Access Level   |
+| ---------------------------- | -------------------------- | ------------- | -------------------- | -------------- |
+| `quality_manager1@email.com` | quality_manager1@email.com | Jessica White | Quality/Risk Manager | Cross-facility |
+| `risk_manager1@email.com`    | risk_manager1@email.com    | Daniel Harris | Quality/Risk Manager | Cross-facility |
 
 **Key Capabilities:**
 
@@ -129,10 +129,10 @@ _Permissions: Full access to all facilities' incidents, Modify, add severity, cl
 
 _Permissions: Full access across all facilities, Delete/modify reports/users, Configure settings_
 
-| Username     | Email                | Full Name        | Role       | Access Level |
-| ------------ | -------------------- | ---------------- | ---------- | ------------ |
-| `superuser1` | superuser1@email.com | Elizabeth Martin | Super User | Global       |
-| `superuser2` | superuser2@email.com | William Thompson | Super User | Global       |
+| Username               | Email                | Full Name        | Role       | Access Level |
+| ---------------------- | -------------------- | ---------------- | ---------- | ------------ |
+| `superuser1@email.com` | superuser1@email.com | Elizabeth Martin | Super User | Global       |
+| `superuser2@email.com` | superuser2@email.com | William Thompson | Super User | Global       |
 
 **Key Capabilities:**
 
@@ -151,10 +151,10 @@ _Permissions: Full access across all facilities, Delete/modify reports/users, Co
 
 _Permissions: Create/edit/deactivate user accounts, Submit own reports_
 
-| Username       | Email                  | Full Name     | Role        | Focus Area         |
-| -------------- | ---------------------- | ------------- | ----------- | ------------------ |
-| `user_editor1` | user_editor1@email.com | Ashley Garcia | User Editor | Account Management |
-| `user_editor2` | user_editor2@email.com | Ryan Martinez | User Editor | Account Management |
+| Username                 | Email                  | Full Name     | Role        | Focus Area         |
+| ------------------------ | ---------------------- | ------------- | ----------- | ------------------ |
+| `user_editor1@email.com` | user_editor1@email.com | Ashley Garcia | User Editor | Account Management |
+| `user_editor2@email.com` | user_editor2@email.com | Ryan Martinez | User Editor | Account Management |
 
 **Key Capabilities:**
 
