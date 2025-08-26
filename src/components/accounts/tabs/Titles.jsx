@@ -166,185 +166,189 @@ const Titles = () => {
   }, []);
   return (
     <PermissionsGuard model={"accounts"} codename={"view_title"}>
-<div className="titles-tab">
-      <div className="filters">
-        <SearchInput
-          value={searchQuery}
-          setValue={setSearchQuery}
-          isSearching={isSearching}
-          label={"Search by names"}
-        />
+      <div className="titles-tab">
+        <div className="filters">
+          <SearchInput
+            value={searchQuery}
+            setValue={setSearchQuery}
+            isSearching={isSearching}
+            label={"Search by names"}
+          />
 
-        <div className="actions">
-          <form>
-            <div className="half">
-              <span>Show</span>
-              <div className="form-group">
-                <select
-                  value={page_size}
-                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                  name="pageSize"
-                  id="pageSize"
-                >
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="50">50</option>
-                </select>
-                <ChevronDown
-                  size={24}
-                  onClick={() => openDropdown("pageSize")}
-                  className="filter-icon"
-                />
+          <div className="actions">
+            <form>
+              <div className="half">
+                <span>Show</span>
+                <div className="form-group">
+                  <select
+                    value={page_size}
+                    onChange={(e) =>
+                      handlePageSizeChange(Number(e.target.value))
+                    }
+                    name="pageSize"
+                    id="pageSize"
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                  <ChevronDown
+                    size={24}
+                    onClick={() => openDropdown("pageSize")}
+                    className="filter-icon"
+                  />
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
 
-          <PermissionsGuard
-            model="accounts"
-            codename="add_title"
-            isPage={false}
-          >
-            <PrimaryButton
-              onClick={handleShowNewTitleForm}
-              span="Add title"
-              prefixIcon={<CirclePlus size={20} />}
-              customClass={"sticky-button"}
-            />
-          </PermissionsGuard>
+            <PermissionsGuard
+              model="accounts"
+              codename="add_title"
+              isPage={false}
+            >
+              <PrimaryButton
+                onClick={handleShowNewTitleForm}
+                span="Add title"
+                prefixIcon={<CirclePlus size={20} />}
+                customClass={"sticky-button"}
+              />
+            </PermissionsGuard>
+          </div>
         </div>
-      </div>
-      {isFetchingTitles ? (
-        <p>Loading titles...</p>
-      ) : (
-        <>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <SortableHeader
-                  field="name"
-                  currentField={sortField}
-                  currentOrder={sortOrder}
-                  onSort={handleSort}
-                >
-                  Name
-                </SortableHeader>
-                <th>Description</th>
-                <SortableHeader
-                  field="created_at"
-                  currentField={sortField}
-                  currentOrder={sortOrder}
-                  onSort={handleSort}
-                >
-                  Date created
-                </SortableHeader>
-              </tr>
-            </thead>
-            <tbody>
-              {titles.map((title, index) => (
-                <tr onClick={() => handleShowTitleDetails(title)} key={index}>
-                  <td data-label="ID">{title.id}</td>
-                  <td data-label="Name">{title.name || "-"}</td>
-                  <td data-label="Description">{title.description || "-"}</td>
-                  <td data-label="Date created">
-                    {<DateFormatter dateString={title.created_at || "-"} />}
-                  </td>
+        {isFetchingTitles ? (
+          <p>Loading titles...</p>
+        ) : (
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <SortableHeader
+                    field="name"
+                    currentField={sortField}
+                    currentOrder={sortOrder}
+                    onSort={handleSort}
+                  >
+                    Name
+                  </SortableHeader>
+                  <th>Description</th>
+                  <SortableHeader
+                    field="created_at"
+                    currentField={sortField}
+                    currentOrder={sortOrder}
+                    onSort={handleSort}
+                  >
+                    Date created
+                  </SortableHeader>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="pagination-controls">
-            <button
-              onClick={() => handlePageChange(page - 1)}
-              disabled={!titlesData.has_previous}
-              className="pagination-button"
-            >
-              Previous
-            </button>
-
-            {/* Always show first page */}
-            <button
-              onClick={() => handlePageChange(1)}
-              className={`pagination-button ${1 === page ? "active" : ""}`}
-            >
-              1
-            </button>
-
-            {/* Show ellipsis if current page is far from start */}
-            {page > 3 && (
-              <span className="pagination-ellipsis">
-                <Ellipsis />
-              </span>
-            )}
-
-            {/* Show one page before current if needed */}
-            {page > 2 && (
+              </thead>
+              <tbody>
+                {titles.map((title, index) => (
+                  <tr onClick={() => handleShowTitleDetails(title)} key={index}>
+                    <td data-label="ID">{title.id}</td>
+                    <td data-label="Name">{title.name || "-"}</td>
+                    <td data-label="Description">{title.description || "-"}</td>
+                    <td data-label="Date created">
+                      {<DateFormatter dateString={title.created_at || "-"} />}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="pagination-controls">
               <button
                 onClick={() => handlePageChange(page - 1)}
+                disabled={!titlesData.has_previous}
                 className="pagination-button"
               >
-                {page - 1}
+                Prev
               </button>
-            )}
 
-            {/* Show current page if it's not first or last */}
-            {page !== 1 && page !== total_pages && (
+              {/* Always show first page */}
               <button
-                onClick={() => handlePageChange(page)}
-                className="pagination-button active"
+                onClick={() => handlePageChange(1)}
+                className={`pagination-button ${1 === page ? "active" : ""}`}
               >
-                {page}
+                1
               </button>
-            )}
 
-            {/* Show one page after current if needed */}
-            {page < total_pages - 1 && (
+              {/* Show ellipsis if current page is far from start */}
+              {page > 3 && (
+                <span className="pagination-ellipsis">
+                  <Ellipsis />
+                </span>
+              )}
+
+              {/* Show one page before current if needed */}
+              {page > 2 && (
+                <button
+                  onClick={() => handlePageChange(page - 1)}
+                  className="pagination-button"
+                >
+                  {page - 1}
+                </button>
+              )}
+
+              {/* Show current page if it's not first or last */}
+              {page !== 1 && page !== total_pages && (
+                <button
+                  onClick={() => handlePageChange(page)}
+                  className="pagination-button active"
+                >
+                  {page}
+                </button>
+              )}
+
+              {/* Show one page after current if needed */}
+              {page < total_pages - 1 && (
+                <button
+                  onClick={() => handlePageChange(page + 1)}
+                  className="pagination-button"
+                >
+                  {page + 1}
+                </button>
+              )}
+
+              {/* Show ellipsis if current page is far from end */}
+              {page < total_pages - 2 && (
+                <span className="pagination-ellipsis">...</span>
+              )}
+
+              {/* Always show last page if it's not the first page */}
+              {total_pages > 1 && (
+                <button
+                  onClick={() => handlePageChange(total_pages)}
+                  className={`pagination-button ${
+                    total_pages === page ? "active" : ""
+                  }`}
+                >
+                  {total_pages}
+                </button>
+              )}
+
               <button
                 onClick={() => handlePageChange(page + 1)}
+                disabled={!titlesData.has_next}
                 className="pagination-button"
               >
-                {page + 1}
+                Next
               </button>
-            )}
+            </div>
+          </>
+        )}
 
-            {/* Show ellipsis if current page is far from end */}
-            {page < total_pages - 2 && (
-              <span className="pagination-ellipsis">...</span>
-            )}
-
-            {/* Always show last page if it's not the first page */}
-            {total_pages > 1 && (
-              <button
-                onClick={() => handlePageChange(total_pages)}
-                className={`pagination-button ${total_pages === page ? "active" : ""
-                  }`}
-              >
-                {total_pages}
-              </button>
-            )}
-
-            <button
-              onClick={() => handlePageChange(page + 1)}
-              disabled={!titlesData.has_next}
-              className="pagination-button"
-            >
-              Next
-            </button>
-          </div>
-        </>
-      )}
-
-      {showNewTitleForm && <TitlesForm handleClose={handleShowNewTitleForm} />}
-      {showTitleDetails && (
-        <TitleDetails
-          title={selectedTitle}
-          handleClose={() => handleShowTitleDetails({})}
-        />
-      )}
-    </div>
+        {showNewTitleForm && (
+          <TitlesForm handleClose={handleShowNewTitleForm} />
+        )}
+        {showTitleDetails && (
+          <TitleDetails
+            title={selectedTitle}
+            handleClose={() => handleShowTitleDetails({})}
+          />
+        )}
+      </div>
     </PermissionsGuard>
-    
   );
 };
 

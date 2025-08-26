@@ -239,15 +239,22 @@ const IncidentDetailsHeader = ({
               onClick={toggleActions}
               className={`actions ${showActions ? "show-actions" : ""}`}
             >
-              <button type="button" className="primary">
-                <span>Actions</span>
-                {/* TODO: Instead of adding two icons, use one and rotate it if actions are open */}
-                {showActions ? (
-                  <ArrowDown variant={"stroke"} />
-                ) : (
-                  <ArrowRight variant={"stroke"} />
+              {permissions &&
+                (permissions[model]?.includes("change_incident") ||
+                  permissions[model]?.includes("close_incident") ||
+                  permissions[model]?.includes("send_for_review") ||
+                  permissions[model]?.includes("add_review")) && (
+                  <button type="button" className="primary">
+                    <span>Actions</span>
+                    {/* TODO: Instead of adding two icons, use one and rotate it if actions are open */}
+                    {showActions ? (
+                      <ArrowDown variant={"stroke"} />
+                    ) : (
+                      <ArrowRight variant={"stroke"} />
+                    )}
+                  </button>
                 )}
-              </button>
+
               <div className="actions-popup">
                 <>
                   <PermissionsGuard
@@ -314,12 +321,19 @@ const IncidentDetailsHeader = ({
                   </Link>
                 )}
 
-                <div onClick={toggleShowReviewForm} className="action">
-                  <div className="icon">
-                    <MessageCirclePlus size={20} variant={"stroke"} />
+                <PermissionsGuard
+                  model={model}
+                  codename={"add_review"}
+                  isPage={false}
+                >
+                  <div onClick={toggleShowReviewForm} className="action">
+                    <div className="icon">
+                      <MessageCirclePlus size={20} variant={"stroke"} />
+                    </div>
+                    <span>Add a comment</span>
                   </div>
-                  <span>Add a comment</span>
-                </div>
+                </PermissionsGuard>
+
                 {/* {permissions &&
                 (permissions.includes("Admin") ||
                   permissions.includes("Quality - Risk Manager") ||

@@ -967,6 +967,8 @@ form {
       &:hover {
         background-color: var(--secondary);
         border-color: transparent;
+        color: white;
+        cursor: pointer;
       }
 
       &:first-child {

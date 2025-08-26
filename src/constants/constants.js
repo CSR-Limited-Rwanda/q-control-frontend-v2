@@ -185,7 +185,7 @@ export const statusesPrionToIncident = [
   },
 ];
 
-export const hoursArray = [...Array(25).keys()].map((h) =>
+export const hoursArray = [...Array(24).keys()].map((h) =>
   h.toString().padStart(2, "0")
 );
 export const minutesArray = [...Array(60).keys()].map((m) =>

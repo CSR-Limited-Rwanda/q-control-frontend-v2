@@ -4,9 +4,7 @@ import React from "react";
 import "@/styles/_accessDeniedPage.scss";
 import { useAuthentication } from "@/context/authContext";
 
-const AccessDeniedPage = ({ title, message }) => {
-  const { user } = useAuthentication();
-  const profileId = user?.profileId;
+const AccessDeniedPage = ({ title, message, btnText, btnLink }) => {
   return (
     <div className="access-denied-page">
       <div className="logo-container">
@@ -14,12 +12,9 @@ const AccessDeniedPage = ({ title, message }) => {
       </div>
 
       <h3>Not enough permissions</h3>
-      <p>
-        You currently don’t have access to view any incident reports. To view
-        your reports, click the button below.
-      </p>
-      <Link href={`/accounts/${profileId}`} className="reports-link">
-        <span> My reports </span> <ChevronRight />
+      <p>{message}</p>
+      <Link href={btnLink} className="reports-link">
+        <span>{btnText}</span> <ChevronRight />
       </Link>
       <span>
         <i>

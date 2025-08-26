@@ -1,12 +1,26 @@
 import CloseIcon from "@/components/CloseIcon";
 import Button from "@/components/forms/Button";
 import PermissionsGuard from "@/components/PermissionsGuard";
-import { approveTask, completeTask, fetchTaskById, fetchTaskPermissions, submitTask } from "@/hooks/fetchTasks";
+import {
+  approveTask,
+  completeTask,
+  fetchTaskById,
+  fetchTaskPermissions,
+  submitTask,
+} from "@/hooks/fetchTasks";
 import { set } from "date-fns";
-import { Calendar, Eye, FileText, Flag, LoaderCircle, Users, X } from "lucide-react";
+import {
+  Calendar,
+  Eye,
+  FileText,
+  Flag,
+  LoaderCircle,
+  Users,
+  X,
+} from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
 import toast from "react-hot-toast";
 
 export const TaskDetails = ({ taskId, handleClose }) => {
@@ -19,6 +33,7 @@ export const TaskDetails = ({ taskId, handleClose }) => {
   const [error, setError] = useState(null);
   const [taskDetails, setTaskDetails] = useState(null);
   const popupRef = useRef(null);
+  const router = useRouter();
 
   const handleCompleteTask = async () => {
     setIsCompleting(true);
@@ -37,7 +52,6 @@ export const TaskDetails = ({ taskId, handleClose }) => {
     const response = await submitTask(taskId);
     if (response.success) {
       toast.success(response.message);
-
       handleClose();
     } else {
       setError(response.message);
@@ -50,12 +64,55 @@ export const TaskDetails = ({ taskId, handleClose }) => {
     const response = await approveTask(taskId);
     if (response.success) {
       toast.success(response.message);
-
       handleClose();
     } else {
       setError(response.message);
     }
     setIsApproving(false);
+  };
+
+  // Function to handle navigation and localStorage based on incident_type
+  const handleIncidentClick = (incidentId, reportName) => {
+    let url = `/incidents/general/${incidentId}/`;
+    if (!reportName) {
+      localStorage.setItem("generalIncidentId", incidentId);
+    } else {
+      switch (reportName) {
+        case "General Patient Visitor":
+          localStorage.setItem("generalIncidentId", incidentId);
+          url = `/incidents/general/${incidentId}/`;
+          break;
+        case "Adverse Drug Reaction":
+          localStorage.setItem("adverseDrugReactionId", incidentId);
+          url = `/incidents/drug-reaction/${incidentId}/`;
+          break;
+        case "Lost and Found":
+          localStorage.setItem("lostAndFoundId", incidentId);
+          url = `/incidents/lost-and-found/${incidentId}/`;
+          break;
+        case "Medication Error":
+          localStorage.setItem("medicationErrorIncidentId", incidentId);
+          url = `/incidents/medication-error/${incidentId}/`;
+          break;
+        case "Staff Incident Report":
+          localStorage.setItem("staffIncidentId", incidentId);
+          url = `/incidents/staff/${incidentId}/`;
+          break;
+        case "workplace violence":
+          localStorage.setItem("workplaceViolenceId", incidentId);
+          url = `/incidents/workplace-violence/${incidentId}/`;
+          break;
+        case "Grievance":
+          localStorage.setItem("grievanceId", incidentId);
+          url = `/incidents/grievance/${incidentId}/`;
+          break;
+        default:
+          localStorage.setItem("generalIncidentId", incidentId);
+          url = `/incidents/general/${incidentId}/`;
+          break;
+      }
+    }
+    router.push(url);
   };
 
   useEffect(() => {
@@ -64,26 +121,25 @@ export const TaskDetails = ({ taskId, handleClose }) => {
       setLoadingPermissions(true);
 
       try {
-        // Fetch both task details and permissions in parallel
         const [taskResponse, permissionsResponse] = await Promise.all([
           fetchTaskById(taskId),
-          fetchTaskPermissions(taskId)
+          fetchTaskPermissions(taskId),
         ]);
 
         if (taskResponse.success) {
+          console.log("Fetching task details:", taskResponse.data);
           setTaskDetails(taskResponse.data);
         } else {
-          console.error('Task details error:', taskResponse.message);
+          console.error("Task details error:", taskResponse.message);
         }
 
         if (!permissionsResponse.success) {
-          console.error('Permissions error:', permissionsResponse.message);
+          console.error("Permissions error:", permissionsResponse.message);
         }
 
         setPermissions(permissionsResponse.data);
-
       } catch (error) {
-        console.error('Error fetching task data:', error);
+        console.error("Error fetching task data:", error);
       } finally {
         setIsLoading(false);
         setLoadingPermissions(false);
@@ -122,20 +178,20 @@ export const TaskDetails = ({ taskId, handleClose }) => {
                 <Flag color="gray" />
                 <small>Priority</small>
               </div>
-
               <div
-                className={`priority-value ${taskDetails.task_priority === 1
-                  ? "high"
-                  : taskDetails.task_priority === 2
+                className={`priority-value ${
+                  taskDetails.task_priority === 1
+                    ? "high"
+                    : taskDetails.task_priority === 2
                     ? "medium"
                     : "low"
-                  }`}
+                }`}
               >
                 {taskDetails.task_priority === 1
                   ? "High"
                   : taskDetails.task_priority === 2
-                    ? "Medium"
-                    : "Low"}
+                  ? "Medium"
+                  : "Low"}
               </div>
             </div>
 
@@ -152,18 +208,32 @@ export const TaskDetails = ({ taskId, handleClose }) => {
                 <Users />
                 <small>Assigned to</small>
               </div>
-              {
-                taskDetails.review_groups?.length > 0 &&
-                <div className="task-assigned-to">{taskDetails.review_groups.map((reviewer, index) => (
-                  <Link className="card" href={`/accounts/review-groups/${reviewer.id}/tasks`} key={index}>{reviewer.name}</Link>
-                ))}</div>
-              }
-              {
-                taskDetails.reviewers?.length > 0 &&
-                <div className="task-assigned-to">{taskDetails.reviewers.map((reviewer, index) => (
-                  <Link className="card" href={`/accounts/${reviewer.id}/tasks`} key={index}>{reviewer.name}</Link>
-                ))}</div>
-              }
+              {taskDetails.review_groups?.length > 0 && (
+                <div className="task-assigned-to">
+                  {taskDetails.review_groups.map((reviewer, index) => (
+                    <Link
+                      className="card"
+                      href={`/accounts/review-groups/${reviewer.id}/tasks`}
+                      key={index}
+                    >
+                      {reviewer.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+              {taskDetails.reviewers?.length > 0 && (
+                <div className="task-assigned-to">
+                  {taskDetails.reviewers.map((reviewer, index) => (
+                    <Link
+                      className="card"
+                      href={`/accounts/${reviewer.id}/tasks`}
+                      key={index}
+                    >
+                      {reviewer.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="incident">
@@ -172,9 +242,21 @@ export const TaskDetails = ({ taskId, handleClose }) => {
                 <small>Incident</small>
               </div>
               <div className="incident-container">
-                <p>{taskDetails.incident || "No incident reported"}</p>
-                {taskDetails.incident && (
-                  <button type="button" className="light">
+                <p>
+                  {taskDetails.incident?.incident_type ||
+                    "No incident reported"}
+                </p>
+                {taskDetails.incident?.id && (
+                  <button
+                    type="button"
+                    className="light"
+                    onClick={() =>
+                      handleIncidentClick(
+                        taskDetails.incident.id,
+                        taskDetails.incident.incident_type
+                      )
+                    }
+                  >
                     <Eye color="gray" />
                     View Incident
                   </button>
@@ -183,43 +265,35 @@ export const TaskDetails = ({ taskId, handleClose }) => {
             </div>
             {error && <p className="message error">Error: {error}</p>}
 
-            {
-              loadingPermissions ?
-                <LoaderCircle className="loading-icon" />
-                :
-                <div className="buttons">
-                  {/* complete task button */}
-                  {
-                    permissions.can_complete_task && (
-                      <Button
-                        text={"Complete Task"}
-                        onClick={() => handleCompleteTask(taskDetails.id)}
-                        isLoading={isCompleting} />
-                    )
-                  }
-                  {/* submit task button */}
-                  {
-                    permissions.can_submit_task && (
-                      <Button text={"Submit Task"}
-                        className="secondary"
-                        onClick={() => handleSubmitTask(taskDetails.id)}
-                        isLoading={isSubmitting} />
-                    )
-                  }
-                  {/* mark approve button */}
-                  {
-                    permissions.can_approve_task && (
-                      <Button
-                        onClick={handleApproveTask}
-                        isLoading={isSubmitting}
-                        text={"Approve Task"}
-                        className="light"
-                      />
-                    )
-                  }
-
-                </div>
-            }
+            {loadingPermissions ? (
+              <LoaderCircle className="loading-icon" />
+            ) : (
+              <div className="buttons">
+                {permissions.can_complete_task && (
+                  <Button
+                    text={"Complete Task"}
+                    onClick={() => handleCompleteTask(taskDetails.id)}
+                    isLoading={isCompleting}
+                  />
+                )}
+                {permissions.can_submit_task && (
+                  <Button
+                    text={"Submit Task"}
+                    className="secondary"
+                    onClick={() => handleSubmitTask(taskDetails.id)}
+                    isLoading={isSubmitting}
+                  />
+                )}
+                {permissions.can_approve_task && (
+                  <Button
+                    onClick={handleApproveTask}
+                    isLoading={isApproving}
+                    text={"Approve Task"}
+                    className="light"
+                  />
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -9,11 +9,11 @@
   }
 
   .department-item:nth-child(even) {
-    background-color: #FCFCFC;
+    background-color: #fcfcfc;
   }
 
   .date {
-    color: #8D8D8D;
+    color: #8d8d8d;
     font-size: 14px;
     font-weight: 400;
   }
@@ -65,8 +65,6 @@
       color: gray;
     }
   }
-
-
 }
 
 .departments {
@@ -298,7 +296,7 @@
       gap: 14px;
 
       .icon-container {
-        background-color: #FFF0E8;
+        background-color: #fff0e8;
         padding: 20px;
         border-radius: var(--base-border-radius);
       }
@@ -313,7 +311,7 @@
         }
 
         .date-created {
-          color: #BBBBBB;
+          color: #bbbbbb;
           font-weight: 400;
           font-size: 14px;
         }
@@ -337,7 +335,7 @@
 
         .staff-card-title,
         .complaints-card-title {
-          color: #8D8D8D;
+          color: #8d8d8d;
         }
 
         .staff-card-desc,
@@ -364,7 +362,6 @@
             align-items: center;
             justify-content: center;
             margin-left: -5px;
-
 
             .member-name {
               font-weight: bold;
@@ -409,8 +406,6 @@
     justify-content: space-between;
     align-items: center;
   }
-
-
 }
 
 @media screen and (max-width: 960px) {
@@ -445,7 +440,7 @@
       }
 
       .cancel-delete-btn {
-        background-color: #F2F2F2;
+        background-color: #f2f2f2;
         color: #808080;
       }
     }

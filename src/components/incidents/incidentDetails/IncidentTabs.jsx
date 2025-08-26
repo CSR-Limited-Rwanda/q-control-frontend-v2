@@ -14,7 +14,7 @@ const IncidentTabs = ({
   reviewsCount,
   incidentDocumentHistoryCount,
 }) => {
-  const [activeTab, setActiveTab] = useState("documentHistoryCount");
+  const [activeTab, setActiveTab] = useState("incidentType");
   useState(0);
   const [incidentDocumentCount, setIncidentDocumentCount] = useState(0);
 

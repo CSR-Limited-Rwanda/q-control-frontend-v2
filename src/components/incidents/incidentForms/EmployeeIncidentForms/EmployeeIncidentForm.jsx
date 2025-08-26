@@ -202,7 +202,9 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }),
       date_of_injury_or_near_miss: dateOfInjury,
       time_of_injury_or_near_miss: timeOfInjury,
-      witnesses: witnessesList.length > 0 ? witnessesList : null,
+      ...(witnessesList.length > 0 && {
+        witnesses: witnessesList,
+      }),
       status: "Draft",
     };
 
@@ -347,7 +349,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
   const updateStepOne = async (data) => {
     try {
       const res = await api.put(
-        `${API_URL}/incidents/employee_incidents/update/staff/final_report/`,
+        `${API_URL}/incidents/staff-incident/${reportId}/`,
         data
       );
 
@@ -442,7 +444,10 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               }),
               date_of_injury_or_near_miss: dateOfInjury,
               time_of_injury_or_near_miss: timeOfInjury,
-              witnesses: witnessesList.length > 0 ? witnessesList : null,
+
+              ...(witnessesList.length > 0 && {
+                witnesses: witnessesList,
+              }),
               status: "Draft",
             })
           );

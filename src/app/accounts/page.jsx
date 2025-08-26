@@ -103,7 +103,9 @@ const AccountsPage = () => {
   }, []);
   return (
     <DashboardLayout>
-      {permissions?.accounts?.includes("view_list") || permissions?.auth?.includes("view_group") || permissions?.base?.includes("view_list") || permissions?.tasks?.includes("view_reviewgroups") || permissions?.tasks?.includes("view_reviewtemplates") || permissions?.accounts?.includes("view_title") &&    <div className="tabs">
+      {/* {permissions?.accounts?.includes("view_list") || permissions?.auth?.includes("view_group") || permissions?.base?.includes("view_list") || permissions?.tasks?.includes("view_reviewgroups") || permissions?.tasks?.includes("view_reviewtemplates") || permissions?.accounts?.includes("view_title") &&   } */}
+
+      <div className="tabs">
         {tabs.map((tab, index) => (
           <div
             onClick={() => handleTabClick(tab)}
@@ -113,8 +115,8 @@ const AccountsPage = () => {
             <span>{tab.name}</span>
           </div>
         ))}
-      </div>}
-    
+      </div>
+
       {activeTab === "accountsManagement" && (
         <Accounts permissions={permissions} />
       )}

@@ -15,6 +15,8 @@ import {
 import { useRouter } from "next/navigation";
 import PermissionsGuard from "@/components/PermissionsGuard";
 import AccessDeniedPage from "@/components/AccessDenied";
+import "@/styles/_main.scss";
+import { useAuthentication } from "@/context/authContext";
 
 const incidentConfigs = [
   {
@@ -64,6 +66,8 @@ const incidentConfigs = [
 const page = () => {
   const router = useRouter();
   const [visibleIncidentCount, setVisibleIncidentCount] = useState(0);
+  const { user } = useAuthentication();
+  const profileId = user?.profileId;
 
   const handleClick = (link) => {
     router.push(link);
@@ -75,7 +79,7 @@ const page = () => {
 
   return (
     <DashboardLayout>
-      <div className="tabs-content" >
+      <div className="tabs-content">
         <div className="incidents-reports">
           {incidentConfigs.map(({ title, icon, link, model }) => (
             <PermissionsGuard
@@ -109,7 +113,14 @@ const page = () => {
             </PermissionsGuard>
           ))}
 
-          {visibleIncidentCount === 0 && <AccessDeniedPage />}
+          {visibleIncidentCount === 0 && (
+            <AccessDeniedPage
+              btnLink={`accounts/${profileId}`}
+              message={`You currently don’t have access to view any incident reports. To view
+            your reports, click the button below.`}
+              btnText={"My Reports"}
+            />
+          )}
         </div>
       </div>
     </DashboardLayout>

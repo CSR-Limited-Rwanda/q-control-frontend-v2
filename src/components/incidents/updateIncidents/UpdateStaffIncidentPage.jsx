@@ -257,7 +257,6 @@ const UpdateStaffIncident = ({ data, incidentId, investigation }) => {
     }));
 
     const incidentData = {
-  
       report_facility: data.report_facility.id,
       department: parseInt(selectedDepartmentId),
       incident_status: statusType || "Open",
@@ -352,7 +351,7 @@ const UpdateStaffIncident = ({ data, incidentId, investigation }) => {
       <div className="modify-page-header">
         <BackToPage link={"/incidents/staff/"} pageName={"Staff incidents"} />
         <h2 className="title">Updating Staff Incident</h2>
-        {investigation ? (
+        {/* {investigation ? (
           <>
             {permissions?.staff_incident_reports?.includes(
               "view_staffincidentinvestigation"
@@ -384,7 +383,7 @@ const UpdateStaffIncident = ({ data, incidentId, investigation }) => {
               </button>
             )}
           </>
-        )}
+        )} */}
 
         <div className="buttons">
           <button className="tertiary-button" onClick={handleSaveDraft}>
