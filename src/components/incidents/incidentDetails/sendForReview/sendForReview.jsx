@@ -54,13 +54,13 @@ const SendForReview = ({ path, incidentID, handleClose, data }) => {
   };
   useEffect(
     () => {
-      if (!data.report_facility) return;
+      if (!data.incident.report_facility) return;
 
       const fetchDepartments = async () => {
         try {
           setIsLoading(true);
           const response = await api.get(`/departments/`, {
-            params: { facility_id: data.report_facility.id },
+            params: { facility_id: data.incident?.report_facility?.id },
           });
           if (response.status === 200) {
             console.log(response.data.results);
