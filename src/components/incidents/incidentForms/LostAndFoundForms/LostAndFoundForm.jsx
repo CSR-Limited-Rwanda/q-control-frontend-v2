@@ -269,6 +269,7 @@ const LostAndFoundForm = ({ togglePopup }) => {
             profile_type: "Visitor",
           },
         }),
+        status: "Open",
       };
       if (isValid) {
         setIsLoading(true);

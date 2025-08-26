@@ -216,22 +216,34 @@ const ModifyLostFound = ({ data }) => {
       report_facility: data.report_facility.id,
       department: parseInt(selectedDepartmentId),
       property_name: propertyName,
-      reported_by: {
-        first_name: reporterFirstName || "",
-        last_name: reporterLastName || "",
-        profile_type: "Patient",
-        age: age,
-      },
-      taken_by: {
-        first_name: patientFirstName || "",
-        last_name: patientLastName || "",
-        profile_type: "Staff",
-      },
-      found_by: {
-        first_name: personWhoFoundPropertyFirstName,
-        last_name: personWhoFoundPropertyLastName,
-        profile_type: "Staff",
-      },
+      ...(reporterFirstName && reporterLastName
+        ? {
+            reported_by: {
+              first_name: reporterFirstName || "",
+              last_name: reporterLastName || "",
+              profile_type: "Patient",
+              age: age,
+            },
+          }
+        : {}),
+      ...(patientFirstName && patientLastName
+        ? {
+            taken_by: {
+              first_name: patientFirstName || "",
+              last_name: patientLastName || "",
+              profile_type: "Staff",
+            },
+          }
+        : {}),
+      ...(personWhoFoundPropertyFirstName && personWhoFoundPropertyLastName
+        ? {
+            found_by: {
+              first_name: personWhoFoundPropertyFirstName,
+              last_name: personWhoFoundPropertyLastName,
+              profile_type: "Staff",
+            },
+          }
+        : {}),
       relation_to_patient: relationToPatient,
       item_description: itemDescription,
       action_taken: actionTaken,
