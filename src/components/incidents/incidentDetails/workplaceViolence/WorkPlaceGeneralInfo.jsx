@@ -12,7 +12,6 @@ const WorkPlaceGeneralInfo = ({ data, incidentStatuses }) => {
     }
     return value;
   };
-  console.log("Workplace data: ", data);
   return (
     <div className="incident-details">
       <div className="number-mrn">

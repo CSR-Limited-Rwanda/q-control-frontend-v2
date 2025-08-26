@@ -368,7 +368,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
     } catch (error) {
       console.error("Error submitting step 4: ", error);
-      console.log(error);
       return;
     }
     setSuccess(true);
@@ -482,7 +481,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       (facility) => facility.id === parseInt(facilityId)
     );
     setCurrentFacility(selectedFacility);
-    console.log(selectedFacility);
   };
   return (
     <div className="form-container">

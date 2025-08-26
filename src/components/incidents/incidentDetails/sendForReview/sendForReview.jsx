@@ -19,7 +19,6 @@ import CloseIcon from "@/components/CloseIcon";
 
 const SendForReview = ({ path, incidentID, handleClose, data }) => {
   // template related fields
-  console.log(data);
   const [selectedChoice, setSelectedChoice] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
@@ -63,7 +62,6 @@ const SendForReview = ({ path, incidentID, handleClose, data }) => {
             params: { facility_id: data.incident?.report_facility?.id },
           });
           if (response.status === 200) {
-            console.log(response.data.results);
             setDepartments(response.data.results);
           }
         } catch (error) {

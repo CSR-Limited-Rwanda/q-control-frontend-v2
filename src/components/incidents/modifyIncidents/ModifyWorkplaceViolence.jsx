@@ -278,7 +278,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
 
   useEffect(
     () => {
-      console.log(data);
       if (!data.report_facility) return;
 
       const fetchDepartments = async () => {
@@ -288,7 +287,6 @@ const ModifyWorkplaceIncident = ({ data }) => {
             params: { facility_id: data.report_facility.id },
           });
           if (response.status === 200) {
-            console.log(response.data.results);
             setDepartments(response.data.results);
           }
         } catch (error) {

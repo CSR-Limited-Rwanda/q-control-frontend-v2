@@ -1,7 +1,6 @@
 import "../../../../styles/incidents/_grievance.scss";
 
 const GeneralIncidentGeneralInformation = ({ data, incidentStatuses }) => {
-  console.log('data:', data)
   return (
     <div className="incident-type-data">
       {data.incident_type === "Fall related" ? (

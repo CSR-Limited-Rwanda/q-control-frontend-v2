@@ -130,7 +130,6 @@ const ModifyLostFound = ({ data }) => {
           params: { facility_id: data.report_facility.id },
         });
         if (response.status === 200) {
-          console.log(response.data.results);
           setDepartments(response.data.results);
         }
       } catch (error) {
@@ -145,7 +144,6 @@ const ModifyLostFound = ({ data }) => {
   }, [data.report_facility.id]);
 
   useEffect(() => {
-    console.log(data);
     const fetchIncidentDocuments = async () => {
       try {
         const response = await api.get(

@@ -41,7 +41,6 @@ const EmployeeDetailsContent = () => {
         response = await api.get(`/incidents/staff-incident/${incidentId}/`);
         setIncidentDetails(response.data);
         setCurrentIncidentData(response.data.incident);
-        console.log(response.data);
       } else {
         const res = await api.get(
           `${API_URL}/incidents/staff-incident/${incidentId}/`
@@ -53,13 +52,11 @@ const EmployeeDetailsContent = () => {
           response = await api.get(
             `${API_URL}/incidents/staff-incident/${incidentId}/versions/${latestIncident.id}/`
           );
-          console.log(response.data);
         } else {
           response = res;
         }
         setLatestIncidentDetails(response.data);
         setCurrentIncidentData(response.data.incident);
-        console.log(response.data);
       }
 
       // 🔽 NEW: fetch investigation separately
@@ -77,7 +74,6 @@ const EmployeeDetailsContent = () => {
     } catch (error) {
       if (error) {
         toast.error(error?.response?.data?.error);
-        console.log(error);
         console.error("Error fetching incident details:", error);
         setIsFetching(false);
       }
