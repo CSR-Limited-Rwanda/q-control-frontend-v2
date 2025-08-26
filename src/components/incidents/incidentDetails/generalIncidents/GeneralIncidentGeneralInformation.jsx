@@ -1,6 +1,7 @@
 import "../../../../styles/incidents/_grievance.scss";
 
 const GeneralIncidentGeneralInformation = ({ data, incidentStatuses }) => {
+  console.log('data:', data)
   return (
     <div className="incident-type-data">
       {data.incident_type === "Fall related" ? (
@@ -28,7 +29,7 @@ const GeneralIncidentGeneralInformation = ({ data, incidentStatuses }) => {
           <h3>Equipment related incident</h3>
           <div className="equipment-incident-data">
             <div className="equipment-incident">
-              <small>Removed from services ?</small>
+              <small>Removed from services</small>
               <h4>{data.removed_from_service || "Not provided"}</h4>
             </div>
             <div className="equipment-type">
@@ -53,21 +54,21 @@ const GeneralIncidentGeneralInformation = ({ data, incidentStatuses }) => {
             </div>
           </div>
         </div>
-      ) : data.incident?.incident_type === "Treatment related" ? (
+      ) : data?.incident_type === "Treatment related" ? (
         <div className="treatment-type-incident">
           <h3>Treatment related incident</h3>
           <div className="treatment-incident-data">
             <div className="treatment-type">
-              <h4>{data.incident?.treatment_type || "Not provided"}</h4>
+              <h4>{data?.treatment_type || "Not provided"}</h4>
             </div>
           </div>
         </div>
-      ) : data.incident?.incident_type === "Others" ? (
+      ) : data?.incident_type === "Other" ? (
         <div className="other-type-incident">
           <h3>Other related incident</h3>
           <div className="other-incident-data">
             <div className="other-type">
-              <h4>{data.incident?.other_related_type || "Not provided"}</h4>
+              <h4>{data.other_related_type || "Not provided"}</h4>
             </div>
           </div>
         </div>

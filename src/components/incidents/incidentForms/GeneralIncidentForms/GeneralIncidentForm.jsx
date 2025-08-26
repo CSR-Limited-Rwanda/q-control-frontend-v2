@@ -605,16 +605,18 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           toast.error("Please fill in all required fields.");
         }
       } else if (incidentType === "Treatment related") {
-        const type = "treatment";
+        const type = "Treatment related";
         isValid = validateStep({
           "Selected treatment": selectedTreatment,
+          incidentType: incidentTypesData
         });
 
         if (isValid) {
           const incidentPostData = {
             current_step: currentStep,
             user_id: userId,
-            treatment_type: type,
+            treatment_type: selectedTreatment,
+            incident_type: type,
             status: "Draft",
           };
           console.log("Treatment Related Data:", incidentPostData);
@@ -625,8 +627,8 @@ const GeneralIncidentForm = ({ togglePopup }) => {
         } else {
           toast.error("Please fill in all required fields.");
         }
-      } else if (incidentType === "equipment malfunction") {
-        const type = "equipment";
+      } else if (incidentType === "Equipment malfunction") {
+        const type = "Equipment malfunction";
         isValid = validateStep({
           incident_type: incidentTypesData,
           equipment_type: equipmentType,
@@ -642,12 +644,12 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             status: "Draft",
             current_step: currentStep,
             user_id: userId,
-            "incident type": type,
-            "equipment Type": equipmentType,
-            "equipment ManuFacture": equipmentManuFacture,
-            "equipment Model": equipmentModel,
-            "serial Number": serialNumber,
-            "lot Number": lotNumber,
+            incident_type: type,
+            equipment_type: equipmentType,
+            equipment_manufacturer: equipmentManuFacture,
+            equipment_model: equipmentModel,
+            equipment_serial_number: serialNumber,
+            equipment_lot_number: lotNumber,
             checkboxes: removedFromService || maintenanceNotified,
           };
           console.log("Equipment Malfunction Data:", incidentPostData);
@@ -659,9 +661,10 @@ const GeneralIncidentForm = ({ togglePopup }) => {
           toast.error("Please fill in all required fields.");
         }
       } else if (incidentType === "Other") {
-        setIncidentType("Other");
+        const type = "Other"
         isValid = validateStep({
           "Other type specimen other": otherTypes,
+          incidentType: incidentTypesData
         });
 
         if (isValid) {
@@ -669,6 +672,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             current_step: currentStep,
             user_id: userId,
             other_type_specimen_other: otherTypes,
+            incident_type: type,
             status: "Draft",
           };
           console.log("Others Data:", incidentPostData);
