@@ -1,13 +1,12 @@
-'use client'
+"use client";
 
 import toast from "react-hot-toast";
 import React, { useState } from "react";
-import { Check, LoaderCircle, X } from 'lucide-react';
+import { Check, LoaderCircle, X } from "lucide-react";
 import api, { API_URL } from "@/utils/api";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
 
 function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
-
   const [isLoading, setIsLoading] = useState(false);
   const [resolved, setResolved] = useState(false);
 
@@ -18,7 +17,6 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
         `/incidents/${apiLink}/${incidentId}/resolve/`
       );
       if (response.status === 200) {
-
         setResolved(true);
         setIsLoading(false);
         postDocumentHistory(incidentId, "resolved this incident", "resolve");
@@ -32,7 +30,6 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
       } else {
         toast.error("Unknown error while resolving incident");
       }
-
     }
   };
   const closeForm = () => {

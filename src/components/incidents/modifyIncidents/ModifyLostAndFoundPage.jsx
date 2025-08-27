@@ -127,7 +127,11 @@ const ModifyLostFound = ({ data }) => {
       try {
         setIsLoading(true);
         const response = await api.get(`/departments/`, {
-          params: { facility_id: data.report_facility.id },
+          params: {
+            facility_id: data?.report_facility?.id
+              ? data?.report_facility.id
+              : data?.report_facility,
+          },
         });
         if (response.status === 200) {
           setDepartments(response.data.results);
@@ -355,7 +359,7 @@ const ModifyLostFound = ({ data }) => {
               <label htmlFor="department">Department</label>
               <select
                 id="department"
-                value={selectedDepartmentId}
+                value={selectedDepartmentId || ""}
                 onChange={handleDepartmentChange}
               >
                 <option value="">Select a department</option>

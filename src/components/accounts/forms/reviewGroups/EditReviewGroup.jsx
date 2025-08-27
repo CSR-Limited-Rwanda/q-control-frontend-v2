@@ -5,6 +5,7 @@ import api from "@/utils/api";
 import ErrorMessage from "@/components/messages/ErrorMessage";
 import "../../../../styles/facilities/_facilities.scss";
 import CloseIcon from "@/components/CloseIcon";
+import "@/styles/reviews/reviewGroups/_reviewGroups.scss";
 
 const EditReviewGroup = ({ reviewGroup, onClose, onReviewGroupUpdated }) => {
   const [formData, setFormData] = useState({
@@ -15,9 +16,10 @@ const EditReviewGroup = ({ reviewGroup, onClose, onReviewGroupUpdated }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    console.log("reviewGroup", reviewGroup);
     if (reviewGroup) {
       setFormData({
-        title: reviewGroup.name || "",
+        title: reviewGroup.title || "",
         description: reviewGroup.description || "",
       });
     }

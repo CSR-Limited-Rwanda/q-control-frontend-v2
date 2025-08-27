@@ -330,7 +330,7 @@ const IncidentDetailsHeader = ({
                     <div className="icon">
                       <MessageCirclePlus size={20} variant={"stroke"} />
                     </div>
-                    <span>Add a comment</span>
+                    <span>Add Comment</span>
                   </div>
                 </PermissionsGuard>
 

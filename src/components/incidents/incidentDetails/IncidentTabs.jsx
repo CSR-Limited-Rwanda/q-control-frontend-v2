@@ -58,7 +58,7 @@ const IncidentTabs = ({
           onClick={() => toggleActiveTab("reviews")}
           className={`tab reviews ${activeTab === "reviews" ? "active" : ""}`}
         >
-          <p>Reviews</p>
+          <p>Comments</p>
           <div className="counter">{reviewsCount}</div>
         </div>
         <div

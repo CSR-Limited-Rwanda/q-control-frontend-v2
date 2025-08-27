@@ -51,8 +51,8 @@ const ReviewGroupsDetailsContent = () => {
       } catch (error) {
         toast.error(
           error.response.data?.message ||
-          error.response.data?.error ||
-          "Failed to get review group"
+            error.response.data?.error ||
+            "Failed to get review group"
         );
       }
     };
@@ -79,8 +79,8 @@ const ReviewGroupsDetailsContent = () => {
         if (error.response) {
           toast.error(
             error.response.data?.message ||
-            error.response.data?.error ||
-            "Failed to get review group members"
+              error.response.data?.error ||
+              "Failed to get review group members"
           );
         } else if (error.request) {
           toast.error("No response from server");
@@ -120,8 +120,8 @@ const ReviewGroupsDetailsContent = () => {
       console.error("Delete error:", error);
       setDeleteError(
         error.response?.data?.message ||
-        error.response?.data?.error ||
-        "Error deleting department"
+          error.response?.data?.error ||
+          "Error deleting department"
       );
     } finally {
       setIsDeleting(false);
@@ -158,6 +158,7 @@ const ReviewGroupsDetailsContent = () => {
 
                   <div className="form">
                     <AddMembersToReviewGroup
+                      prevMembers={members}
                       groupId={reviewId}
                       onClose={() => setShowAddMembersForm(false)}
                     />
@@ -290,7 +291,7 @@ const ReviewGroupsDetailsContent = () => {
               onClick={() => setShowAddMembersForm(true)}
             >
               <Plus size={20} />
-              <span>Add Members</span>
+              <span>Edit Members</span>
             </button>
           </div>
           <div className="table-container">
@@ -319,8 +320,8 @@ const ReviewGroupsDetailsContent = () => {
                       <td>
                         {member?.access_to_department?.length > 0
                           ? member.access_to_department
-                            .map((dept) => dept.name)
-                            .join(", ")
+                              .map((dept) => dept.name)
+                              .join(", ")
                           : "No department"}
                       </td>
                     </tr>

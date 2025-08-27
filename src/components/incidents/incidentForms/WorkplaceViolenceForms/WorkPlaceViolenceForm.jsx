@@ -137,8 +137,7 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
     currentStepRef.current = currentStep;
   }, [currentStep]);
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
   useEffect(() => {
     const handleKeyDown = (event) => {
       // Check if Ctrl or Alt key is pressed
