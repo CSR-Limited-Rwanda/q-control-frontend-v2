@@ -139,7 +139,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
   // form
   const [category, setCategory] = useState("");
-  const [profileType, setProfileType] = useState("");
   const [patientVisitorFirstName, setPatientVisitorFirstName] = useState("");
   const [patientVisitorLastName, setPatientVisitorLastName] = useState("");
   const [suggestions, setSuggestions] = useState({});
@@ -287,7 +286,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
   };
 
   const handleCategory = (value) => {
-    setProfileType(value);
+    setCategory(value);
   };
 
   const handleRemovedFromService = (checked) => {
@@ -441,7 +440,6 @@ const GeneralIncidentForm = ({ togglePopup }) => {
 
     if (currentStep === 1) {
       isValid = validateStep({
-        profile_type: profileType,
         "patient visitor first name": patientVisitorFirstName,
         "patient visitor last name": patientVisitorFirstName,
         "incident date": incidentDate,
@@ -476,7 +474,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
             zip_code: zipCode,
             city: city,
             phone_number: phoneNumber,
-            profile_type: profileType,
+            profile_type: "Patient",
           },
         };
         if (localStorage.getItem("updateNewIncident") === "false") {
@@ -943,7 +941,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   type="radio"
                   name="category"
                   id="Inpatient"
-                  checked={profileType === "Inpatient"}
+                  checked={category === "Inpatient"}
                   value="Inpatient"
                 />
                 <label htmlFor="Inpatient">Inpatient</label>
@@ -955,7 +953,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   type="radio"
                   name="category"
                   id="Outpatient"
-                  checked={profileType === "Outpatient"}
+                  checked={category === "Outpatient"}
                   value="Outpatient"
                 />
                 <label htmlFor="Outpatient">Outpatient</label>
@@ -967,7 +965,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   type="radio"
                   name="category"
                   id="ER"
-                  checked={profileType === "ER"}
+                  checked={category === "ER"}
                   value="ER"
                 />
                 <label htmlFor="ER">ER</label>
@@ -979,7 +977,7 @@ const GeneralIncidentForm = ({ togglePopup }) => {
                   type="radio"
                   name="category"
                   id="Visitor"
-                  checked={profileType === "Visitor"}
+                  checked={category === "Visitor"}
                   value="Visitor"
                 />
                 <label htmlFor="Visitor">Visitor</label>
