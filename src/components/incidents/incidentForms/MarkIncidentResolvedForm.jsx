@@ -13,8 +13,10 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
   const markResolved = async () => {
     setIsLoading(true);
     try {
-      const response = await api.put(
-        `/incidents/${apiLink}/${incidentId}/resolve/`
+      const response = await api.patch(
+        `/incidents/${apiLink}/${incidentId}/`, {
+          action: "mark-closed"
+        }
       );
       if (response.status === 200) {
         setResolved(true);
@@ -22,6 +24,7 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
         postDocumentHistory(incidentId, "resolved this incident", "resolve");
       }
     } catch (error) {
+      console.error('Error closing incident:', error)
       setIsLoading(false);
       if (error.response.status === 403) {
         toast.error(error.response.data.message);
