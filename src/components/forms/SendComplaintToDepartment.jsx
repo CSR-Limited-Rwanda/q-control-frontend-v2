@@ -80,7 +80,6 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
         const uploadResponse = await api.post("/documents/", formData);
         // Assuming the API returns an array of URLs or a single URL
 
-        console.log("Upload response data: ", uploadResponse);
         fileUrls = Array.isArray(uploadResponse.data.files)
           ? uploadResponse.data.files.map((item) => item.url)
           : [uploadResponse.data.files.url];
@@ -94,7 +93,6 @@ const SendComplaintToDepartment = ({ complaint, onClose }) => {
         department_id: selectedDepartment,
       };
 
-      console.log(complaintData);
 
       const response = await api.patch(
         `complaints/${complaint.id}/`,

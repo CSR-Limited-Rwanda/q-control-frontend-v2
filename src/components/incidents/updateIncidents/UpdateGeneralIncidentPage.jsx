@@ -75,7 +75,6 @@ const UpdateGeneralIncidentForm = ({ data }) => {
     }
   };
 
-  console.log(data);
 
   const handleCheckboxChange = (option) => {
     let updatedOptions;
@@ -312,7 +311,6 @@ const UpdateGeneralIncidentForm = ({ data }) => {
           params: { facility_id: data.report_facility.id },
         });
         if (response.status === 200) {
-          console.log(response.data.results);
           setDepartments(response.data.results);
         }
       } catch (error) {
@@ -425,7 +423,6 @@ const UpdateGeneralIncidentForm = ({ data }) => {
       treatment_type: selectedTreatment,
     };
 
-    console.log("Incident Data to be sent: ", incidentData);
 
     try {
       const response = await api.put(
@@ -440,7 +437,6 @@ const UpdateGeneralIncidentForm = ({ data }) => {
         postDocumentHistory(incidentId, "modified this incident", "modify");
       }
     } catch (error) {
-      console.log(error);
       if (error.response) {
         toast.error(
           error.response.data.message ||

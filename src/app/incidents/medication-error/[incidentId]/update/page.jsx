@@ -37,7 +37,6 @@ const PageContent = () => {
           setIsLoading(false);
         }
       } catch (error) {
-        console.log(error);
         if (error.response.status && error.response.status === 403) {
           toast.error("You are not allowed to view this incident");
         } else if (error.response.status === 404) {

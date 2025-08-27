@@ -127,7 +127,7 @@ export const TaskDetails = ({ taskId, handleClose }) => {
         ]);
 
         if (taskResponse.success) {
-          console.log("Fetching task details:", taskResponse.data);
+         
           setTaskDetails(taskResponse.data);
         } else {
           console.error("Task details error:", taskResponse.message);

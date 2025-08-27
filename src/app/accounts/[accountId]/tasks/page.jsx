@@ -120,7 +120,7 @@ const ProfileTasks = () => {
     const fetchData = async () => {
       setIsLoading(true);
       const response = await fetchUserTasks(accountId);
-      console.log(response.data.results);
+
       if (response.success) {
         setTasks(
           response.data.results.map((task) => ({

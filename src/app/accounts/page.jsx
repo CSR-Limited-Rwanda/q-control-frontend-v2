@@ -12,7 +12,7 @@ import { getPermissions, useGetPermissions } from "@/hooks/fetchPermissions";
 
 const AccountsPage = () => {
   const { permissions, loading, error } = useGetPermissions();
-  console.log("permissions: ", permissions);
+
   const baseTabs = [
     {
       name: "Account management",

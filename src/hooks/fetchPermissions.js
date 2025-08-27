@@ -51,7 +51,6 @@ export const useGetPermissions = () => {
         const result = await fetchPermissions();
         if (result.success) {
           setPermissions(result.data);
-          console.log(result.data);
         } else {
           setError(result.error);
         }

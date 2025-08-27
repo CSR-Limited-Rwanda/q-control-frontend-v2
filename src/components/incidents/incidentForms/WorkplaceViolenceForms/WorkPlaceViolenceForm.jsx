@@ -138,7 +138,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
   }, [currentStep]);
 
   useEffect(() => {
-    console.log(user);
   }, []);
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -596,7 +595,6 @@ const WorkplaceViolenceIncidentForm = ({ togglePopup }) => {
         }
       } catch (error) {
         setIsLoading(false);
-        console.log(error);
         if (error.message) {
           appendError(error.message);
           toast.error(
