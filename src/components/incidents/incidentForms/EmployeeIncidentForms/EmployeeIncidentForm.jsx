@@ -181,6 +181,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       current_step: currentStep,
       incident_status: statusType,
       report_facility_id: currentFacility?.id,
+      report_facility: currentFacility?.id,
       patient_info:
         firstName && lastName
           ? {
@@ -367,7 +368,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       }
     } catch (error) {
       console.error("Error submitting step 4: ", error);
-      console.log(error);
       return;
     }
     setSuccess(true);
@@ -481,7 +481,6 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
       (facility) => facility.id === parseInt(facilityId)
     );
     setCurrentFacility(selectedFacility);
-    console.log(selectedFacility);
   };
   return (
     <div className="form-container">

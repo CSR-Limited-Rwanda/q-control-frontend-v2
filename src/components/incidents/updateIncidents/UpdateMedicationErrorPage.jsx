@@ -23,7 +23,6 @@ import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
 import BackToPage from "@/components/BackToPage";
 const UpdateMedicalErrorForm = ({ data, incidentId }) => {
-  console.log(data);
   const permission = usePermission();
   const department = useDepartments();
   const [incident, setIncident] = useState(data);
@@ -133,7 +132,6 @@ const UpdateMedicalErrorForm = ({ data, incidentId }) => {
             params: { facility_id: data.report_facility.id },
           });
           if (response.status === 200) {
-            console.log(response.data.results);
             setDepartments(response.data.results);
           }
         } catch (error) {
@@ -291,7 +289,6 @@ const UpdateMedicalErrorForm = ({ data, incidentId }) => {
       }
     } catch (error) {
       if (error.response) {
-        console.log("error", error);
         toast.error(
           error.response.data.message ||
             error.response.data.error ||

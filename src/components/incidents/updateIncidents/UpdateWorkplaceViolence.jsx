@@ -67,7 +67,6 @@ const UpdateWorkplaceIncident = ({ data }) => {
         return false; // Return false if JSON parsing fails or data is invalid
       }
     });
-  console.log(isOtherTerminationOfContract);
   const [departmentManagerNotified, setDepartmentManagerNotified] = useState(
     data.immediate_supervisor
   );
@@ -293,7 +292,6 @@ const UpdateWorkplaceIncident = ({ data }) => {
 
   useEffect(
     () => {
-      console.log(data);
       if (!data.report_facility) return;
 
       const fetchDepartments = async () => {
@@ -303,7 +301,6 @@ const UpdateWorkplaceIncident = ({ data }) => {
             params: { facility_id: data.report_facility.id },
           });
           if (response.status === 200) {
-            console.log(response.data.results);
             setDepartments(response.data.results);
           }
         } catch (error) {

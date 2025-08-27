@@ -23,7 +23,6 @@ import { useDepartments, usePermission } from "@/context/PermissionsContext";
 import CantModify from "@/components/CantModify";
 import BackToPage from "@/components/BackToPage";
 const ModifyMedicalErrorForm = ({ data, incidentId }) => {
-  console.log(data);
   const permission = usePermission();
   const department = useDepartments();
   const [incident, setIncident] = useState(data);
@@ -133,7 +132,6 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
             params: { facility_id: data.report_facility.id },
           });
           if (response.status === 200) {
-            console.log(response.data.results);
             setDepartments(response.data.results);
           }
         } catch (error) {
@@ -212,17 +210,16 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
     setStatus("Open");
     setIsLoading(true);
     handleModify("Open");
-
   };
   const handleModify = async (incidentStatus) => {
-       if (!selectedDepartmentId) {
-          toast.error("Please select a department");
-          setIsLoading(false);
-          setSavingDraft(false);
-          setStatus(data.status);
-          return;
-        }
-    
+    if (!selectedDepartmentId) {
+      toast.error("Please select a department");
+      setIsLoading(false);
+      setSavingDraft(false);
+      setStatus(data.status);
+      return;
+    }
+
     const incidentData = {
       action: "modify",
       report_facility: data.report_facility.id,
@@ -287,7 +284,6 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
       }
     } catch (error) {
       if (error.response) {
-        console.log("error", error);
         toast.error(
           error.response.data.message ||
             error.response.data.error ||
@@ -446,7 +442,6 @@ const ModifyMedicalErrorForm = ({ data, incidentId }) => {
                 id="department"
                 value={selectedDepartmentId}
                 onChange={handleDepartmentChange}
-                
               >
                 <option value="">Select a department</option>
                 {departments.map((department) => (

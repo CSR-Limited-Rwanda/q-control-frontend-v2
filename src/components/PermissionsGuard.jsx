@@ -48,7 +48,7 @@ const PermissionsGuard = ({
   const profileId = user?.profileId;
 
   const effectiveBtnLink =
-    btnLink || (profileId ? `accounts/${profileId}` : "/accounts");
+    btnLink || (profileId ? `/accounts/${profileId}` : "/accounts");
 
   useEffect(() => {
     if (hasAccess && onRenderAllowed && !hasCalledback.current) {

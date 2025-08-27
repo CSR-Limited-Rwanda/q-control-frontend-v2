@@ -50,35 +50,29 @@ const CustomDatePicker = ({
         2,
         "0"
       )}-${day.padStart(2, "0")}`;
-      console.log("Validating full date:", formatted);
+
       const isValidDate = dayjs(formatted, "YYYY-MM-DD", true).isValid();
       const isFutureDate = dayjs(formatted).isAfter(dayjs(), "day");
 
       if (!isValidDate) {
-        console.log("Validation failed: Invalid date");
         setWarning("Invalid date entered. Please enter a valid date.");
       } else if (isFutureDate) {
-        console.log("Validation failed: Date is in the future");
         setWarning("Please enter a date that is today or in the past.");
       } else {
-        console.log("Validation passed: Setting date", formatted);
         setWarning("");
         setSelectedDate(formatted);
       }
     } else {
-      console.log("Incomplete date, clearing warning");
       setWarning("");
     }
   }, [year, month, day, setSelectedDate]);
 
   const validateMonth = (value) => {
     if (!/^\d{0,2}$/.test(value)) {
-      console.log("Month validation failed: Not a number", value);
       setWarning("Month must be a number.");
       return false;
     }
     if (value.length === 2 && (parseInt(value) < 1 || parseInt(value) > 12)) {
-      console.log("Month validation failed: Out of range", value);
       setWarning("Month must be between 01 and 12.");
       return false;
     }
@@ -87,7 +81,6 @@ const CustomDatePicker = ({
 
   const validateDay = (value) => {
     if (!/^\d{0,2}$/.test(value)) {
-      console.log("Day validation failed: Not a number", value);
       setWarning("Day must be a number.");
       return false;
     }
@@ -103,7 +96,6 @@ const CustomDatePicker = ({
         }
       }
       if (parsedDay < 1 || parsedDay > maxDays) {
-        console.log("Day validation failed: Out of range for month", value);
         setWarning(
           `Day must be between 01 and ${maxDays} for the selected month.`
         );
@@ -115,12 +107,10 @@ const CustomDatePicker = ({
 
   const validateYear = (value) => {
     if (!/^\d{0,4}$/.test(value)) {
-      console.log("Year validation failed: Not a number", value);
       setWarning("Year must be a number.");
       return false;
     }
     if (value.length === 4 && parseInt(value) < 1900) {
-      console.log("Year validation failed: Too early", value);
       setWarning("Year must be 1900 or later.");
       return false;
     }
@@ -129,7 +119,6 @@ const CustomDatePicker = ({
 
   const handleMonthChange = (e) => {
     const value = e.target.value;
-    console.log("Month input:", value);
     if (validateMonth(value)) {
       setMonth(value);
       setWarning("");
@@ -139,7 +128,6 @@ const CustomDatePicker = ({
 
   const handleDayChange = (e) => {
     const value = e.target.value;
-    console.log("Day input:", value);
     if (validateDay(value)) {
       setDay(value);
       setWarning("");
@@ -149,7 +137,6 @@ const CustomDatePicker = ({
 
   const handleYearChange = (e) => {
     const value = e.target.value;
-    console.log("Year input:", value);
     if (validateYear(value)) {
       setYear(value);
       setWarning("");

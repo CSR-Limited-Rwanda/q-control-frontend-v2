@@ -647,7 +647,6 @@ const DrugReactionForm = ({ togglePopup }) => {
       (facility) => facility.id === parseInt(facilityId)
     );
     setCurrentFacility(selectedFacility);
-    console.log(selectedFacility);
   };
   return (
     <div className="form-container">

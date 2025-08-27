@@ -16,9 +16,7 @@ const GrievanceInvestigationInfo = ({ data, incidentStatuses }) => {
     }
   };
 
-  useEffect(() => {
-    console.log(data);
-  }, []);
+  useEffect(() => {}, []);
   return data.lenght > 0 ? (
     <>
       {data.map((investigation, index) => (

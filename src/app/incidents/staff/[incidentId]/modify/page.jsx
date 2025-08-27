@@ -29,12 +29,11 @@ const ModifyStaffIncidentPageContent = () => {
           setIncident(response.data.incident);
           setIsLoading(false);
           setInvestigation(response.data.has_investigation);
-          console.log(response.data);
         }
       } catch (error) {
         if (error) {
           toast.error(error?.response?.data?.error);
-          console.log(error);
+         
         }
         if (error.response.status === 404) {
           setIsError(true);

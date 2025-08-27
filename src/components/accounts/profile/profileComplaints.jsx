@@ -467,8 +467,6 @@ export const ComplainDetails = ({
     setActions(!showActions);
   };
 
-  console.log("Complaint details:", complaint);
-
   return (
     <div className="complain-details-popup">
       {showEditForm ? (
