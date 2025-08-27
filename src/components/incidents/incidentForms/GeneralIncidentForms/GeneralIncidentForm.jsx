@@ -301,12 +301,10 @@ const GeneralIncidentForm = ({ togglePopup }) => {
     try {
       setIsLoading(true);
 
-
       const response = await api.put(
         `${API_URL}/incidents/general-visitor/${incidentId}/`,
         incidentPostData
       );
-
 
       if (response.status === 200) {
         setCurrentStep(currentStep + 1);

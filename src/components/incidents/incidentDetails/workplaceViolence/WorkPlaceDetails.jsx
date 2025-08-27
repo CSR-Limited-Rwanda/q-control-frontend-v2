@@ -177,7 +177,7 @@ const WorkPlaceDetailsContent = () => {
               documentHistory={
                 <IncidentActivitiesTab
                   incidentId={incidentId}
-                  incident_type={"workplace_violence_reports"}
+                  incidentType={"workplace_violence_reports"}
                   setCount={setActivitiesCount}
                 />
               }
