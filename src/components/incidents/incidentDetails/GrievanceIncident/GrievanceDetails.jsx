@@ -185,7 +185,7 @@ const GrievanceDetailsContent = () => {
               documentHistory={
                 <IncidentActivitiesTab
                   incidentId={incidentId}
-                  incident_type={"patient_visitor_grievance"}
+                  incidentType={"patient_visitor_grievance"}
                   setCount={setActivitiesCount}
                 />
               }

@@ -156,7 +156,7 @@ const LostFoundDetailsContent = () => {
               documentHistory={
                 <IncidentActivitiesTab
                   incidentId={incidentId}
-                  incident_type={"lost_and_found"}
+                  incidentType={"lost_and_found"}
                   setCount={setActivitiesCount}
                 />
               }

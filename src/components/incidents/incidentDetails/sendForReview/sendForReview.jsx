@@ -53,28 +53,53 @@ const SendForReview = ({ path, incidentID, handleClose, data }) => {
   };
   useEffect(
     () => {
-      if (!data?.incident?.report_facility) return;
+      if (!data?.incident?.report_facility && !data?.report_facility) {
+        toast.error("No facility associated with this incident");
+      }
 
-      const fetchDepartments = async () => {
-        try {
-          setIsLoading(true);
-          const response = await api.get(`/departments/`, {
-            params: { facility_id: data.incident?.report_facility?.id },
-          });
-          if (response.status === 200) {
-            setDepartments(response.data.results);
+      if (data?.incident?.report_facility) {
+        const fetchDepartments = async () => {
+          try {
+            setIsLoading(true);
+            const response = await api.get(`/departments/`, {
+              params: { facility_id: data.incident?.report_facility?.id },
+            });
+            if (response.status === 200) {
+              setDepartments(response.data.results);
+              console.log(response.data.results);
+            }
+          } catch (error) {
+            toast.error("Error fetching departments");
+            console.error(error);
+          } finally {
+            setIsLoading(false);
           }
-        } catch (error) {
-          toast.error("Error fetching departments");
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      fetchDepartments();
+        };
+        fetchDepartments();
+      } else {
+        const fetchDepartments = async () => {
+          try {
+            setIsLoading(true);
+            const response = await api.get(`/departments/`, {
+              params: { facility_id: data?.report_facility?.id },
+            });
+            if (response.status === 200) {
+              setDepartments(response.data.results);
+              console.log(response.data.results);
+            }
+          } catch (error) {
+            toast.error("Error fetching departments");
+            console.error(error);
+          } finally {
+            setIsLoading(false);
+          }
+        };
+        fetchDepartments();
+      }
     },
-    data.report_facility ? [data.report_facility.id] : []
+    data?.incident?.report_facility
+      ? [data?.incident?.report_facility.id]
+      : [data?.report_facility?.id]
   );
 
   const handlePopupClick = (e) => {
@@ -225,7 +250,7 @@ const SendForReview = ({ path, incidentID, handleClose, data }) => {
           <label htmlFor="department">Department</label>
           <select
             id="department"
-            value={selectedDepartmentId}
+            value={selectedDepartmentId || ""}
             onChange={handleDepartmentChange}
             disabled={isLoading}
           >
@@ -364,7 +389,7 @@ const SendForReview = ({ path, incidentID, handleClose, data }) => {
             </div>
           )}
           {error && <p className="error message">{error}</p>}
-          <div className="buttons">
+          <div className="send-reviews-buttons">
             <button
               className="gray"
               onClick={currentStep < 2 ? handleClose : handleBackButton}

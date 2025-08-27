@@ -171,7 +171,7 @@ const EmployeeDetailsContent = () => {
               documentHistory={
                 <IncidentActivitiesTab
                   incidentId={incidentId}
-                  incident_type={"staff_incident_reports"}
+                  incidentType={"staff_incident_reports"}
                   setCount={setActivitiesCount}
                 />
               }
