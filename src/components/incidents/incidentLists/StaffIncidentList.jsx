@@ -716,6 +716,14 @@ export const SortNameIcon = ({ handleSortById, sortDesc, setSortDesc }) => {
   );
 };
 
+export const SortNameIcon2 = ({ handleSortById, sortDesc, setSortDesc }) => {
+  return (
+    <div className="sort-icon" onClick={handleSortById}>
+      <SortIcon sort={sortDesc} />
+    </div>
+  );
+};
+
 export const SortDateIcon = ({ handleSortById, sortDesc, setSortDesc }) => {
   return (
     <div className="sort-icon" onClick={handleSortById}>
