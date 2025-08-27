@@ -201,7 +201,11 @@ const UpdateGrievanceIncident = ({ data, incidentId, investigation }) => {
       try {
         setIsLoading(true);
         const response = await api.get(`/departments/`, {
-          params: { facility_id: data.report_facility },
+          params: {
+            facility_id: data?.report_facility?.id
+              ? data?.report_facility.id
+              : data?.report_facility,
+          },
         });
         if (response.status === 200) {
           setDepartments(response.data.results);
@@ -307,7 +311,6 @@ const UpdateGrievanceIncident = ({ data, incidentId, investigation }) => {
       notification_time: grivanceTime,
       status: incidentStatus,
     };
-
 
     try {
       const response = await api.put(
@@ -442,7 +445,7 @@ const UpdateGrievanceIncident = ({ data, incidentId, investigation }) => {
               <label htmlFor="department">Department</label>
               <select
                 id="department"
-                value={selectedDepartmentId}
+                value={selectedDepartmentId || ""}
                 onChange={handleDepartmentChange}
               >
                 <option value="">Select a department</option>

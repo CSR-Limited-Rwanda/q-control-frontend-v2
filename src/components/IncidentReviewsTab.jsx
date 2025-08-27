@@ -81,7 +81,7 @@ const IncidentReviewsTab = ({
           ))}
         </div>
       ) : (
-        <div className="no-reviews">No reviews available.</div>
+        <div className="no-reviews">No comments available.</div>
       )}
 
       {!isLoading && (
@@ -90,7 +90,7 @@ const IncidentReviewsTab = ({
             onClick={() => setNewReviewFormVisible(true)}
             icon={<Plus />}
             hasIcon={true}
-            text={"Create Review"}
+            text={"Add Comment"}
           ></Button>
         </PermissionsGuard>
       )}
