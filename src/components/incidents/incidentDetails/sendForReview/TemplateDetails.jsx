@@ -11,6 +11,7 @@ export const TemplateDetails = ({ template }) => {
             setIsLoading(true);
             const response = await fetchReviewTemplateTasks(template.id);
             if (response.success) {
+                console.log(response.data)
                 setTemplateDetails(response.data);
             } else {
                 console.error(response.message);
@@ -54,9 +55,9 @@ export const TemplateDetails = ({ template }) => {
 
                                     <div className="approval">
                                         {
-                                            task?.require_approval_for_all_groups ? <CheckSquare2 /> : <Square />
+                                            task?.require_approval_for_all_groups ?  <span>Require approval from each group</span> : <span>Require approval from any group</span>
                                         }
-                                        <span>Require approval form each group</span>
+                                       
                                     </div>
                                 </div>
                             ))}
