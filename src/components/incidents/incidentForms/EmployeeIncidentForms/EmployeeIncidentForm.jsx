@@ -305,6 +305,7 @@ const EmployeeIncidentForm = ({ togglePopup }) => {
               ? {
                   first_name: doctorFirstName,
                   last_name: doctorLastName,
+                  phone_number: "0785446139",
                   profile_type: "Physician",
                 }
               : null,
