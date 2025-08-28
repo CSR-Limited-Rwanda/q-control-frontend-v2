@@ -18,6 +18,7 @@ const ProfileDocuments = () => {
           setDocuments(response.data.documents);
           setIsLoading(false);
           toast.success("Documents fetched successfully");
+          console.log(response.data.documents);
         }
       } catch (error) {
         if (error.response) {
@@ -39,7 +40,11 @@ const ProfileDocuments = () => {
       {isLoading ? (
         "Loading..."
       ) : (
-        <FilesList canDelete={true} documents={documents} showDownload={true} />
+        <FilesList
+          canDelete={false}
+          documents={documents}
+          showDownload={true}
+        />
       )}
     </div>
   );

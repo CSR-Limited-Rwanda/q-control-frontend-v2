@@ -12,6 +12,7 @@ const IncidentDetails = ({
   hasSex = true,
   hasInitiated = false,
 }) => {
+  console.log('data:', data)
 
   return (
     <div className="patient-name-type">

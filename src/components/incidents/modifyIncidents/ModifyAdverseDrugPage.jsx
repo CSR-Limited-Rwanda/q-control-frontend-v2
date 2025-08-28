@@ -884,12 +884,7 @@ const ModifyAdverseDruReactionForm = ({ data }) => {
                 Information on this reaction can be found in
               </label>
               <CustomSelectInput
-                options={[
-                  "Nurse note",
-                  "Progress note",
-                  "imaging reports",
-                  "Other",
-                ]}
+                options={["Nurse note", "Progress note", "Other"]}
                 placeholder={"source"}
                 selected={infoSource}
                 setSelected={handleProgressNote}

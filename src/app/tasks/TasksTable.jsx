@@ -27,7 +27,7 @@ const TasksTable = ({
     deadline: task.deadline || "N/A",
     incident: task.incident || "N/A",
     status: task.status || "N/A",
-    priority: task.priority || "N/A",
+    priority: task.task_priority || "N/A",
   }));
   return (
     <table>

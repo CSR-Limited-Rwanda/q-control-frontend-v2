@@ -296,7 +296,14 @@ form,
 // mark resolved popup
 .mark-resolved-popup {
   .popup-content {
-    height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: fit-content;
+
+    .buttons {
+      justify-content: flex-end;
+    }
   }
 }
 

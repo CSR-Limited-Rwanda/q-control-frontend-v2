@@ -4,7 +4,7 @@
 
 /* Font Imports */
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
-@import '../styles//components/tables.css';
+@import "../styles//components/tables.css";
 :root {
   --background: #ffffff;
   --foreground: #505050;
@@ -13,7 +13,7 @@
   --secondary-dark: #0d58ac;
   --secondary-light: #eef6ff;
   --primary: #ff7043;
-  --primary-light: #FBEDE7;
+  --primary-light: #fbede7;
   --card: #ffffff;
   --border: #e5e5e5;
   --divider: #f0f0f0;
@@ -21,7 +21,7 @@
   --success: #22c55e;
   --error: #ef4444;
   --warning: #f59e0b;
-  --gray-color: #F2F2F2;
+  --gray-color: #f2f2f2;
 
   /* Layout variables */
   --sidebar-width: 260px;
@@ -82,7 +82,8 @@ small {
   opacity: 0.5;
 }
 
-button, .btn {
+button,
+.btn {
   font-family: inherit;
   font-size: inherit;
   outline: none;
@@ -90,7 +91,8 @@ button, .btn {
   border: none;
   border-radius: var(--base-border-radius);
   cursor: pointer;
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  transition: background-color var(--transition-speed),
+    color var(--transition-speed);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -98,12 +100,12 @@ button, .btn {
   background-color: var(--primary);
   color: var(--background);
   justify-content: center;
-    text-wrap: nowrap;
+  text-wrap: nowrap;
 }
 
-button.loader{
+button.loader {
   position: absolute;
-    right: 1rem;
+  right: 1rem;
 }
 
 button.loading {
@@ -116,38 +118,46 @@ button.loading {
   gap: 1rem;
 }
 
-button.gray, .btn.gray {
+button.gray,
+.btn.gray {
   background-color: var(--gray-color);
   color: var(--foreground);
 }
 
-button.secondary, .btn.secondary {
+button.secondary,
+.btn.secondary {
   background-color: var(--secondary);
   color: var(--background);
 }
 
-button.light, .btn.light {
+button.light,
+.btn.light {
   background-color: var(--primary-light);
   color: var(--primary);
 }
 
-button.danger, .btn.danger {
+button.danger,
+.btn.danger {
   background-color: var(--error);
   color: var(--background);
 }
 
 /* hover */
 
-button:hover, .btn:hover {
+button:hover,
+.btn:hover {
   background-color: #ff916f;
 }
-button.gray:hover, .btn.gray:hover {
+button.gray:hover,
+.btn.gray:hover {
   background-color: #e0e0e0;
 }
-button.secondary:hover, .btn.secondary:hover {
+button.secondary:hover,
+.btn.secondary:hover {
   background-color: #0d47a1;
 }
-button.light:hover, .btn.light:hover {
+button.light:hover,
+.btn.light:hover {
   background-color: #fbe9e6;
 }
 
@@ -189,7 +199,9 @@ button.light:hover, .btn.light:hover {
   flex: 1 1 20px;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid var(--border);
@@ -204,7 +216,6 @@ input, textarea, select {
   position: relative;
   display: flex;
   align-items: center;
-
 }
 .icon-input .icon {
   position: absolute;
@@ -243,13 +254,14 @@ form button {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--primary-light);  
+  background-color: var(--primary-light);
   h4 {
     color: var(--primary);
   }
 }
 
-.positions, .more-positions {
+.positions,
+.more-positions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -266,7 +278,6 @@ form button {
   background-color: var(--shade);
 }
 
-
 .back-button {
   display: flex;
   align-items: center;
@@ -274,7 +285,6 @@ form button {
   cursor: pointer;
   color: var(--primary);
 }
-
 
 @keyframes spin {
   0% {
@@ -339,7 +349,6 @@ form button {
     color-scheme: dark;
   }
 }
-
 
 @media screen and (max-width: 1200px) {
   body ::after {
