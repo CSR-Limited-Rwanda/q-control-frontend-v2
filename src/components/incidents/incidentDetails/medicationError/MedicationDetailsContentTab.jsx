@@ -26,28 +26,28 @@ const MedicationDetailsContentTab = ({ data }) => {
         </div>
         <div className="mrn">
           <small>Age</small>
-          <h4>{data.incident?.patient?.age || "Not provided"}</h4>
+          <h4>{data.patient?.age || "Not provided"}</h4>
         </div>
       </div>
 
       <div className="address">
         <div className="street">
           <small>Location</small>
-          <h4>{data.incident?.location || "Not provided"}</h4>
+          <h4>{data?.location || "Not provided"}</h4>
         </div>
         <div className="state">
           <small>Date & Time</small>
           <h4>
-            <DateFormatter dateString={data.incident?.date_of_error} />,
+            <DateFormatter dateString={data?.date_of_error} />,
             <br />
-            {data.incident?.time_of_error || "Not provided"}
+            {data?.time_of_error || "Not provided"}
           </h4>
         </div>
       </div>
       <div className="address">
         <div className="zip-code">
           <small>Day of the week</small>
-          <h4>{data.incident?.day_of_the_week || "Not provided"}</h4>
+          <h4>{data?.day_of_the_week || "Not provided"}</h4>
         </div>
       </div>
 
@@ -55,11 +55,11 @@ const MedicationDetailsContentTab = ({ data }) => {
         <h3>Provider/Staff Involved</h3>
         <div className="location">
           <small>Classification</small>
-          <h4>{data.incident?.provider_classification || "Not provided"}</h4>
+          <h4>{data?.provider_classification || "Not provided"}</h4>
         </div>
         <div className="contribution">
           <small>Status</small>
-          <h4>{data.incident?.status || "Not provided"}</h4>
+          <h4>{data?.status || "Not provided"}</h4>
         </div>
       </div>
 
@@ -67,14 +67,14 @@ const MedicationDetailsContentTab = ({ data }) => {
         <div className="status">
           <small>Provider Notified</small>
           <h4>
-            {data.incident?.provider_info?.last_name || "Not provided"}{" "}
-            {data.incident?.provider_info?.first_name || "Not provided"}
+            {data.provider_info?.last_name || "Not provided"}{" "}
+            {data.provider_info?.first_name || "Not provided"}
           </h4>
         </div>
         <div className="status">
           <small>Duration of error</small>
           <h4>
-            {data.incident?.days || "Not provided"} day(s), {data.incident?.hours || "Not provided"}{" "}
+            {data?.days || "Not provided"} day(s), {data?.hours || "Not provided"}{" "}
             hour(s){" "}
           </h4>
         </div>
