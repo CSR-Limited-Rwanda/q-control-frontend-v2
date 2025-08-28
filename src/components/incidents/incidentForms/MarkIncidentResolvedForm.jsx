@@ -5,6 +5,8 @@ import React, { useState } from "react";
 import { Check, LoaderCircle, X } from "lucide-react";
 import api, { API_URL } from "@/utils/api";
 import postDocumentHistory from "../documentHistory/postDocumentHistory";
+import "@/styles/_components.scss";
+import "@/styles/_main.scss";
 
 function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,23 +15,21 @@ function MarkResolvedForm({ incidentId, apiLink, isResolved }) {
   const markResolved = async () => {
     setIsLoading(true);
     try {
-      const response = await api.patch(
-        `/incidents/${apiLink}/${incidentId}/`, {
-          action: "mark-closed"
-        }
-      );
+      const response = await api.patch(`/incidents/${apiLink}/${incidentId}/`, {
+        action: "mark-closed",
+      });
       if (response.status === 200) {
         setResolved(true);
         setIsLoading(false);
         postDocumentHistory(incidentId, "resolved this incident", "resolve");
       }
     } catch (error) {
-      console.error('Error closing incident:', error)
+      console.error("Error closing incident:", error);
       setIsLoading(false);
       if (error.response.status === 403) {
-        toast.error(error.response.data.message);
+        toast.error(error.response.data.error);
       } else if (error.response.status === 400) {
-        toast.error(error.response.data.message);
+        toast.error(error.response.data.error);
       } else {
         toast.error("Unknown error while resolving incident");
       }

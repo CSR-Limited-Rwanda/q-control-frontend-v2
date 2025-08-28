@@ -52,12 +52,9 @@ const Accounts = ({ permissions }) => {
       const response = await api.get(`/users/?${params}`);
       if (response.status === 200) {
         setUsersData(response.data);
-      } else {
-        toast.error("Error fetching users.");
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
-      toast.error("Error fetching users");
+      toast.error("Error fetching users:", error);
     } finally {
       setIsLoading(false);
       setIsSearching(false);

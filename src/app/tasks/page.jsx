@@ -1,8 +1,8 @@
 "use client";
 import "@/styles/_userTasks.scss";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../dashboard/layout";
-import { fetchTaskById, fetchTasks, fetchUserTasks } from "@/hooks/fetchTasks";
+import { fetchTasks } from "@/hooks/fetchTasks";
 import { createUrlParams } from "@/utils/api";
 import {
   ArrowDownNarrowWide,
@@ -19,13 +19,14 @@ import {
   SquareCheck,
   Users,
   X,
+  Loader2,
 } from "lucide-react";
 import { TaskDetails } from "./TaskDetails";
 import { Filters } from "./TaskFilters";
 import TasksTable from "./TasksTable";
-import TasksMobileCard from "./TasksMobileCard";
 import { useAuthentication } from "@/context/authContext";
 import PermissionsGuard from "@/components/PermissionsGuard";
+import debounce from "lodash/debounce";
 
 const TasksPage = () => {
   const { user } = useAuthentication();
@@ -42,43 +43,58 @@ const TasksPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [parameters, setParameters] = useState({
-    page: page,
-    page_size: pageSize,
-    q: searchQuery,
-    status: status,
+    page: 1,
+    page_size: 10,
+    q: "",
+    status: null,
     sort_by: "created_at",
     sort_order: "asc",
   });
   const profileId = user?.profileId;
 
+  // Load tasks from backend
   const loadTasks = async () => {
+    setIsLoading(true);
     const queryParams = createUrlParams(parameters);
-
     const response = await fetchTasks(queryParams);
     if (response.success) {
-      setTasks(response.data.results);
-      setTotalTasks(response.data.count);
+      setTasks(response.data.results || []);
+      setTotalTasks(response.data.count || 0);
     } else {
       setError(response.message);
     }
     setIsLoading(false);
+    setIsSearching(false);
   };
 
-  // check if all tasks are selected
-  const isAllTasksSelected = () => {
-    return tasks.length > 0 && selectedTasks.length === tasks.length;
+  // Debounced search handler
+  const debouncedSearch = debounce((query) => {
+    setParameters((prev) => ({
+      ...prev,
+      q: query,
+      page: 1,
+    }));
+    setPage(1);
+  }, 500);
+
+  // Handle search query change
+  const handleSearchChange = (e) => {
+    setIsSearching(true);
+    const query = e.target.value;
+    setSearchQuery(query);
+    debouncedSearch(query);
   };
 
-  // handle select all tasks
+  // Handle select all tasks
   const handleSelectAllTasks = () => {
-    if (isAllTasksSelected()) {
+    if (selectedTasks.length === tasks.length) {
       setSelectedTasks([]);
     } else {
       setSelectedTasks(tasks.map((task) => task.id));
     }
   };
 
-  // handle select task
+  // Handle select task
   const handleSelectTask = (taskId) => {
     if (selectedTasks.includes(taskId)) {
       setSelectedTasks(selectedTasks.filter((id) => id !== taskId));
@@ -87,53 +103,39 @@ const TasksPage = () => {
     }
   };
 
-  // handle open task details
+  // Handle open task details
   const handleOpenTaskDetails = (taskId) => {
     setSelectedTask(taskId);
     setShowTaskDetails(true);
   };
 
-  // handle search query change
-  const handleSearchChange = async (e) => {
-    setIsSearching(true);
-    const query = e.target.value;
-    setSearchQuery(query);
-    setParameters({
-      ...parameters,
-      q: query,
-      page: 1,
-    });
-    setPage(1);
-
-    await loadTasks(userInfo?.id);
-    setIsSearching(false);
-  };
-
-  // handle sorting tasks
+  // Handle sorting tasks (send to backend)
   const handleSortTasks = (sortBy, sortOrder) => {
-    setParameters({
-      ...parameters,
+    setParameters((prev) => ({
+      ...prev,
       sort_by: sortBy,
       sort_order: sortOrder,
-    });
-
-    // sort tasks based on the selected field and order
-    const sortedTasks = [...tasks].sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a[sortBy] > b[sortBy] ? 1 : -1;
-      } else {
-        return a[sortBy] < b[sortBy] ? 1 : -1;
-      }
-    });
-    setTasks(sortedTasks);
+    }));
   };
+
+  // Load tasks when parameters change
   useEffect(() => {
-    // Initialize localStorage values on client side
-    if (typeof window !== "undefined") {
-      setPage(localStorage.getItem("tasksPage") || 1);
-      setPageSize(localStorage.getItem("tasksPageSize") || 10);
-    }
     loadTasks();
+  }, [parameters]);
+
+  // Initialize page and pageSize from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedPage = localStorage.getItem("tasksPage") || 1;
+      const storedPageSize = localStorage.getItem("tasksPageSize") || 10;
+      setPage(Number(storedPage));
+      setPageSize(Number(storedPageSize));
+      setParameters((prev) => ({
+        ...prev,
+        page: Number(storedPage),
+        page_size: Number(storedPageSize),
+      }));
+    }
   }, []);
 
   return (
@@ -145,7 +147,6 @@ const TasksPage = () => {
         btnText="My Tasks"
         message="You currently don’t have access to view any tasks. To view your tasks, click the button below."
       >
-        {isLoading && <p>Loading tasks...</p>}
         {error && <p className="message error">Error: {error}</p>}
         <div className="filters-container">
           <div className="header-search">
@@ -164,7 +165,6 @@ const TasksPage = () => {
             {selectedTasks.length > 0 && (
               <>
                 <button className="primary">
-                  {" "}
                   <PlusCircle />
                   <span> Create Task</span>
                 </button>
@@ -177,22 +177,36 @@ const TasksPage = () => {
             <Filters
               filters={[parameters]}
               setFilters={setParameters}
-              handleFilterChange={() => loadTasks()}
+              handleFilterChange={loadTasks}
             />
           </div>
         </div>
 
-        <TasksTable
-          handleSelectAllTasks={handleSelectAllTasks}
-          isSearching={isSearching}
-          parameters={parameters}
-          tasks={tasks}
-          selectedTasks={selectedTasks}
-          handleSelectTask={handleSelectTask}
-          handleOpenTaskDetails={handleOpenTaskDetails}
-          handleSortTasks={handleSortTasks}
-        />
-        {/* <TasksMobileCard handleSelectAllTasks={handleSelectAllTasks} isSearching={isSearching} parameters={parameters} tasks={tasks} selectedTasks={selectedTasks} handleSelectTask={handleSelectTask} handleOpenTaskDetails={handleOpenTaskDetails} handleSortTasks={handleSortTasks} /> */}
+        {isLoading ? (
+          <div className="loading-container">
+            <Loader2 className="spinner" />
+            <p>Loading tasks...</p>
+          </div>
+        ) : tasks.length === 0 ? (
+          <div className="empty-state">
+            {searchQuery ? (
+              <p>No tasks match your search.</p>
+            ) : (
+              <p>No tasks available.</p>
+            )}
+          </div>
+        ) : (
+          <TasksTable
+            handleSelectAllTasks={handleSelectAllTasks}
+            isSearching={isSearching}
+            parameters={parameters}
+            tasks={tasks}
+            selectedTasks={selectedTasks}
+            handleSelectTask={handleSelectTask}
+            handleOpenTaskDetails={handleOpenTaskDetails}
+            handleSortTasks={handleSortTasks}
+          />
+        )}
 
         {showTaskDetails && selectedTask && (
           <TaskDetails
