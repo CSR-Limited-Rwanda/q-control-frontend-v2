@@ -76,8 +76,8 @@ function DrugReactionDetailsContent() {
   const [hasAccess, setHasAccess] = useState(true);
   //   const [incidentStatus, setIncidentStatus] = useState({});
   const { incidentId } = useParams();
-  const [reviewsCount, setReviewsCount] = useState();
-  const [activitiesCount, setActivitiesCount] = useState();
+  const [reviewsCount, setReviewsCount] = useState(0);
+  const [activitiesCount, setActivitiesCount] = useState(0);
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -161,7 +161,10 @@ function DrugReactionDetailsContent() {
         );
         if (response.status === 200) {
           toast.success("Fetched document history successfully");
-          localStorage.setItem("documentHistoryCount", response.data.length);
+          localStorage.setItem(
+            "documentHistoryCount",
+            response.data.data.length
+          );
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {

@@ -366,7 +366,9 @@ const ProfileDetailsPage = () => {
 export default ProfileDetailsPage;
 
 const ProfileTabs = ({ userId }) => {
-  const [activeTab, setActiveTab] = useState("reports");
+  const [activeTab, setActiveTab] = useState(
+    localStorage.getItem("activeProfileTab") || "reports"
+  );
 
   if (activeTab === "drafts") {
     localStorage.removeItem("changeBreadCrumbs");
@@ -383,7 +385,10 @@ const ProfileTabs = ({ userId }) => {
     <div className="profile-data">
       <div className="tabs">
         <div
-          onClick={() => setActiveTab("reports")}
+          onClick={() => {
+            setActiveTab("reports");
+            localStorage.setItem("activeProfileTab", "reports");
+          }}
           className={`tab ${activeTab === "reports" ? "active" : ""}`}
         >
           <ListCheck size={20} />
@@ -393,6 +398,7 @@ const ProfileTabs = ({ userId }) => {
           onClick={() => {
             setActiveTab("drafts");
             localStorage.removeItem("changeBreadCrumbs");
+            localStorage.setItem("activeProfileTab", "drafts");
           }}
           className={`tab ${activeTab === "drafts" ? "active" : ""}`}
         >
@@ -400,14 +406,20 @@ const ProfileTabs = ({ userId }) => {
           <p> Drafts reports</p>
         </div>
         <div
-          onClick={() => setActiveTab("complaints")}
+          onClick={() => {
+            setActiveTab("complaints");
+            localStorage.setItem("activeProfileTab", "complaints");
+          }}
           className={`tab ${activeTab === "complaints" ? "active" : ""}`}
         >
           {" "}
           <Frown size={20} /> <p>Complaints</p>
         </div>
         <div
-          onClick={() => setActiveTab("documents")}
+          onClick={() => {
+            setActiveTab("documents");
+            localStorage.setItem("activeProfileTab", "documents");
+          }}
           className={`tab ${activeTab === "documents" ? "active" : ""}`}
         >
           <File />

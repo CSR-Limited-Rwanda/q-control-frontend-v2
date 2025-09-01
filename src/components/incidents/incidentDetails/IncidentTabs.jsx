@@ -11,12 +11,12 @@ const IncidentTabs = ({
   documents,
   investigation,
   showInvestigationTab,
-  reviewsCount,
-  incidentDocumentHistoryCount,
 }) => {
   const [activeTab, setActiveTab] = useState("incidentType");
-  useState(0);
   const [incidentDocumentCount, setIncidentDocumentCount] = useState(0);
+  const [reviewsCount, setReviewsCount] = useState(0);
+  const [incidentDocumentHistoryCount, setIncidentDocumentHistoryCount] =
+    useState(0);
 
   const toggleActiveTab = (tab) => {
     setActiveTab(tab);
@@ -24,10 +24,27 @@ const IncidentTabs = ({
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const currentCount = localStorage.getItem("incidentDocumentCount") || "0";
+      const currentDocumentCount =
+        localStorage.getItem("incidentDocumentCount") || "0";
+      const currentReviewsCount =
+        localStorage.getItem("incidentReviewsCount") || "0";
+      const currentDocumentHistoryCount =
+        localStorage.getItem("documentHistoryCount") || "0";
 
-      const parsedCount = parseInt(currentCount, 10);
-      setIncidentDocumentCount(isNaN(parsedCount) ? 0 : parsedCount);
+      const parsedDocumentCount = parseInt(currentDocumentCount, 10);
+      const parsedReviewsCount = parseInt(currentReviewsCount, 10);
+      const parsedDocumentHistoryCount = parseInt(
+        currentDocumentHistoryCount,
+        10
+      );
+
+      setIncidentDocumentCount(
+        isNaN(parsedDocumentCount) ? 0 : parsedDocumentCount
+      );
+      setReviewsCount(isNaN(parsedReviewsCount) ? 0 : parsedReviewsCount);
+      setIncidentDocumentHistoryCount(
+        isNaN(parsedDocumentHistoryCount) ? 0 : parsedDocumentHistoryCount
+      );
     }, 1000);
 
     return () => {

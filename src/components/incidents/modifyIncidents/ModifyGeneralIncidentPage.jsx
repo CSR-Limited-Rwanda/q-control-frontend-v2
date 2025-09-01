@@ -1756,8 +1756,8 @@ const ModifyGeneralIncidentForm = ({ data }) => {
                 <FilesList
                   setDocuments={setUploadedFiles}
                   documents={uploadedFiles}
-                  apiLink={"general"}
-                  incidentId={incident.id}
+                  canDelete={true}
+                  showDownload={true}
                 />
 
                 {uploadingDocuments ? (

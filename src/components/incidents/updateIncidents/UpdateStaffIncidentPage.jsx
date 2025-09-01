@@ -791,7 +791,12 @@ const UpdateStaffIncident = ({ data, incidentId, investigation }) => {
 
             <div className="field full">
               <h3>Supporting documents</h3>
-              <FilesList documents={uploadedFiles} />
+              <FilesList
+                setDocuments={setUploadedFiles}
+                documents={uploadedFiles}
+                canDelete={true}
+                showDownload={true}
+              />
 
               {uploadingDocuments ? (
                 "Uploading ..."

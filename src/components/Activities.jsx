@@ -101,7 +101,9 @@ const IncidentActivitiesTab = ({ incidentId, incidentType, setCount }) => {
                       {activity.files.map((file, index) => (
                         <div key={index} className="document file">
                           <img
-                            src={`/images/files/types/${file.file_type}.svg`}
+                            src={`/images/files/types/${file.file_type.slice(
+                              1
+                            )}.svg`}
                             alt=""
                           />
                           <span>{file.name}</span>

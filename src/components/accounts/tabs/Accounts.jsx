@@ -54,7 +54,7 @@ const Accounts = ({ permissions }) => {
         setUsersData(response.data);
       }
     } catch (error) {
-      toast.error("Error fetching users:", error);
+      console.log("Error fetching users:", error);
     } finally {
       setIsLoading(false);
       setIsSearching(false);

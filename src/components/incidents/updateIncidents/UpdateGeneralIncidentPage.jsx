@@ -75,7 +75,6 @@ const UpdateGeneralIncidentForm = ({ data }) => {
     }
   };
 
-
   const handleCheckboxChange = (option) => {
     let updatedOptions;
     if (statusPrior.includes(option)) {
@@ -308,9 +307,11 @@ const UpdateGeneralIncidentForm = ({ data }) => {
       try {
         setIsLoading(true);
         const response = await api.get(`/departments/`, {
-          params: { facility_id: data?.report_facility?.id
+          params: {
+            facility_id: data?.report_facility?.id
               ? data?.report_facility.id
-              : data?.report_facility, },
+              : data?.report_facility,
+          },
         });
         if (response.status === 200) {
           setDepartments(response.data.results);
@@ -424,7 +425,6 @@ const UpdateGeneralIncidentForm = ({ data }) => {
       severity_rating: severityRating,
       treatment_type: selectedTreatment,
     };
-
 
     try {
       const response = await api.put(
@@ -1755,8 +1755,8 @@ const UpdateGeneralIncidentForm = ({ data }) => {
                 <FilesList
                   setDocuments={setUploadedFiles}
                   documents={uploadedFiles}
-                  apiLink={"general"}
-                  incidentId={incident.id}
+                  canDelete={true}
+                  showDownload={true}
                 />
 
                 {uploadingDocuments ? (
