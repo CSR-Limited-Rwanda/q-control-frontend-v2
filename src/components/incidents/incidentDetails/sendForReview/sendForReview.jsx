@@ -236,15 +236,17 @@ const SendForReview = ({ path, incidentID, handleClose, data }) => {
   ) : (
     <div className="popup" onClick={handlePopupClick}>
       {showSuccessMessage ? (
-        <div className="popup-content" ref={popupContentRef}>
+        <div
+          className="popup-content send-for-review"
+          id="send-for-review-success"
+          ref={popupContentRef}
+        >
           <h2>Success</h2>
           <p>The incident has been successfully sent for review.</p>
-          <button onClick={() => setShowSuccessMessage(false)}>
-            Back to incident details
-          </button>
+          <button onClick={() => window.location.reload()}>Close</button>
         </div>
       ) : (
-        <div className="popup-content" ref={popupContentRef}>
+        <div className="popup-content send-for-review" ref={popupContentRef}>
           <h2>Send Incident for Review {currentStep}</h2>
           {/* <p>Are you sure you want to send this incident for review?</p> */}
           <label htmlFor="department">Department</label>

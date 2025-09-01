@@ -365,7 +365,7 @@ const IncidentDetailsHeader = ({
       )}
       {showReviewForm ? (
         <div className="popup has-header review-popup">
-          <div className="popup-content">
+          <div className="popup-content" id="new-review-form-container">
             <NewReviewForm
               incidentId={incidentDetailsId}
               handleClose={toggleShowReviewForm}
