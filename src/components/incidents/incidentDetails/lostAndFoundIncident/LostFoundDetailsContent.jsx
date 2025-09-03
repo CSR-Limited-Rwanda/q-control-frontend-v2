@@ -30,8 +30,8 @@ const LostFoundDetailsContent = () => {
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
   const { incidentId } = useParams();
-  const [reviewsCount, setReviewsCount] = useState();
-  const [activitiesCount, setActivitiesCount] = useState();
+  const [reviewsCount, setReviewsCount] = useState(0);
+  const [activitiesCount, setActivitiesCount] = useState(0);
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -83,7 +83,10 @@ const LostFoundDetailsContent = () => {
           `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
-          localStorage.setItem("documentHistoryCount", response.data.length);
+          localStorage.setItem(
+            "documentHistoryCount",
+            response.data.data.length
+          );
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {

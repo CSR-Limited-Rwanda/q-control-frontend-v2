@@ -31,8 +31,8 @@ const GeneralIncidentDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [reviewsCount, setReviewsCount] = useState();
-  const [activitiesCount, setActivitiesCount] = useState();
+  const [reviewsCount, setReviewsCount] = useState(0);
+  const [activitiesCount, setActivitiesCount] = useState(0);
 
   // Fetch incident details based on the selected version
   const fetchIncidentDetails = async () => {
@@ -81,6 +81,51 @@ const GeneralIncidentDetailsContent = () => {
   useEffect(() => {
     fetchIncidentDetails(); // Fetch incident data when version toggles or incidentId changes
   }, [incidentId, useOriginalVersion]); // Dependencies trigger re-fetch
+
+  useEffect(() => {
+    const getIncidentReviews = async () => {
+      try {
+        const response = await api.get(
+          `${API_URL}/incidents/general-visitor/${incidentId}/reviews/`
+        );
+        if (response.status === 200) {
+          localStorage.setItem("incidentReviewsCount", response.data.length);
+          console.log("Reviews:", response.data);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          toast.error("Authentication error");
+        } else {
+          toast.error("Failed to fetch incident reviews");
+          console.error(error);
+        }
+      }
+    };
+    getIncidentReviews();
+  }, []);
+  useEffect(() => {
+    const getDocumentHistory = async () => {
+      try {
+        const response = await api.get(
+          `${API_URL}/activities/list/${incidentId}/`
+        );
+        if (response.status === 200) {
+          localStorage.setItem(
+            "documentHistoryCount",
+            response.data.data.length
+          );
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          toast.error("Authentication error");
+        } else {
+          toast.error("Failed to fetch document History");
+          console.error(error);
+        }
+      }
+    };
+    getDocumentHistory();
+  }, []);
 
   return (
     <div className="incident-details-page">

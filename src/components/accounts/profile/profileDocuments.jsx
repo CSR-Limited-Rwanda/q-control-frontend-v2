@@ -40,11 +40,7 @@ const ProfileDocuments = () => {
       {isLoading ? (
         "Loading..."
       ) : (
-        <FilesList
-          canDelete={false}
-          documents={documents}
-          showDownload={true}
-        />
+        <FilesList canDelete={true} documents={documents} showDownload={true} />
       )}
     </div>
   );

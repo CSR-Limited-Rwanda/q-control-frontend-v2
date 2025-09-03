@@ -180,14 +180,19 @@ main {
 
         display: flex;
         flex-direction: column;
-        gap: 1rem;
 
         .dropdown__item {
+          padding: 0.7rem;
           width: 100%;
           display: flex;
           align-items: center;
           gap: 0.5rem;
           cursor: pointer;
+          transition: color 0.3s ease;
+
+          &:not(:first-child):hover {
+            color: var(--primary);
+          }
         }
 
         .card {

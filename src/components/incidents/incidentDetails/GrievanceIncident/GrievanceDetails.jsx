@@ -31,8 +31,8 @@ const GrievanceDetailsContent = () => {
   const [latestIncidentDetails, setLatestIncidentDetails] = useState({});
   const [useOriginalVersion, setUseOriginalVersion] = useState(true);
   const [currentIncidentData, setCurrentIncidentData] = useState({});
-  const [reviewsCount, setReviewsCount] = useState();
-  const [activitiesCount, setActivitiesCount] = useState();
+  const [reviewsCount, setReviewsCount] = useState(0);
+  const [activitiesCount, setActivitiesCount] = useState(0);
 
   const fetchIncidentDetails = async () => {
     setIsFetching(true);
@@ -114,7 +114,10 @@ const GrievanceDetailsContent = () => {
           `${API_URL}/activities/list/${incidentId}/`
         );
         if (response.status === 200) {
-          localStorage.setItem("documentHistoryCount", response.data.length);
+          localStorage.setItem(
+            "documentHistoryCount",
+            response.data.data.length
+          );
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {

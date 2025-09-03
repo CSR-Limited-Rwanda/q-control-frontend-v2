@@ -132,6 +132,7 @@ export const NewReviewForm = ({ incidentId, apiLink, handleClose }) => {
     setReviewContent("");
     handleClose();
     setIsSubmitting(false);
+    window.location.reload();
   };
 
   return (

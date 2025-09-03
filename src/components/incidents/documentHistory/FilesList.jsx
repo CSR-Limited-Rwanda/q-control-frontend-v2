@@ -8,14 +8,7 @@ import SliceText from "@/components/SliceText";
 import api from "@/utils/api";
 import "@/styles/_main.scss";
 
-const FilesList = ({
-  setDocuments,
-  documents,
-  showDownload,
-  canDelete,
-  apiLink,
-  incidentId,
-}) => {
+const FilesList = ({ setDocuments, documents, showDownload, canDelete }) => {
   const [deletingFile, setDeletingFile] = useState(false);
   const [fileToDelete, setFileToDelete] = useState({});
   const [selectedFile, setSelectedFile] = useState({});
@@ -24,6 +17,8 @@ const FilesList = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const documentsPerPage = 12;
+
+  console.log(documents);
 
   const handleSelectFile = (file) => {
     setSelectedFile(file);
@@ -42,11 +37,17 @@ const FilesList = ({
     setFileToDelete(file);
     try {
       const response = await api.delete(
-        `/incidents/${apiLink}/${incidentId}/documents/${file.id}/delete/`
+        `/accounts/profile/documents/${file.id}/`
       );
       if (response.status === 200) {
         toast.success("File deleted successfully");
+
         setDeletingFile(false);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+
         setDocuments((prevFiles) =>
           prevFiles.filter((prevFile) => prevFile.id !== file.id)
         );
@@ -64,14 +65,12 @@ const FilesList = ({
     } catch (error) {
       if (error.response) {
         toast.error(
-          error.response.data.message ||
-            error.response.data.error ||
+          error.response.data.error ||
+            error.response.data.message ||
             "Error deleting file"
         );
-      } else {
-        toast.error("Unknown error deleting file");
       }
-
+    } finally {
       setDeletingFile(false);
     }
   };
@@ -115,11 +114,14 @@ const FilesList = ({
                 <div className="icon">
                   <img
                     src={
-                      doc.type === ".pdf"
+                      doc.type || doc.file_type === ".pdf"
                         ? "/images/file_types/pdf2-svgrepo-com 1.svg"
-                        : doc.type === ".xlsx"
+                        : doc.type || doc.file_type === ".xlsx"
                         ? "/images/file_types/excel2-svgrepo-com 1.svg"
-                        : doc.type === ".doc" || doc.type === ".docx"
+                        : doc.type ||
+                          doc.file_type === ".doc" ||
+                          doc.type ||
+                          doc.file_type === ".docx"
                         ? "/images/file_types/word2-svgrepo-com 1.svg"
                         : "/images/file_types/file-link-stroke-rounded.svg"
                     }
@@ -147,7 +149,11 @@ const FilesList = ({
                   {deletingFile && fileToDelete === doc ? (
                     <LoaderCircle size={18} className="loading-icon" />
                   ) : (
-                    <X size={18} onClick={() => handleDeleteFile(doc)} />
+                    <X
+                      size={18}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleDeleteFile(doc)}
+                    />
                   )}
                 </div>
               )}

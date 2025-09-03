@@ -1261,7 +1261,12 @@ const UpdateAdverseDruReactionForm = ({ data }) => {
           </div>
           <div className="field full inputs-group">
             <h3>Supporting documents</h3>
-            <FilesList documents={uploadedFiles} />
+            <FilesList
+              setDocuments={setUploadedFiles}
+              documents={uploadedFiles}
+              canDelete={true}
+              showDownload={true}
+            />
 
             {uploadingDocuments ? (
               "Uploading ..."
