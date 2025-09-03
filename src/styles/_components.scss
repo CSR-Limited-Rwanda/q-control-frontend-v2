@@ -293,6 +293,23 @@ form,
   }
 }
 
+#complaint-form {
+  padding-block: 1rem;
+
+  .complaint-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    background-color: white;
+    top: 0;
+    z-index: 9999;
+    padding: 1rem;
+  }
+  .close-popup {
+    position: static;
+  }
+}
 // mark resolved popup
 .mark-resolved-popup {
   .popup-content {

@@ -12,7 +12,9 @@ const IncidentTabs = ({
   investigation,
   showInvestigationTab,
 }) => {
-  const [activeTab, setActiveTab] = useState("incidentType");
+  const [activeTab, setActiveTab] = useState(
+    localStorage.getItem("activeIncidentTab") || "incidentType"
+  );
   const [incidentDocumentCount, setIncidentDocumentCount] = useState(0);
   const [reviewsCount, setReviewsCount] = useState(0);
   const [incidentDocumentHistoryCount, setIncidentDocumentHistoryCount] =

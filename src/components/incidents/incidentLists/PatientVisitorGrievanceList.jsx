@@ -131,7 +131,6 @@ const PatientVisitorGrievanceList = () => {
     setIsSearching(false);
     setIsSearchingTheDatabase(false);
     setCurrentPage(1);
-    setOpenFilters(false);
     fetchFilteredData(clearedFilters);
   };
 
@@ -846,7 +845,6 @@ const ComplaintsTab = () => {
     setSearchResults([]);
     setIsSearching(false);
     setCurrentPage(1);
-    setOpenFilters(false);
     fetchFilteredComplaints(clearedFilters);
   };
 

@@ -119,9 +119,12 @@ const SubmitComplaintForm = ({ handleSubmitComplaint, hasHeight }) => {
     fetchStaff();
   }, []);
   return (
-    <div className="form">
-      <h3>Submit a new complaint</h3>
-      <CloseIcon onClick={handleSubmitComplaint} />
+    <div className="form" id="complaint-form">
+      <div className="complaint-form-header">
+        <h3>Submit a new complaint</h3>
+
+        <CloseIcon onClick={handleSubmitComplaint} />
+      </div>
       <form action="" className="newIncidentForm">
         <div className="field">
           <label htmlFor="">Patient's name</label>
