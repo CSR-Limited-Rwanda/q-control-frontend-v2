@@ -74,6 +74,26 @@ const LostFoundDetailsContent = () => {
   };
 
   useEffect(() => {
+    const getIncidentReviews = async () => {
+      try {
+        const response = await api.get(
+          `${API_URL}/incidents/lost-found/${incidentId}/reviews/`
+        );
+        if (response.status === 200) {
+          localStorage.setItem("incidentReviewsCount", response.data.length);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          toast.error("Authentication error");
+        } else {
+          toast.error("Failed to fetch incident reviews");
+          console.error(error);
+        }
+      }
+    };
+    getIncidentReviews();
+  }, []);
+  useEffect(() => {
     fetchIncidentDetails();
   }, [incidentId, useOriginalVersion]);
   useEffect(() => {

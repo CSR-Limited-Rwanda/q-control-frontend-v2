@@ -135,7 +135,6 @@ const DrugReactionList = () => {
     setIsSearching(false);
     setIsSearchingTheDatabase(false);
     setCurrentPage(1);
-    setOpenFilters(false);
     fetchFilteredData(clearedFilters);
   };
 

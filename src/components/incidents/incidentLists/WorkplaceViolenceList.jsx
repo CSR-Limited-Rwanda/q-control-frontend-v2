@@ -148,8 +148,13 @@ const WorkplaceViolenceList = () => {
       end_date: "",
       status: "",
     };
-    setIncidentData(data);
-    setCurrentPage(1); // Reset to first page when filters are cleared
+
+    setFilters(clearedFilters);
+    setSearchResults([]);
+    setIsSearching(false);
+    setIsSearchingTheDatabase(false);
+    setCurrentPage(1);
+    fetchFilteredData(clearedFilters);
   };
 
   const toggleOpenFilters = () => {

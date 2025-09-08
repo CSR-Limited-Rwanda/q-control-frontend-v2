@@ -164,10 +164,10 @@ const TasksPage = () => {
           <div className="actions">
             {selectedTasks.length > 0 && (
               <>
-                <button className="primary">
+                {/* <button className="primary">
                   <PlusCircle />
                   <span> Create Task</span>
-                </button>
+                </button> */}
                 <button className="secondary">
                   <Printer />
                   <span> Export Tasks</span>

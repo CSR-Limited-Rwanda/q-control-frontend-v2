@@ -151,7 +151,6 @@ const GeneralPatientVisitorList = () => {
     setSearchResults([]);
     setIsSearching(false);
     setCurrentPage(1);
-    setOpenFilters(false);
     fetchFilteredData();
   };
 

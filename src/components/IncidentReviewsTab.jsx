@@ -10,6 +10,7 @@ import { formatDateTime } from "@/utils/api";
 import RichTextField from "./RichTextField";
 import PositionCard from "./PositionCard";
 import PermissionsGuard from "./PermissionsGuard";
+import CloseIcon from "./CloseIcon";
 
 const IncidentReviewsTab = ({
   incidentId,
@@ -95,14 +96,18 @@ const IncidentReviewsTab = ({
         </PermissionsGuard>
       )}
       {newReviewFormVisible && (
-        <NewReviewForm
-          incidentId={incidentId}
-          apiLink={apiLink}
-          handleClose={() => {
-            setNewReviewFormVisible(false);
-            handleFetchReviews();
-          }}
-        />
+        <div className="popup has-header review-popup">
+          <div className="popup-content" id="new-review-form-container">
+            <NewReviewForm
+              incidentId={incidentId}
+              apiLink={apiLink}
+              handleClose={() => {
+                setNewReviewFormVisible(false);
+                handleFetchReviews();
+              }}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
@@ -132,14 +137,17 @@ export const NewReviewForm = ({ incidentId, apiLink, handleClose }) => {
     setReviewContent("");
     handleClose();
     setIsSubmitting(false);
+    localStorage.setItem("activeIncidentTab", "reviews");
+
     window.location.reload();
   };
 
   return (
     <div className="new-review-form">
-      <div className="close-icon" onClick={handleClose}>
-        <X />
+      <div className="review-close">
+        <CloseIcon onClick={handleClose} />
       </div>
+
       <h3>Add a comment or review</h3>
       <p>Please provide your feedback below:</p>
       <form onSubmit={handleSubmit} className="">
