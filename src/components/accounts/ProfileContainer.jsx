@@ -30,8 +30,11 @@ export const ProfileContainer = () => {
     };
   }, [showProfile]);
 
+  console.log(user);
   const goToProfile = () => {
     router.push(`/accounts/${user.profileId}`);
+    localStorage.setItem("selected_user_id", user?.id);
+    localStorage.setItem("selected_user_profile_id", user?.profileId);
     setShowProfile(false); // Close dropdown after navigation
   };
 

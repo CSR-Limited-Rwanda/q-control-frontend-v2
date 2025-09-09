@@ -111,8 +111,10 @@ const Accounts = ({ permissions }) => {
     setShowFilters(!showFilters);
   };
 
-  const handleNavigate = (user) => {
+  const handleNavigate = (user, selectedUserId) => {
     if (permissions && permissions.accounts?.includes("view_profile")) {
+      localStorage.setItem("selected_user_id", selectedUserId);
+      localStorage.setItem("selected_user_profile_id", user?.id);
       router.push(`/accounts/${user?.id}`);
     } else {
       return;
@@ -277,7 +279,10 @@ const Accounts = ({ permissions }) => {
                   </thead>
                   <tbody className={`${isSearching && "is-searching"}`}>
                     {users.map((user) => (
-                      <tr key={user.id} onClick={() => handleNavigate(user)}>
+                      <tr
+                        key={user.id}
+                        onClick={() => handleNavigate(user, user?.user?.id)}
+                      >
                         <td data-label="ID">{user.id || "N/A"}</td>
                         <td data-label="Name">
                           <UserCard

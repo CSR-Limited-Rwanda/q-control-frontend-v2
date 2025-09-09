@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import toast from "react-hot-toast";
+import { useAuthentication } from "@/context/authContext";
 
 export const DraftCategory = ({
   incident,
@@ -230,6 +231,7 @@ export const DraftCategory = ({
 };
 
 export const DraftsTab = () => {
+  const { user } = useAuthentication();
   const [drafts, setDrafts] = useState({});
   const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
@@ -245,10 +247,22 @@ export const DraftsTab = () => {
   );
   const [adverseDrugReaction, setAdverseDrugReaction] = useState([]);
   const [medicationError, setMedicationError] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(
+    localStorage.getItem("selected_user_id")
+  );
 
+  console.log(user);
   const fetchDrafts = async () => {
+    console.log(user);
+
     try {
-      const response = await api.get(`accounts/profile/drafts/`);
+      let response;
+      selectedUserId
+        ? (response = await api.get(
+            `accounts/profile/drafts/?user_id=${selectedUserId}`
+          ))
+        : (response = await api.get(`accounts/profile/drafts/`));
+
       if (response.status === 200) {
         setDrafts(response.data);
         setGrievancesInvestigation(response.data.grievance_investigation || []);
@@ -267,7 +281,7 @@ export const DraftsTab = () => {
     } catch (error) {
       setError(
         error.response?.data?.message ||
-          error.response?.error ||
+          error.response?.data?.error ||
           "Error fetching drafts data, try again later"
       );
       setLoading(false);
