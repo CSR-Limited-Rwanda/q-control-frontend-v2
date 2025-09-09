@@ -103,6 +103,8 @@ const ProfileDetailsPage = () => {
               : null,
           };
 
+          console.log(response.data);
+
           setProfile(transformedProfile);
           setFormData({
             access_to_facilities: data.access_to_facilities || [],

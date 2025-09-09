@@ -27,7 +27,9 @@ import { useGetPermissions } from "@/hooks/fetchPermissions";
 
 const UserComplaints = () => {
   const { permissions } = useGetPermissions();
-  const { accountId } = useParams();
+  const [selectedUserProfileId, setSelectedUserProfileId] = useState(
+    localStorage.getItem("selected_user_profile_id")
+  );
   const [complaints, setComplaints] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -113,7 +115,9 @@ const UserComplaints = () => {
       try {
         setError("");
         setIsLoading(true);
-        const response = await api.get(`/users/${accountId}/complaints/`);
+        const response = await api.get(
+          `/users/${selectedUserProfileId}/complaints/`
+        );
         setComplaints(response.data.results);
         setIsLoading(false);
       } catch (error) {
@@ -132,7 +136,7 @@ const UserComplaints = () => {
     };
 
     fetchComplaints();
-  }, [accountId]);
+  }, [selectedUserProfileId]);
 
   const indexOfLastComplaint = currentPage * complaintsPerPage;
   const indexOfFirstComplaint = indexOfLastComplaint - complaintsPerPage;

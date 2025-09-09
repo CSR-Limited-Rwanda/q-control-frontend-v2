@@ -7,13 +7,18 @@ import toast from "react-hot-toast";
 const ProfileDocuments = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState([]);
+  const [selectedUserProfileId, setSelectedUserProfileId] = useState(
+    localStorage.getItem("selected_user_profile_id")
+  );
 
   useEffect(() => {
     // fetch documents
     const fetchDocuments = async () => {
       try {
         setIsLoading(true);
-        const response = await api.get(`/accounts/profile/documents/`);
+        const response = await api.get(
+          `/users/${selectedUserProfileId}/documents/`
+        );
         if (response.status === 200) {
           setDocuments(response.data.documents);
           setIsLoading(false);
